@@ -1,0 +1,56 @@
+Instalación y configuración placas ESP32 con Arduino IDE
+
+Los pasos generales son los siguientes:
+  1. Clonamos en local la última versión del listado de tarjetas de
+     Espressif (fabricante). Esto nos permitirá tener nuestra nueva
+     tarjeta en la lista.
+  2. Obtenermos la última versión de los drivers que gestionan el hardware
+     esta lista.
+  3. Abrimos el IDE de Arduino y lo configuramos
+  4. Probamos el programa de ejemplo.
+
+Instrucciones para Windows:
+  1. Descargamos desde https://git-scm.com/download/win el Git que
+     corresponde.
+  2. Lo ejecutamos y aceptamos todas las opciones por defecto.
+  3. Al finalizar la instalación, ejecutamos Git Gui.
+  4. Seleccionamos la opción de clonar un repositorio existente (clone
+     Existing Repository).
+  5. Como "Source Location" tomamos:
+     https://github.com/espressif/arduino-esp32.git
+  6. Como "target Directory" tomamos:
+     C:/Users/[YOUR_USER_NAME]/Documents/Arduino/hardware/espressif/esp32
+  7. Pulsamos el botón Clone y esperamos a que lo descargue.
+  8. Cerramos el Git Gui.
+  9. Ejecutamos C:\Users\[YOUR_USER_NAME]\Documents\Arduino\hardware\espressif\esp32\tools\get.exe
+     y esperamos a que finalice.
+  10. Abrimos el IDE de Arduino.
+  11. En Herramientas/Placa podemos encontrar el listado de tarjetas ESP32.
+      Seleccionamos la nuestra.
+  12. Seleccionamos el puerto que corresponda.
+  13. Compilamos y transferimos un programa de ejemplo.
+
+Instrucciones para linux:
+http://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-mac-and-linux-instructions/
+
+  1.Instalamos GIT y Python (aunque normalmente ya están instalados):
+    sudo usermod -a -G dialout $USER
+    sudo apt-get install git
+    wget https://bootstrap.pypa.io/get-pip.py
+    sudo python get-pip.py
+    sudo pip install pyserial
+  2.Nos movemos a la carpeta de hardware de la versión de Arduino que
+    tenemos instalada:
+      cd /usr/share/arduino-1.8.5/hardware
+  3.Creamos una nueva carpeta llamada espressif
+      mkdir espressif
+  4.Entramos en ella
+      cd espressif
+  5.Clonamos la carpeta con la última versión publicada sobre estas
+    placas y la instalamos:
+      git clone https://github.com/espressif/arduino-esp32.git esp32
+      cd esp32/tools/
+      python get.py
+  6.Si volvemos a abrir Arduino IDE comprobaremos que tenemos una nueva
+    sección de placas de la familia ESP32
+

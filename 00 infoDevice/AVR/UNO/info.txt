@@ -1,0 +1,74 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa Arduino/Genuino UNO
+Descripción:
+
+Arduino UNO es la placa estándar de la familia Arduino/Genuino.
+
+Estas son algunas de sus principales carácterísticas:
+  Placa:                UNO
+  Procesador:           ATmega328
+  Frecuencia:           16MHz
+  Memoria:              32Kb
+  RAM:                   2Kb
+  Pines:                20
+  Pines digitales:      14
+  Pines PWM:             6
+  Entradas analógicas:   6
+  Puertos serie:         1
+  Voltaje de operación:  5V
+  Mínimo V de entrada:   6V
+  Máximo V de entrada:  20V
+  Memoria EEPROM:        1Kb
+
+Pines del puerto serie:
+  RX TX
+   0  1
+
+Pines de las interrupciones por hardware:
+  Interrupción pin
+       0        2
+       1        3
+
+Pines de protocolo SPI
+  Pin Descripción
+   12 MISO
+   11 MOSI
+   13 SCK
+   10 SS
+
+Pines de protocolo I2C
+  Pin Descripción
+   A4 SDA
+   A5 SCL
+
+Los 6 pines de entrada digitales tienen una resolución de 10 bits.
+Los pines de entrada analógica se puden utilizar como pines digitales
+continuando con la numeración:
+  A0 = pin 14
+  A1 = pin 15
+  A2 = pin 16
+  A3 = pin 17
+  A4 = pin 18
+  A5 = pin 19
+
+Pines con capacidad PWM, con resolución 8 bits:
+  3,5,6,9,10,11
+
+El pin 13 está asociado con el led integrado en placa.
+
+Timers:
+  timer resolución usos
+    0     8 bits   Funciones delay(), millis(), micros() y PWM de pines 5 y 6
+    1    16 bits   Librería Servo y PWM de pines 9 y 10
+    2     8 bits   Función tone() y PWM de pines 3 y 11
+
+Consumo en distintos modos de bajo consumo:
+  Modo                  UNO
+  ------------------- -------
+  Normal              45.00mA
+  SLEEP_MODE_IDLE     15.00mA
+  SLEEP_MODE_ADC       6.50mA
+  SLEEP_MODE_PWR_SAVE  1.62mA
+  SLEEP_MODE_STANDBY   0.84mA
+  SLEEP_MODE_PWR_DOWN  0.36mA
