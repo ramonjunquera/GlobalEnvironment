@@ -1,0 +1,56 @@
+Descripción de WeMos D1 R2
+
+Pertenece a la familia ESP8266.
+Incluye un conector microUSB para comunicación y alimentación.
+Tiene el mismo formato que un Arduino UNO.
+Algunos de sus pines están repetidos en distintas posiciones de la placa.
+Tiene 11 pines digitales.
+Tiene un pin para lecturas analógicas.
+Tiene 11 pines con PWM.
+Admite protocolos SPI & I2C.
+Voltaje de operación: 3.3V
+Memoria total: 4Mb
+Velocidad de reloj: 80MHz/160MHz
+Memoria EEPROM: 4Kb máximo
+
+Realmente la memoria EEPROM se almacena en una zona especial del SPIFFS
+
+Incluye dos leds integrados:
+  pin GPIO pos       HIGH LOW const
+  --- ---- --------- ---- --- -----------
+   D4   2  antena     off on  LED_BUILTIN
+   D5  14  placa(SCK) on  off
+
+Esta es la relación entre la nomenclatura y los pines
+  pin GPIO resistencias
+  --- ---- ------------
+   TX    1
+   RX    3
+   D0   16
+   D1    5
+   D2    4
+   D3    0 pullup
+   D4    2 pullup
+   D5   14
+   D6   12
+   D7   13
+   D8   15 pulldown
+
+Los pines para las conexiones I2C son:
+  pin I2C
+  --- ---
+  D1  SCL
+  D2  SDA
+
+Los pines de conexión SPI son:
+  GPIO pin SPI
+  ---- --- ---
+   12   D6 MISO
+   13   D7 MOSI
+   14   D5 SCLK
+   15   D8 CS
+
+Pines con capacidad PWM, con resolución 10 bits:
+  TX(1),RX(3),D0(16),D1(5),D2(4),D3(0),D4(2),D5(14),D6(12),D7(13),D8(15)
+
+Excepto por el número de leds integrados y el formato, es idéntica a WeMos D1 Mini

@@ -1,0 +1,49 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa Sonoff
+Descripción:
+
+Sonoff es un dispositivo de la familia ESP8266 muy específico
+para ser utilizado como interruptor a distancia.
+Consta de un led, un interruptor de pulsador y un relé.
+Se alimenta gracias a un pequeño trnasformador de corriente
+alterna a continua que baja el voltaje de 220V a 5V.
+Todo ello es una simple placa que se incluye en una carcasa
+de plástico.
+Tiene una entrada y una salida para la corriente a 220V.
+No conexión USB. Es necesario un FTDI a 3.3V (importantísimo!),
+para poder conectar con el PC.
+
+La conexión entre el FTDI y Sonoff es la siguiente:
+  Sonoff  FTDI
+  ------  ----
+  3.3V    3.3V
+  RX      TX
+  TX      RX
+  GND     GND
+
+Debemos configurar el dispositivo con estos parámetros:
+    Placa: “Generic ESP8266 Module”
+    Flash Mode: “DIO”
+    Flash Frequency: “40MHz”
+    Upload Using: “Serial”
+    CPU Frequency: “80 MHz”
+    Flash Size: “1m(64K SPIFFS)”
+    Reset Method: “ck”
+    Upload Speed: “115200”
+
+Es muy importante recordar que para que Sonoff se encuentre en
+modo de recepción de datos, se debe arrancar manteniendo el 
+interruptor pulsado. Si no se hace, el IDE no podrá conectar
+con el dispositivo.
+
+Pinout
+  
+  GPIO  Función
+  ----  --------
+    0   Interruptor (pulsador)
+    1   TX
+    3   RX
+   12   Relé
+   13   Led
+   14   pin disponible en placa
