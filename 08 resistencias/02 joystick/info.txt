@@ -1,0 +1,16 @@
+Joystick de PlayStation 2.
+
+Básicamente son dos potenciómetros para controlar la posición en los dos ejes, y un botón que se activa al
+presionar la "seta".
+Gracias a unos muelles, si no hacemos fuerza, siempre se encuentra en la posición central.
+
+Tiene 5 pines:
+  - GND : tierra
+  - +5V : VCC
+  - VRX : salida analógica del potenciómetro X
+  - VRY : salida analógica del potenciómetro Y
+  - SW : salida digital del interruptor del botón
+
+Si colocamos los pines del joystick a la izquierda, tenemos que la esquina superior izquierda tiene las 
+coordenadaa 0,0.
+El horizontal es el eje X. El vertical el Y.

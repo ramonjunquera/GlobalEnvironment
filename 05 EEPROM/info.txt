@@ -1,0 +1,31 @@
+La memoria EEPROM es una memoria de lectura/escritura que no necesita
+alimentación eléctrica para mantener la información.
+No es tan rápida como la RAM, ni tan barata, pero es muy útil cuando
+queremos guardar información que no queremos perder ante un corte de
+alimentación.
+Otra posible solución seria utilizar un sistema de almacenamiento
+externo magnético (SD o disco duro). Pero esto es más sencillo y rápido.
+
+Casi todas las placas Arduino tienen memoria EEPROM integrada. Sólo cambia
+la cantidad. Estos son los modelos principales:
+    
+  Modelo    Memoria en Kb
+  --------- -------------
+  UNO       1
+  DUE       -
+  Leonardo  1
+  Mega      4
+  Micro     1
+  Mini      1
+  Nano      1
+  Ethernet  1
+  Esplora   1
+  Bluetooth 1
+  Fio       1
+  Pro Mini  1
+  Lilypad   1
+  
+La mayoría tienen 1Kb = 1024byte. No es demasiado, pero sí suficiente para
+guardar una configuración inicial.
+  
+Arduino ya incorpora una librería para la gestión de la memoria EEPROM.

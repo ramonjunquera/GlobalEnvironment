@@ -1,17 +1,17 @@
-Autor: Ram√≥n Junquera
-Tema: Descripci√≥n de placa
-Objetivo: Descripci√≥n de placa Arduino Nano
-Descripci√≥n:
+Autor: RamÛn Junquera
+Tema: DescripciÛn de placa
+Objetivo: DescripciÛn de placa Arduino Nano
+DescripciÛn:
 
-Arduino Nano es una versi√≥n mejorada de Aruino UNO.
-Conserva la mayor√≠a de sus caracter√≠sticas.
+Arduino Nano es una versiÛn mejorada de Aruino UNO.
+Conserva la mayorÌa de sus caracterÌsticas.
 
 Las principales diferencias son:
-- Formato. Tama√±o mucho m√°s reducido. Se puede pinchar en una breadboard.
-- Se incluyen dos nuevos pines para las entradas anal√≥gicas (A6 y A7)
+- Formato. TamaÒo mucho m·s reducido. Se puede pinchar en una breadboard.
+- Se incluyen dos nuevos pines para las entradas analÛgicas (A6 y A7)
 - Se reduce el consumo. De 45mA de UNO a 15mA en Nano
 
-Estas son algunas de sus principales car√°cter√≠sticas:
+Estas son algunas de sus principales car·cterÌsticas:
   Placa:                UNO
   Procesador:           ATmega328
   Frecuencia:           16MHz
@@ -20,11 +20,11 @@ Estas son algunas de sus principales car√°cter√≠sticas:
   Pines:                20
   Pines digitales:      14
   Pines PWM:             6
-  Entradas anal√≥gicas:   8
+  Entradas analÛgicas:   8
   Puertos serie:         1
-  Voltaje de operaci√≥n:  5V
-  M√≠nimo V de entrada:   6V
-  M√°ximo V de entrada:  20V
+  Voltaje de operaciÛn:  5V
+  MÌnimo V de entrada:   6V
+  M·ximo V de entrada:  20V
   Memoria EEPROM:        1Kb
 
 Pines del puerto serie:
@@ -32,25 +32,25 @@ Pines del puerto serie:
    0  1
 
 Pines de las interrupciones por hardware:
-  Interrupci√≥n pin
+  InterrupciÛn pin
        0        2
        1        3
 
 Pines de protocolo SPI
-  Pin Descripci√≥n
+  Pin DescripciÛn
    12 MISO
    11 MOSI
    13 SCK
    10 SS
 
 Pines de protocolo I2C
-  Pin Descripci√≥n
+  Pin DescripciÛn
    A4 SDA
    A5 SCL
 
-Los 8 pines de entrada digitales tienen una resoluci√≥n de 10 bits.
-Los pines de entrada anal√≥gica se puden utilizar como pines digitales
-continuando con la numeraci√≥n:
+Los 8 pines de entrada digitales tienen una resoluciÛn de 10 bits.
+Los pines de entrada analÛgica se puden utilizar como pines digitales
+continuando con la numeraciÛn:
   A0 = pin 14
   A1 = pin 15
   A2 = pin 16
@@ -61,13 +61,14 @@ continuando con la numeraci√≥n:
   A7 = pin 21
 
 
-Pines con capacidad PWM, con resoluci√≥n 8 bits:
+Pines con capacidad PWM, con resoluciÛn 8 bits:
   3,5,6,9,10,11
 
-El pin 13 est√° asociado con el led integrado en placa.
+El pin 13 est· asociado con el led integrado en placa.
 
 Timers:
-  timer resoluci√≥n usos
+  timer resoluciÛn usos
     0     8 bits   Funciones delay(), millis(), micros() y PWM de pines 5 y 6
-    1    16 bits   Librer√≠a Servo y PWM de pines 9 y 10
-    2     8 bits   Funci√≥n tone() y PWM de pines 3 y 11
+    1    16 bits   LibrerÌa Servo y PWM de pines 9 y 10
+    2     8 bits   FunciÛn tone() y PWM de pines 3 y 11
+

@@ -1,0 +1,13 @@
+Cambio de resolución de pantalla
+
+Es normal que al instalar Raspbian en un dispositivo detecte la resolución máxima de
+pantalla de manera automática.
+No ocurre así si la instalación es en una máquina virtual en la que además no se le
+han añadido las vmware tools.
+Para este caso en particular el sistema toma la mínima resolución (800x600).
+
+Para ver el listado de resoluciones soportadas utilizamos el comando: xrandr
+Para cambiar a una resolución determinada: xrandr -s 1152x864
+Para que se fije un resolución determinada debemos incluir la línea en al final del archivo
+.profile que se encuentra en la home del usuario (pi).
+

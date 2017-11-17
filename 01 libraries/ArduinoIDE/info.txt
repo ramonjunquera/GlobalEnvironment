@@ -1,0 +1,78 @@
+Estructura de una librería.
+
+Habitualmente una librería es un conjunto de clases, variables y estucturas que permiten gestionar
+más fácilmente un dispositivo o componente.
+La ventaja es que se puede empaquetar en un sólo archivo .zip y puede ser importada en el IDE de Arduino.
+Después, desde cualquier desarrollo se puede hacer referencia a ella.
+
+
+La mínima expresión de una librería consta de dos archivos:
+- .h Contiene la declaración de clase y los métodos
+- .cpp Contiene el código de cada uno de los métodos y/o inicialización de datos.
+En la misma carpeta en la que se define la librería (contiene los .h y .cpp) es muy conveniente crear
+la carpera examples con ejemplos prácticos de cómo se utiliza la librería. No es obligatorio.
+También es muy conveniente crear un tercer archivo que siempre tiene el mismo nombre: keywords.txt,
+el cual contiene información de las palabras clave que debe resaltar en el código (pintar de otro color)
+para facilitar el desarrollo.
+  
+Es conveniente que para simplificar el trabajo del desarrollador, se utilice el mismo nombre para la clase
+principal, librería, nombre del archivo .cpp y nombre del archivo .h
+  
+Desde un desarrollo en ArduinoIDE siempre se inicializa una librería con el comando:
+#include <libreryname.h>
+Esto le indica al compilador qué librerías adicionales debe cargar.
+
+Si el desarrollo se hace en Raspberry se incluye el .cpp:
+#include <libreryname.cpp>
+
+Una librería puede ser cargada varias veces desde distintos puntos o módulos del desarrollo.
+Esto significa que si en la librería se define una clase, en la segunda llamada a la librería se intentará
+definir la misma clase y dará un error.
+Para que esto no ocurra es muy conveniente incluir como primeras líneas en el archivo .h lo siguiente:
+  #ifndef libraryname_h
+  #define libraryname_h
+  #include <arduino.h>
+  ...
+  declaración de clases, estructura y variables...
+  ...
+  #endif
+Esto hace que se cree una etiqueta con el nombre de la librería y que si se vuelve a cargar la librería sea
+detectada y no vuelva a redefinirla, avitando así el error.
+
+Para poder utilizar las mismas librerías en Raspberry es necesario hacer lo mismo en el archivo .cpp:
+  #ifndef libraryname_cpp
+  #define libraryname_cpp
+  #include <arduino.h>
+  ...
+  declaración de métodos...
+  ...
+  #endif
+
+El archivo .cpp contiene el código de los métodos declarado en el archivo de cabecera (.h).
+La sintaxis es libreryname::methodname
+  
+Para finalizar correctamente con la definición de la librería deberíamos (no es obligatorio) crear el archivo
+keywords.txt en la misma carpeta.
+Este archivo contendrá el listado de las palabras reconocidas por nuestra librería para que cuando sean
+reconocidas en el entorno de desarrollo se coloreen con las mismas reglas que las demás.
+La sintaxis del arhivo es la siguiente: palabra clave + tabulador + código de color
+Donde el código de color puede ser uno de los siguientes:
+  KEYWORD1 para tipos de datos
+  KEYWORD2 para métodos
+  KEYWORD3 para objetos
+  LITERAL1 para constantes
+Es aconsejable utilizar el notepad para editar este archivo de texto, puesto que el entorno de desarrollo no
+permite la inserción del carácter tabulación.
+  
+Para empaquetar una librería debemos comprimir en un archivo .zip el .h, el .cpp, el keywords.txt y la carpeta
+examples. El nombre del .zip debería coincidir con el de la librería (por sencillez).
+Este .zip podrá ser importado como librería a través del entorno de desarrollo desde la opción
+  Programa/Include Library/Add .ZIP Library...
+A partir de este momento la librería quedará disponible para cualquier futuro desarrollo.
+Es conveniente salir del entorno de desarrollo y volver a entrar, porque si la librería contiene algún ejemplo
+no se verá hasta que se reinicie, o tampoco se tendrán en cuenta los keywords.
+  
+Las librería disponibles se encuentran habitualente en: Este equipo/Documentos/Arduino/libraries/
+Pero este path puede ser cambiado desde el IDE en Archivo/Preferencias
+
+Para borrar una librería sólo tenemos que eliminar la carpeta que la contiene.

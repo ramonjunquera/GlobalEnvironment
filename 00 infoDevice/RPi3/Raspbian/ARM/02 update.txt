@@ -1,0 +1,10 @@
+Una vez instalado el sistema operativo es conveniente
+actualizarlo a la última versión disponible en Internet.
+Esto lo hacemos con los siguientes comandos:
+  sudo rpi-update
+  sudo apt-get update
+  sudo apt-get upgrade
+
+Es posible que se deba reiniciar tras las actualizaciones.
+Se puede hacer con:
+  sudo reboot

@@ -1,0 +1,27 @@
+Autor: Ramón Junquera
+Tema: Fotorresistencia infrarroja AX-1838HS
+Objetivo: Funcionamiento de una fotorresistencia infrarroja AX-1838HS con librería IRremote.h
+Material: breadboard, receptor de infrarrojos modelo AX-1838HS, led emisor infrarrojo, 2 leds, 3 resistencias de 220 ohmios,
+  Arduino UNO, Arduino Nano
+
+Descripción:
+A través de un emisor y un receptor IR, transmitiremos información.
+Puesto que tanto el emisor como el receptor utilizan timers y hay problemas de incompatibilidad dentro de una misma
+placa Arduino. Para evitar el problema utilizamos dos placas: un Arduino UNO y un Arduino Nano
+Con el UNO enviaremos y con el Nano recibiremos.
+Tanto el circuto emisor como el receptor tendrán un led que indicará la actividad de transmisión.
+El emisor encenderá el led mientras genere el código.
+El receptor encenderá el led mientras lo envía por el puerto serie.
+Así podremos comprobar que efectívamente se envía y recibe casi al instante.
+También podremos comprobar que si ponemos un objeto opaco entre el emisor y el receptor, ya no se podrá recibir la señal.
+Podemos probar que la luz infrarroja atraviesa un papel y que es capaz de rebotar fácilmente.
+  
+El emisor enviará un código concreto cada segundo.
+El receptor enviará el código por el puerto serie para que pueda ser monitorizado. Mientras lo hace, mantendrá encendido el
+led que indica la actividad.
+No filtramos el valor del código recibido. Podría ser cualquiera.
+  
+Eso quiere decir que este proyecto tiene dos placas Arduino distintas y cada una tendrá su propio desarrollo.
+
+Resultado:
+Se envía un código cada segundo entre las dos placas

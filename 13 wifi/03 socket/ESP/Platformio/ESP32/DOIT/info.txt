@@ -1,0 +1,15 @@
+Autor: Ramón Junquera
+Tema: wifi
+Objetivo: Transferir texto en tiempo real por wifi utilizando un socket
+Material adicional: 2x placas ESP32
+Descripción:
+Utilizaremos dos placas ESP32 iguales. Una hará de cliente y otra de servidor.
+El dispositivo servidor creará su propio punto de acceso y en él un servidor.
+No será un servidor web, porque no atiende comandos html.
+Simplemente estará preparado para recibir información de texto que enviará
+automáticamente al puerto serie.
+El dispositivo cliente una vez conectado al punto de acceso y al servidor
+se encargará de transferir el texto recibido por el puerto serie al servidor.
+
+Para el correcto funcionamiento, es importante que primero se inicie el 
+servidor y a continuación el cliente.

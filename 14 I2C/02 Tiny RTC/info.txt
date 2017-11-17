@@ -1,0 +1,49 @@
+Descripción de módulo Tiny RTC I2C Real Time
+
+El módulo "Tiny RTC I2C" incorpora un reloj modelo DS1307, una memoria EEPROM
+modelo AT24C32 de 32Kb, un sensor de temperatura modelo DS18B20, todo ello
+integrado en una pequeña placa de 25x28 mm.
+Viene con una batería de lítio recargable modelo LIR2032 de 3.6V y con un
+circuito de recarga.
+Si desactivamos el sensor de temperatura, el reloj puede correr durante un año
+con una sóla carga.
+  
+El voltaje de entrada puede variar entre los 3.0 y los 5.5V
+El rango de temperaturas va desde -55ºC a +125ºC
+Tiene una exactitud de 0.5ºC entre -10ºC y +85ºC
+  
+Habitualmente se suele vender sin pines. Tendremos que utilizar un soldador y
+un peine para poder utilizarlo.
+
+Estas son las especificaciones oficiales. Degraciadamente, por desconocimiento,
+el módulo utilizado en los ejemplos no dispone de sensor de temperatura.
+En la esquina de la pequeña placa, no existe un cilindro negro seccionado
+longitudinalmente. En su lugar hay un hueco y un semicírculo dibujado.
+Esto quiere decir que no podremos hacer ejemplos de uso del sensor de
+temperatura de este módulo.
+  
+En cada uno de dus lados tiene una fila de pines nombrados como P1 y P2.
+P1 tiene 7 pines y P2 tiene 5.
+Si nos fijamos, P2 contiene los mismos pines que P1. Esto es porque están
+duplicados para mayor comodidad.
+Así que para no complicar la soldadura, sólo pondremos el peine en los
+conectores P1. No necesiraremos usar P2.
+  
+Los pines de P1 son los siguientes:
+    BAT monitorización del voltaje de la batería
+    GND tierra
+    VCC 5V
+    SDA pin de conexión I2C para datos
+    SCL pin de conexión I2C para reloj
+    DS sensor de temperatura
+    SQ salida de onda cuadrada (normalmente no utilizado)
+
+Como hemos comentado, el pin DS corresponde al sensor de temperatura y no es
+necesario cablearlo para este ejercicio.
+
+Es un dispositivo que se conecta a través de un bus I2C.
+Soporta una frecuencia en el bus de 400KHz.
+  
+Los identificadores de cada componente en I2C son:
+  - Reloj : 0x68
+  - EEPROM : 0x50

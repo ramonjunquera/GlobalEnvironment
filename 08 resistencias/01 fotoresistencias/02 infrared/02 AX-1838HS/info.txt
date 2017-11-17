@@ -1,0 +1,23 @@
+Receptor infrarrojo AX-1838HS.
+
+El sensor AX-1838HS tiene las mismas especificaciones que el VS-1838B.
+
+AX-1838HS es básicamente una fotoresistencia.
+Puesto que está orientado a la recepción de infrarrojos, se han incluido varios filtros, tanto pasivos como
+activos, que evitan que la luz ambiental influya en la señal producida.
+Para poder activar los filtros activos es necesario alimentarlos. Esta es una de las principales
+diferencias entre una fotorresistencia normal y el AX-1838HS.
+
+El fabricante nos indica que funciona tanto con 5V como con 3.3V.
+  
+El sensor infrarrojo AX-1838HS tiene 3 patas.
+Si colocamos las patas hacia abajo y ponemos frente a nosotros el sensor negro encerrado en la jaula que le
+cruza en forma de X... las patas se numeran de izquierda a derecha como:
+    1. OUT
+    2. GND
+    3. VCC
+Nosotros siempre leeremos la señal de lo que está recibiendo por la pata OUT.
+Si el sensor ya viene montado en una pequeña placa, debemos respetar la nomenclatura de la placa.
+Habitualmente se etiqueta la pata de señal como S, y GND como -.
+La ventaja de que vengan montados en una placa es que incluyen un led integrado que nos indica la 
+actividad del sensor.

@@ -1,0 +1,19 @@
+Cómo detectar un proceso que se está ejecutando y matarlo en Raspbian
+
+Utilizamos el comando ps para mostrar todos los procesos que ha lanzado un usuario en concreto.
+Concretamente en Raspbian, el usuario por defecto es pi.
+Por lo tanto el comando para listar todos los procesos de pi es:
+  ps U pi
+También podemos ver los procesos lanzados por todos los usuarios con:
+  ps -A
+Podríamos filtrarlo por el nombre de algún proceso:
+  pa -A | grep processName
+
+Localizamos el proceso y tomamos nota del identificador de proceso en la primera columna
+
+Con el comando kill obligamos a terminar un proceso definido por su identificador.
+Por ejemplo:
+  kill 1485
+En el ejemplo se solicita al programa que finalice.
+Si el programa no responde, se puede eliminar por la fuerza al proceso con
+  kill -9 1485

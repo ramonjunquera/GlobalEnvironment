@@ -1,0 +1,98 @@
+Matriz de leds monocromos 8x8 modelo 1088AS
+
+Una matriz de leds de 8x8 son 64 leds dispuestos en 8 filas y 8 columnas.
+El funcionamiento es similar a los displays de leds para varios dígitos,
+excepto que esta vez los led están dispuestos en forma de matriz.
+La matriz tiene dos hileras de 8 patas cada una.
+Una en la parte superior y otra en la inferior.
+Los pines se numeran de la sigiente manera.
+
+  
+   16 15 14 13 12 11 10  9
+    ¦  ¦  ¦  ¦  ¦  ¦  ¦  ¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+    ¦  ¦  ¦  ¦  ¦  ¦  ¦  ¦
+    1  2  3  4  5  6  7  8
+
+Puesto que la matriz es cuadrada, necesitamos saber cuál es la hilera
+superior y cuál la inferior.
+En una de las caras laterales tiene escrito el modelo de matriz.
+Ese lado es el inferior.
+Al igual que con los displays de dígitos, cada columna representaría un
+dígito con 8 leds.
+Cada columna tiene compartido un único cátodo. 
+De la misma manera, cada fila tiene compartido el ánodo.
+Los leds se pueden encender individualmente, por filas o por columnas.
+De las 16 patas, 8 de ellas referencian a las 8 filas, y las otras 8 a
+las 8 columnas.
+Para encender un led concreto debemos conectar la pata de la fila al
+ánodo y la de la columna al cátodo.
+Si no sabemos la distribución de las patas, podemos conectar un cable a
+una resistencia de 220 ohmios que nos lleve a VCC (ánodo de 5V) y otro
+cable que nos lleve a GND (cátodo).
+Es muy importante la resistencia cuando utilicemos 5V (con 3.3 no es
+necesario), porque los leds de las matrices son más delicados que los
+normales y se pueden quemar.
+Con el ánodo protegido y el cátodo podemos rellenar una tabla indicando
+qué led se enciende con cada combinación.
+Por ejemplo:
+  
+      C1    C2    C3    C4    C5    C6    C7    C8
+  F1¦ 9,13¦ 9,3 ¦ 9,4 ¦ 9,10¦ 9,6 ¦ 9,11¦ 9,15¦ 9,16¦
+  F2¦14,13¦14,3 ¦14,4 ¦14,10¦14,6 ¦14,11¦14,15¦14,16¦
+  F3¦ 8,13¦ 8,3 ¦ 8,4 ¦ 8,10¦ 8,6 ¦ 8,11¦ 8,15¦ 8,16¦
+  F4¦12,13¦12,3 ¦12,4 ¦12,10¦12,6 ¦12,11¦12,15¦12,16¦
+  F5¦ 1,13¦ 1,3 ¦ 1,4 ¦ 1,10¦ 1,6 ¦ 1,11¦ 1,15¦ 1,16¦
+  F6¦ 7,13¦ 7,3 ¦ 7,4 ¦ 7,10¦ 7,6 ¦ 7,11¦ 7,15¦ 7,16¦
+  F7¦ 2,13¦ 2,3 ¦ 2,4 ¦ 2,10¦ 2,6 ¦ 2,11¦ 2,15¦ 2,16¦
+  F8¦ 5,13¦ 5,3 ¦ 5,4 ¦ 5,10¦ 5,6 ¦ 5,11¦ 5,15¦ 5,16¦
+  
+Donde:
+F1...F8 son las filas
+C1...C8 son las columnas
+En cada celda se indica qué patas debemos seleccionar para que se encienda.
+El primer número es el ánodo y el segundo el cátodo.
+Por ejemplo, para encender el led de la tercera fila y la quinta columna
+debemos conectar la pata 8 a VCC (con resistencia) y la pata 6 a GND.
+
+La ventaja de este sistema (multiplexación) es que necesitamos muchas menos
+patas que las que tendríamos que tener para 64 leds independientes.
+El problema es que sólo podemos encender simultáneamente uno o varios leds
+de una fila o varios leds de una columna.
+Realmente no se pueden encender todos los leds a la vez. 
+Como en el caso de los displays de dígitos, hacemos "barridos", ya sea por
+filas o por columnas a una frecuencia superior a la detectada por el ojo humano.
+Para poder utilizar resistencias de 220 ohmios en las patas de las columnas,
+barreremos por filas.
+Si activamos al mismo tiempo varios leds de una columna, sólo tendremos una
+resistencia para proteger a todos los leds que podamos encender de ella
+y no sería suficiente con una de 220 ohmios.
+Por lo tanto, barreremos por filas.
+Inicialmente pondremos todas las patas de las filas a HIGH para todo esté apagado.
+Ponemos a HIGH aquellas patas de columnas que queremos encender. El resto quedará
+en LOW.
+Ponemos en LOW la pata de fila que hemos compuesto, y se encienden los leds
+correspondientes a esa fila con la configuración que queremos.
+Esperamos un tiempo mínimo que determinaremos más tarde.
+Apagamos la fila, poniendo la pata de la fila a HIGH.
+Repetimos el proceso con la siguiente fila.
+El resultado final es que parece que se encienden todos los leds al mismo tiempo,
+porque se encienden y se apagan muy rápido.
+Esto siempre produce un parpardeo que depende del tiempo que se espera con los leds
+encendidos.
+En vez de etiquetar las patas con un número secuencial, quizá nos es más práctico
+hacerlo con la fila o columna que controla:
+  
+   C8 C7 F2 C1 F4 C6 C4 F1
+    ¦  ¦  ¦  ¦  ¦  ¦  ¦  ¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+    ¦  ¦  ¦  ¦  ¦  ¦  ¦  ¦
+   F5 F7 C2 C3 F8 C5 F6 F3

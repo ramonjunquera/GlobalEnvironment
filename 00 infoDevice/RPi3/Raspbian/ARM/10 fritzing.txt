@@ -1,0 +1,60 @@
+Cómo instalar Fritzing
+
+ARM
+---
+La última versión de Fritzing que podemos encontrar para Raspbian (Debian ARM) es la
+0.9.0. En cambio para PC (x86) es la 0.9.3b.
+Aun así vale la pena para poder trabajar con diseños de circuitos directamente en
+nuestra Raspberry Pi.
+
+Se puede instalar directamente con:
+sudo apt-get install Fritzing
+O a través del buscador/instalador de paquetes integrado en:
+menú/Preferences/Add / Remove Software
+Si buscamos por fritzing. Aparecen dos paquetes. Yo he instalado ambos.
+Tras la instalación ya se asocia la extensión .fzz con la aplicación.
+
+Para ejecutar la aplicación deberíamos ejecutar la aplicación Fritzing (con F mayúscula).
+
+El primer problema que nos encontramos es que si queremos cargar algún circuito que
+hemos desarrollado con una versión superior puede que haya componentes que pertenezcan
+a la librería estándar de la superior y no de la nuestra y nos de errores de carga.
+
+Para evitar esta situación podemos sustituir toda la librería estándar de nuestra
+versión por la de la superior.
+
+Para ello necesitamos la versión de PC (0.9.3b) 32 bits.
+La copiamos en local. La descomprimimos y comprobamos que la carpeta que estamos buscando
+se llama fritzing-parts.
+Si miramos en la aplicación instalada comprobamos que corresponde con la carpeta:
+/usr/share/fritzing/parts
+
+Simplemente tenemos que borrar la actual y sustituirla por la nueva.
+
+Los comandos utilizados podrían ser:
+sudo rm -R /usr/share/fritzing/parts
+sudo cp -R /home/pi/fritzing.0.9.3b.32.pc/fritzing-parts /usr/share/fritzing/parts
+
+La primera vez que se abra la aplicación Fritzing tardará un poco porque debe regenerar la
+base de datos de componentes.
+
+x86
+---
+Simplemente descargamos el paquete de instalación para linux directamente de la web oficial
+de Fritzing: http://fritzing.org/download/?donation=0
+En este ejemplo utilizaré la última versión disponible de 32bits (0.9.3b).
+El archivo descargado es fritzing-0.9.3b.linux.i386.tar.bz2
+Descomprimimios el archivo en /usr/share para que quede a disposición de todos los usuarios:
+  sudo tar -xjvf /home/pi/Downloads/fritzing-0.9.3b.linux.i386.tar.bz2 -C /usr/share
+Ejecutamos el script de instalación:
+  /usr/share/fritzing-0.9.3b.linux.i386/install_fritzing.sh
+Ahora asociamos la extensión .fzz con Fritzing.
+Esto se explica en el siguiente capítulo.
+
+
+Nota:
+Con resoluciones bajas (1024x768 o menos) Fritzing no entra en pantalla.
+Es posible que a veces se quede la ventana de la aplicación con la cabecera fuera por la parte 
+superior. Esto impide que podamos moverla. Existen algunos trucos para estos casos:
+  Alt + F11 : pone la aplicación a pantalla completa. Incluso quieta la barra de inicio.
+  Alt + click con botón derecho: mueve la ventana

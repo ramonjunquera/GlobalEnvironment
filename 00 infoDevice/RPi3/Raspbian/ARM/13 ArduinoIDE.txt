@@ -1,0 +1,25 @@
+Cómo instalar el IDE de Arduino:
+
+Descargamos la última versión desde la página oficial:
+https://www.arduino.cc/en/Main/Software
+Suponemos que quedará en la carpeta Downloads del usuario pi (/home/pi/Downloads).
+
+Actualmente la última versión es la 1.8.5.
+Dependiendo del tipo de procesador obtenemos el archivo:
+arduino-1.8.5-linuxarm.tar.xz o arduino-1.8.5-linux32.tar.xz
+Ambos se encuentran en la carpeta files.
+
+Descomprimimos el archivo en /usr/share para que quede a disposición de todos los usuarios
+  sudo tar -Jxvf /home/pi/Downloads/arduino-1.8.5-linuxarm.tar.xz -C /usr/share
+  sudo tar -Jxvf /home/pi/Downloads/arduino-1.8.5-linux32.tar.xz -C /usr/share
+Ejecutar el script install con permisos de root:
+  sudo /usr/share/arduino-1.8.5/install.sh
+Indica que está añadiendo un enlace al escritorio y trabajando en las asociaciones de archivos.
+Tras un rato finaliza. Tenemos un nuevo icono en Menú/Programming/Arduino IDE y en el escritorio.
+
+En home del usuario pi se ha creado la carpeta Arduino/libraries donde se guardarán las librerías
+comunes.
+
+Después de reiniciar, ya tenemos asociadas las extensiones con la aplicación.
+
+

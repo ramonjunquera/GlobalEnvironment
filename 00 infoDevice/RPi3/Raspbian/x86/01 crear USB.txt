@@ -1,0 +1,12 @@
+La imagen corresponde con el CD de instalación de Raspbian (32bits) para 
+procesadores x86.
+
+Si queremos crear un USB bootable, utilizaremos Rufus con los siguientes parámetros:
+Partition scheme: MBR partition scheme for BIOS or UEFI
+File system: FAT32
+
+Para una instalación local seleccionamos Graphical install.
+
+Antes de hacer una instalación local es conveniente cargarlo sin hacer modificaciones
+en el disco duro para comprobar compatibilidad. Sobre todo de comunicaciones:
+wifi y red.

@@ -1,0 +1,43 @@
+Resistencias asociadas a leds
+
+LED significa Light Emiting Diode. Son diodos que se iluminan cuando pasa la electricidad.
+Un led tiene polaridad. Si se conecta con la polaridad invertida puede quemarse.
+Sus conexiones se diferencian para poder conectar siempre correctamente.
+La pata más larga es el ánodo, o pata positiva. Siempre se conecta a la fuente de alimentación o pin.
+La pata más corta es el cátodo, o pata negativa. Siempre se conecta a tierra (GND).
+Si aplicamos a un led más voltaje del que soporta, se quemará.
+
+El rango de intensidad adecuado para el correcto funcionamiento de un led es de 5 a 20mA.
+Para que un led se ilumine bien, sin llegar al límite, se considera que necesita 15mA (0.015A).
+Suponemos que utilizamos placas Arduino que trabajan con una diferencia de potencial (voltaje) de 5V.
+El led consume unos 2V, así que necesitamos una resistencia que consuma los otros 3.
+Puesto que V=I*R (Voltaje = Intensidad * Resistencia)
+Deducimos que R=V/I=3V/0.015A=200 ohmios.
+Si aumentamos la resistencia en un 10% (por seguridad) para asegurarnos que nunca llegaremos al límite máximo
+tenemos que necesitamos que un led siempre tenga asociada una resistencia de 220 ohmios.
+Recalcamos que esto debe ocurrir cuando se trabaja con 5V.
+Distinguimos una resistencia de 220 ohmios porque tiene las siguientes bandas:
+  - Banda 1 = roja = 2
+  - Banda 2 = roja = 2
+  - Banda 3 = negra = 0
+  - Banda 4 = negra = multiplicador *1
+  - Banda 5 = marrón = tolerancia +-1%
+Para que la resistencia haga su trabajo de reducción de voltaje debemos encadenar los elementos de la siguiente manera:
+  - Pin o fuente de alimentación (polo positivo)
+  - Resistencia de 220 ohmios
+  - Ánodo (pata larga) del led
+  - Cátodo (pata corta) del led
+  - Tierra (GND o polo negativo)
+ Si queremos ser exactos, no todos los leds consumen el mismo voltaje. Depende del color. Esta es la tabla correcta:
+    1.7V : rojo de bajo brillo
+    1.9V : rojo de alto brillo, alta eficacia y baja corriente
+    2.0V : naranja y amarillo
+    2.1V : verde
+    3.4V : blanco brilante, verde brillante y azul
+    4.6V : azul brillante y leds especializados
+El led integrado en las placas Arduino ya tiene tambien en placa su resistencia asociada.
+Esto quiere decir que es el único pin que tiene una resistencia interna y que está preparado para que se pueda conectar
+en él directamente un led.
+
+En las placas ESP el voltaje de trabajo es de 3.3V.
+Este voltaje es soportado perfectamente por un led sin necesidad de utilizar resistencias asociadas.

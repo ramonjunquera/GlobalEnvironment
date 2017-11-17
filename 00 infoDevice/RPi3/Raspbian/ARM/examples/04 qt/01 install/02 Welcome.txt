@@ -1,0 +1,21 @@
+Desactivar ventana de inicio
+
+Si estamos utilizando xrdp para tomar el control remoto del dispositivo
+nos podemos encontrar que al abrir la aplicación se carga la barra lateral
+pero al abrir la ventana de inicio (Welcome) en la que se presenta la 
+posibilidad de crear o cargar un proyecto, la aplicación se cierra.
+
+Esto es debido a que la ventana de Welcome usa OpenGL que no está soportado
+por X forwarding.
+
+Para que esto no ocurra podemos impedir que se abra esta ventana con los
+siguientes parámetros en su ejecución:
+  qtcreator -noload Welcome
+
+Si queremos que este cambio sea permanente, necesitamos abrir la aplicación
+y seleccionar:
+Help/About Plugins.../Qt Creator/Welcome y desmarcarlo
+
+
+Cuando se quiere recuperar un proyecto existente, se debe buscar el archivo
+con extensión .pro

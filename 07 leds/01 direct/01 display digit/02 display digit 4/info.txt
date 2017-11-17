@@ -1,0 +1,35 @@
+Display de segmentos de led de un 4 dígitos
+
+Es similar a 4 displays de un dígito unidos.
+Todos los pines de los segmentos son comunes para cada dígito.
+El modelo utilizado SMA420564 es de cátodo común.
+Tenemos 4 pines adicionales para los cátodos de cada dígito (Cx).´
+Sólo se pude utilizar con multiplexación.
+No incluye resistencias.
+Esta es la distribución de pines:
+
+       12 11 10  9  8  7
+       C0  a  f C1 C2  b
+        ¦  ¦  ¦  ¦  ¦  ¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+        ¦  ¦  ¦  ¦  ¦  ¦
+        e  d  h  c  g C3
+        1  2  3  4  5  6
+
+Recordamos la distribución de segmentos:
+  
+        a
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  f ¦¦      ¦¦ b
+    ¦¦  g   ¦¦
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  e ¦¦      ¦¦ c
+    ¦¦      ¦¦
+      ¦¦¦¦¦¦     ¦¦ h
+        d
+
+

@@ -1,0 +1,4 @@
+Las placas ESP tienen más memoria que las Arduino.
+El tamaño de memoria de variables sigue siendo un problema, pero menor.
+Antes que utilizar técnicas como la de PROGMEM es mucho más útil y versátil
+hacer uso de la memoria de archivos (SPIFFS).

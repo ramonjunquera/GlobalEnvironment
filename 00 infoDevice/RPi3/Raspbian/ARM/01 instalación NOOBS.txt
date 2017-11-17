@@ -1,0 +1,36 @@
+Preparación de una SD para instalar sistema operativo en Raspberry Pi
+
+Necesitaremos una SD de al menos 4Gb.
+
+Descargaremos NOOBS desde:
+https://www.raspberrypi.org/downloads/noobs/
+
+NOOBS es una paquete para facilitar la instalación de un sistema operativo en una SD
+para que sea ejecutado por Raspberry Pi.
+
+El sistema por defecto es Raspbian. Un Linux basado en Debian customizado para Raspberry
+Tenemos dos versiones, la normal y la lite.
+Si tenemos intención de instalar Raspbian, podemos utilizar la versión normal, porque
+ya la incluye.
+Si estamos interesados en otro sistema, podríamos utilizar cualquiera de las dos versiones.
+Pero si podemos elegir, tomaremos la lite, sólo porque es más pequeña y tardará menos en
+descargar.
+
+La versión normal ocupa algo más de 1.1Gb.
+
+Una vez descargado el .zip, lo descomprimimos y encontraremos un archivo de texto con los 
+pasos a seguir para la instalación.
+
+Se sugiere utilizar una herramienta externa para formatear la SD a FAT32.
+Después se debe copiar todo lo que ha generado el archivo comprimido.
+
+Ya se puede introducir en la Raspberry, configurar y esperar a que finalice la instalación.
+
+Una vez que se ha terminado la instalación y la Raspberry arranca con normalidad, es conveniente
+actualizar las aplicaciones y librerías del sistema con estas dos órdenes:
+  sudo apt-get update
+  sudo apt-get upgrade
+
+Tras la actualización es posible que se pierda alguna configuración preestablecida.
+Por ejemplo el servicio de VNC en el arranque.
+Lo detectaremos porque tras el próximo arranque, el servicio VNC estará desactivado.

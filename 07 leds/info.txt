@@ -1,0 +1,15 @@
+Cálculo de resistencia asociada a un led.
+
+Un led consume unos 2V.
+Y para una buena iluminación (no máxima)necesita 15mA (=0.015A).
+
+Para 3.3V
+Necesitamos una resistencia que haga descender el valor del voltaje en 3.3-2=1.3V
+Puesto que V=I*R (Voltaje = Intensidad * Resistencia)
+Deducimos que R=V/I=1.3V/0.015A=87 ohmios.
+87 ohmios es una resistencia muy pequeña. Las más pequeñas que se utilizan son de
+100 ohmios.
+Además hemos dicho que hemos hecho los cálculo para valores altos, pero no máximos.
+Por lo tanto, lo que descubrimos es que con un voltaje de 3.3V NO necesitamos
+resistencias adjuntas a los led.
+Además se iluminarán un poco más que cuando utilizamos 5V.

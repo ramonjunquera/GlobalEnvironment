@@ -1,0 +1,31 @@
+﻿# RoJoSprite16 datatypes
+RoJoSprite16	KEYWORD1
+# RoJoSprite16 library methods
+width	KEYWORD2
+
+height	KEYWORD2
+
+clean	KEYWORD2
+
+setSize	KEYWORD2
+
+load	KEYWORD2
+
+getPixel	KEYWORD2
+
+copy	KEYWORD2
+
+setPixel	KEYWORD2
+
+save	KEYWORD2
+
+clear	KEYWORD2
+
+replaceColor	KEYWORD2
+
+resize	KEYWORD2
+
+line	KEYWORD2
+
+rect	KEYWORD2
+

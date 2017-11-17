@@ -1,0 +1,42 @@
+﻿Estructura de carpetas de librerías.
+
+ Para no tener que incluir todas las librerías
+comunes en cada uno de los proyectos 
+creamos la carpeta prg bajo el home del
+usuario Pi. 
+Así podremos referenciarlas sin necesidad de copiarlas.
+ Por ejemplo,
+todos los proyectos deberán tener como primera línea:
+
+#include <Arduino.h>
+
+Esta librería permite la compatibilidad con Arduino.
+
+
+La otra ventaja es que cuando actualicemos las librerías, quedarán actualizadas
+
+para todos los proyectos que las utilizan.
+
+
+Inconvenientes.
+Es necesario indicar al compilador que busque en esa carpeta las
+ librerías que
+no encuentre. Para ello añadimos la directiva -I con el path,
+ quedando la línea
+de llamada al Build:
+
+g++ -Wall -std=c++11 -o "%e" "%f" -lbcm2835 -lpigpio -lrt -lwiringPi -pthread -I"/home/pi/prg/"
+
+Los parámetros -l podrían ser eliminados si no se utilizan.
+
+
+Para que la ejecución se haga con permisos de root, la línea del run quedaría:
+
+sudo "./%e"
+
+
+Para hacer uso de las comunicaciones I2C y SPI es necesario activarlos desde el
+panel de
+ control de la Raspberry:
+
+menu/Preferences/Raspberry Pi Configuration/Interfaces/

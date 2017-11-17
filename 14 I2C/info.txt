@@ -1,0 +1,9 @@
+Recordemos los pines I2C de varios dispositivos:
+
+Dispositivo  SCL SDA
+------------ --- ---
+Arduino Mega  21  20
+Arduino UNO   A5  A4
+Arduino Nano  A5  A4
+ESP8266       D1  D2
+ESP32         22  21

@@ -1,0 +1,9 @@
+Librería IRremote
+
+En la siguiente serie de ejercicios utilizaremos la librería IRremote.h que nos facilitará la detección 
+y decodificación de las señales generadas por la mayoría de mandos a distancia.
+  
+La librería pertenecen a la colección de librerías disponibles a partir del IDE 1.6.5.
+Su nombre es "IRremote by shirriff v2.2.3".
+Para instalarla, seleccionamos Programa/Include Library/Manage Libraries...
+En el cuadro de texto de búsqueda podemos escribir el nombre de la librería y aparecerá para ser instalada.

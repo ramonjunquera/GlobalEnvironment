@@ -1,0 +1,40 @@
+Autor Ramón Junquera
+Tema Receptor AX-1838HS
+Objetivo Funcionamiento de un receptor de infrarrojos AX-1838HS
+Material adicional breadboard, receptor de infrarrojos modelo AX-1838HS, led infrarrojo, cables,
+  pulsador, Arduino UNO y Arduino Nano.
+
+Descripción
+En el ejercicio anterior hemos descubierto que el sensor cambia a estado bajo al pin digital al que está
+conectada su pata de señal, durante un instante, cada vez que encuentra un incremento de intensidad de
+luz infrarroja.
+
+En este ejercicio intentaremos calcular el mínimo tiempo necesario que se debe mantener encendido el
+led IR emisor para que el receptor capte la señal.
+
+Para ello utilizaremos dos placas Arduino distintas, para que no se efecten entre sí. Sólo compartirán
+la breadboard.
+
+El Arduino Nano gestionará la recepción.
+Basado en interrupciones, cuando detecte una señal, cambiará el estado del led integrado (13). Así
+distinguiremos viauslmente que se ha recibido algo.
+
+El Arduino UNO gestionará el envío.
+Cuando se detecte una pulsación del interruptor, se encenderá el led durante un tiempo determinado,
+se apagará el led, se esperará un momento para evitar el efecto rebote, se esperará a que se suelte 
+el interruptor y se esperará otro momento para evitar el efecto rebote de soltado.
+
+Para evitar resistencias en el led emisor, lo conectaremos al pin 13, que ya tiene una resistencia integrada.
+
+Para el interruptor utilizaremos las resistencias de pullup integradas en la placa Arduino.
+
+En la práctica, y después de muchas pruebas, comprobamos que el tiempo del pulso se debe contar en milisegundos
+y no en microsegundos.
+Con un tiempo de pulso de 200ms (2 décimas de segundo) nos aseguramos en más de un 90% de los casos que la
+señal enviada es recibida.
+
+Podemos cambiar este tiempo en ambos lados para comprobar su fiablidad.
+
+Resultado
+Al pulsar el interruptor se genera un pulso de luz IR que es recibido y detectado por el sensor, que cambia
+el estado del led integrado.

@@ -1,0 +1,4 @@
+Cómo implementar las funciones de zip & unzip en el XArchiver:
+
+sudo apt-get install zip unzip
+

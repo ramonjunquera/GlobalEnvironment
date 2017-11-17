@@ -1,0 +1,39 @@
+Display de segmentos de led de un dígito
+
+Un display de un digito es un componente que agrupa 8 pequeños leds dispuestos
+de tal manera que puedan formar todos los números.
+Tiene 5 patas superiores y 5 inferiores.
+La pata central, tanto superior como inferior, es la misma. Es la pata común.
+Esta pata puede ser ánodo o cátodo.
+En nuestro caso, utilizaremos un modelo SMA42056 que es de cátodo común y de
+leds rojos.
+Las otras 8 patas irán conectadas a pines digitales que serán los que proporcionen
+la alimentación.
+Por lo tanto, necesitaremos configurar 8 pines digitales de salida en la placa Arduino.
+Cada uno de los segmentos de un dígito tiene un nombre determinado por una letra.
+  
+        a
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  f ¦¦      ¦¦ b
+    ¦¦  g   ¦¦
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  e ¦¦      ¦¦ c
+    ¦¦      ¦¦
+      ¦¦¦¦¦¦     ¦¦ h
+        d
+  
+La distribución de los pines es la siguiente:
+  
+  g f - a b
+  ¦ ¦ ¦ ¦ ¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦ ¦ ¦ ¦ ¦
+  e d - c h
+  
+El display no tiene resistencias incluidas. Tendremos que ponarlas nosotros.

@@ -1,0 +1,56 @@
+Preparación de una SD para instalar Windows 10 IoT Core como sistema operativo en Raspberry Pi
+
+Podemos instalar el sistema operativo a través de NOOBS.
+Para ello necesitaremos una SD de 8Gb.
+La razón es que NOOBS permanece (y no se elimina) tras la instalación del sistema operativo.
+Y Windows 10 IoT necesita casi 4Gb para él sólo.
+
+También podemos descargar directamente la imagen desde Microsoft desde:
+https://developer.microsoft.com/en-us/windows/iot/getstarted
+
+La ventaja de hacerlo así es que NOOBS no ocupa espacion en una partición de la SD y
+disponemos del total del espacio de la SD.
+En este caso podríamos utilizar una SD de 4Gb.
+
+Microsoft recomienda que la SD utilizada sea al menos de clase 10.
+He probado con varias clase 4 y también funcionan correctamente.
+Es posible que con las clase 10 arranque más rápido.
+
+Tenemos dos versiones distintas:
+1. Windows 10 IoT Core
+2. Windows 10 IoT Core Insider Preview
+
+La segunda es más avanzada. Aun beta. Para utilizarla hay que darse de alta en Microsoft
+como beta tester.
+Utilizaremos la primera.
+
+El sistema operativo no permite hacer demasiado desde la propia Raspberry.
+Se necesita la aplicación "Windows 10 IoT Core Dashboard" en el PC para gestionarla.
+Esta aplicación sólo es compatible con Windows 10.
+Siguiendo las intrucciones de la web, descargamos "Windows 10 IoT Core Dashboard".
+Obtendremos un archivo llamado setup.exe
+
+Introducimos la tarjeta SD.
+Ejecutamos "Windows 10 IoT Core Dashboard" (setup.exe)
+Pulsamos el botón de instalar y descargacasi 60Mb de Internet.
+Seleccionamos la opción de "Configurar un nuevo dispositivo"
+Damos una contraseña para el administrador
+Aceptamos los términos de licencia
+Descargamos e instalamos el sistema operativo en la SD
+
+Si insertamos la SD en la Raspberry, arrancará y será detectada por "Windows 10 IoT Core Dashboard"
+
+Si conectamos teclado, ratón y display podríamos configurar las comunicaciones.
+
+Es muy importante que la fuente de alimentación sea lo suficientemente potente.
+Si no lo es, Raspberry errancará, pero cuando necesite energía para conectividad, se quedará
+bloqueada.
+
+Una vez terminado, cuando queremos conectarnos a la Raspberry por web se nos piden las credenciales
+Por defecto se utilizan las siguientes:
+  username: Administrator
+  password: la que se ha definido en la configuración inicial
+
+
+
+

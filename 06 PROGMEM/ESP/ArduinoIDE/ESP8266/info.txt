@@ -1,0 +1,5 @@
+Comportamiento de PROGMEM en placas ESP8266.
+
+- Se acepta el uso del comando PROGMEM sólo en datos definidos en archivos externos,
+  pero produce fallos en tiempo de ejecución que impiden su lectura. Por lo tanto
+  NO se puede utilizar PROGMEM con esta familia de microprocesadores.

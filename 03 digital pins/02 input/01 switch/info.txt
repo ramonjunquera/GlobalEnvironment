@@ -1,0 +1,64 @@
+Interruptores de pulsador
+
+Un interruptor es un elemento que permite conectar o desconectar un circuito eléctrico.
+Habitualmente utilizaremos interruptores de 4 patas para pincharlos en una breadboard.
+La forma es similar a:
+  1 2
+  ! !
+  3 4
+
+Las patas 1 y 3 pertenecen al mismo extremo. Están unidas entre sí. Lo mismo ocurre con
+las patas 2 y 4.
+El extremo 1-3 (izquierdo) no está unido al 2-4 (derecho). Esto sólo ocurre cuando se
+pulsa el botón del interruptor.
+
+Si ponemos en contacto directo el pin de alimentación con el de tierra conseguiremos un
+cortocircuito y la placa se quemará o reseteará.
+Para evitar que esto ocurra necesitamos incluir un elemento que tenga algún consumo y
+reduzca el voltaje de la alimentación hasta prácticamente 0 (tierra).
+Lo más normal es que este elemento sea una resistencia.
+Cuanto mayor sea el valor de la resistencia más próximo estaremos del voltaje 0.
+Habitualmente se usan resistencias de 10 Kohmios.
+
+Cuando tenemos un circuito como este:
+  VCC - resistencia - pin entrada
+El pin de entrada detectará el valor HIGH.
+En los siguientes ejemplos:
+  GND - pin entrada
+  GND - resistencia - pin entrada
+El pin de entrada detectará el valor LOW
+
+Pero si incluimos un interruptor que esté desconectado tendremos:
+VCC - resistencia - interruptor - pin entrada
+GND - interruptor - pin entrada
+El pin de entrada estará conectado a nada y por lo tanto su valor no quedará determinado.
+Los valores de lectura serán aleatorios.
+
+No podemos mantener la incertidumbre, que sólo se aclara cuando se pulsa el interruptor.
+En el caso que no esté pulsado no sabremos distinguirlo.
+
+Para que esto no ocurra tenemos que forzar a que el pin de entrada tenga una señal
+definida en todo momento (por defecto) y cuando se pulse el interruptor, cambie su estado.
+Utilizamos los ejemplo expuesto anteriormente y completamos los circuitos:
+  1) VCC - resistencia - pin entrada - interruptor - GND
+  2) GND - resistencia - pin entrada - interruptor - VCC
+
+En el caso 1 la resistencia mantiene al pin de entrada en estado HIGH, hasta que se pulsa
+el interruptor que lo conecta directamente con tierra y pasa a estado LOW.
+La resistencia impide que se forme un cortocircuito.
+A esta resistencia la llamamos de pullup.
+
+En el caso 2 el pin de entrada está conectado con tierra a través de una resistencia, por lo
+tanto tendrá por defecto un estado LOW. Cuando se pulse el interruptor se conectará 
+directamente con VCC y pasará a estado HIGH. La resistencia impide que se forme el 
+cortocircuito.
+A esta resistencia la llamamos pulldown.
+
+Todas las placas tienen incluidas resistencias para sus pines digitales que pueden activarse
+o desactivarse por software.
+Las placas Arduino tienen resistencias de pullup para todos sus pines digitales.
+Las placas ESP tienen resistencias pullup y pulldown para la mayoría de sus pines digitales.
+
+Para estandarizar los desarrollos y guardar el máximo de compatibilidad, se intentará utilizar
+sólo las resistencias integradas de pullup.
+

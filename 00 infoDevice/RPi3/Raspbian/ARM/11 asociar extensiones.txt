@@ -1,0 +1,22 @@
+Cómo asociar una extensión a una aplicación
+
+Abrimos el explorador de archivos
+Seleccionamos un archivo que tenga la extensión que nos interesa asociar
+Hacemos click con el botón derecho
+Seleccionamos "Open With..."
+Si no es ninguna de las aplicaciones estándar, seleccionaremos la solapa "Custom Command Line"
+En el campo "Command line to execute" seleccionamos la aplicación que nos interese, por ejemplo:
+  /usr/share/fritzing-0.9.3b.linux.i386/Fritzing
+Y le añadimos un %f al final separado por un espacio. Quedando:
+  /usr/share/fritzing-0.9.3b.linux.i386/Fritzing %f
+En campo de abajo le ponemos un nombre a la aplicación (Ej: Fritzing).
+Y por último activamos el check de "Set selected application as default action for this file type"
+  para no tener que repetirlo.
+Pulsamos el botón Ok para finalizar.
+
+La referencia queda guardada en /home/pi/.local/share/applications
+Y podemos editarla o borrarla.
+
+Nota:
+No siempre funcionan la asociación cuando se abren archivos en unidades remotas.
+En local nunca hay problema.

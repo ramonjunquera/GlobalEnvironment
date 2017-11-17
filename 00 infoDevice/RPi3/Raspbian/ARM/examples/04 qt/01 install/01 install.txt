@@ -1,0 +1,16 @@
+Cómo instalar el entorno gráfico de desarrollo QT
+
+La página oficial es:
+https://www.qt.io/ide/
+
+Es conveniente tener actualizado el sistema.
+
+A fecha actual (1-abr-2017), la última versión es la 5.
+
+Instalamos los dos paquetes necesarios:
+  sudo apt-get install qt5-default
+  sudo apt-get install qtcreator
+
+Esto creará un nuevo icono en la sección de progración.
+Pero también puede llamarse desde la línea de comandos con:
+  qtcreator

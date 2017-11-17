@@ -1,0 +1,20 @@
+Ejemplo de lectura de pines digitales
+
+La librería bcn2835 no dispone de interrupciones hardware que podamos utilizar
+para llamar a una función ante un cambio de estado.
+por lo tanto, el único método que nos queda es el polling.
+
+En el siguiente ejemplo utilizaremos un timer para que cada décima de segundo
+consulte el estado del pin al que está conectado un interruptor.
+
+El pin se ha configurado como de entrada con resistencias de pullup.
+Eso quiere decir que si no se pulsa el interruptor obtendremos el estado HIGH.
+Cuando se pulsa el interruptor, se conecta el pin con GND, resultado el estado LOW.
+Por lo tanto, intercambiaremos los resultados de la lectura para que nos coincida con
+el estado de pulsación del interruptor: HIGH=pulsado, LOW=no pulsado.
+
+Estos datos los reflejaremos gráficamente en un botón checkable al que le aplicaremos
+el mismo estado que el interruptor real.
+
+También cambiaremos la imagen del formulario cuando se detente una pulsación: un cambio
+de estado de no pulsado a pulsado.

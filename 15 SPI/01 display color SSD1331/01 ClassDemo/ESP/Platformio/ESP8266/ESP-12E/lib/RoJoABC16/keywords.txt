@@ -1,0 +1,10 @@
+﻿# RoJoABC16 datatypes
+RoJoABC16	KEYWORD1
+# RoJoABC16 library methods
+load	KEYWORD2
+
+close	KEYWORD2
+
+print	KEYWORD2
+
+

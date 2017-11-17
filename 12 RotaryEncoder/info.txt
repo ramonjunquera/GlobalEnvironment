@@ -1,0 +1,213 @@
+Autor: Ramón Junquera
+Tema: Rotary encoder
+Objetivo: Descripción y uso básico
+Descripción:
+Un rotary encoder, shaft encoder o codificador rotativo tiene un aspecto similar a un potenciómetro, pero su funcionamiento
+es distinto.
+- Un potenciómetro genera una salida analógica. El encoder genera estados con información de la dirección de giro.
+- Un potenciómetro tiene un tope mínimo y máximo de giro. Un encoder no tiene limitaciones de giro.
+
+Un encoder se caracteriza por el número de pasos necesarios para hacer un giro completo.
+Cuantos más tenga, más sensible será al giro (y más caro)
+El número de pasos por vuelta no influye en su funcionamiento.
+
+Tenemos tres pines para controlar los estados de los pasos.
+Un pin común y dos pines de lectura que llamaremos A y B
+Habitualmente el pin común suele ser el del medio.
+Según vayamos saltando de un paso a otro, los pines de lectura se conectarán o desconectarán del pin común.
+Los pines de lectura deben tener resistencias que los mantengan en un estado definido cuando no estén en conexión con el
+pin común.
+
+Para simplificar el cirtuito se suelen utilizar las resistencias internas de pullup.
+Eso quiere decir que el pin común se conectará a GND para que al contacto con un pin de lectura pase de estado HIGH a LOW.
+
+Cuando el encoder está en reposo (en el final de un paso), ambos pines de lectura están desconectados del común y se
+encuentran en estado HIGH.
+Cuando lo giramos para saltar al siguiente paso, ocurre lo siguiente:
+- El pin A se conecta con el pin común y pasa a estado LOW
+- El pin B también pasa a estado LOW
+- El pin A vuelve a estado HIGH
+- El pin B también vuelve a estado HIGH y volvemos a recuperar el estado inicial de reposo.
+
+  Estado  pinA pinB
+  ------- ---- ----
+  reposo  HIGH HIGH
+  girando LOW  HIGH
+  girando LOW  LOW
+  girando HIGH LOW
+  reposo  HIGH HIGH
+
+Cuando se gira en sentido contrario la secuencia es a la inversa:
+
+  Estado  pinA pinB
+  ------- ---- ----
+  reposo  HIGH HIGH
+  girando HIGH LOW
+  girando LOW  LOW
+  girando LOW  HIGH
+  reposo  HIGH HIGH
+
+El funcionamiento no tiene más explicaciones.
+Estamos ante dos interruptores normales que dependiendo de en qué orden aparezcan sus estados podremos deducir si el giro
+es horario o antihorario.
+
+El verdadero problema es el siguiente...
+Como todos los interruptores físicos, están afectados por el famoso efecto rebote (bounce).
+Cuando los polos del interruptor se aproximan mucho, pero sin tocarse, es posible que salte una pequeña chispa que permita
+que la electricidad pase por un instante.
+Lo que nosotros detectaremos es que el interruptor se ha conectado y a continuación se ha desconectado.
+
+Con los interruptores normales utilizábamos como técnica de debounce una demora.
+Cuando se detectaba que el interruptor había cerrado el circuito, no teníamos en cuenta las siguientes lecturas de estado
+durante unos milisegundos para no desvirtuar el valor leido.
+
+Utilizar la misma técnica en este caso eso bastante complicado, porque el encoder se puede hacer girar más o menos rápido
+y pretendemos que funcione siempre.
+Además sabemos que para pasar de un fin de paso a otro hay usa secuencia de estado que se debe cumplir.
+
+Debemos encontrar una solución que cumpla los siguientes requisitos:
+- Debe funcionar a cualquier velocidad de giro.
+- Se deben poder utilizar interrupciones de hardware para descargar el procesador y simplificar la programación.
+- Debe funcionar también sin interrupciones. Por polling (consulta continua).
+
+Si utilizamos interrupciones, recordar que las placas Arduino normales (UNO o Nano) sólo tienen 2. Si necesitamos controlar
+más encoders tendríamos que pasar a una MEGA.
+El pin 2 está asociado a la interrupción 0, y el pin 3 a la interrupción 1.
+Por lo tanto será en esos pines y no en otros donde conectemos los pines de lectura del encoder.
+
+Las interrupciones saltarán ante cualquier cambio (flanco de subida o de bajada).
+Las interrupciones de ambos pines apuntarán a la misma función que será la encargada de procesar todo.
+
+En la función loop, lo único que hacemos es comprobar si el valor que tiene el encoder ha variado desde la última vez, y
+si es así, se envía el valor por el puerto serie.
+También se gestiona la pulsación del interruptor del encoder, haciendo que se resetee el valor.
+
+Así que tenemos una función que se encarga de gestionar de manera independiente el valor del encoder.
+Debe aumentar en una unidad el valor cuando detecte que se ha recorrido un paso en sentido horario, y reducirla si se hace
+en sentido antihorario.
+
+La función siempre toma nota del estado de los pines del encoder.
+Para facilitar su gestión guarda ambos como bits en una sola variable de tipo byte.
+
+Nosotros sabemos que la secuencia que se debe seguir para saltar de un psao a otro en sentido horario es:
+
+  Estado  pinA pinB
+  ------- ---- ----
+  reposo  HIGH HIGH
+  girando LOW  HIGH
+  girando LOW  LOW
+  girando HIGH LOW
+  reposo  HIGH HIGH
+
+Si sustituimos HIGH por 1 y LOW por 2, y mostramos los valores en binario y decimal, quedaría:
+
+  Estado  pinA pinB BIN DEC
+  ------- ---- ---- --- ---
+  reposo  HIGH HIGH  11  3
+  girando LOW  HIGH  01  1
+  girando LOW  LOW   00  0
+  girando HIGH LOW   10  2
+  reposo  HIGH HIGH  11  3
+
+Por lo tanto la secuencia es 3,1,0,2,3
+Sabiendo que 3 es el estado de reposo (el final o principio de un paso), no lo tendremos en cuenta.
+Podemos decir que si llegamos al final de un paso (estado 3) y hemos recorrido los estados 1,0,2, se habrá completado un
+paso completo en sentido horario.
+
+Si hacemos los cálculos de los estados en sentido antihorario aparecerán al revés: 2,0,1
+
+Lo que haremos será anotar los distintos estados por los que pasan los pines.
+Así cuando detectemos que hemos llegado a un estado 3 (fin de paso) podremos comprobar si se encuentran en el orden
+correcto.
+
+Pero hay reglas adicionales.
+Los estados a utilizar son 0, 1 y 2. El 3 es un estado que nunca se guarda.
+Cada uno de estos 3 estados tiene su significado. Pero necesitamos un nuevo estado que signifique "vacío".
+Porque inicialmente no tendremos ningún estado anterior!
+Este estado "vacío" será el siguiente valor disponible... el 3.
+
+Tenemos como variable global el array de byte pinStatus donde guardaremos los distintos estados que recorren
+los pines del encoder. Inicialmente todos sus valores son 3 (=vacío).
+Además tiene la carácterística de volatile para que no haya problemas en actualizar su valor desde la rutina de
+interrupción.
+
+Recuperamos el punto en el que lo primero que hace la función de interrupción es anotar el estado de los pines actuales en
+la variable currentPinStatus.
+
+Si este valor es 3 (=fin de paso), comprobaremos si los 3 estados que tenemos guardados coinciden con alguna de las
+secuencias que reconocemos como válidas (102 o 201). Si es así aumentaremos o disminuiremos el valor del encoder. Y para
+no volver a utilizar la misma secuencia, indicamos el que valor del estado actual de los pines del encoder es 3 (=vacío).
+Más adelante nos encargaremos de que este valor borre el array
+
+Puesto que tenemos que comparar el array de estados dos veces, en vez de hacer dos if llenos de &&, componemos una variable
+con los distintos bits de cada estado. estado0 + estado1 + estado2.
+Como cada estado puede tener 4 valores distintos, multiplicamos cada nivel por potencias de 4.
+Esto nos permite que las dos comparaciones sean simples.
+
+La función continúa con un bucle fijo que recorre las 3 posiciones del array de estados.
+Lo primero que hace es comprobar si el valor del estado actual está vacío (3). Si es así, no comprueba nada más.
+Directamente escribe el valor
+
+Si el estado actual NO es vacío, comprobaremos si el estado procesado está vacío. Si lo está, guardaremos el estado actual
+en esa posición y cambiaremos el valor del estado actual a vacío (3) para que se encriba en los siguientes estados del
+array (si los hay).
+
+Finalmente si el estado procesado no está vacío, comprobaremos si es igual al estado que queremos escribir (el actual).
+Si lo es, cambiaremos el valor del estado actual a vacío para que se escriba en los siguientes estados del array.
+
+Qué conseguimos con todas estas reglas?
+Que si se produce el efecto rebote, seamos capaces de detectarlo y volver atrás hasta la situación anterior al rebote.
+Siempre mantendremos los estados recorridos en orden y los rebotes no efectarán.
+
+Otra de las ventajas es que no se utiliza en ningún momento demoras. El programa no tiene tiempos muertos.
+
+Para el desarrollo del proyecto se ha utilizado dos rotary encoders distintos:
+  
+Rotary encoder modelo estándar.
+- Tiene 20 pasos por vuelta.
+- Es uno de los más simples.
+- Viene con unas patas más gruesas que los pines que funcionan como anclajes.
+- Si lo que pretendemos en pincharlo en la protoboard, tendremos que doblar los anclajes hacia arriba para que los pines
+  entren bien.
+- La sujección que proporcionan los pines no es excelente, pero suficiente como para probar el funcionamiento.
+
+Rotary encoder modelo Keyes KY-040.
+- Tiene 30 pasos por vuelta.
+- Este modelo NO se puede pinchar directamente a la protoboard, porque tiene los pines en horizontal.
+- Lo primero que llama la atención es el etiquetado de los pines, que es incorrecto.
+- La traducción correcta es:
+
+  dice debe decir
+  ---- ----------
+  CLK  pin A
+  DT   pin B 
+  SW   SWITCH
+  +    5V
+  GND  GND
+
+- Cuando se pulsa el interruptor se unen los pines SWITCH y GND.
+- Cuando se cambia de paso, se unen los pines A y/o B con GND.
+
+Este modelo es bastante particular.
+Para empezar, los saltos de paso NO son completos. Relamente cada paso sólo corresponde a la mitad. Son medios pasos.
+Si en un estado de reposo tenemos que ambos pines están conectados con tierra, en el siguiente estado de reposo tendremos
+que ninguno de los pines está conectado a tierra.
+Los valores del los pines en dos estados contíguos son 3 y 0. Y se van alternando.
+Sí se conserva que al saltar de un paso a otro se pasan por los estados intermedios: 3,1,0,2,3,...
+Gracias a esto, el desarrollo es perfectamente válido. Pero hay que tener en cuenta que sólo contará una variación de paso
+al saltar 2 en la misma dirección.
+Si le miramos la placa del encoder por detrás comprobaremos que tiene un par de resistencias de 10 Kohmios que unen el pin
+5V con los pines de lectura, funcionando como resistencias de pullpup.
+Podríamos pensar que no es necesario, puesto que la aplicación ya utiliza las resistencias internas de pullpup, pero no.
+Es obligatorio conectar los 5V a éste pin. Sino no tendremos una lectura correcta!.
+No es necesario modificar la clase cambiando los INPUT_PULLUP por INPUT. Funciona correctamente como está.
+Por último, comentar que aunque la placa tiene la ubicación para incluir una tercera resistencia de pullup para el
+interruptor, parece que finalmente no se puso, porque en su lugar hay un hueco. Sería más barato.
+
+Para finalizar hablaremos de ruedas, ruletas, capuchones, tiradores o knobs.
+Es muy conveniente utilizar estas ruletas, porque facilitan el agarre del eje del encoder. Además se consigue tener un
+movimiento más preciso.
+En la mayoría de encoders que se venden por Internet no se incluyen las ruletas, pero no es un problema porque se pueden
+comprar por separado.
+La mayoría de ejes tienen el mismo diámetro: 6mm.
+Las de aluminio (o metálicas) son más duraderas (y caras).

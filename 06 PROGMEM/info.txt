@@ -1,0 +1,44 @@
+Autor: Ramón Junquera
+Tema: PROGMEM. Definición de variables en memoria de programa
+Descripción:
+Algunas de las placas que utilizan en entorno de desarrollo de Arduino tienen una cantidad de
+memoria muy limitada. Por ejemplo Arduino UNO o Nano disponen de 32Kb.
+Esta memoria debe ser compartida entre:
+- El código del programa compartido
+- El valor de variables y constantes definidas
+- Las variables creadas en tiempo de ejecución
+El programa se guarda comenzando desde el principio de la memoria.
+
+El resto alberga la memoria de datos.
+El problema es que la memoria de datos suele estar limitada. No se puede usar toda la memoria
+que no usa el programa para datos.
+En Arduino UNO o Nano, la memoria de datos está limitada a 2Kb. Además cuando se utiliza más de
+1.5Kb comenzamos a tener problemas de estabilidad.
+
+Tenemos varias soluciones:
+- Utilizamos la memoria EEPROM. Recordemos que en Arduino UNO o Nano tenemos 1Kb de EEPROM que
+  se mantiene incluso sin alimentación. El problema es que deberíamos prepararla antes y el
+  número de ciclos de lectura-escritura es bastante limitado.
+- Utilizamos una tarjeta SD. El acceso es mucho más lento, pero aumentamos el límite de 
+  almacemaniento de 2Kb hasta 64Gb.
+- Utilizamos la memoria de programa para almacenar los datos.
+
+Esta última opción es la más utilizada, por comodidad.
+La memoria de programa contendrá la información de las constantes, ocupando más, pero dejando
+la misma memoria de variables que antes.
+Simplemente mejoramos la eficiencia de uso de la memoria.
+
+Se puede forzar al compilador a que almacene las esctructuras de datos en la memoria de programa
+incluyendo el comando PROGMEM junto con la definición de los datos.
+
+El funcionamiento de este comando tiene distinto comportamiento dependiendo de la placa en la
+que se aplica.
+
+Por otra parte, hay que tener en cuenta que los datos almacenados en memoria de programas no 
+pueden ser accedidos directamente. Siempre seben ser transferidos primero a la memoria de datos
+y una vez allí se podrán procesar.
+Si no utilizamos el comando PROGMEM, por defecto los datos quedan almacenados tanto en memoria
+de programa como en memoria de datos para ser utilizados.
+
+Los datos definidos en el programa principal no tienen porqué ser tratados de la misma manera
+que los definidos en archivos externos (includes).

@@ -1,0 +1,22 @@
+Descripción de los tipos de datos definidos por defecto en C++
+
+tipo     Nombre             bits min                                max
+-------- ------------------ ---- ---------------------------------- -----------------------------------
+int8_t   char                 8                        -128 (-2^7)                         127 (2^7-1)
+uint8_t  unsigned char        8                           0                                255 (2^8-1)
+int16_t  short               16                     -32,768 (-2^15)                     32,767 (2^15-1)
+uint16_t unsigned short      16                           0                             65,535 (2*16-1)
+int32_t                      32              -2,147,483,648 (-2^31)              2,147,483,647 (2^21-1)
+uint32_t unsigned int        32                           0                      4,294,967,295 (2^32-1)
+int64_t  long long           64  -9,223,372,036,854,775,808 (-2^63)  9,223,372,036,854,775,807 (2^63-1)
+uint64_t unsigned long long  64                           0         18,446,744,073,709,551,615 (2^64-1)
+         float               32                  1.5*10^-45                          3.4*10^38
+         double              64                 5.0*10^-324                         1.7*10^308
+         bool                 8                           0                                  1
+
+El tipo auto le asigna automáticamente el tipo a la variable cuado se le proporciona un valor
+Por ejemplo:
+  auto x=5
+Definiría la variable como int.
+
+
