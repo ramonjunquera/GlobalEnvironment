@@ -9,7 +9,7 @@
   como sistema de archivos.
   En ESP8266 se gestiona a través del objeto SPIFFS que se crea al incluir la 
   librería FS.h.
-  En ESP32 el objeto SPIFFS se crear al incluir la librería SPIFFS.h.
+  En ESP32 el objeto SPIFFS se crea al incluir la librería SPIFFS.h.
   Esta librería no ha sido creada de manera oficial hasta hace muy poco tiempo.
   
   El desarrollo actual es una modificación del ejemplo original.
