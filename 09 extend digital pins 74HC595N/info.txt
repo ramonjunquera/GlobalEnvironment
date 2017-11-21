@@ -43,7 +43,7 @@ activar al terminar.
 
 El chip no contempla la lectura (input) de los nuevos pines digitales, ni la escritura analógica.
 
-Si trabajamos con led, será una buena idea alimentar el chip con 3.3V para evitar el uso de
+Si trabajamos con leds, será una buena idea alimentar el chip con 3.3V para evitar el uso de
 resistencias.
 
 Los chips se pueden encadenar uno a otro. Para gestionar toda la cadena se seguirán utilizando
