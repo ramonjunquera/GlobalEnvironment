@@ -76,7 +76,6 @@ void loop()
       {
         //Leemos el byte recibido
         currentByte=client.read();
-        //Si el
         //Si el byte anterior era un código de control y el actual es el código
         //0x01=inicio de página...
         if(controlCode && currentByte==0x01)
@@ -88,7 +87,7 @@ void loop()
           controlCode=false;
           //El próximo pixel se dibujará en las coordenadas 0,0
           x=y=0;
-          //El próximo byte recibido será el priber byte de color
+          //El próximo byte recibido será el primer byte de color
           firstByte=true;
         }
         //Si el byte anterior no era un código de control pero el actual sí...
@@ -113,7 +112,7 @@ void loop()
           {
             //Anotamos el byte actual como byte bajo del color
             color=currentByte;
-            //El próximo byte será el añto
+            //El próximo byte será el alto
             firstByte=false;
           }
           else //Estamos procesando el segundo byte del color
