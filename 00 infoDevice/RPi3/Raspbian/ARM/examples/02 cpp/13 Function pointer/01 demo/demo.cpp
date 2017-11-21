@@ -12,7 +12,7 @@
  * par de parámetros enteros.
  * En el programa principal declararemos una variable de tipo puntero
  * de función, le asignaremos el puntero de la función que le
- * corresponde y a cantinuación llamaremos a la función a través del 
+ * corresponde y a continuación llamaremos a la función a través del 
  * nuevo puntero.
  */
  
@@ -27,7 +27,7 @@ void myFunction()
 
 int add(int a,int b)
 {
-	//Función que devuelve un entero y con 2 paraámetros enteros
+	//Función que devuelve un entero y con 2 parámetros enteros
 	return a+b;
 }
 
