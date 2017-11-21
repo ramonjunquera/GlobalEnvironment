@@ -1,33 +1,33 @@
-Autor: RamÛn Junquera
+Autor: Ram√≥n Junquera
 Tema: ArduCAM
 Objetivo: Transferir imagen en tiempo real por wifi
-Material adicional: 2x placa ESP32, ArduCAM-Mini-2MP, display SSD1331
-DescripciÛn:
-Utilizaremos dos placas ESP32 iguales. Una tendr· conectada la c·mara y otra
+Material: 2x placa ESP32, ArduCAM-Mini-2MP, display SSD1331
+Descripci√≥n:
+Utilizaremos dos placas ESP32 iguales. Una tendr√° conectada la c√°mara y otra
 el display.
-El dispositivo con el display har· de servidor.
-Crear· su propio punto de acceso y en Èl un servidor.
-No ser· un servidor web, porque no atiende comando html.
-Simplemente estar· preparado para recibir informaciÛn gr·fica que 
-representar· en tiempo real en el display.
-El dispositivo con la c·mara ser· el cliente.
-Una vez conectado al punto de acceso y al servidor se encargar· de transferir
-la informaciÛn gr·fica que consiga en tiempo real.
+El dispositivo con el display har√° de servidor.
+Crear√° su propio punto de acceso y en √©l un servidor.
+No ser√° un servidor web, porque no atiende comandos html.
+Simplemente estar√° preparado para recibir informaci√≥n gr√°fica que 
+representar√° en tiempo real en el display.
+El dispositivo con la c√°mara ser√° el cliente.
+Una vez conectado al punto de acceso y al servidor se encargar√° de transferir
+la informaci√≥n gr√°fica que consiga en tiempo real.
 
-La c·mara captura im·genes en la resoluciÛn m·s baja y sin comprimir, que
-almacena en un sprite con el mismo tamaÒo que el display.
-Cuando complrtar la captura y descargarla al sprite, envÌa su informaciÛn
+La c√°mara captura im√°genes en la resoluci√≥n m√°s baja y sin comprimir, que
+almacena en un sprite con el mismo tama√±o que el display.
+Al complertar la captura y descargarla al sprite, env√≠a su informaci√≥n
 al servidor byte a byte.
-Para evitar problemas de sincronizaciÛn, debemos indicar de alguna manera
-cu·ndo comienza el envÌo de una nueva imagen.
-Para ello decidimos que el byte 0xFF es el cÛdigo de control.
-Cuando el servidor reciba este car·cter sabr· que se le est· enviando una
+Para evitar problemas de sincronizaci√≥n, debemos indicar de alguna manera
+cu√°ndo comienza el env√≠o de una nueva imagen.
+Para ello decidimos que el byte 0xFF es el c√≥digo de control.
+Cuando el servidor reciba este car√°cter sabr√° que se le est√° enviando una
 orden especial.
-La cÛdigo de la orden se incluye en el siguiente byte.
-SÛlo necesitamos dos cÛdigos:
-0x00 - Se querÌa enviar realmente el byte 0xFF
-0x01 - SeÒal de inicio de imagen
+El c√≥digo de la orden se incluye en el siguiente byte.
+S√≥lo necesitamos dos c√≥digos:
+0x00 - Se quer√≠a enviar realmente el byte 0xFF
+0x01 - Se√±al de inicio de imagen
 
 Para el correcto funcionamiento, es importante que primero se inicie el 
-servidor y a continuaciÛn el cliente.
+servidor y a continuaci√≥n el cliente.
 La velocidad de refresco es de un frame cada dos o tres segundos (aprox.).
