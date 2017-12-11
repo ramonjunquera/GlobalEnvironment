@@ -12,7 +12,7 @@
     valores: el tiempo máximo de espera y el factor de incremento.
     El funcionamiento se basa en que cuando se recibe un mensaje de activa el sistema que hace 
     comprobación de nuevos mensajes con mayor frecuencia.
-    Si dejamos de recibir mensajes, la frecuancia decrece geométricamente con el factor
+    Si dejamos de recibir mensajes, la frecuencia decrece geométricamente con el factor
     indicado hasta alcanzar un el tiempo máximo.
     A modo informativo, enviamos por el puerto serie el valor del tiempo de espera
     actual en milisegundos.
