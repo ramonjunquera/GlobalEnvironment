@@ -1,47 +1,34 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20171205
+  Fecha: 20171221
   Tema: Librería para gestión de bots en Telegram
-  Objetivo: Sistema de suscripción por invitación
-  Material: placa ESP8266
+  Objetivo: Enviar una imagen al detectar movimiento
+  Material: placa ESP8266, ArduCAM-Mini-2MP, PIR sensor
   Descripción:
-    Basado en el ejemplo de suscripción.
-    Se ha incluido el sistema de comprobación de nuevos mensajes con tiempo variable.
-
-    En el ejemplo de suscripción, cualquiera podía suscribirse a un chat con el bot.
-    Depuraremos el sistema para que no sea público.
-
-    Cuando no existe el archivo de suscriptores, o está vacío, se permite una suscripción pública.
-    Sólo tiene que escribir alguien el comando /subscribe y será el primer suscriptor.
-    A partir de ese instante, las suscripciones no serán públicas.
-    Cuando alguien quiera suscribirse, un usuario suscrito deberá generar un código con el
-    comando /generate. Es un número aleatorio entre 1 y 65535.
-    Se podrá utilizar este código para suscribirse antes de que transcurra un minuto.
-    Se debe utilizar el comando /subscribe code
-    Si se introduce un código incorrecto, el código quedará anulado y tendrá que generarse uno de nuevo.
-    Si se introduce el código correcto, el usuario pasa a ser suscriptor y se informa a todos los
-    suscriptores que hay uno nuevo y por quién ha sido invitado (quién generó el código utilizado).
-    A un usuario no suscrito no se le devuelven mensajes.
-
-    Para eliminar una suscripción utilizamos el comando /unsubscribe.
-    Si el usuario eliminado era el último, se pasará a modo público.
-
-    Los suscriptores pueden controlar el led con los comandos /on, /off y /status.
-    Si un suscriptor envía cualquier texto que no es un comando, se enviará a todos los suscriptores.
- */
+    Utilizando los ejemplos anteriores para como base.
+    Crearemos un sistema de suscriptción segura.
+    Usamos el sistema de comprabación a intervalos variables.
+    Cuando el sensor detecte movimiento, automáticamente se enviará una foto en la 
+    resolución actual a todos los usuarios suscritos.
+  Nota:
+    Es posible que haya que desconectar el pin D4 para tranferir el programa. Después se 
+    puede volver a conectar al PIR.
+*/
 #include <Arduino.h>
 #include <ESP8266WiFi.h> //Librería para gestión de wifi
 #include <FS.h> //Librería para gestión de archivos
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
+#include "RoJoArduCAM.h" //Librería de gestión de la cámara
 
 //Definición de constantes globales
 const char ssid[]="xxx"; //Nombre del punto de acceso (SSID)
 const char password[]="xxx"; //Contraseña
 const String botToken="xxx"; //Token del bot
-const uint32_t checkingGap=1000; //Tiempo de espera en milisegundos para comprobación de nuevos mensajes
+const uint32_t checkingGap=1000; //Tiempo de espera en misisegundos para comprobación de nuevos mensajes
 const byte pinLed=LED_BUILTIN; //Pin del led integrado en placa
 const uint32_t maxWait=30000; //Tiempo máximo de espera = 30 segundos
 const float factorWait=1.2; //Factor de la progresión geométrica para calcular el siguiente tiempo de espera
+const byte pinPIR=D4; //Pin del sensor PIR
 String suscribersFile="/subscribers.txt"; //Nombre del archivo que guarda los suscriptores
 byte suscribersCount=0; //Número de suscriptores. Inicialmente ninguno
 
@@ -58,6 +45,12 @@ uint16_t subscriptionCode=0;
 String subscriptionCodeGenerator="";
 //Hora de caducidad del código de suscripción
 uint32_t subscriptionCodeTimeout=0;
+//Creamos el objeto de gestión de la cámara
+RoJoArduCAM camera;
+//Definimos pin CS
+const byte pinCS=D0;
+//Flag de deteccción de movimiento. Inicialmente no.
+bool movementDetected=false;
 
 bool chatInList(uint64_t chat_id)
 {
@@ -118,6 +111,46 @@ void broadcast(String text)
   //Cerramos el archivo
   f.close();
 }
+
+void broadcastPhoto(String filename)
+{
+  //Envia una imagen a todos los suscriptores
+
+  //Identificador de chat
+  uint64_t chat_id;
+  //Nombre del suscriptor
+  String from_name;
+  //Identificador de la imagen enviada. Inicialmente no existe
+  String file_id="";
+
+  //Enviaremos el mensaje a todos los suscriptores
+  //Abrimos el archivo de lista de suscriptores como sólo lectura
+  File f=SPIFFS.open(suscribersFile,"r");
+  //Mientras el archivo tenga algo que leer...
+  while(f.available())
+  {
+    //...leemos el identificador de chat
+    chat_id=f.parseInt();
+    //Leemos el nombre del suscriptor
+    from_name=f.readStringUntil('\n');
+    //Si no tenemos un identificador de imagen (si aun no hemos enviado la primera imagen)...
+    if(file_id.length()==0)
+    {
+      //Enviamos el mensaje con la imagen y tomamos nota del identificador de la imagen
+      //con más resolución
+      file_id=bot.sendPhotoLocal(chat_id,"/photo.jpg");
+    }
+    else //Ya hemos enviado la imagen...
+    {
+      //...no volveremos a hacerlo. Ahora sólo enviaremos su identificador
+      //Es mucho más rápido
+      bot.sendPhotoRemote(chat_id,file_id);
+    }
+  }
+  //Cerramos el archivo
+  f.close();
+}
+
 
 void subscribe(TelegramMessage *msg)
 {
@@ -246,15 +279,6 @@ void handleNewMessages()
   //Mientras haya mensaje...
   while(msg.text.length())
   {
-    if(msg.text=="/nolist")
-    {
-      //Eliminamos el archivo de suscriptores
-      SPIFFS.remove(suscribersFile);
-      //Ya no hay suscriptores
-      suscribersCount=0;
-      //Informamos
-      bot.sendMessage(msg.chat_id,"Suscriptores borrados");
-    }
     //Si no hay suscriptores...
     if(!suscribersCount)
     {
@@ -263,7 +287,7 @@ void handleNewMessages()
       {
         //Componemos el mensaje a enviar en una sola cadena (es más rápido)
         String message = "RoJo Telegram Bot library\n";
-        message += "Secure Subscription\n\n";
+        message += "Photo PIR\n\n";
         message += "/subscribe : Añadirse a la lista\n";
         //Enviamos el mensaje
         bot.sendMessage(msg.chat_id,message);
@@ -287,16 +311,14 @@ void handleNewMessages()
         //Si se trata del comando /start...
         if(msg.text=="/start")
         {
-          //Componemos el mensaje a enviar en una sola cadena (es más rápido)
           String message = "RoJo Telegram Bot library\n";
-          message += "Secure Subscription\n\n";
+          message += "Photo PIR\n\n";
+          message += "/photo : toma foto\n";
+          message += "/resX : resolución [0,8]\n";
           message += "/generate : Genera un código de suscripción\n";
           message += "/subscribe code : Añadirse a la lista\n";
           message += "/unsubscribe : Borrarse de la lista\n";
           message += "/list : Mostrar la lista de suscriptores\n";
-          message += "/on : Encender\n";
-          message += "/off : Apagar\n";
-          message += "/status : Mostrar estado actual\n";
           //Enviamos el mensaje
           bot.sendMessage(msg.chat_id,message);
         }
@@ -323,26 +345,50 @@ void handleNewMessages()
           //Solicitan la lista de suscriptores
           bot.sendMessage(msg.chat_id,"Suscriptores:"+list());
         }
-        else if(msg.text=="/on")
+        else if(msg.text=="/photo")
         {
-          //...encendemos el led
-          digitalWrite(pinLed,LOW);
-          //Informamos a todos
-          broadcast(msg.from_name + " ha encendido");
+          //...solicitamos que se haga la foto...
+          camera.takePhoto();
+          //...enviamos un mensaje de acción de "escribiendo"
+          bot.sendChatAction(msg.chat_id,0);
+          //Resolución de la imagen guardada
+          uint32_t resX,resY;
+          //...descargamos la foto a local...
+          //Como nombre de archivo sólo el nombre. Sin barra inicial
+          //La extensión la pone él
+          byte errorCode=camera.savePhoto("photo",&resX,&resY);
+          //Si hubo algún error...
+          if(errorCode)
+          {
+            //...informamos
+            bot.sendMessage(msg.chat_id,"Fallo al enviar. Error " + String(errorCode));
+          }
+          else //No hubo errores
+          {
+            //...enviamos un mensaje de acción de "enviado foto"
+            bot.sendChatAction(msg.chat_id,1);
+            //...enviamos la foto por Telegram
+            bot.sendPhotoLocal(msg.chat_id,"/photo.jpg");
+          }
         }
-        else if(msg.text=="/off")
+        //Si el comando tiene una longitud de 5...
+        else if(msg.text.length()==5)
         {
-          //...apagamos el led
-          digitalWrite(pinLed,HIGH);
-          //Informamos a todos
-          broadcast(msg.from_name + " ha apagado");
-        }
-        else if(msg.text=="/status")
-        {
-          //Obtenemos el texto del estado
-          String statusText = digitalRead(pinLed)?"Apagado":"Encendido";
-          //Enviamos mensaje informado del estado
-          bot.sendMessage(msg.chat_id,statusText);
+          //...si el comando comienza por /res...
+          if(msg.text.substring(0,4)=="/res")
+          {
+            //...si el último carácter es numérico...
+            String n=msg.text.substring(4);
+            if(n>="0" && n<="8")
+            {
+              //...obtenemos el valor del código de la resolución
+              byte res=n[0]-48;
+              //Aplicamos la resolución
+              camera.setResolution(res);
+              //Informamos a todos los suscriptores del cambio de resolución
+              broadcast(msg.from_name + " cambia resolución a " + n);
+            }
+          }
         }
         else //Si no es ningún comando reconocido...
         {
@@ -375,6 +421,9 @@ void handleNewMessages()
         }
       }
     }
+    
+    //Reseteamos el tiempo de espera
+    currentWait=startWait;
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
     msg=bot.getNextMessage();
@@ -416,9 +465,17 @@ byte getSuscribersCount()
   return answer;
 }
 
+void interruptPIR()
+{
+  //Función de gestión de interrupciones del PIR
+
+  //Se ha detectado movimiento
+  //Activamos el flag
+  movementDetected=true;
+}
+
 void setup()
 {
-  Serial.begin(115200);
   //Configuramos el pin del led como salida
   pinMode(pinLed,OUTPUT);
   //Fijamos el modo de conexión a un punto de acceso
@@ -434,15 +491,39 @@ void setup()
   {
     //Cambiaremos el estado del led
     digitalWrite(pinLed,!digitalRead(pinLed));
+    yield();
     delay(100);
   }
   //Hemos conseguido conectar
 
+  //Inicializamos la cámara con el pin CS conectado al D0
+  byte errorCode = camera.begin(pinCS);
+  //Si tenemos algún error en la inicialización...
+  if(errorCode)
+  {
+    //Hacemos parpadear el led, rápido y para siempre
+    while(1)
+    {
+      digitalWrite(pinLed,!digitalRead(pinLed));
+      delay(30);
+      yield();
+    };
+  }
+  //Hemos inicializado la cámara correctamente
+  //Por defecto arranca en modo jpg con la resolución 2 = 320x240
+
   //Nos aseguramos que el led esté apagado
   digitalWrite(pinLed,HIGH);
 
+  //Configuramos el pin del PIR como entrada
+  pinMode(pinPIR,INPUT);
+
   //Obtenemos el número de suscriptores
   suscribersCount=getSuscribersCount();
+
+  //Activamos las interrupciones para el pin del PIR
+  //Sólo para cuando se activa
+  attachInterrupt(pinPIR,interruptPIR,RISING);
 
   //Inicializamos la semilla de números aleatorios
   randomSeed(millis());
@@ -452,20 +533,59 @@ void loop()
 {
   //Procesa todos los nuevos mensajes
   handleNewMessages();
-  //Esperamos
-  delay(currentWait);
+  //Calculamos el tiempo máximo de espera
+  uint32_t maxTime=millis()+currentWait;
+  //Mientras no lleguemos al máximo tiempo de espera...
+  while(millis()<maxTime)
+  {
+    //Si se ha detectado movimiento...
+    if(movementDetected)
+    {
+      //Debemos tomar una foto y enviarla a todos los suscriptores
+      
+      //Tomamos la foto
+      camera.takePhoto();
+      //Esperamos hasta que la foto se haya tomado
+      while(!camera.photoIsReady()) { delay(100); }
+      //Resolución de la imagen guardada
+      uint32_t resX,resY;
+      //Descargamos la foto a local...
+      //Como nombre de archivo sólo el nombre. Sin barra inicial
+      //La extensión la pone él
+      byte errorCode=camera.savePhoto("photo",&resX,&resY);
+      //Si tenemos algún error...
+      if(errorCode)
+      {
+        //...informamos a todos
+        broadcast("Fallo guardar imagen. Error " + String(errorCode));
+      }
+      else //No hay errores
+      {
+        //Tenemos la imagen guardada en local
+        //la enviamos a todos
+        broadcastPhoto("/photo.jpg");
+      }
+      //Desactivamos el flag
+      movementDetected=false;
+    }
+  
+    //Si tenemos un código de suscripción válido...
+    if(subscriptionCode)
+    {
+      //Si ha caducado...
+      if(millis()>subscriptionCodeTimeout)
+      {
+        //...lo eliminamos
+        subscriptionCode=0;
+      }
+    }
+
+    //Refrescamos los procesos de fondo
+    //Si no lo hacemos, se reseteará periódicamente debido a WDT
+    yield();
+  }
   //Aumentamos el tiempo de espera para el siguiente ciclo
   currentWait*=factorWait;
   //Si sobrepasamos el máximo...lo limitamos
   if(currentWait>maxWait) currentWait=maxWait;
-  //Si tenemos un código de suscripción válido...
-  if(subscriptionCode)
-  {
-    //Si ha caducado...
-    if(millis()>subscriptionCodeTimeout)
-    {
-      //...lo eliminamos
-      subscriptionCode=0;
-    }
-  }
 }

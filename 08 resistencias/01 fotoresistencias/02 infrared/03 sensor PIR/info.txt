@@ -13,7 +13,20 @@ El nombre correcto del módulo es HC-SR501.
 Solamente tiene 3 pines: VCC, OUT y GND.
 Se alimenta por VCC y GND y tenemos la señal por OUT.
 
-Admite alimentación desde 3.3V hasta 12V.
+Dependiendo del modelo de PIR la alimentación mínima será de 3.3V o 5V.
+El máximo siempre es 12V.
+Para saber cuál es la alimentación mínima de nuestro PIR lo conectaremos a 3.3V.
+Si su comportamiento es errático (detecta movimiento contínuamente) tendremos que pensar que
+no tiene suficiente voltaje para funcionar correctamente.
+Los PIR que yo tengo son del modelo D-SUN y necesitan 5V para funcionar correctamente.
+Por eso todos los circuitos de ejemplo van conectado a 5V.
+
+La sensibilidad aumenta con el voltaje. A 9V se aumenta el rango de detección automáticamente.
+Es posible que se tenga que ajustar manualmente.
+
+No es necesario utilizar resistencias de pull para mantener el pin de entrada de la señal
+PIR a un estado determinado. La razón es que ya le estamos dando señal de GND y VCC.
+De todas formas, si se hace, también funciona correctamente.
   
 La señal es digital:
   LOW = no se detecta movimiento
