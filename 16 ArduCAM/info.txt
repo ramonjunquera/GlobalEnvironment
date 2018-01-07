@@ -1,0 +1,40 @@
+Autor: Ramón Junquera
+Tema: ArduCAM
+Descripción:
+
+ArduCAM es un fabricante de cámaras de vídeo.
+Los desarrollos y drivers oficiales se publican en:
+https://github.com/ArduCAM
+
+Habitualmente las cámaras de vídeo se remiten a capturar contínuamente
+la imagen y a transmitirla.
+Puesto que una imagen puede ocupar gran cantidad de datos, la velocidad
+de comunicación de una cámara suele ser alta.
+Demasiado alta para los dispositivos que estamos utilizando (Arduino/ESP).
+
+ArduCAM introduce una memoria incluida en la cámara que hace de buffer
+intermedio. Es capaz de tomar una imagen, guardarla en la memoria interna
+y transmitirla a petición del usuario a la velolidad que admita el
+bus SPI.
+Esta es la razón por la que son las cámaras ideales para procesadores
+lentos.
+
+ArduCAM tiene dos modelos de mini-cámaras.
+La diferencia está en la óptica, la resolución y la memoria interna.
+  Modelo            sensor  MPx
+  ----------------  ------  ---
+  ArduCAM Mini 2MP  OV2640   2
+  ArduCAM Mini 5MP  OV5642   5
+Podemos consultar todos los detalles en:
+http://www.arducam.com/arducam-mini-released/
+
+Todos los ejemplos y librerías se han desarrollado para el modelo de
+2MPx, que es el único que he podido probar.
+
+Ambas cámaras tiene doble interface de conexión: I2C & SPI.
+Puesto que SPI es más rápido que I2C, se utiliza para la transferencia
+(descarga) de datos (imágenes).
+EL canal I2C se utiliza para enviar los comandos de configuración del
+sensor.
+
+

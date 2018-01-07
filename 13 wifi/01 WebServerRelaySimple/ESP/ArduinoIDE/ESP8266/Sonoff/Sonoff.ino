@@ -101,7 +101,7 @@ void setup(void)
   //Que estará asociado a la dirección ip que se le ha asignado
   //Siempre se la añade el dominio .local porque sólo sirve para dominios
   //locales. Como el WINS de Windows.
-  //Si la signación de nombre a ip se ha completado correctamente...
+  //Si la asignación de nombre a ip se ha completado correctamente...
   if (mdns.begin("esp8266", WiFi.localIP()))
   {
     //...informamos

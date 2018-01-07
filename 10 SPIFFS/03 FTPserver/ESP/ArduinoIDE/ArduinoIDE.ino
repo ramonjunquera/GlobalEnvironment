@@ -28,8 +28,8 @@
 #include <WiFiClient.h>
 #include "EspFtpServer.h" //Para crear el servidor FTP
 
-const char* ssid = "RoJo";
-const char* password = "ZAMPABOLLOS5";
+const char* ssid = "xxx";
+const char* password = "xxx";
 
 FtpServer ftpSrv; //Creamos el ebjeto de gestión del servidor FTP
 

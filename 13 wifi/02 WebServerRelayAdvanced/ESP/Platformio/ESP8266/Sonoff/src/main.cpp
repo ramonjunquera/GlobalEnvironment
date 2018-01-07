@@ -266,10 +266,7 @@ String composeHTML()
   a+=(configByte & 0b00000001)?"ON":"OFF";
   a+="</h2></p>";
   //Botones
-  //a+="<p><a href=\"refresh\"><button style=""height:50px;width:200px;font-size:24px"">Actualizar</button></a>";
   a+="<p><a href=\"refresh\"><button style=""font-size:300%"">Actualizar</button></a>";
-  //a+="&nbsp;<a href=\"changeStatus\"><button style=""height:50px;width:200px"">Cambiar estado</button></a>";
-  //a+="&nbsp;<a href=\"changeTime\"><button style=""height:50px;width:200px"">Cambiar horario</button></a></p>";
   a+="&nbsp;<a href=\"changeStatus\"><button style=""font-size:300%"">Cambiar estado</button></a>";
   a+="&nbsp;<a href=\"changeTime\"><button style=""font-size:300%"">Cambiar horario</button></a></p>";
   //Recorremos todos los registros del array
