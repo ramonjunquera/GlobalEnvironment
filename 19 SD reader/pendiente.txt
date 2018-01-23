@@ -1,0 +1,12 @@
+Incluir archivos info+fotos en carpeta de SDreader
+Eliminar fotos de ejemplo info
+Eliminar texto explicativo de ejemplo info
+
+Ejemplo de escritura/lectura binaria: guardar byte, leer byte, eliminar archivo
+Ejemplo de trabajo con carpetas: crear, cambiar, eliminar
+Se podría utilizar el ejemplo de trabajo con SPIFFS?
+
+Comprobar cómo lee un archivo con nombre largo!
+Se podría formatear a FAT16 (algo con menos de 4Gb) para evitar problemas con nombres largos?
+
+Probar el ejemplo para Mega del display I2C

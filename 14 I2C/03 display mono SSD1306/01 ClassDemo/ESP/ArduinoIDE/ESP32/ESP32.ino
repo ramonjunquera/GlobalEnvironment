@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20171103
+  Fecha: 20180122
   Material: breadboard, cables, placa ESP32, display OLED I2C SSD1306
 
   Descripción:
@@ -609,6 +609,59 @@ void Test20()
   normalSprite.clean();
 }
 
+void Test21()
+{
+  //Mostrar texto con más fuentes
+
+  //Limpiamos pantalla
+  display.clear();
+  
+  //Creamos el sprite que contendrá el texto
+  RoJoSprite textSprite;
+  //Creamos objeto de gestión de fuentes
+  RoJoABC font;
+  //Si no podemos cargar la fuente desde el archivo...hemos terminado
+  if(!font.load(F("/RoJoABC7x11.fon"))) return;
+  //Creamos el sprite con el texto
+  font.print(F("Hello world!"),&textSprite);
+  //Lo mostramos
+  display.drawSpritePage(0,0,&textSprite,4);
+  //Creamos otro texto
+  font.print(F("Good morning"),&textSprite);
+  //Lo mostramos
+  display.drawSpritePage(0,2,&textSprite,4);
+  //Utilizaremos otra fuente
+  //Reaprovechamos el objeto de gestión de fuentes
+  //Si no podemos cargar la fuente desde el archivo...terminamos
+  if(!font.load(F("/RoJoABC5x7.fon"))) return;  
+  //Creamos el sprite con el texto
+  font.print(F("Hello world!"),&textSprite);
+  //Lo mostramos
+  display.drawSpritePage(0,4,&textSprite,4);
+  //Creamos otro texto
+  font.print(F("Good morning"),&textSprite);
+  //Lo mostramos
+  display.drawSpritePage(0,5,&textSprite,4);
+  //Utilizaremos otra fuente
+  //Reaprovechamos el objeto de gestión de fuentes
+  //Si no podemos cargar la fuente desde el archivo...terminamos
+  if(!font.load(F("/RoJoABC3x5.fon"))) return;  
+  //Creamos el sprite con el texto
+  font.print(F("Hello world!"),&textSprite);
+  //Lo mostramos
+  display.drawSpritePage(0,6,&textSprite,4);
+  //Creamos otro texto
+  font.print(F("Good morning"),&textSprite);
+  //Lo mostramos
+  display.drawSpritePage(0,7,&textSprite,4);
+  //Refrescamos pantalla
+  display.show();
+  //Terminamos de utilizar el objeto de gestión de fuentes
+  font.close();
+  //Borramos el sprite utilizado
+  textSprite.clean();
+}
+
 void setup()
 {
   //Inicializamos el display
@@ -653,5 +706,8 @@ void loop()
   Test19();
   delay(1000);
   Test20();
+  delay(1000);
+  Test21();
+  delay(5000);
 }
 
