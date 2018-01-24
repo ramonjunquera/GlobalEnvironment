@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
-  Fecha: 20171117
+  Fecha: 20180124
   Objetivo: Demostración de capacidades de la librería RoJoMAX7219
   Material: breadboard, cables, chip MAX7219, matrix led 8x8, placa ESP32,
     resistencia de 10Kohmios, condensador 10µF, condensador 100 nF
@@ -163,17 +163,14 @@ void test3()
   RoJoSprite textSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("/RoJoABC5x7digits.fon"))) return;
   //Creamos el sprite con el texto
-  font.print(F("2"),&textSprite);
+  //Si no podemos crear el sprite de texto...hemos terminado  
+  if(!font.print(F("/RoJoABC5x7digits.fon"),F("2"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,0,&textSprite,4);
   //Refrescamos pantalla
   display.show();
   
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
   //Borramos el sprite utilizado
   textSprite.clean();
 }

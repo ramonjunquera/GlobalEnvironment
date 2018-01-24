@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoABC16.h
-  Versión: 20171026
+  Versión: 20180124
   Autor: Ramón Junquera
   Descripción:
     Gestión de fuentes de color (16bits)
@@ -13,7 +13,7 @@
 
 //Comprobamos que la placa es compatible
 #if !defined(ESP32) && !defined(ESP8266) && !defined(__arm__)
-  #error Library RoJoSprite16 is only compatible with ESP32 & ESP8266 family devices or Raspberry Pi 3
+  #error Library RoJoABC16 is only compatible with ESP32 & ESP8266 family devices or Raspberry Pi 3
 #endif
 
 #include <Arduino.h>
@@ -37,12 +37,9 @@ class RoJoABC16
     uint16_t _charIndex(byte c); //Devuelve el índice de inicio de los datos gráficos de un carácter
   public:
     RoJoABC16(); //Constructor
-    ~RoJoABC16(); //Destructor
-    bool load(String fileName); //Cargamos datos de un archivo de fuentes
-    void close(); //Cierra el archivo actual de fuentes
-    void print(String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor); //Crea un sprite con el texto indicado
-    void print(String text,RoJoSprite16 *sprite,uint16_t textColor); //Crea un sprite con el texto indicado
-    void print(String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor,uint16_t borderColor); //Crea un sprite de texto con borde
+    bool print(String fileNameFon,String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor); //Crea un sprite con el texto indicado
+    bool print(String fileNameFon,String text,RoJoSprite16 *sprite,uint16_t textColor); //Crea un sprite con el texto indicado
+    bool print(String fileNameFon,String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor,uint16_t borderColor); //Crea un sprite de texto con borde
 }; //Punto y coma obligatorio para que no de error
 
 #endif

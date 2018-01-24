@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoSprite16.h
-  Versión: 20171026
+  Versión: 20171101
   Autor: Ramón Junquera
   Descripción:
     Gestión de sprites color 16bits
@@ -12,16 +12,16 @@
 #define RoJoSprite16_cpp
 
 #include <Arduino.h>
+#include "RoJoSprite16.h"
 //Si es un ESP32...
 #if defined(ESP32)
   //...cargamos las librerías customizadas de gestión de archivos
   #include <SPIFFS.h> 
 //Si es un ESP8266 o una RPi...
-#elif defined(ESP8266) || defined(__arm__)
+#else
   //..cargamos las librerías estándar de gestión de archivos
   #include <FS.h>
 #endif
-#include "RoJoSprite16.h"
 
 RoJoSprite16::RoJoSprite16()
 {
@@ -66,20 +66,22 @@ void RoJoSprite16::clean()
     //Al liberar la memoria a la que apunta un puntero no cambia
     //el puntero. Lo cambiaremos manualmente
     _bitmap=NULL;
+    //Ya no tiene dimensión
+    _xMax=_yMax=0;
   } 
 }
 
 void RoJoSprite16::setSize(uint16_t x,uint16_t y)
 {
   //Fija un nuevo tamaño para el sprite
-  
+
+  //Borramos el array gráfico
+  clean();
   //Guardamos los valores de los parámetros
   _xMax=x;
   _yMax=y;
-  //Borramos el array gráfico
-  clean();
-  //Creamos un nuevo array gráfico
-  _bitmap = new uint16_t[x*y];
+  //Creamos un nuevo array gráfico lleno de ceros
+  _bitmap = new uint16_t[x*y]();
 }
 
 bool RoJoSprite16::load(String fileName)
@@ -90,19 +92,19 @@ bool RoJoSprite16::load(String fileName)
 	uint16_t width,height;
 
 	//Abrimos el archivo indicado del SPIFFS como sólo lectura
-    File f=SPIFFS.open(fileName,"r");
-    //Si hubo algún problema...devolvemos error
-    if(!f) return false;
-    //Leemos la anchura (2 bytes)
-    f.readBytes((char *)&width,2);
-    //Leemos la altura (2 bytes)
-    f.readBytes((char *)&height,2);
-    //Fijamos el tamaño del sprite
-    setSize(width,height);
-    //Leemos el resto del archivo y lo guardamos en el array bitmap
-    f.readBytes((char *)_bitmap,width*height*2);
-    //Cerramos el archivo
-    f.close();
+  File f=SPIFFS.open(fileName,"r");
+  //Si hubo algún problema...devolvemos error
+  if(!f) return false;
+  //Leemos la anchura (2 bytes)
+  f.readBytes((char *)&width,2);
+  //Leemos la altura (2 bytes)
+  f.readBytes((char *)&height,2);
+  //Fijamos el tamaño del sprite
+  setSize(width,height);
+  //Leemos el resto del archivo y lo guardamos en el array bitmap
+  f.readBytes((char *)_bitmap,width*height*2);
+  //Cerramos el archivo
+  f.close();
 
 	//Todo ok
 	return true;
@@ -111,6 +113,10 @@ bool RoJoSprite16::load(String fileName)
 uint16_t RoJoSprite16::getPixel(uint16_t x,uint16_t y)
 {
   //Devolvemos color
+  
+  //Si no hay sprite...devolvemos 0
+  if(!_bitmap) return 0;
+  //Y si existe, devolvemos el color
   return _bitmap[x+y*_xMax];
 }
 
@@ -264,7 +270,7 @@ void RoJoSprite16::line(int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t col
 {
   //Dibuja una línea utilizando el algoritmo de Bresenham
 
-  int tmp; //Para swap
+  int16_t tmp; //Para swap
   const bool steep=abs(y2-y1)>abs(x2-x1);
   
   if(steep)
@@ -279,11 +285,11 @@ void RoJoSprite16::line(int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t col
     tmp=y1;y1=y2;y2=tmp;
   }
  
-  int dx=x2-x1;
-  int dy=abs(y2-y1);
+  int16_t dx=x2-x1;
+  int16_t dy=abs(y2-y1);
  
-  int err=dx/2;
-  const int ystep=y1<y2?1:-1;
+  int16_t err=dx/2;
+  const int16_t ystep=y1<y2?1:-1;
  
   for(;x1<x2;x1++)
   {

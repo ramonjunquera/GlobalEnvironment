@@ -31,3 +31,18 @@ La transferencia es bastante pesada. Es como cambiar el sistema operativo cada v
 y transfiramos. Por lo tanto es muy conveniente subir la velocidad al máximo.
 Para las placas que tienen conexión USB se puede utilizar 921600 baudios.
 Para las placas que necesitan un FTDI, no podremos poner más de 115200 baudios.
+
+Instalación de plugin data
+El plugin data permite subir el contenido de la carpeta "data" que cuelga de la carpeta de
+programa a SPIFFS, desde Arduino IDE.
+La última versión a fecha actual es la 0.3.0.
+Podemos descargar la última versión desde:
+https://github.com/esp8266/arduino-esp8266fs-plugin
+Tenemos el archivo ESP8266FS-0.3.0.zip en la carpeta actual
+Para instalarlo:
+- Localizamos la carpeta: C:\Program Files (x86)\Arduino\tools
+- Descomprimimos el archivo ESP8266FS-0.3.0.zip en ella
+- Debería quedar así: C:\Program Files (x86)\Arduino\tools\ESP8266FS\tool\esp8266fs.jar
+- La próxima vez que se abra el IDE de Arduino podremos encontrar la opción:
+    Herramientas/ESP8266 Sketch Data upload
+

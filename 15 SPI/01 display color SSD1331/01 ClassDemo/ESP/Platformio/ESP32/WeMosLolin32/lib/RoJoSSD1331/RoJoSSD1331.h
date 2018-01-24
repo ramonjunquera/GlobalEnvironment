@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoSSD1331.h
-  Versión: 20171028
+  Versión: 20171104
   Autor: Ramón Junquera
   Descripción:
     Gestión de display OLED SPI 0.95" 96x64 SSD1331

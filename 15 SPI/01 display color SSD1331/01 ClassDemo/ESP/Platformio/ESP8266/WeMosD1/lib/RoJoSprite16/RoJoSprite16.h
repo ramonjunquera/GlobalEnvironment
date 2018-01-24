@@ -1,30 +1,27 @@
 /*
   Nombre de la librería: RoJoSprite16.h
-  Versión: 20171016
+  Versión: 20171101
   Autor: Ramón Junquera
   Descripción:
     Gestión de sprites color 16bits
-    Sólo compatible con las familias de placas ESP32 y ESP8266
+    Sólo compatible con las familias de placas ESP32 y ESP8266 y
+    Raspberry Pi 3
 */
-
-//Si declaramos la siguiente línea se entiende que queremos utilizar la versión completa
-//Si no, se utilizará una versión con menos funcionalidades que ocupa menos
-#define RoJoSprite16Full
-
-//Comprobamos que la placa es compatible
-#if !defined(ESP32) && !defined(ESP8266)
-  #error Library RoJoSprite16 is only compatible with ESP32 & ESP8266 family devices
-#endif  
 
 #ifndef RoJoSprite16_h
 #define RoJoSprite16_h
 
-#include <arduino.h>
-#if defined(ESP32)
-  #include <SPIFFS.h> 
-#else
-  #include <FS.h>
-#endif
+//Si declaramos la siguiente línea se entiende que queremos utilizar la
+//versión completa. Si no, se utilizará una versión con menos
+//funcionalidades que ocupa menos
+#define RoJoSprite16Full
+
+//Comprobamos que la placa es compatible
+#if !defined(ESP32) && !defined(ESP8266) && !defined(__arm__)
+  #error Library RoJoSprite16 is only compatible with ESP32 & ESP8266 family devices or Raspberry Pi 3
+#endif  
+
+#include <Arduino.h>
 
 class RoJoSprite16
 {
@@ -47,12 +44,12 @@ class RoJoSprite16
 //Funciones excluidas de la versión completa    
 #if defined(RoJoSprite16Full)
     void save(String fileName); //Guarda la información del sprite en un archivo
-    void clear(uint16_t color); //Borra el sprite llenando el fondo de un color
+	  void clear(uint16_t color); //Borra el sprite llenando el fondo de un color
     void clear(); //Borra el sprite pintando el fondo de negro
     void clear(int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t color); //Dibuja un rectángulo relleno de un color
     void clear(int16_t x1,int16_t y1,int16_t x2,int16_t y2); //Dibuja un rectángulo relleno negro
     void replaceColor(uint16_t source,uint16_t destination); //Cambia los pixels de un color por otro
-    void resize(int16_t width,int16_t height,RoJoSprite16 *source); //Redimensiona un sprite
+    void resize(uint16_t width,uint16_t height,RoJoSprite16 *source); //Redimensiona un sprite
     void line(int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t color); //Dibuja una línea recta
     void rect(int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t borderColor); //Dibuja un rectángulo
 #endif

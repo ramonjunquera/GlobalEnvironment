@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoSprite16.h
-  Versión: 20171026
+  Versión: 20171101
   Autor: Ramón Junquera
   Descripción:
     Gestión de sprites color 16bits
@@ -44,7 +44,7 @@ class RoJoSprite16
 //Funciones excluidas de la versión completa    
 #if defined(RoJoSprite16Full)
     void save(String fileName); //Guarda la información del sprite en un archivo
-	void clear(uint16_t color); //Borra el sprite llenando el fondo de un color
+	  void clear(uint16_t color); //Borra el sprite llenando el fondo de un color
     void clear(); //Borra el sprite pintando el fondo de negro
     void clear(int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t color); //Dibuja un rectángulo relleno de un color
     void clear(int16_t x1,int16_t y1,int16_t x2,int16_t y2); //Dibuja un rectángulo relleno negro

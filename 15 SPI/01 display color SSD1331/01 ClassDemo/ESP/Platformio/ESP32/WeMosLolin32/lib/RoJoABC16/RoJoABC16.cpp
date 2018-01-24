@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoABC16.h
-  Versión: 20171026
+  Versión: 20180124
   Autor: Ramón Junquera
   Descripción:
     Gestión de fuentes de color (16bits)
@@ -29,46 +29,6 @@ RoJoABC16::RoJoABC16()
 
   //Anotamos que el número de páginas es nulo
   _pages=0;
-}
-
-bool RoJoABC16::load(String fileName)
-{
-  //Cargamos datos de un archivo
-  //Devuelve false ante cualquier error
-
-  //Cerramos cualquier fuente abierta antes
-  close();
-  //Abrimos el archivo indicado del SPIFFS como sólo lectura
-  _f=SPIFFS.open(fileName,"r");
-  //Si hubo algún problema...hemos terminado
-  if(!_f) return false;
-  //Leemos ASCII del primer carácter de la fuente
-  _f.readBytes((char *)&_charMin,1);
-  //Leemos ASCII del último carácter de la fuente
-  _f.readBytes((char *)&_charMax,1);
-  //Leemos el número de páginas
-  _f.readBytes((char *)&_pages,1);
-  //Calculamos el número de caracteres de la fuente
-  _charCount=_charMax-_charMin+1;
-  //Todo ok
-  return true;
-}
-
-void RoJoABC16::close()
-{
-  //Cierra el archivo actual de fuentes
-
-  //Cerramos el archivo de fuentes (si está abierto)
-  //La variable pages indica si tenemos algún archivo de fuentes abierto
-  if(_pages) _f.close(); 
-  //Ya no tenemos archivos de fuentes abiertos
-  _pages=0;
-}
-
-RoJoABC16::~RoJoABC16()
-{
-  //Destructor
-  close();
 }
 
 bool RoJoABC16::_charInFont(byte c)
@@ -109,10 +69,24 @@ uint16_t RoJoABC16::_charIndex(byte c)
   return index;
 }
 
-void RoJoABC16::print(String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor)
+bool RoJoABC16::print(String fileNameFon,String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor)
 {
   //Crea un sprite con el texto indicado
   //Se indica el color del texto y de fondo
+  //Devuelve false ante cualquier error
+
+  //Abrimos el archivo indicado del SPIFFS como sólo lectura
+  _f=SPIFFS.open(fileNameFon,"r");
+  //Si hubo algún problema...hemos terminado
+  if(!_f) return false;
+  //Leemos ASCII del primer carácter de la fuente
+  _f.readBytes((char *)&_charMin,1);
+  //Leemos ASCII del último carácter de la fuente
+  _f.readBytes((char *)&_charMax,1);
+  //Leemos el número de páginas
+  _f.readBytes((char *)&_pages,1);
+  //Calculamos el número de caracteres de la fuente
+  _charCount=_charMax-_charMin+1;
 
   //Inicialmente la anchura del sprite es 0
   uint16_t spriteWidth=0;
@@ -182,22 +156,27 @@ void RoJoABC16::print(String text,RoJoSprite16 *sprite,uint16_t textColor,uint16
       }
     }
   }
+  //Hemos terminado de utilizar el archivo de fuentes
+  _f.close();
+  //Todo correcto
+  return true;
 }
 
-void RoJoABC16::print(String text,RoJoSprite16 *sprite,uint16_t textColor)
+bool RoJoABC16::print(String fileNameFon,String text,RoJoSprite16 *sprite,uint16_t textColor)
 {
   //Crea un sprite con el texto indicado
-  //Se indica el color del texto. EL fondo será negro
-  print(text,sprite,textColor,0);
+  //Se indica el color del texto. El fondo será negro
+  return print(fileNameFon,text,sprite,textColor,0);
 }
 
-void RoJoABC16::print(String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor,uint16_t borderColor)
+bool RoJoABC16::print(String fileNameFon,String text,RoJoSprite16 *sprite,uint16_t textColor,uint16_t backColor,uint16_t borderColor)
 {
   //Crea un sprite de texto con borde
+  //Devuelve false ante cualquier error
 
   //Creamos el sprite que contendrá el texto sin bordes
   RoJoSprite16 textSprite;
-  print(text,&textSprite,borderColor,backColor);
+  if(!print(fileNameFon,text,&textSprite,borderColor,backColor)) return false;
   //Fijamos tamaño de sprite final
   //Será 2 pixel mayor que el del texto simple en cada dimenssión
   (*sprite).setSize(textSprite.width()+2,textSprite.height()+2);
@@ -217,6 +196,8 @@ void RoJoABC16::print(String text,RoJoSprite16 *sprite,uint16_t textColor,uint16
   (*sprite).copy(1,1,&textSprite,backColor);
   //Hemos terminado de utilizar el sprite de texto simple
   textSprite.clean();
+  //Todo correcto
+  return true;
 }
 
 #endif

@@ -6,7 +6,7 @@
             "request": "launch",
             "cwd": "${workspaceRoot}",
             "name": "PlatformIO Debugger",
-            "target": "z:/Usuarios/Ra/programacion/Arduino/ejemplos/Platformio/WeMosLolin32/02 SPI/ClassDemo/.pioenvs/lolin32/firmware.elf",
+            "target": "z:/Usuarios/Ra/programacion/GitHub/GlobalEnvironment/15 SPI/01 display color SSD1331/01 ClassDemo/ESP/Platformio/ESP32/WeMosLolin32/.pioenvs/lolin32/firmware.elf",
             "gdbpath": "C:/Users/Ra/.platformio/penv/Scripts/piodebuggdb",
             "autorun": [ "source .pioinit" ]
         }

@@ -1,34 +1,155 @@
- /*
-  Nombre de la librería: RoJoSSD1331_ESP.h
-  Versión: 20171016
+/*
+  Nombre de la librería: RoJoSSD1331.h
+  Versión: 20171104
   Autor: Ramón Junquera
   Descripción:
-    Gestión de display OLED SPI 0.95" 96x64 SSD1331 para placas ESP
+    Gestión de display OLED SPI 0.95" 96x64 SSD1331
     Permite la gestión de sprites
-    Sólo compatible con las familias de placas ESP32 y ESP8266
-    
-  Pinout SPI para distintas placas:
-  
-            ------SPI------- --I2C--
-    Modelo  SCK MISO MOSI CS SCL SDA
-    ------- --- ---- ---- -- --- ---
-    ESP8266 D5   D6   D7  D8 D1  D2
-    ESP32   18   19   23   5 22  21
+    Sólo compatible con las familias de placas ESP32 y ESP8266 y
+      Raspberry Pi 3
 
-  Mejoras pendientes:
-    - Vale la pena crear un doble buffer de video intermedio para acelerar la escritura en el display?. Sólo se 
-      dibujarían los pixels que varían. Un buffer contendría la memoria de vídeo con el contenido que se está
-      mostrando actualmente y otro sería la memoria de vídeo en de trabajo. La rutina compararía ambas y enviaría
-      las diferencias. Esto supones 96x94x2= 12288 bytes = 12 Kb
-*/
+  La siguiente librería permite la gestión del display a través de los
+  pines del bus SPI controlados por hardware.
+
+  Descripción de pines del display:
+  SSD1331  Descripción
+  -------  -----------
+     GND    GND
+     VCC    3V3
+     SCL    Reloj (SPI_CLK)
+     SDA    Escritura (SPI_MOSI)
+     RES    Reset
+     DC     Data/Command
+     CS     Chip select (SPI_CEx_N)
+
+  Pin RES
+  Debe mantenerse siempre en HIGH.
+  Si lo cambiamos a LOW se resetea.
+
+  Pin CS
+  Se conecta al pin de chip control que se defina.
+   
+  Pin DC
+  No pertenece al estándar SPI. Es un pin digital se salida. Sirve
+  cualquiera. Permite indicarle al display si la información que le
+  enviamos debe ser considerada un comando o un dato.
+  Los comandos cambian la configuración del display. Los datos se
+  escriben directamente en la memoria gráfica.
+  Según el estado se considera:
+     LOW : comando
+     HIGH : datos gráficos
+ 
+  Pin SDA
+  Es el pin por el que se escribe en el display. Siempre debe ser
+  conectado al pin SPI_MOSI
+   
+  Pin SCL
+  Pin de reloj. Indica cuándo se puede leer el bit enviado. Siempre
+  debe ser conectado a SPI_CLK
+
+  Pin VCC
+  Alimentación. Habitualmente conectado a 3.3V. Este modelo de display
+  puede ser alimentado con un voltaje en el rango de 2.8 a 5.5V.
+ 
+  Pin GND
+  Siempre conectado a tierra.
+ 
+  Cuando activamos las comunicaciones SPI por hardware hacemos uso de
+  todos sus pines.
+  En este caso no tenemos en cuenta el pin MISO, pero no podemos 
+  utilizarlo para otra cosa porque se sigue escribiendo y leyendo en el.
+
+  El modelo para el que se desarrolla la clase se ha comprado en:
+  http://www.banggood.com/0_95-Inch-7pin-Full-Color-65K-Color-SSD1331-SPI-OLED-Display-For-Arduino-p-1068167.html?rmmds=search
+
+  Tiene una diagonal de 0.95"
+  Es capaz de mostrar hasta 65536 colores.
+  La resolución es 96 pixels en horizontal por 64 en vertical.
+  No necesita luz de fondo (backlight) como las pantallas LCD, puesto
+  que el OLED emite su propia luz.
+  OLED = Organic Light Emitting Diode (diodo orgánico de emisión de
+  luz). Es una variante de las matrices de leds.
+  Su consumo es de unos 25 mA. Inferior al consumo de un led normal,
+  que ronda los 29 mA.
+   
+  El display tiene 96*64=6144 pixels
+  Cada pixel usa 2 bytes de memoria
+  En total son 6144*2 = 12288 bytes = 12Kb
+  
+  Las funciones básicas de escritura son dos:
+    _writeCommand para enviar un byte de comandos
+    _writeData para enviar un número determinado de datos gráficos
+  Puesto que los comandos son muy compactos (un sólo byte), la función
+  WriteCommand sólo admite un byte.
+   
+  Todas las funciones escriben directamente sobre el display.
+  No se utiliza ninguna técnica de buffer (simple o doble) para reducir
+  la tasa de transferencia por SPI. La razon es que se necesitarían
+  12Kb para mantener la memoria de vídeo del display y otros 12Kb para
+  la memoria de vídeo de trabajo. Total unos 24Kb.
+  Teniendo en cuenta que el ESP8266 entrega unos 40Kb de memoria de
+  variables, la utilizarías principalmente para esto, poniendo en
+  peligro la estabilidad de cualquier desarrollo un poco extenso.
+  Además la velocidad de comunicación SPI es bastante elevada.
+   
+  Se hace uso de las funciones especiales para dibujo rápido
+  implementadas en hardware.
+  
+  Objetos públicos:
+    const byte xMax=96
+    const byte yMax=64
+    void reset()
+    void begin(byte pinDC,byte pinRES,byte pinCS)
+    void begin(byte pinDC,byte pinRES,byte pinCS,uint32_t spiFreq)
+    void setPixel(int16_t x,int16_t y,uint16_t color)
+    void setPixel(uint16_t color)
+    uint16_t getColor(byte r,byte g,byte b)
+    void clear()
+    void rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB,byte fillR,byte fillG,byte fillB)
+    void rect(byte x1,byte y1,byte x2,byte y2,uint16_t borderColor,uint16_t fillColor)
+    void rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB)
+    void rect(byte x1,byte y1,byte x2,byte y2,uint16_t borderColor)
+    void copy(byte x1,byte y1,byte x2,byte y2,byte x3,byte y3)
+    void darker(byte x1,byte y1,byte x2,byte y2)
+    void getComponents(uint16_t color,byte *r,byte *g,byte *b)
+    void line(byte x1,byte y1,byte x2,byte y2,byte r,byte g,byte b)
+    void line(byte x1,byte y1,byte x2,byte y2,uint16_t color)
+    void drawSprite(int16_t x,int16_t y,RoJoSprite16 *sprite)
+    void setCursorRangeX(int16_t x1,int16_t x2)
+    void setCursorRangeY(int16_t y1,int16_t y2)
+ 
+  Nota:
+  La librería no tiene en cuenta los pines CS controlados por hardware.
+  Se puede definir cualquier pin para CS porque se gestiona por software.
+  En placas ESP estos pines se pueden desactivar.
+  En Raspberry no. Esto quiere decir que RPi siempre seguirá gestionando
+  el pin CS que tenga activo en ese momento.
+  La ventaja de definir el pin CS por software es que podemos tener
+  varios dispositivos SPI conectados a distintos pines de control y 
+  no tendremos interferencias entre ellos.
+ */
 
 #ifndef RoJoSSD1331_cpp
 #define RoJoSSD1331_cpp
 
-#include <arduino.h>
+#include <Arduino.h>
 #include <SPI.h> //Gestión de comunicaciones SPI por hardware
 #include "RoJoSSD1331.h"
 #include "RoJoSprite16.h"
+
+void RoJoSSD1331::_startSPI()
+{
+  //Inicia una transacción SPI
+  SPI.beginTransaction(_spiSetting);
+  digitalWrite(_pinCS,LOW);
+}
+
+void RoJoSSD1331::_endSPI()
+{
+  //Finaliza una transacción SPI
+  digitalWrite(_pinCS,HIGH);
+  SPI.endTransaction();
+}
 
 void RoJoSSD1331::_writeData(uint16_t d)
 {
@@ -51,6 +172,37 @@ void RoJoSSD1331::_writeCommand(byte *buffer,byte len)
   SPI.writeBytes(buffer,len);
 }
 
+void RoJoSSD1331::_fill(bool f)
+{
+  //Activa/desactiva el relleno de los rectángulos
+  byte commandBuffer[]={0x26,f?(byte)0x01:(byte)0x00};
+  _writeCommand(commandBuffer,2);
+}
+
+void RoJoSSD1331::_rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB,byte fillR,byte fillG,byte fillB)
+{
+  //Dibuja un rectángulo. Función interna
+  byte commandBuffer[]={0x22,x1,y1,x2,y2,borderR,borderG,borderB,fillR,fillG,fillB};
+  _writeCommand(commandBuffer,11);
+  //Es necesario darle un tiempo para que termine de dibujar
+  delay(3);
+}
+
+void RoJoSSD1331::_swap(int16_t *a,int16_t *b)
+{
+  //Intercambia los valores de dos variables enteras
+  int t=*a;*a=*b;*b=t;
+}
+
+void RoJoSSD1331::_setPixel(uint16_t color)
+{
+  //Dibuja un pixel del color indicado en la posición actual del cursor
+  //Método privado: no gestiona transacciones SPI
+
+  //Escribimos el color
+  _writeData(color);
+}
+
 void RoJoSSD1331::reset()
 {
   //Resetea el display
@@ -60,7 +212,7 @@ void RoJoSSD1331::reset()
   delay(10);
 }
 
-void RoJoSSD1331::begin(byte pinDC,byte pinRES,byte pinCS)
+void RoJoSSD1331::begin(byte pinRES,byte pinDC, byte pinCS)
 {
   //Inicialización del display
 
@@ -77,7 +229,7 @@ void RoJoSSD1331::begin(byte pinDC,byte pinRES,byte pinCS)
   digitalWrite(_pinRES,HIGH); //Comenzamos sin reiniciar el display
   digitalWrite(_pinDC,HIGH); //Comenzamos enviando datos
   digitalWrite(_pinCS,HIGH); //Comenzamos sin enviar datos
-
+  
   //Definimos las caraterísticas de la conexión SPI
   _spiSetting = SPISettings(_spiFreq, MSBFIRST, SPI_MODE3);
 
@@ -87,6 +239,7 @@ void RoJoSSD1331::begin(byte pinDC,byte pinRES,byte pinCS)
   //Esto nos permite compartir el bus SPI con distintos dispositivos
   SPI.setHwCs(false);
 
+  //Comenzamos una transacción
   _startSPI();
     //Reseteamos el display
     reset();
@@ -137,7 +290,7 @@ void RoJoSSD1331::begin(byte pinDC,byte pinRES,byte pinCS)
     
       ,0xAF //Encendemos el display SSD1331_CMD_DISPLAYON
     };
-  
+    
     //Escribimos todos los comandos del buffer
     _writeCommand(commandBuffer,sizeof(commandBuffer));
   _endSPI();
@@ -145,23 +298,14 @@ void RoJoSSD1331::begin(byte pinDC,byte pinRES,byte pinCS)
   clear();
 }
 
-void RoJoSSD1331::begin(byte pinDC,byte pinRES,byte pinCS,uint32_t spiFreq)
+void RoJoSSD1331::begin(byte pinRES,byte pinDC,byte pinCS,uint32_t spiFreq)
 {
   //Inicialización con parámetro de frecuencia de SPI
 
   //Guardamos el valor de la frecuencia de conexión SPI
   _spiFreq=spiFreq;
   //Llamamos al begin normal
-  begin(pinDC,pinRES,pinCS);
-}
-
-void RoJoSSD1331::_setPixel(uint16_t color)
-{
-  //Dibuja un pixel del color indicado en la posición actual del cursor
-  //Método privado: no gestiona transacciones SPI
-
-  //Escribimos el color
-  _writeData(color);
+  begin(pinRES,pinDC,pinCS);
 }
 
 void RoJoSSD1331::setPixel(uint16_t color)
@@ -174,7 +318,7 @@ void RoJoSSD1331::setPixel(uint16_t color)
   _endSPI();
 }
 
-void RoJoSSD1331::setPixel(int x,int y,uint16_t color)
+void RoJoSSD1331::setPixel(int16_t x,int16_t y,uint16_t color)
 {
   //Dibuja pixel en ciertas coordenadas
 
@@ -211,20 +355,10 @@ uint16_t RoJoSSD1331::getColor(byte r,byte g,byte b)
   return c;
 }
 
-void RoJoSSD1331::_fill(bool f)
+void RoJoSSD1331::clear()
 {
-  //Activa/desactiva el relleno de los rectángulos
-  byte commandBuffer[]={0x26,f?(byte)0x01:(byte)0x00};
-  _writeCommand(commandBuffer,2);
-}
-
-void RoJoSSD1331::_rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB,byte fillR,byte fillG,byte fillB)
-{
-  //Dibuja un rectángulo. Función interna
-  byte commandBuffer[]={0x22,x1,y1,x2,y2,borderR,borderG,borderB,fillR,fillG,fillB};
-  _writeCommand(commandBuffer,11);
-  //Es necesario darle un tiempo para que termine de dibujar
-  delay(3);
+  //Pinta la pantalla de negro con un rectángulo
+  rect(0,0,xMax-1,yMax-1,0,0,0,0,0,0);
 }
 
 void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB,byte fillR,byte fillG,byte fillB)
@@ -239,19 +373,6 @@ void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG
   _endSPI();
 }
 
-void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB)
-{
-  //Dibuja un rectángulo sin relleno
-  // b = border
-
-  _startSPI();
-    //Nos aseguramos que los rectángulos no se rellenen
-    _fill(false);
-    //Llamamos a la rutina interna de dibujo
-    _rect(x1,y1,x2,y2,borderR,borderG,borderB,0,0,0);
-  _endSPI();
-}
-
 void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,uint16_t borderColor,uint16_t fillColor)
 {
   //Dibuja un rectángulo relleno
@@ -263,6 +384,19 @@ void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,uint16_t borderColor,uint
   getComponents(fillColor,&fillR,&fillG,&fillB);
   //Llamamos a la rutina de dibujo
   rect(x1,y1,x2,y2,borderR,borderG,borderB,fillR,fillG,fillB);
+}
+
+void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,byte borderR,byte borderG,byte borderB)
+{
+  //Dibuja un rectángulo sin relleno
+  // b = border
+
+  _startSPI();
+    //Nos aseguramos que los rectángulos no se rellenen
+    _fill(false);
+    //Llamamos a la rutina interna de dibujo
+    _rect(x1,y1,x2,y2,borderR,borderG,borderB,0,0,0);
+  _endSPI();
 }
 
 void RoJoSSD1331::rect(byte x1,byte y1,byte x2,byte y2,uint16_t borderColor)
@@ -305,21 +439,15 @@ void RoJoSSD1331::darker(byte x1,byte y1,byte x2,byte y2)
   delay(2);
 }
 
-void RoJoSSD1331::clear()
-{
-  //Pinta la pantalla de negro con un rectángulo
-  rect(0,0,xMax-1,yMax-1,0,0,0,0,0,0);
-}
-
 void RoJoSSD1331::getComponents(uint16_t color,byte *r,byte *g,byte *b)
 {
   //Descompone un color en sus componentes
   
   //El color lo tenemos en formato
-  //  GGGBBBBB RRRRRGGG
-  *r = color & 0xF8; //0xF8 = B11111000
-  *b = (color >> 5) & 0xF8; //0xF8 = B11111000
-  *g = ((color << 5) | (color >> 13)) & 0xFC; //0xFC = B11111100
+  // RRRRRGGG GGGBBBBB
+  *r = color >> 11;
+  *g = (color >> 5) & 0b111111;
+  *b = color & 0b11111;
 }
 
 void RoJoSSD1331::line(byte x1,byte y1,byte x2,byte y2,byte r,byte g,byte b)
@@ -336,12 +464,12 @@ void RoJoSSD1331::line(byte x1,byte y1,byte x2,byte y2,uint16_t color)
 {
   //Dibuja una línea
   
-  byte R,G,B;
-  getComponents(color,&R,&G,&B);
-  line(x1,y1,x2,y2,R,G,B);
+  byte r,g,b;
+  getComponents(color,&r,&g,&b);
+  line(x1,y1,x2,y2,r,g,b);
 }
 
-void RoJoSSD1331::drawSprite(int x,int y,RoJoSprite16 *sprite)
+void RoJoSSD1331::drawSprite(int16_t x,int16_t y,RoJoSprite16 *sprite)
 {
   //Dibuja un sprite en unas coordenadas
   //Sobreescribe la información existente
@@ -376,7 +504,7 @@ void RoJoSSD1331::drawSprite(int x,int y,RoJoSprite16 *sprite)
   _endSPI();
 }
 
-void RoJoSSD1331::setCursorRangeX(int x1,int x2)
+void RoJoSSD1331::setCursorRangeX(int16_t x1,int16_t x2)
 {
   //Fija el rango de horizontal del cursor
 
@@ -396,7 +524,7 @@ void RoJoSSD1331::setCursorRangeX(int x1,int x2)
   _endSPI();
 }
 
-void RoJoSSD1331::setCursorRangeY(int y1,int y2)
+void RoJoSSD1331::setCursorRangeY(int16_t y1,int16_t y2)
 {
   //Fija el rango de vertical del cursor
 
@@ -414,26 +542,6 @@ void RoJoSSD1331::setCursorRangeY(int y1,int y2)
   _startSPI();
     _writeCommand(commandBuffer,3);
   _endSPI();
-}
-
-void RoJoSSD1331::_swap(int *a,int *b)
-{
-  //Intercambia los valores de dos variables enteras
-  int t=*a;*a=*b;*b=t;
-}
-  
-void RoJoSSD1331::_startSPI()
-{
-  //Inicia una transacción SPI
-  SPI.beginTransaction(_spiSetting);
-  digitalWrite(_pinCS,LOW);
-}
-
-void RoJoSSD1331::_endSPI()
-{
-  //Finaliza una transacción SPI
-  digitalWrite(_pinCS,HIGH);
-  SPI.endTransaction();
 }
 
 #endif

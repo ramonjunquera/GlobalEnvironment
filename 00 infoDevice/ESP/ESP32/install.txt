@@ -54,3 +54,16 @@ http://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-mac-and
   6.Si volvemos a abrir Arduino IDE comprobaremos que tenemos una nueva
     sección de placas de la familia ESP32
 
+Instalación de plugin data
+El plugin data permite subir el contenido de la carpeta "data" que cuelga de la carpeta de
+programa a SPIFFS, desde Arduino IDE.
+La última versión a fecha actual es la 0.1.
+Podemos descargar la última versión desde:
+https://github.com/me-no-dev/arduino-esp32fs-plugin
+Tenemos el archivo ESP32FS-v0.1.zip en la carpeta actual
+Para instalarlo:
+- Localizamos la carpeta: C:\Program Files (x86)\Arduino\tools
+- Descomprimimos el archivo ESP8266FS-0.3.0.zip en ella
+- Debería quedar así: C:\Program Files (x86)\Arduino\tools\ESP32FS\tool\esp32fs.jar
+- La próxima vez que se abra el IDE de Arduino podremos encontrar la opción:
+    Herramientas/ESP32 Sketch Data upload

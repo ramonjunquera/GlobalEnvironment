@@ -1,12 +1,9 @@
 /*
   Autor: Ramón Junquera
-  
   Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
-  
+  Versión: 20180124
   Objetivo: Demo de librería RoJoSSD1331
-  
   Material adicional: breadboard, cables, placa NodeMCU v1.0/ESP-12E, display OLED SSD1331
-
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
 
@@ -312,21 +309,19 @@ void Test13()
   RoJoSprite16 textSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC16 font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("/RoJoABC5x7digits.fon"))) return;
   //Definimos color de texto
   uint16_t color = display.getColor(0,255,0); //green
   //Creamos el sprite con el texto
-  font.print(F("20170823"),&textSprite,color);
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("/RoJoABC5x7digits.fon"),F("20170823"),&textSprite,color)) return;
   //Lo mostramos
   display.drawSprite(0,0,&textSprite);
 
   //Utilizaremos otra fuente más grande
   //Reaprovechamos el objeto de gestión de fuentes
-  //Si no podemos cargar la fuente desde el archivo...terminamos
-  if(!font.load(F("/RoJoABC10x15digits.fon"))) return;  
   //Creamos el sprite con el texto
-  font.print(F("20170823"),&textSprite,color);
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("/RoJoABC10x15digits.fon"),F("20170823"),&textSprite,color)) return;
   //Lo mostramos
   display.drawSprite(0,10,&textSprite);
   
@@ -336,7 +331,8 @@ void Test13()
   uint16_t backColor=display.getColor(0,0,64); //Azul oscuro
   //Creamos otro texto más grande que la pantalla 
   //con color de fondo
-  font.print(F("1234567890"),&textSprite,color,backColor);
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("/RoJoABC10x15digits.fon"),F("1234567890"),&textSprite,color,backColor)) return;
   //Lo mostramos. No se verá el final
   display.drawSprite(0,26,&textSprite);
   //Cambiamos el color del texto del sprite
@@ -345,8 +341,6 @@ void Test13()
   //posición fuera de pantalla
   display.drawSprite(-33,42,&textSprite);
 
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
   //Borramos el sprite utilizado
   textSprite.clean();
 }
@@ -364,33 +358,30 @@ void Test14()
   RoJoSprite16 textSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC16 font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("/RoJoABC10x15digits.fon"))) return;  
   //Definimos color de texto
   uint16_t textColor = display.getColor(0,0,255); //blue
   //Definimos color de fondo que utilizaremos como color invisible (red)
   uint16_t backColor = display.getColor(255,0,255); //red
   //Creamos un texto con color de fondo
-  font.print("8765",&textSprite,textColor,backColor);
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("/RoJoABC10x15digits.fon"),F("8765"),&textSprite,textColor,backColor)) return;
   //Ponemos el sprite de texto sobre el sprite base
   baseSprite.copy(30,5,&textSprite);
   //Volvemos a poner el mismo sprite pero hacemos invisible el color de fondo
   baseSprite.copy(30,22,&textSprite,backColor);
 
-  
   //Creamos el mismo texto pero con borde
   //Color de texto = textColor = blue
   //Color de fondo = backCOlor = red
   //Color de borde = 0 = black
-  font.print(F("8765"),&textSprite,textColor,backColor,0);
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("/RoJoABC10x15digits.fon"),F("8765"),&textSprite,textColor,backColor,0)) return;
   //Copiamos el nuevo sprite de texto con borde sobre el sprite base
   baseSprite.copy(29,40,&textSprite,backColor);
   
   //Mostramos el sprite base en pantalla
   display.drawSprite(0,0,&baseSprite);
 
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
   //Borramos los sprites utilizados
   baseSprite.clean();
   textSprite.clean();
@@ -409,12 +400,9 @@ void Test15()
   RoJoSprite16 normalSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC16 font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("/RoJoABC5x7digits.fon"))) return;  
   //Creamos un sprite con texto de color blanco con fondo negro
-  font.print("654",&normalSprite,0xFFFF,0x0000);
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("/RoJoABC5x7digits.fon"),F("654"),&normalSprite,0xFFFF,0x0000)) return;
   //Creamos un nuevo sprite para el redimensionado
   RoJoSprite16 resizeSprite;
   //Redimensionamos el sprite de texto. Lo hacemos 4 veces más grande
@@ -483,12 +471,11 @@ void Test16()
   RoJoSprite16 textSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC16 font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("/RoJoABC10x15digits.fon"))) return;  
   //Definimos color de texto
   uint16_t color = display.getColor(0,0,255); //blue
   //Creamos un texto sobre fondo negro
-  font.print("20171016",&textSprite,color);
+  //Creamos un sprite con texto de color blanco con fondo negro
+  if(!font.print(F("/RoJoABC10x15digits.fon"),F("20171016"),&textSprite,color)) return;
   //Definimos un nuevo color
   color = display.getColor(0,255,0); //green
   //El sprite tiene 16 filas porque el texto tiene esa altura
@@ -509,8 +496,6 @@ void Test16()
   //Mostramos el sprite en pantalla
   display.drawSprite(0,0,&textSprite);
 
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
   //Borramos los sprites utilizados
   textSprite.clean();
 }

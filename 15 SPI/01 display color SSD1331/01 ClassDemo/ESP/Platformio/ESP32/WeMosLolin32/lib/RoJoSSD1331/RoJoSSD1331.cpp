@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoSSD1331.h
-  Versión: 20171028
+  Versión: 20171104
   Autor: Ramón Junquera
   Descripción:
     Gestión de display OLED SPI 0.95" 96x64 SSD1331
@@ -305,7 +305,7 @@ void RoJoSSD1331::begin(byte pinRES,byte pinDC,byte pinCS,uint32_t spiFreq)
   //Guardamos el valor de la frecuencia de conexión SPI
   _spiFreq=spiFreq;
   //Llamamos al begin normal
-  begin(pinDC,pinRES,pinCS);
+  begin(pinRES,pinDC,pinCS);
 }
 
 void RoJoSSD1331::setPixel(uint16_t color)

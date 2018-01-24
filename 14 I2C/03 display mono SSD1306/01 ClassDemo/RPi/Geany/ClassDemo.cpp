@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20171103
+  Fecha: 20180124
   Material: breadboard, cables, placa RPi, display OLED I2C SSD1306
 
   Descripción:
@@ -512,24 +512,23 @@ void Test19()
   RoJoSprite textSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("fon/RoJoABC5x7digits.fon"))) return;
   //Creamos el sprite con el texto
-  font.print(F("20171101"),&textSprite);
+  //Si no podemos crear el sprite de texto...hemos terminado  
+  if(!font.print(F("fon/RoJoABC5x7digits.fon"),F("20171101"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,0,&textSprite,4);
 
   //Utilizaremos otra fuente más grande
   //Reaprovechamos el objeto de gestión de fuentes
-  //Si no podemos cargar la fuente desde el archivo...terminamos
-  if(!font.load(F("fon/RoJoABC10x15digits.fon"))) return;  
   //Creamos el sprite con el texto
-  font.print(F("20171101"),&textSprite);
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("20171101"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,2,&textSprite,4);
   
-  //Creamos otro texto más grande que la pantalla 
-  font.print(F("1234567890123456"),&textSprite);
+  //Creamos otro texto más grande que la pantalla
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("1234567890123456"),&textSprite)) return;
   //Lo mostramos. No se verá el final
   display.drawSpritePage(0,4,&textSprite,4);
   //Lo mostramos de nuevo desplazado a la izquierda, comenzando desde una
@@ -538,8 +537,6 @@ void Test19()
   //Refrescamos pantalla
   display.show();
   
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
   //Borramos el sprite utilizado
   textSprite.clean();
 }
@@ -554,12 +551,9 @@ void Test20()
   RoJoSprite normalSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
-  //Si no podemos cargar la fuente desde el archivo...hemos terminado
-  if(!font.load(F("fon/RoJoABC5x7digits.fon"))) return;  
   //Creamos un sprite con texto
-  font.print("2017",&normalSprite);
-  //Terminamos de utilizar el objeto de gestión de fuentes
-  font.close();
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("fon/RoJoABC5x7digits.fon"),F("2017"),&normalSprite)) return;
   //Creamos un nuevo sprite para el redimensionado
   RoJoSprite resizeSprite;
   //Redimensionamos el sprite de texto. Lo hacemos 4 veces más grande
