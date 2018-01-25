@@ -311,9 +311,6 @@ void setup()
   deleteFile("/mydir/hello.txt");
   removeDir("/mydir");
   printDirectory("/");
-
-  //Hemos terminado de utilizar el lector SD
-  SD.end();
 }
 
 void loop()
