@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Tarjeta SD
-  Versión: 20180123
+  Versión: 20180125
   Objetivo: Aprender a utilizar escribir y leer en tarjetas SD
   Material: breadboard, cables, lector SD, Arduino Nano
   Descripción:
