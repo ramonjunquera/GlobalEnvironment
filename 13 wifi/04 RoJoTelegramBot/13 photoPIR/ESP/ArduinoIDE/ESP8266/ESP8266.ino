@@ -1,15 +1,16 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20171226
+  Fecha: 20180201
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP8266, ArduCAM-Mini-2MP, PIR sensor
   Descripción:
     Utilizando los ejemplos anteriores para como base.
     Crearemos un sistema de suscripción segura.
-    Usamos el sistema de comprabación a intervalos variables.
+    Usamos el sistema de comprobación a intervalos variables.
     Cuando el sensor detecte movimiento, automáticamente se enviará una foto en la 
     resolución actual a todos los usuarios suscritos.
+    Se añade la posibilidad de desactivar manualmente el sensor de movimiento
   Nota:
     Es posible que haya que desconectar el pin D4 para tranferir el programa. Después se 
     puede volver a conectar al PIR.
@@ -31,6 +32,7 @@ const float factorWait=1.2; //Factor de la progresión geométrica para calcular
 const byte pinPIR=D4; //Pin del sensor PIR
 String suscribersFile="/subscribers.txt"; //Nombre del archivo que guarda los suscriptores
 byte suscribersCount=0; //Número de suscriptores. Inicialmente ninguno
+bool enabled = true; //Por defecto, cuando arranca, se enciende
 
 //Definición de variables globales
 //Creamos el objeto de gestión del bot
@@ -150,7 +152,6 @@ void broadcastPhoto(String filename)
   //Cerramos el archivo
   f.close();
 }
-
 
 void subscribe(TelegramMessage *msg)
 {
@@ -319,6 +320,8 @@ void handleNewMessages()
           message += "/subscribe code : Añadirse a la lista\n";
           message += "/unsubscribe : Borrarse de la lista\n";
           message += "/list : Mostrar la lista de suscriptores\n";
+          message += "/on : Activa el detector\n";
+          message += "/off : Desactiva el detector\n";
           //Enviamos el mensaje
           bot.sendMessage(msg.chat_id,message);
         }
@@ -370,6 +373,20 @@ void handleNewMessages()
             //...enviamos la foto por Telegram
             bot.sendPhotoLocal(msg.chat_id,"/photo.jpg");
           }
+        }
+        else if(msg.text=="/on")
+        {
+          //Se activa el detector de movimento
+          enabled=true;
+          //Informamos
+          broadcast(msg.from_name + " ha activado el detector");
+        }
+        else if(msg.text=="/off")
+        {
+          //Se desactiva el detector de movimento
+          enabled=false;
+          //Informamos
+          broadcast(msg.from_name + " ha desactivado el detector");
         }
         //Si el comando tiene una longitud de 5...
         else if(msg.text.length()==5)
@@ -470,8 +487,8 @@ void interruptPIR()
   //Función de gestión de interrupciones del PIR
 
   //Se ha detectado movimiento
-  //Activamos el flag
-  movementDetected=true;
+  //Si el detector está activo...activamos el flag
+  if(enabled) movementDetected=true;
 }
 
 void setup()

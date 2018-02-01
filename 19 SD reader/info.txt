@@ -24,13 +24,13 @@ Utilizaremos el driver que trae el IDE de Arduino por defecto para
 gestionarlo (librería "SD Built-In by Arduino, Sparkfun")
 Este driver tiene alguna limitación en cuanto a nombre de archivos/carpeta.
 Sólo puede trabajar con la antigua nomenclatura 8.3.
-Además sólo permite trabajar con formator FAT (o FAT16) y FAT32. Ninguno más.
+Además sólo permite trabajar con formator FAT32.
+Aunque las especificaciones indiquen que puede trabajar con FAT (FAT16) no
+es correcto, puesto que las instrucciones para crear y borrar carpetas no
+funcionarán (en vez de crear una carpeta crea un archivo).
 La librería no tiene funciones para formatear la tarjeta. Se debe hacer en
 otro adaptador. Lo más sencillo es formatearla directamente desde Windows
 a FAT32 que es el formato predeterminado.
-
-El formato FAT sólo permite gestionar tarjetas de un tamaño máximo de 4G.
-A partir de ahí debemos utilizar FAT32.
 
 Habitualmente cualquier lector SD es capaz de leer cualquier tipo de tarjeta.
 

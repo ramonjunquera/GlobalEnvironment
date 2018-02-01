@@ -96,6 +96,8 @@ void printDirectory(const char *path)
   Serial.println(path);
   //Anotamos la entrada que representa la carpeta (path)
   File root=SD.open(path);
+  //Obligatorio para que pueda llamarse varias veces
+  root.rewindDirectory();
   //Si la entrada existe...
   if(root)
   {
@@ -127,7 +129,45 @@ void createDir(const char *path)
   
   Serial.print(F("Creating Dir: "));
   Serial.println(path);
-  if (SD.mkdir(path)) Serial.println("Dir created");
+  //Si ya existe un elemento con el mismo nombre...
+  if(SD.exists(path))
+  {
+    //...lo abrimos
+    File f=SD.open(path);
+    //Anotamos si es una carpeta
+    bool isFolder=f.isDirectory();
+    //Cerramos el elemento
+    f.close();
+    //Si es una carpeta (si ya está creada la carpeta...
+    if(isFolder)
+    {
+      //..hemos terminado
+      Serial.println("Dir already created");
+      return;
+    }
+  }
+  //Anotamos si lo hemos conseguido. Inicialmente no
+  bool done=false;
+  //Creamos el contador
+  int counter=0;
+  //Mientras no lleguemos al máximo número de intentos y no esté hecho
+  while(counter<30 && !done)
+  {
+    //Creamos la carpeta
+    done=SD.mkdir(path);
+    //Si no hemos podido...
+    if(!done)
+    {
+      //...borramos el posible archivo creado por error
+      SD.remove(path);
+      SD.end();
+      SD.begin();
+      Serial.print(".");
+    }
+    counter++;
+  }
+  //Si hemos conseguido crearlo...
+  if(done) Serial.println("Dir created in " + String(counter) + " tries");
   else Serial.println("mkdir failed");
 }
 
@@ -138,19 +178,55 @@ void removeDir(const char *path)
   
   Serial.print(F("Removing Dir: "));
   Serial.println(path);
-  if (SD.rmdir(path)) Serial.println("Dir removed");
+  //Comprobamos si existe el elemento...
+  if(SD.exists(path))
+  {
+    //...lo abrimos
+    File f=SD.open(path);
+    //Anotamos si es una carpeta
+    bool isFolder=f.isDirectory();
+    //Cerramos el elemento
+    f.close();
+    //Si es un archivo...
+    if(!isFolder)
+    {
+      Serial.println("Folder doesn't exist");
+      return;
+    }
+  }
+  byte counter=0;
+  bool done=false;
+  //Mientras no lleguemos al máximo número de intentos y no esté hecho
+  while(counter<30 && !done)
+  {
+    //Lo intentamos borrar
+    done=SD.rmdir(path);
+    //Si no hemos podido...
+    if(!done)
+    {
+      File f=SD.open(path);
+      f.rewindDirectory();
+      f.close();
+      Serial.print(".");
+    }
+    counter++;
+  }
+  //Si hemos conseguido borrarlo
+  if (done) Serial.println("Dir removed in " + String(counter) + " tries");
   else Serial.println("rmdir failed");
 }
 
 void writeFile(const char *path, const char *message)
 {
   //Escribe un texto en un archivo
-  //La carpeta que contiene el archivo debe existir
+  //Si no existe lo crea
+  //Si ya existe, lo borra y lo crea de nuevo
   
   Serial.print(F("Writing file: "));
   Serial.println(path);
-
-  //Abrimos el archivo en modo lectura/escritura
+  //Si el archivo ya existe...lo borramos
+  if(SD.exists(path)) deleteFile(path);
+  //Creamos el archivo en modo lectura/escritura
   File file = SD.open(path,FILE_WRITE);
   //Si no hemos podido abrir el archivo...
   if (!file)
@@ -171,13 +247,10 @@ void appendFile(const char *path, const char *message)
 {
   //Añade un texto al final de un archivo
   //El archivo debe existir
-  
-  //La librería SD no tiene el modo append
-  //Tenemos que abrir el archivo en modo de escritura y mover la
-  //posición de escritura al final
 
+  //Por defecto, cuando se abre un archivo, la posición de escritura ya se sitúa al final
   Serial.print(F("Appending to file: "));
-  Serial.print(path);
+  Serial.println(path);
   //Abrimos el archivo en modo lectura/escritura
   File file = SD.open(path,FILE_WRITE);
   //Si no hemos podido abrir el archivo...
@@ -188,10 +261,6 @@ void appendFile(const char *path, const char *message)
   }
   //Hemos podido abrir el archivo
 
-  //Obtenemos su tamaño
-  unsigned long fileSize=file.size();
-  //Movemos la posición de lectura/escritura dentro del archivo al último carácter/byte
-  file.seek(fileSize);
   //Si hemos podido escribir el texto al final del archivo...informamos
   if (file.print(message)) Serial.println(F("Message appended"));
   //Si no hemos podido...informamos
@@ -279,7 +348,8 @@ void setup()
 {
   //Abrimos puerto serie para mostrar los mensajes de debug
   Serial.begin(115200);
-
+  //Nos aseguramos que el lector no está inicializado
+  SD.end();
   //Si no se puede montar el sistema de archivos... 
   if (!SD.begin())
   {
@@ -314,6 +384,7 @@ void setup()
 
   //Hemos terminado de utilizar el lector SD
   SD.end();
+  Serial.println("----------END----------");
 }
 
 void loop()
