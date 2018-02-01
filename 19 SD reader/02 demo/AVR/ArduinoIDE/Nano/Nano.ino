@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Tarjeta SD
-  Versión: 20180123
+  Versión: 20180125
   Objetivo: Aprender a utilizar escribir y leer en tarjetas SD
   Material: breadboard, cables, lector SD, Arduino Nano
   Descripción:
@@ -381,10 +381,13 @@ void setup()
   deleteFile("/mydir/hello.txt");
   removeDir("/mydir");
   printDirectory("/");
+<<<<<<< HEAD
 
   //Hemos terminado de utilizar el lector SD
   SD.end();
   Serial.println("----------END----------");
+=======
+>>>>>>> 6ac4967b5b651ecc8006b1089f7585b32882cbbb
 }
 
 void loop()
