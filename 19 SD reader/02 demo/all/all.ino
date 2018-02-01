@@ -1,10 +1,14 @@
 /*
   Autor: Ramón Junquera
-  Tema: Tarjeta SD
-  Versión: 20180125
+  Tema: Lector SD
+  Versión: 20180201
   Objetivo: Aprender a utilizar escribir y leer en tarjetas SD
-  Material: breadboard, cables, lector SD, Arduino Nano
+  Material: breadboard, cables, lector SD, ESP8266/Arduino UNO/Arduino Nano, resistencia de 10 Kohmios
+
   Descripción:
+  Este ejemplo debería funcionar en cualquier placa.
+  Se ha probado en ESP8266 ESP12-E, Arduino UNO y Arduino Nano.
+  
   Creamos funciones específicas para cada una de las acciones habituales.
   Las funciones informan de su estado por el puerto serie.
 
@@ -39,9 +43,24 @@
   - Cuando cerramos un archivo, automáticamente se hace un flush
   - La librería no soporta nombres largos. Sólo formato 8.3
   - Se pueden abrir varios archivos simultáneamente, siempre con variables distintas. Máximo 4
+  - Es importante alimentar el lector con el voltaje correcto. Recordando que las placas Arduino
+    habitualmente funcionan a 5V y las ESP a 3.3V
+  - Aunque la familia ESP8266 tenga pines etiquetados para conexión SDIO, seguiremos utilizando
+    el interface SPI, por ser más rápido.
+  - El pin CS (o SS) por defecto varía dependiendo de la placa. En los circuitos adjuntos se puede ver
+    la conexión del pin CS.
+  - En las placas ESP8266 el pin CS es el D8. Pero tiene un problema. Al conectarlo descubrimos
+    que en el momento en el que intentamos inicializar el lector de tarjetas con SD.begin
+    se queda colgado. Tenemos dos soluciones. O utilizamos otro pin, puesto que es 
+    configurable por software, o solventamos el problema de éste. La solución consiste en
+    forzar a que el estado de este pin sea por defecto LOW. Esto lo hacemos con una
+    resistencia física (de 10 Kohmios) de PULLDOWN.
+  - Es muy importante que el cableado sea correcto y haga buen contacto. Sino, tendremos comportamientos
+    extraños.
+  - No todas las tarjetas SD son compatibles. Normalmente las antiguas suelen dar más problemas que las nuevas
 
   Resultado:
-  Escribimos en un archivo y lo leemos a continuación
+  Hacemos varias pruebas con carpetas y archivos
 */
 
 #include <Arduino.h>
@@ -129,45 +148,7 @@ void createDir(const char *path)
   
   Serial.print(F("Creating Dir: "));
   Serial.println(path);
-  //Si ya existe un elemento con el mismo nombre...
-  if(SD.exists(path))
-  {
-    //...lo abrimos
-    File f=SD.open(path);
-    //Anotamos si es una carpeta
-    bool isFolder=f.isDirectory();
-    //Cerramos el elemento
-    f.close();
-    //Si es una carpeta (si ya está creada la carpeta...
-    if(isFolder)
-    {
-      //..hemos terminado
-      Serial.println("Dir already created");
-      return;
-    }
-  }
-  //Anotamos si lo hemos conseguido. Inicialmente no
-  bool done=false;
-  //Creamos el contador
-  int counter=0;
-  //Mientras no lleguemos al máximo número de intentos y no esté hecho
-  while(counter<30 && !done)
-  {
-    //Creamos la carpeta
-    done=SD.mkdir(path);
-    //Si no hemos podido...
-    if(!done)
-    {
-      //...borramos el posible archivo creado por error
-      SD.remove(path);
-      SD.end();
-      SD.begin();
-      Serial.print(".");
-    }
-    counter++;
-  }
-  //Si hemos conseguido crearlo...
-  if(done) Serial.println("Dir created in " + String(counter) + " tries");
+  if (SD.mkdir(path)) Serial.println("Dir created");
   else Serial.println("mkdir failed");
 }
 
@@ -178,55 +159,19 @@ void removeDir(const char *path)
   
   Serial.print(F("Removing Dir: "));
   Serial.println(path);
-  //Comprobamos si existe el elemento...
-  if(SD.exists(path))
-  {
-    //...lo abrimos
-    File f=SD.open(path);
-    //Anotamos si es una carpeta
-    bool isFolder=f.isDirectory();
-    //Cerramos el elemento
-    f.close();
-    //Si es un archivo...
-    if(!isFolder)
-    {
-      Serial.println("Folder doesn't exist");
-      return;
-    }
-  }
-  byte counter=0;
-  bool done=false;
-  //Mientras no lleguemos al máximo número de intentos y no esté hecho
-  while(counter<30 && !done)
-  {
-    //Lo intentamos borrar
-    done=SD.rmdir(path);
-    //Si no hemos podido...
-    if(!done)
-    {
-      File f=SD.open(path);
-      f.rewindDirectory();
-      f.close();
-      Serial.print(".");
-    }
-    counter++;
-  }
-  //Si hemos conseguido borrarlo
-  if (done) Serial.println("Dir removed in " + String(counter) + " tries");
+  if (SD.rmdir(path)) Serial.println("Dir removed");
   else Serial.println("rmdir failed");
 }
 
 void writeFile(const char *path, const char *message)
 {
   //Escribe un texto en un archivo
-  //Si no existe lo crea
-  //Si ya existe, lo borra y lo crea de nuevo
+  //La carpeta que contiene el archivo debe existir
   
   Serial.print(F("Writing file: "));
   Serial.println(path);
-  //Si el archivo ya existe...lo borramos
-  if(SD.exists(path)) deleteFile(path);
-  //Creamos el archivo en modo lectura/escritura
+
+  //Abrimos el archivo en modo lectura/escritura
   File file = SD.open(path,FILE_WRITE);
   //Si no hemos podido abrir el archivo...
   if (!file)
@@ -247,8 +192,11 @@ void appendFile(const char *path, const char *message)
 {
   //Añade un texto al final de un archivo
   //El archivo debe existir
+  
+  //La librería SD no tiene el modo append
+  //Tenemos que abrir el archivo en modo de escritura y mover la
+  //posición de escritura al final
 
-  //Por defecto, cuando se abre un archivo, la posición de escritura ya se sitúa al final
   Serial.print(F("Appending to file: "));
   Serial.println(path);
   //Abrimos el archivo en modo lectura/escritura
@@ -261,6 +209,10 @@ void appendFile(const char *path, const char *message)
   }
   //Hemos podido abrir el archivo
 
+  //Obtenemos su tamaño
+  unsigned long fileSize=file.size();
+  //Movemos la posición de lectura/escritura dentro del archivo al último carácter/byte
+  file.seek(fileSize);
   //Si hemos podido escribir el texto al final del archivo...informamos
   if (file.print(message)) Serial.println(F("Message appended"));
   //Si no hemos podido...informamos
@@ -278,7 +230,6 @@ void readFile(const char *path)
   Serial.println(path);
   //Abrimos el archivo
   //Los archivos por defecto se abren como sólo lectura. Es lo mismo que:
-  //File file = SD.open(path,FILE_READ);
   File file = SD.open(path);
   //Si no hemos podido abrir el archivo
   if (!file)
@@ -287,7 +238,10 @@ void readFile(const char *path)
     return;
   }
   Serial.println(F("----start----"));
-  while (file.available()) Serial.write(file.read());
+  //Anotamos el tamaño del archivo
+  uint32_t fileSize=file.size();
+  //Mostramos el contenido
+  for(uint32_t i=0;i<fileSize;i++) Serial.write(file.read());
   file.close();
   Serial.println(F("\n----end----"));
 }
@@ -334,8 +288,11 @@ void renameFile(const char *path1,const char *path2)
     newFile.close();
     return;
   }
+  //Anotamos el tamaño del archivo
+  uint32_t oldFileSize=oldFile.size();
   //Copiamos el contenido de manera binaria
-  while(oldFile.available()) newFile.write(oldFile.read());
+  for(uint32_t i=0;i<oldFileSize;i++) newFile.write(oldFile.read());
+  Serial.println("después de copiar");
   //Cerramos los archivos
   oldFile.close();
   newFile.close();
@@ -348,14 +305,14 @@ void setup()
 {
   //Abrimos puerto serie para mostrar los mensajes de debug
   Serial.begin(115200);
-  //Nos aseguramos que el lector no está inicializado
-  SD.end();
+
   //Si no se puede montar el sistema de archivos... 
   if (!SD.begin())
   {
     Serial.println("Error al montar sistema de archivos");
     return; //Terminamos función setup() y pasamos a loop()
   }
+  Serial.println("\nSistema de archivos montado correctamente");
 
   printDirectory("/");
   createDir("/mydir");
@@ -375,22 +332,18 @@ void setup()
   printDirectory("/");
 
   createDir("/mydir");
+  printDirectory("/");
   writeFile("/mydir/hello.txt","Hi!");
   printDirectory("/");
   printDirectory("/mydir");
   deleteFile("/mydir/hello.txt");
+  printDirectory("/");
   removeDir("/mydir");
   printDirectory("/");
-<<<<<<< HEAD
-
-  //Hemos terminado de utilizar el lector SD
-  SD.end();
-  Serial.println("----------END----------");
-=======
->>>>>>> 6ac4967b5b651ecc8006b1089f7585b32882cbbb
 }
 
 void loop()
 {
   //No tenemos nada especial que repetir
+  yield();
 }
