@@ -1,13 +1,13 @@
 /*
   Autor: Ramón Junquera
   Tema: Lector SD
-  Versión: 20180201
+  Versión: 20180203
   Objetivo: Aprender a utilizar escribir y leer en tarjetas SD
-  Material: breadboard, cables, lector SD, ESP8266/Arduino UNO/Arduino Nano, resistencia de 10 Kohmios
+  Material: breadboard, cables, lector SD, ESP8266/Arduino UNO/Arduino Nano/Arduino Mega, resistencia de 10 Kohmios
 
   Descripción:
   Este ejemplo debería funcionar en cualquier placa.
-  Se ha probado en ESP8266 ESP12-E, Arduino UNO y Arduino Nano.
+  Se ha probado en ESP8266 ESP12-E, Arduino UNO, Arduino Nano y Arduino Mega.
   
   Creamos funciones específicas para cada una de las acciones habituales.
   Las funciones informan de su estado por el puerto serie.
