@@ -94,8 +94,8 @@ Esto indica que:
 
 Si además añadimos las siguientes líneas:
 ---start---
-wpa-essid RoJo
-wpa-psk ZAMPABOLLOS5
+wpa-essid nombredepuntodeacceso
+wpa-psk contraseñawifi
 ---end---
 Estaremos fijan un punto de acceso al que conectarnos.
 Si no lo hacemos, se conectará automáticamente al último punto de acceso

@@ -64,3 +64,11 @@ Consumo medio:
   --------- -------
   Normal      64mA
   DeepSleep   16mA
+
+Los pines de conexión SPI son:
+  pin SPI
+  --- ---
+   19 MISO
+   23 MOSI
+   18 SCLK
+    5 CS

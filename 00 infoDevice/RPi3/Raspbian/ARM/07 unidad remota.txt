@@ -15,7 +15,7 @@ Lo editamos con nano:
   sudo nano /etc/fstab
 
 Añadimos el final del archivo la siguiente línea:
-  //192.168.1.197/public /home/pi/synology cifs username=Ra,password=Amama5,rw 0 0
+  //192.168.1.197/public /home/pi/synology cifs username=usuario,password=contraseña,rw 0 0
 En ella se define:
 - La dirección y nombre del recurso compartido
 - La carpeta local sobre la que se montará
@@ -43,7 +43,7 @@ Y marcar el check de: Wait for network
 Es muy conveniente añadir una dirección al apartado Bookmarks para agilizar el salto
 a una carpeta concreta.
 
-En el caso de que queramos eliminar un Bookmerk, en el administrador de archivos, en el
+En el caso de que queramos eliminar un Bookmark, en el administrador de archivos, en el
 panel izquierdo, desplegaremos la cabecera "Directrory Tree", y seleccionamos "Places".
 Sólo tenemos que seleccionar la referencia a eliminar, hacer click con el botón derecho
 y borrar.
