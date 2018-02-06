@@ -2,8 +2,8 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20180124
-  Material: breadboard, cables, placa ESP8266, display OLED I2C SSD1306
+  Fecha: 20180206
+  Material: breadboard, cables, placa Arduino Mega/ESP32, display OLED I2C SSD1306. lector SD
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
@@ -12,25 +12,28 @@
 
   device  SCL SDA
   ------- --- ---
+  Mega    21  20
   ESP8266 D1  D2
   ESP32   22  21
   RPi 0   28  27 -> ID_SC & ID_SD    
   RPi 1    5   3 -> GPIO3 & GPIO2
 
-  Nota:
-  El sistema de archivos interno debe contener los archivos de la carpeta data para
-  su correcto funcionamiento.
-  Se puede utilizar el plugin integrado en el IDE para facilitar la subida.
- 
+  Notas:
+  - La tarjeta SD debe contener los archivos de la carpeta data para su correcto funcionamiento.
+  - La librería SD sólo es capaz de leer archivos en notación 8.3, no nombres largos
+  - Los drivers de ESP ya incluyen su propia librería SD.h. Si aparecen problemas por usar múltiples librerías con
+    el mismo nombre, es conveniente eliminar la librería SD.h de Arduino al compilar para ESP.
+  
   Resultado:
   Realizamos varios tests cíclicos
 */
 
 #include <Arduino.h>
-#include <FS.h> //Librería de gestión SPIFFS para ESP8266
-#include "RoJoSSD1306.h" //Librería de gestión del display SSD1306
-#include "RoJoSprite.h" //Librería de gestión de sprites monocromos
-#include "RoJoABC.h" //Gestión de fuentes
+#define SPIFFS SD //Cuando referenciemos a SPIFFS se redireccionará a SD
+#include <SD.h> //Librería de gestión SD
+#include "RoJoSSD1306SD.h" //Librería de gestión del display SSD1306
+#include "RoJoSpriteSD.h" //Librería de gestión de sprites monocromos
+#include "RoJoABCSD.h" //Gestión de fuentes
 
 //Creamos objeto de gestión
 RoJoSSD1306 display;
@@ -250,7 +253,8 @@ void Test11()
   //Creamos el sprite
   RoJoSprite mySprite;
   //Lo leemos desde el archivo
-  mySprite.load(F("/mickey.spr"));
+  //mySprite.load(F("/mickey.spr"));
+  mySprite.load(F("/ball.spr"));
   //Dibujamos el sprite en pantalla
   display.drawSpritePage(0,0,&mySprite,1);
   //Mostramos el resultado
@@ -268,7 +272,7 @@ void Test12()
   //Creamoss un nuevo sprite
   RoJoSprite ball;
   //Leemos su contenido desde un archivo
-  ball.load(F("/ball30x30.spr")); //Su tamaño es x=30,y=30,pages=4
+  ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
   byte x=0;
   byte y=0;
@@ -310,7 +314,7 @@ void Test13()
   //Creamos un nuevo sprite para el objeto en movimiento
   RoJoSprite ball;
   //Leemos su contenido desde un archivo
-  ball.load(F("/ball30x30.spr")); //Su tamaño es x=30,y=30,pages=4
+  ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
   byte x=0;
   byte y=0;
@@ -355,11 +359,11 @@ void Test14()
   //Creamos un nuevo sprite para el objeto en movimiento
   RoJoSprite ball;
   //Leemos su contenido desde un archivo
-  ball.load(F("/ball30x30.spr")); //Su tamaño es x=30,y=30,pages=4
+  ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Creamos un nuevo sprite para la máscara del objeto en movimiento
   RoJoSprite ballMask;
   //Leemos su contenido desde un archivo
-  ballMask.load(F("/ball30x30mask.spr")); //Su tamaño es x=30,y=30,pages=4
+  ballMask.load(F("/ballmask.spr")); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
   byte x=0;
   byte y=0;
@@ -514,19 +518,19 @@ void Test19()
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
   //Si no hemos podido crear el sprite de texto...terminamos
-  font.print(F("/RoJoABC5x7digits.fon"),F("20171101"),&textSprite);
+  font.print(F("/5x7d.fon"),F("20171101"),&textSprite);
   //Lo mostramos
   display.drawSpritePage(0,0,&textSprite,4);
 
   //Utilizaremos otra fuente más grande
   //Si no hemos podido crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC10x15digits.fon"),F("20171101"),&textSprite)) return;
+  if(!font.print(F("/10x15d.fon"),F("20171101"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,2,&textSprite,4);
   
   //Creamos otro texto más grande que la pantalla 
   //Si no hemos podido crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC10x15digits.fon"),F("1234567890123456"),&textSprite)) return;
+  if(!font.print(F("/10x15d.fon"),F("1234567890123456"),&textSprite)) return;
   //Lo mostramos. No se verá el final
   display.drawSpritePage(0,4,&textSprite,4);
   //Lo mostramos de nuevo desplazado a la izquierda, comenzando desde una
@@ -550,7 +554,7 @@ void Test20()
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
   //Si no hemos podido crear el sprite con  texto...hemos terminado
-  if(!font.print("/RoJoABC5x7digits.fon","2017",&normalSprite)) return;
+  if(!font.print("/5x7d.fon","2017",&normalSprite)) return;
   //Creamos un nuevo sprite para el redimensionado
   RoJoSprite resizeSprite;
   //Redimensionamos el sprite de texto. Lo hacemos 4 veces más grande
@@ -612,12 +616,12 @@ void Test21()
   RoJoABC font;
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC7x11.fon"),F("Hello world!"),&textSprite)) return;
+  if(!font.print(F("/7x11.fon"),F("Hello world!"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,0,&textSprite,4);
   //Creamos otro texto
   //Si no podemos crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC7x11.fon"),F("Good morning"),&textSprite)) return;
+  if(!font.print(F("/7x11.fon"),F("Good morning"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,2,&textSprite,4);
   //Utilizaremos otra fuente
@@ -625,24 +629,24 @@ void Test21()
   //Si no podemos cargar la fuente desde el archivo...terminamos
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC5x7.fon"),F("Hello world!"),&textSprite)) return;
+  if(!font.print(F("/5x7.fon"),F("Hello world!"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,4,&textSprite,4);
   //Creamos otro texto
   //Si no podemos crear el sprite de texto...terminamos
-  font.print(F("/RoJoABC5x7.fon"),F("Good morning"),&textSprite);
+  font.print(F("/5x7.fon"),F("Good morning"),&textSprite);
   //Lo mostramos
   display.drawSpritePage(0,5,&textSprite,4);
   //Utilizaremos otra fuente
   //Reaprovechamos el objeto de gestión de fuentes
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC3x5.fon"),F("Hello world!"),&textSprite)) return;
+  if(!font.print(F("/3x5.fon"),F("Hello world!"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,6,&textSprite,4);
   //Creamos otro texto
   //Si no podemos crear el sprite de texto...terminamos
-  if(!font.print(F("/RoJoABC3x5.fon"),F("Good morning"),&textSprite)) return;
+  if(!font.print(F("/3x5.fon"),F("Good morning"),&textSprite)) return;
   //Lo mostramos
   display.drawSpritePage(0,7,&textSprite,4);
   //Refrescamos pantalla
@@ -653,12 +657,15 @@ void Test21()
 
 void setup()
 {
+  Serial.begin(115200);
   //Inicializamos el display
   display.begin();
 }
 
 void loop()
 {
+  //Test11();
+  //delay(5000);
   Test1();
   delay(1000);
   Test2();
