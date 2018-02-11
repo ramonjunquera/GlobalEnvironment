@@ -40,8 +40,8 @@ Esta es la relación entre la nomenclatura y los pines
 Los pines para las conexiones I2C son:
   pin I2C
   --- ---
-  D1  SDA
-  D2  SCK
+  D1  SCK
+  D2  SDA
 
 Los pines de conexión SPI son:
   GPIO pin SPI

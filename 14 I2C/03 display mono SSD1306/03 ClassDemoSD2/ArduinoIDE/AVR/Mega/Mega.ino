@@ -3,7 +3,7 @@
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
   Fecha: 20180211
-  Material: breadboard, cables, placa Arduino Mega/ESP, display OLED I2C SSD1306. lector SD
+  Material: breadboard, cables, placa Arduino Mega, display OLED I2C SSD1306, lector SD
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
@@ -656,6 +656,8 @@ void Test21()
 
 void setup()
 {
+  //Para el pin CS de la SD utilizaremos el pin 2 en vez del de por defecto
+  RoJoSprite::pinCS_SPI=2;
   //Inicializamos el display
   display.begin();
 }

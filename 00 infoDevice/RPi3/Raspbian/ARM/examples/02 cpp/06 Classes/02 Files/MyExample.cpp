@@ -25,7 +25,7 @@
  * Tras incluir las librerías necesarias para ejecutar el programa,
  * añadiremos la referencia al archivo de cabecera (.h) de nuestra clase
  * externa.
- * Esto es suficiente como para poder utilziarla como si estuviese
+ * Esto es suficiente como para poder utilizarla como si estuviese
  * definida dentro del programa principal.
  * 
  * El archivo de cabecera, sólo contiene la declaración de la clase.

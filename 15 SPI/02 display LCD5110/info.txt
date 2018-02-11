@@ -59,3 +59,7 @@ La frecuencia máxima del SPI para no tener errores es de 25MHz.
 Al ser un display LCD, la velocidad de refresco es bastante baja.
 Cuando se mueve un objeto por pantalla deja "estela". No está
 preparada para imágenes en movimiento.
+
+No tiene pin MISO porque nunca se recibe información del display.
+Aun así, no se le debería dar uso al pin MISO de la placa. Al menos para
+este dispositivo.
