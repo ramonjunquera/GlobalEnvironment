@@ -54,7 +54,8 @@ Siempre conectado a tierra.
 Display monocromo. 
 La resolución es de 84x48.
 Se conecta por bus SPI.
-La frecuencia máxima del SPI para no tener errores es de 25MHz.
+La frecuencia máxima del SPI para no tener errores es de 25MHz en tarjetas
+ESP y menos de 4MHz en tarjetas Arduino.
 
 Al ser un display LCD, la velocidad de refresco es bastante baja.
 Cuando se mueve un objeto por pantalla deja "estela". No está
