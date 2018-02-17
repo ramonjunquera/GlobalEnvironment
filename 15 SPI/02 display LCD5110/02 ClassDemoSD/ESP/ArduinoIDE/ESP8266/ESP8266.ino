@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180218
+  Fecha: 20180217
   Tema: Librería para display Nokia LCD 5110 SPI 84x48
   Objetivo: Demo de librería RoJoLCD5110SD
-  Material: breadboard, cables, placa ESP32, display LCD5110
+  Material: breadboard, cables, placa ESP8266, display LCD5110, lector SD
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
@@ -27,10 +27,10 @@
 #include "RoJoSpriteSD.h" //Gestión de sprites
 #include "RoJoABCSD.h" //Gestión de fuentes
 
-//Definimos las constantes de pines
-const byte pinDC=22;
-const byte pinRST=21;
-const byte pinCS=5;
+//Definimos los pines del display
+const byte pinDC=D2;
+const byte pinRST=D0;
+//const byte pinCS=D8;
 
 //Creamos objeto de gestión
 RoJoLCD5110 display;
@@ -585,9 +585,9 @@ void Test20()
 void setup()
 {
   //Para el pin CS de la SD utilizaremos el pin 4 en vez del de por defecto
-  RoJoSprite::pinCS_SPI=4;
+  RoJoSprite::pinCS_SPI=D3;
   //Inicializamos el display
-  display.begin(pinRST,pinDC); //Usamos el pin CS por defecto (el 5)
+  display.begin(pinRST,pinDC); //Usamos el pin CS por defecto (el D8)
 }
 
 void loop()
