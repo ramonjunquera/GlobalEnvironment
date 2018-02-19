@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20180211
+  Fecha: 20180219
   Material: breadboard, cables, placa ESP32, display OLED I2C SSD1306, lector SD
 
   Descripción:
@@ -167,13 +167,13 @@ void Test9()
   mySprite.setSize(7,1);
   //Lo dibujamos
   //void setPage(int16_t x,int16_t page,byte mask,byte color);
-  mySprite.setPage(0,0,0b00111110,4); //4=escribir el valor tal cual
-  mySprite.setPage(1,0,0b01000001,4);
-  mySprite.setPage(2,0,0b01010101,4);
-  mySprite.setPage(3,0,0b01010001,4);
-  mySprite.setPage(4,0,0b01010101,4);
-  mySprite.setPage(5,0,0b01000001,4);
-  mySprite.setPage(6,0,0b00111110,4);
+  mySprite.drawPage(0,0,0b00111110,4); //4=escribir el valor tal cual
+  mySprite.drawPage(1,0,0b01000001,4);
+  mySprite.drawPage(2,0,0b01010101,4);
+  mySprite.drawPage(3,0,0b01010001,4);
+  mySprite.drawPage(4,0,0b01010101,4);
+  mySprite.drawPage(5,0,0b01000001,4);
+  mySprite.drawPage(6,0,0b00111110,4);
 
   //Lo dibujamos varias veces
   for(byte y=0;y<display.yMax;y+=8)
@@ -198,17 +198,17 @@ void Test10()
   //Dibujamos el marco de grosor 2
   for(byte x=0;x<30;x++)
   {
-    mySprite.setPixel(x,0,1);
-    mySprite.setPixel(x,1,1);
-    mySprite.setPixel(x,22,1);
-    mySprite.setPixel(x,23,1); //Son 3 páginas de altura (3*8=24)
+    mySprite.drawPixel(x,0,1);
+    mySprite.drawPixel(x,1,1);
+    mySprite.drawPixel(x,22,1);
+    mySprite.drawPixel(x,23,1); //Son 3 páginas de altura (3*8=24)
   }
   for(byte y=0;y<24;y++)
   {
-    mySprite.setPixel(0,y,1);
-    mySprite.setPixel(1,y,1);
-    mySprite.setPixel(28,y,1);
-    mySprite.setPixel(29,y,1);
+    mySprite.drawPixel(0,y,1);
+    mySprite.drawPixel(1,y,1);
+    mySprite.drawPixel(28,y,1);
+    mySprite.drawPixel(29,y,1);
   }
 
   //Lo dibujamos
@@ -223,10 +223,10 @@ void Test10()
     //Si hay un pixel dibujado...
     if(mySprite.getPixel(x,10))
       //...lo borraremos
-      mySprite.setPixel(x,10,0);
+      mySprite.drawPixel(x,10,0);
     else
       //..lo dibujaremos
-      mySprite.setPixel(x,10,1);
+      mySprite.drawPixel(x,10,1);
   }
   //Dibujamos el nuevo sprite en pantalla
   display.drawSpritePage(50,0,&mySprite,1);
