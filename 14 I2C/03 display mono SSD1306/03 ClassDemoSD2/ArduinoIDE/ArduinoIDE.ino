@@ -3,7 +3,7 @@
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
   Fecha: 20180219
-  Material: breadboard, cables, placa ESP8266, display OLED I2C SSD1306, lector SD
+  Material: breadboard, cables, placa Arduino Mega, display OLED I2C SSD1306, lector SD
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
@@ -50,6 +50,8 @@ void Test1()
       display.setPixel(x*5,y*5,1);
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test2()
@@ -62,6 +64,8 @@ void Test2()
       display.setPixel(x,y,2);
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test3()
@@ -74,6 +78,8 @@ void Test3()
       display.setPixel(x,y,0);
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test4()
@@ -86,6 +92,8 @@ void Test4()
       display.setPixel(x,y,!display.getPixel(x,y));
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test5()
@@ -98,6 +106,8 @@ void Test5()
   for(byte i=0;i<50;i++) display.lineV(i,i/2,i,1);
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test6()
@@ -110,6 +120,8 @@ void Test6()
   for(byte i=0;i<50;i++) display.lineH(i,i/2,i,1);
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test7()
@@ -140,6 +152,8 @@ void Test7()
   
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test8()
@@ -151,6 +165,8 @@ void Test8()
   for(byte x=0;x<128;x+=5) display.line(0,0,x,63,1);
   //Mostramos el resultado
   display.show();
+
+  delay(1000);
 }
 
 void Test9()
@@ -183,11 +199,13 @@ void Test9()
   display.show();
   //Borramos el sprite utilizado
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test10()
 {
-  //Función de sprite: setPixel y getPixel
+  //Función de sprite: drawPixel y getPixel
   
   //Limpiamos pantalla
   display.clear();
@@ -234,6 +252,8 @@ void Test10()
   display.show();
   //Borramos el sprite utilizado
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test11()
@@ -260,6 +280,8 @@ void Test11()
   display.show();
   //Borramos el sprite utilizado
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test12()
@@ -344,8 +366,7 @@ void Test13()
 
 void Test14()
 {
-  //Mover sprite por pantalla manteniendo una imagen de fondo
-  //y que no sea transparente
+  //Mover sprite por pantalla manteniendo una imagen de fondo y que no sea transparente
   //Para conseguir esto, necesitamos una imagen que nos haga de máscara
   //Esta máscara permitirá borrar antes de dibujar el sprite definitivo
 
@@ -414,6 +435,8 @@ void Test15()
   display.show();
   //Borramos el sprite utilizado
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test16()
@@ -450,6 +473,8 @@ void Test16()
   mySprite2.clean();
   //Borramos el archivo
   SPIFFS.remove(F("/mick2.spr"));
+
+  delay(1000);
 }
 
 void Test17()
@@ -481,6 +506,8 @@ void Test17()
   //Borramos los sprites utilizados
   resizeSprite.clean();
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test18()
@@ -503,6 +530,8 @@ void Test18()
   display.show();
   //Borramos el sprite utilizado
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test19()
@@ -540,6 +569,8 @@ void Test19()
   
   //Borramos el sprite utilizado
   textSprite.clean();
+
+  delay(1000);
 }
 
 void Test20()
@@ -600,6 +631,8 @@ void Test20()
   //Borramos los sprites utilizados
   resizeSprite.clean();
   normalSprite.clean();
+
+  delay(1000);
 }
 
 void Test21()
@@ -652,56 +685,46 @@ void Test21()
   display.show();
   //Borramos el sprite utilizado
   textSprite.clean();
+
+  delay(5000);
 }
 
 void setup()
 {
-  //Para el pin CS de la SD utilizaremos el pin D3 en vez del de por defecto
-  RoJoSprite::pinCS_SPI=D3;
+  //Definimos el pin CS de la SD según el modelo de placa
+  #ifdef ARDUINO_AVR_MEGA2560 //Si es una Mega...
+    RoJoSprite::pinCS_SPI=2;
+  #elif defined(ESP32) //Si es ESP32...
+    RoJoSprite::pinCS_SPI=4;
+  #elif defined(ESP8266) //Si es ESP8266...
+    RoJoSprite::pinCS_SPI=D3;
+  #endif
   //Inicializamos el display
   display.begin();
 }
 
 void loop()
 {
-  Test1();
-  delay(1000);
-  Test2();
-  delay(1000);
-  Test3();
-  delay(1000);
-  Test4();
-  delay(1000);
-  Test5();
-  delay(1000);
-  Test6();
-  delay(1000);
-  Test7();
-  delay(1000);
-  Test8();
-  delay(1000);
-  Test9();
-  delay(1000);
-  Test10();
-  delay(1000);
-  Test11();
-  delay(1000);
-  Test12();
-  Test13();
-  Test14();
-  Test15();
-  delay(1000);
-  Test16();
-  delay(1000);
-  Test17();
-  delay(1000);
-  Test18();
-  delay(1000);
-  Test19();
-  delay(1000);
-  Test20();
-  delay(1000);
-  Test21();
-  delay(5000);
+  Test1(); //Función setPixel con color 1 = dibujar
+  Test2(); //Función setPixel con color 2 = invertir
+  Test3(); //Función setPixel con color 0 = borrar
+  Test4(); //Función getPixel
+  Test5(); //Función lineV
+  Test6(); //Función lineH
+  Test7(); //Rectángulos
+  Test8(); //Líneas
+  Test9(); //Sprites definidos en programa.
+  Test10(); //Función de sprite: drawPixel y getPixel
+  Test11(); //Leer sprite desde un archivo
+  Test12(); //Mover sprite por pantalla = drawSprite
+  Test13(); //Mover sprite por pantalla manteniendo una imagen de fondo
+  Test14(); //Mover sprite por pantalla manteniendo una imagen de fondo y que no sea transparente
+  Test15(); //Obtener sprite de la pantalla
+  Test16(); //Guardar un sprite
+  Test17(); //Resize
+  Test18(); //Líneas dibujadas en sprite
+  Test19(); //Mostrar texto
+  Test20(); //Redimensionar texto
+  Test21(); //Mostrar texto con más fuentes
 }
 
