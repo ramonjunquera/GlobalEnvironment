@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20180219
+  Fecha: 20180221
   Material: breadboard, cables, placa ESP/RPi, display OLED I2C SSD1306. lector SD
 
   Descripción:

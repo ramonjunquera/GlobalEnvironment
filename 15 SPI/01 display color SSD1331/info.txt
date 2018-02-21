@@ -1,0 +1,66 @@
+Display SSD1331
+
+Descripción de pines del display:
+SSD1331  Descripción
+-------  -----------
+   GND    GND
+   VCC    3V3
+   SCL    Reloj (SPI_CLK)
+   SDA    Escritura (SPI_MOSI)
+   RES    Reset
+   DC     Data/Command
+   CS     Chip select (SPI_CEx_N)
+
+Pin RES
+  Debe mantenerse siempre en HIGH.
+  Si lo cambiamos a LOW se resetea.
+
+Pin CS
+  Se conecta al pin de chip control que se defina.
+   
+Pin DC
+  No pertenece al estándar SPI. Es un pin digital se salida. Sirve
+  cualquiera. Permite indicarle al display si la información que le
+  enviamos debe ser considerada un comando o un dato.
+  Los comandos cambian la configuración del display. Los datos se
+  escriben directamente en la memoria gráfica.
+  Según el estado se considera:
+     LOW : comando
+     HIGH : datos gráficos
+ 
+Pin SDA
+  Es el pin por el que se escribe en el display. Siempre debe ser
+  conectado al pin SPI_MOSI
+   
+Pin SCL
+  Pin de reloj. Indica cuándo se puede leer el bit enviado. Siempre
+  debe ser conectado a SPI_CLK
+
+Pin VCC
+  Alimentación. Habitualmente conectado a 3.3V. Este modelo de display
+  puede ser alimentado con un voltaje en el rango de 2.8 a 5.5V.
+ 
+Pin GND
+  Siempre conectado a tierra.
+ 
+Cuando activamos las comunicaciones SPI por hardware hacemos uso de
+todos sus pines.
+En este caso no tenemos en cuenta el pin MISO, pero no podemos 
+utilizarlo para otra cosa porque se sigue escribiendo y leyendo en el.
+
+El modelo para el que se desarrolla la clase se ha comprado en:
+http://www.banggood.com/0_95-Inch-7pin-Full-Color-65K-Color-SSD1331-SPI-OLED-Display-For-Arduino-p-1068167.html?rmmds=search
+
+Tiene una diagonal de 0.95"
+Es capaz de mostrar hasta 65536 colores.
+La resolución es 96 pixels en horizontal por 64 en vertical.
+No necesita luz de fondo (backlight) como las pantallas LCD, puesto
+que el OLED emite su propia luz.
+OLED = Organic Light Emitting Diode (diodo orgánico de emisión de
+luz). Es una variante de las matrices de leds.
+Su consumo es de unos 25 mA. Inferior al consumo de un led normal,
+que ronda los 29 mA.
+   
+El display tiene 96*64=6144 pixels
+Cada pixel usa 2 bytes de memoria
+En total son 6144*2 = 12288 bytes = 12Kb

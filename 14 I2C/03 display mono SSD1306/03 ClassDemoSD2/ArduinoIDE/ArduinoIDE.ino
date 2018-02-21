@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20180219
+  Fecha: 20180221
   Material: breadboard, cables, placa Arduino Mega, display OLED I2C SSD1306, lector SD
 
   Descripción:
@@ -37,6 +37,15 @@
 
 //Creamos objeto de gestión
 RoJoSSD1306 display;
+
+//Definimos el pin CS de la SD según el modelo de placa
+#ifdef ARDUINO_AVR_MEGA2560 //Si es una Mega...
+  const byte pinCS_SPI=2;
+#elif defined(ESP32) //Si es ESP32...
+  const byte pinCS_SPI=4;
+#elif defined(ESP8266) //Si es ESP8266...
+  const byte pinCS_SPI=D3;
+#endif
 
 void Test1()
 {
@@ -178,7 +187,7 @@ void Test9()
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Lo dimensionamos. Anchura=7. Páginas=1
   mySprite.setSize(7,1);
   //Lo dibujamos
@@ -210,7 +219,7 @@ void Test10()
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Lo dimensionamos. Anchura=7. Páginas=1
   mySprite.setSize(30,3);
   //Dibujamos el marco de grosor 2
@@ -271,7 +280,7 @@ void Test11()
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Lo leemos desde el archivo
   mySprite.load(F("/ball.spr"));
   //Dibujamos el sprite en pantalla
@@ -291,7 +300,7 @@ void Test12()
   //Seguiremos con el modo inverso desactivado (pixels en negro)
   display.reverse(false);
   //Creamoss un nuevo sprite
-  RoJoSprite ball;
+  RoJoSprite ball(pinCS_SPI);
   //Leemos su contenido desde un archivo
   ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
@@ -329,11 +338,11 @@ void Test13()
   //Seguiremos con el modo inverso desactivado (pixels en negro)
   display.reverse(false);
   //Creamos un nuevo sprite para el fondo
-  RoJoSprite backSprite;
+  RoJoSprite backSprite(pinCS_SPI);
   //Leemos su contenido desde un archivo
   backSprite.load(F("/mickey.spr"));
   //Creamos un nuevo sprite para el objeto en movimiento
-  RoJoSprite ball;
+  RoJoSprite ball(pinCS_SPI);
   //Leemos su contenido desde un archivo
   ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
@@ -373,15 +382,15 @@ void Test14()
   //Seguiremos con el modo inverso desactivado (pixels en negro)
   display.reverse(false);
   //Creamos un nuevo sprite para el fondo
-  RoJoSprite backSprite;
+  RoJoSprite backSprite(pinCS_SPI);
   //Leemos su contenido desde un archivo
   backSprite.load(F("/mickey.spr"));
   //Creamos un nuevo sprite para el objeto en movimiento
-  RoJoSprite ball;
+  RoJoSprite ball(pinCS_SPI);
   //Leemos su contenido desde un archivo
   ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Creamos un nuevo sprite para la máscara del objeto en movimiento
-  RoJoSprite ballMask;
+  RoJoSprite ballMask(pinCS_SPI);
   //Leemos su contenido desde un archivo
   ballMask.load(F("/ballmask.spr")); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
@@ -422,7 +431,7 @@ void Test15()
   //Seguiremos con el modo inverso desactivado (pixels en negro)
   display.reverse(false);
   //Creamos un nuevo sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Leemos su contenido desde un archivo
   mySprite.load(F("/mickey.spr"));
   //Dibujamos el sprite de fondo sobreescribiendo lo que haya
@@ -446,7 +455,7 @@ void Test16()
   //Seguiremos con el modo inverso desactivado (pixels en negro)
   display.reverse(false);
   //Creamos un nuevo sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Leemos su contenido desde un archivo
   mySprite.load(F("/mickey.spr"));
   //Dibujamos el sprite de fondo sobreescribiendo lo que haya
@@ -458,7 +467,7 @@ void Test16()
   //Borramos el sprite utilizado
   mySprite.clean();
   //Creamos un nuevo sprite
-  RoJoSprite mySprite2;
+  RoJoSprite mySprite2(pinCS_SPI);
   //Leemos su contenido desde el archivo
   mySprite2.load(F("/mick2.spr"));
   //Borramos la pantalla
@@ -484,11 +493,11 @@ void Test17()
   //Seguiremos con el modo inverso desactivado (pixels en negro)
   display.reverse(false);
   //Creamos un nuevo sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Leemos su contenido desde un archivo
   mySprite.load(F("/mickey.spr"));
   //Creamos el sprite utilizado para el redimensionado
-  RoJoSprite resizeSprite;
+  RoJoSprite resizeSprite(pinCS_SPI);
   //Limpiamos pantalla
   display.clear();
   //Reduciremos la imagen desde un 5% hasta un 100%
@@ -519,7 +528,7 @@ void Test18()
   //Borramos la pantalla
   display.clear();
   //Creamoss un nuevo sprite
-  RoJoSprite mySprite;
+  RoJoSprite mySprite(pinCS_SPI);
   //Será tan grande como la pantalla
   mySprite.setSize(128,8);
   //Dibujamos unas líneas
@@ -542,7 +551,7 @@ void Test19()
   display.clear();
   
   //Creamos el sprite que contendrá el texto
-  RoJoSprite textSprite;
+  RoJoSprite textSprite(pinCS_SPI);
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
   //Si no hemos podido crear el sprite de texto...terminamos
@@ -580,13 +589,13 @@ void Test20()
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite de tamaño normal
-  RoJoSprite normalSprite;
+  RoJoSprite normalSprite(pinCS_SPI);
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
   //Si no hemos podido crear el sprite con  texto...hemos terminado
   if(!font.print("/5x7d.fon","2017",&normalSprite)) return;
   //Creamos un nuevo sprite para el redimensionado
-  RoJoSprite resizeSprite;
+  RoJoSprite resizeSprite(pinCS_SPI);
   //Redimensionamos el sprite de texto. Lo hacemos 4 veces más grande
   resizeSprite.resize(normalSprite.width()*4,normalSprite.heightPages()*4*8,&normalSprite);
   //Mostramos el sprite redimensionado en pantalla
@@ -643,7 +652,7 @@ void Test21()
   display.clear();
   
   //Creamos el sprite que contendrá el texto
-  RoJoSprite textSprite;
+  RoJoSprite textSprite(pinCS_SPI);
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
   //Creamos el sprite con el texto
@@ -691,14 +700,6 @@ void Test21()
 
 void setup()
 {
-  //Definimos el pin CS de la SD según el modelo de placa
-  #ifdef ARDUINO_AVR_MEGA2560 //Si es una Mega...
-    RoJoSprite::pinCS_SPI=2;
-  #elif defined(ESP32) //Si es ESP32...
-    RoJoSprite::pinCS_SPI=4;
-  #elif defined(ESP8266) //Si es ESP8266...
-    RoJoSprite::pinCS_SPI=D3;
-  #endif
   //Inicializamos el display
   display.begin();
 }
