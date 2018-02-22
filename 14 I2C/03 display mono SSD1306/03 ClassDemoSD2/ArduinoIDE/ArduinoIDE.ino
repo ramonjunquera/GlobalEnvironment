@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20180221
+  Fecha: 20180222
   Material: breadboard, cables, placa Arduino Mega, display OLED I2C SSD1306, lector SD
 
   Descripción:
@@ -52,11 +52,11 @@ void Test1()
   //Función setPixel con color 1 = dibujar
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Dibujamos una matriz de puntos
   for(int x=0;x<10;x++)
     for(int y=0;y<10;y++)
-      display.setPixel(x*5,y*5,1);
+      display.videoMem->drawPixel(x*5,y*5,1);
   //Mostramos el resultado
   display.show();
 
@@ -70,7 +70,7 @@ void Test2()
   //Dibujamos un rectángulo relleno sobre la matriz anterior que invierte los pixels
   for(int x=0;x<46;x++)
     for(int y=0;y<46;y++)
-      display.setPixel(x,y,2);
+      display.videoMem->drawPixel(x,y,2);
   //Mostramos el resultado
   display.show();
 
@@ -84,7 +84,7 @@ void Test3()
   //Dibujamos un rectángulo relleno en el interior que borra
   for(int x=10;x<36;x++)
     for(int y=10;y<36;y++)
-      display.setPixel(x,y,0);
+      display.videoMem->drawPixel(x,y,0);
   //Mostramos el resultado
   display.show();
 
@@ -98,7 +98,7 @@ void Test4()
   //Del rectángulo que contiene todo, invertimos los puntos
   for(int x=0;x<46;x++)
     for(int y=0;y<46;y++)
-      display.setPixel(x,y,!display.getPixel(x,y));
+      display.videoMem->drawPixel(x,y,!display.videoMem->getPixel(x,y));
   //Mostramos el resultado
   display.show();
 
@@ -110,9 +110,9 @@ void Test5()
   //Función lineV
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Dibujamos líneas verticales de distintas longitudes
-  for(byte i=0;i<50;i++) display.lineV(i,i/2,i,1);
+  for(byte i=0;i<50;i++) display.videoMem->lineV(i,i/2,i,1);
   //Mostramos el resultado
   display.show();
 
@@ -124,9 +124,9 @@ void Test6()
   //Función lineH
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Dibujamos líneas horizontales de distintas longitudes
-  for(byte i=0;i<50;i++) display.lineH(i,i/2,i,1);
+  for(byte i=0;i<50;i++) display.videoMem->lineH(i,i/2,i,1);
   //Mostramos el resultado
   display.show();
 
@@ -138,26 +138,26 @@ void Test7()
   //Rectángulos
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Dibujamos un rectángulo relleno sin borde
-  display.rect(0,0,20,20,1); //1=sólido
+  display.videoMem->rect(0,0,20,20,1); //1=sólido
   //Dibujamos un rectángulo con borde inverso y sin relleno
-  display.rect(10,10,30,30,3,2); //3=transparente,2=inverso
+  display.videoMem->rect(10,10,30,30,3,2); //3=transparente,2=inverso
 
   //Dibujamos un rectángulo relleno sin borde
-  display.rect(40,0,60,20,1); //1=sólido
+  display.videoMem->rect(40,0,60,20,1); //1=sólido
   //Dibujamos un rectángulo relleno con borde inverso
-  display.rect(50,10,70,30,1,2); //1=sólido,2=inverso
+  display.videoMem->rect(50,10,70,30,1,2); //1=sólido,2=inverso
   
   //Dibujamos un rectángulo con borde y sin relleno
-  display.rect(0,33,20,53,3,1); //3=transparente,1=sólido
+  display.videoMem->rect(0,33,20,53,3,1); //3=transparente,1=sólido
   //Dibujamos un rectángulo relleno de inverso y sin borde
-  display.rect(10,43,30,63,2); //2=inverso
+  display.videoMem->rect(10,43,30,63,2); //2=inverso
 
   //Dibujamos un rectángulo relleno sin borde
-  display.rect(40,33,60,53,1); //1=sólido
+  display.videoMem->rect(40,33,60,53,1); //1=sólido
   //Dibujamos un rectángulo con borde vacío y sin relleno
-  display.rect(50,43,70,63,3,0); //3=transparente,0=vacío=negro
+  display.videoMem->rect(50,43,70,63,3,0); //3=transparente,0=vacío=negro
   
   //Mostramos el resultado
   display.show();
@@ -170,8 +170,8 @@ void Test8()
   //Líneas
 
   //Limpiamos pantalla
-  display.clear();
-  for(byte x=0;x<128;x+=5) display.line(0,0,x,63,1);
+  display.videoMem->clear();
+  for(byte x=0;x<128;x+=5) display.videoMem->line(0,0,x,63,1);
   //Mostramos el resultado
   display.show();
 
@@ -185,7 +185,7 @@ void Test9()
   //Función de sprite: setPage
   
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Creamos el sprite
   RoJoSprite mySprite(pinCS_SPI);
   //Lo dimensionamos. Anchura=7. Páginas=1
@@ -203,7 +203,7 @@ void Test9()
   //Lo dibujamos varias veces
   for(byte y=0;y<display.yMax;y+=8)
     for(byte x=0;x<display.xMax;x+=10)
-      display.drawSpritePage(x,y/8,&mySprite,1);
+      display.videoMem->drawSpritePage(x,y/8,&mySprite,1);
   //Mostramos el resultado
   display.show();
   //Borramos el sprite utilizado
@@ -217,7 +217,7 @@ void Test10()
   //Función de sprite: drawPixel y getPixel
   
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Creamos el sprite
   RoJoSprite mySprite(pinCS_SPI);
   //Lo dimensionamos. Anchura=7. Páginas=1
@@ -239,10 +239,10 @@ void Test10()
   }
 
   //Lo dibujamos
-  display.drawSpritePage(0,0,&mySprite,1);
+  display.videoMem->drawSpritePage(0,0,&mySprite,1);
   //Lo volvemos a dibujar desplazado y en modo inverso
   //Las intersecciones de ambos deberían estar vacías
-  display.drawSpritePage(10,1,&mySprite,2);
+  display.videoMem->drawSpritePage(10,1,&mySprite,2);
   //Dibujamos una línea horizontal en el medio, pero tendremos en cuenta los pixel existentes
   //Si ya hay algo dibujado, lo borraremos (lo invertimos manualmente)
   for(byte x=0;x<30;x++)
@@ -256,7 +256,7 @@ void Test10()
       mySprite.drawPixel(x,10,1);
   }
   //Dibujamos el nuevo sprite en pantalla
-  display.drawSpritePage(50,0,&mySprite,1);
+  display.videoMem->drawSpritePage(50,0,&mySprite,1);
   //Mostramos el resultado
   display.show();
   //Borramos el sprite utilizado
@@ -278,13 +278,13 @@ void Test11()
   display.reverse(false);
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Creamos el sprite
   RoJoSprite mySprite(pinCS_SPI);
   //Lo leemos desde el archivo
   mySprite.load(F("/ball.spr"));
   //Dibujamos el sprite en pantalla
-  display.drawSpritePage(0,0,&mySprite,1);
+  display.videoMem->drawSpritePage(0,0,&mySprite,1);
   //Mostramos el resultado
   display.show();
   //Borramos el sprite utilizado
@@ -315,9 +315,9 @@ void Test12()
   while(millis()<tMax)
   {
     //Borramos la pantalla
-    display.clear();
+    display.videoMem->clear();
     //Dibujamos el sprite
-    display.drawSprite(x,y,&ball,1);
+    display.videoMem->drawSprite(x,y,&ball,1);
     //Refrescamos pantalla
     display.show();
     //Calculamos las nuevas coordenadas
@@ -357,9 +357,9 @@ void Test13()
   while(millis()<tMax)
   {
     //Dibujamos el sprite de fondo sobreescribiendo lo que haya
-    display.drawSpritePage(0,0,&backSprite,4); //4=sobreescribir
+    display.videoMem->drawSpritePage(0,0,&backSprite,4); //4=sobreescribir
     //Dibujamos el sprite en movimiento
-    display.drawSprite(x,y,&ball,1);
+    display.videoMem->drawSprite(x,y,&ball,1);
     //Refrescamos pantalla
     display.show();
     //Calculamos las nuevas coordenadas
@@ -405,11 +405,11 @@ void Test14()
   while(millis()<tMax)
   {
     //Dibujamos el sprite de fondo sobreescribiendo lo que haya
-    display.drawSpritePage(0,0,&backSprite,4); //4=sobreescribir
+    display.videoMem->drawSpritePage(0,0,&backSprite,4); //4=sobreescribir
     //Dibujamos la márcara del sprite en movimiento borrando
-    display.drawSprite(x,y,&ballMask,0);
+    display.videoMem->drawSprite(x,y,&ballMask,0);
     //Dibujamos el sprite en movimiento
-    display.drawSprite(x,y,&ball,1);
+    display.videoMem->drawSprite(x,y,&ball,1);
     //Refrescamos pantalla
     display.show();
     //Calculamos las nuevas coordenadas
@@ -435,11 +435,11 @@ void Test15()
   //Leemos su contenido desde un archivo
   mySprite.load(F("/mickey.spr"));
   //Dibujamos el sprite de fondo sobreescribiendo lo que haya
-  display.drawSpritePage(0,0,&mySprite,4); //4=sobreescribir
+  display.videoMem->drawSpritePage(0,0,&mySprite,4); //4=sobreescribir
   //Recortamos parte de la pantalla actual y lo guardamos en el mismo sprite
-  display.getSprite(50,2,70,5,&mySprite);
+  display.videoMem->getSprite(50,2,70,5,&mySprite);
   //Dibujamos el sprite recortado
-  display.drawSpritePage(0,0,&mySprite,4); //4=sobreescribir
+  display.videoMem->drawSpritePage(0,0,&mySprite,4); //4=sobreescribir
   //Refrescamos pantalla
   display.show();
   //Borramos el sprite utilizado
@@ -459,9 +459,9 @@ void Test16()
   //Leemos su contenido desde un archivo
   mySprite.load(F("/mickey.spr"));
   //Dibujamos el sprite de fondo sobreescribiendo lo que haya
-  display.drawSpritePage(0,0,&mySprite,4); //4=sobreescribir
+  display.videoMem->drawSpritePage(0,0,&mySprite,4); //4=sobreescribir
   //Recortamos parte de la pantalla actual y lo guardamos en el mismo sprite
-  display.getSprite(50,2,70,5,&mySprite);
+  display.videoMem->getSprite(50,2,70,5,&mySprite);
   //Guardamos el sprite en un archivo
   mySprite.save(F("/mick2.spr"));
   //Borramos el sprite utilizado
@@ -471,11 +471,11 @@ void Test16()
   //Leemos su contenido desde el archivo
   mySprite2.load(F("/mick2.spr"));
   //Borramos la pantalla
-  display.clear();
+  display.videoMem->clear();
   //Dibujamos el sprite varias veces
   for(byte x=0;x<6;x++)
     for(byte page=0;page<2;page++)
-      display.drawSpritePage(x*20,page*4,&mySprite2,4);
+      display.videoMem->drawSpritePage(x*20,page*4,&mySprite2,4);
   //Refrescamos pantalla
   display.show();
   //Borramos el sprite utilizado
@@ -499,14 +499,14 @@ void Test17()
   //Creamos el sprite utilizado para el redimensionado
   RoJoSprite resizeSprite(pinCS_SPI);
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Reduciremos la imagen desde un 5% hasta un 100%
   for(uint16_t r=5;r<=100;r++)
   {
     //Calculamos el sprite redimensionado al factor actual
     resizeSprite.resize((display.xMax*r)/100,(display.yMax*r)/100,&mySprite);
     //Dibujamos el sprite redimensionado en pantalla
-    display.drawSpritePage(0,0,&resizeSprite,4); //4=sobreescribir
+    display.videoMem->drawSpritePage(0,0,&resizeSprite,4); //4=sobreescribir
     //Refrescamos pantalla
     display.show();
     //Esperamos un momento
@@ -521,34 +521,13 @@ void Test17()
 
 void Test18()
 {
-  //Líneas dibujadas en sprite
-
-  //Activamos el modo inverso, que se utiliza por defecto (pixel = blanco)
-  display.reverse(true);
-  //Borramos la pantalla
-  display.clear();
-  //Creamoss un nuevo sprite
-  RoJoSprite mySprite(pinCS_SPI);
-  //Será tan grande como la pantalla
-  mySprite.setSize(128,8);
-  //Dibujamos unas líneas
-  for(byte x=0;x<128;x+=5) mySprite.line(0,0,x,63,1);
-  //Dibujamos el sprite en pantalla
-  display.drawSprite(0,0,&mySprite,1);
-  //Refrescamos pantalla
-  display.show();
-  //Borramos el sprite utilizado
-  mySprite.clean();
-
-  delay(1000);
-}
-
-void Test19()
-{
   //Mostrar texto
 
+  //Reactivamos el modo inverso (pixels en blanco)
+  display.reverse(true);
+
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   
   //Creamos el sprite que contendrá el texto
   RoJoSprite textSprite(pinCS_SPI);
@@ -557,22 +536,22 @@ void Test19()
   //Si no hemos podido crear el sprite de texto...terminamos
   if(!font.print(F("/5x7d.fon"),F("20171101"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,0,&textSprite,4);
+  display.videoMem->drawSpritePage(0,0,&textSprite,4);
 
   //Utilizaremos otra fuente más grande
   //Si no hemos podido crear el sprite de texto...terminamos
   if(!font.print(F("/10x15d.fon"),F("20171101"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,2,&textSprite,4);
+  display.videoMem->drawSpritePage(0,2,&textSprite,4);
   
   //Creamos otro texto más grande que la pantalla 
   //Si no hemos podido crear el sprite de texto...terminamos
   if(!font.print(F("/10x15d.fon"),F("1234567890123456"),&textSprite)) return;
   //Lo mostramos. No se verá el final
-  display.drawSpritePage(0,4,&textSprite,4);
+  display.videoMem->drawSpritePage(0,4,&textSprite,4);
   //Lo mostramos de nuevo desplazado a la izquierda, comenzando desde una
   //posición fuera de pantalla
-  display.drawSpritePage(-35,6,&textSprite,4);
+  display.videoMem->drawSpritePage(-35,6,&textSprite,4);
   //Refrescamos pantalla
   display.show();
   
@@ -582,12 +561,12 @@ void Test19()
   delay(1000);
 }
 
-void Test20()
+void Test19()
 {
   //Redimensionar texto
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Creamos el sprite de tamaño normal
   RoJoSprite normalSprite(pinCS_SPI);
   //Creamos objeto de gestión de fuentes
@@ -599,7 +578,7 @@ void Test20()
   //Redimensionamos el sprite de texto. Lo hacemos 4 veces más grande
   resizeSprite.resize(normalSprite.width()*4,normalSprite.heightPages()*4*8,&normalSprite);
   //Mostramos el sprite redimensionado en pantalla
-  display.drawSpritePage(0,0,&resizeSprite,4);
+  display.videoMem->drawSpritePage(0,0,&resizeSprite,4);
   //Refrescamos pantalla
   display.show();
   delay(1000);
@@ -609,9 +588,9 @@ void Test20()
   //Quedará un poco deformado (estirado en horizontal)
   resizeSprite.resize(display.xMax,display.yMax/2,&normalSprite);
   //Mostramos el sprite redimensionado en pantalla. En la parte superior
-  display.drawSpritePage(0,0,&resizeSprite,4);
+  display.videoMem->drawSpritePage(0,0,&resizeSprite,4);
   //En la parte inferior
-  display.drawSpritePage(0,display.yMax/2/8,&resizeSprite,4);
+  display.videoMem->drawSpritePage(0,display.yMax/2/8,&resizeSprite,4);
   //Refrescamos pantalla
   display.show();
   delay(1000);
@@ -621,9 +600,9 @@ void Test20()
   //Quedará deformado (estirado en vertical)
   resizeSprite.resize(display.xMax/2,display.yMax,&normalSprite);
   //Mostramos el sprite redimensionado en pantalla. En la parte izquierda
-  display.drawSpritePage(0,0,&resizeSprite,4);
+  display.videoMem->drawSpritePage(0,0,&resizeSprite,4);
   //En la parte derecha
-  display.drawSpritePage(display.xMax/2,0,&resizeSprite,4);
+  display.videoMem->drawSpritePage(display.xMax/2,0,&resizeSprite,4);
   //Refrescamos pantalla
   display.show();
   delay(1000);
@@ -632,7 +611,7 @@ void Test20()
   //El tamaño final será la pantalla completa
   resizeSprite.resize(display.xMax,display.yMax,&normalSprite);
   //Mostramos el sprite redimensionado en pantalla
-  display.drawSpritePage(0,0,&resizeSprite,4);
+  display.videoMem->drawSpritePage(0,0,&resizeSprite,4);
   //Refrescamos pantalla
   display.show();
   delay(1000);
@@ -644,12 +623,12 @@ void Test20()
   delay(1000);
 }
 
-void Test21()
+void Test20()
 {
   //Mostrar texto con más fuentes
 
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   
   //Creamos el sprite que contendrá el texto
   RoJoSprite textSprite(pinCS_SPI);
@@ -659,12 +638,12 @@ void Test21()
   //Si no podemos crear el sprite de texto...terminamos
   if(!font.print(F("/7x11.fon"),F("Hello world!"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,0,&textSprite,4);
+  display.videoMem->drawSpritePage(0,0,&textSprite,4);
   //Creamos otro texto
   //Si no podemos crear el sprite de texto...terminamos
   if(!font.print(F("/7x11.fon"),F("Good morning"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,2,&textSprite,4);
+  display.videoMem->drawSpritePage(0,2,&textSprite,4);
   //Utilizaremos otra fuente
   //Reaprovechamos el objeto de gestión de fuentes
   //Si no podemos cargar la fuente desde el archivo...terminamos
@@ -672,24 +651,24 @@ void Test21()
   //Si no podemos crear el sprite de texto...terminamos
   if(!font.print(F("/5x7.fon"),F("Hello world!"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,4,&textSprite,4);
+  display.videoMem->drawSpritePage(0,4,&textSprite,4);
   //Creamos otro texto
   //Si no podemos crear el sprite de texto...terminamos
   font.print(F("/5x7.fon"),F("Good morning"),&textSprite);
   //Lo mostramos
-  display.drawSpritePage(0,5,&textSprite,4);
+  display.videoMem->drawSpritePage(0,5,&textSprite,4);
   //Utilizaremos otra fuente
   //Reaprovechamos el objeto de gestión de fuentes
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...terminamos
   if(!font.print(F("/3x5.fon"),F("Hello world!"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,6,&textSprite,4);
+  display.videoMem->drawSpritePage(0,6,&textSprite,4);
   //Creamos otro texto
   //Si no podemos crear el sprite de texto...terminamos
   if(!font.print(F("/3x5.fon"),F("Good morning"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,7,&textSprite,4);
+  display.videoMem->drawSpritePage(0,7,&textSprite,4);
   //Refrescamos pantalla
   display.show();
   //Borramos el sprite utilizado
@@ -723,9 +702,8 @@ void loop()
   Test15(); //Obtener sprite de la pantalla
   Test16(); //Guardar un sprite
   Test17(); //Resize
-  Test18(); //Líneas dibujadas en sprite
-  Test19(); //Mostrar texto
-  Test20(); //Redimensionar texto
-  Test21(); //Mostrar texto con más fuentes
+  Test18(); //Mostrar texto
+  Test19(); //Redimensionar texto
+  Test20(); //Mostrar texto con más fuentes
 }
 
