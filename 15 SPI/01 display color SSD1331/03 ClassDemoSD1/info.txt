@@ -1,0 +1,1 @@
+Test con uso reducido de memoria, compatibles con ESP & Arduino Mega
