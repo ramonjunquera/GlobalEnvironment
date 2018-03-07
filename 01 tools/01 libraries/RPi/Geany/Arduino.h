@@ -2,7 +2,7 @@
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3 con comandos
  *   de Arduino
- * Versión: 20171028
+ * Versión: 20180307
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -50,6 +50,8 @@ using namespace std;
 #define LOW 0
 #define HIGH 1
 #define PI 3.14159265
+//Pin CS de SPI por defecto. Como RPi tiene 2, supondremos que es el primero
+#define SS 8 //SPICS0 
 
 //Definición de tipos de datos
 typedef uint8_t byte;

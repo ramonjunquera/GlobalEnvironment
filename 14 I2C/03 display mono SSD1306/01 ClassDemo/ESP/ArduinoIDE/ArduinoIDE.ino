@@ -2,8 +2,8 @@
   Autor: Ramón Junquera
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
-  Fecha: 20180222
-  Material: breadboard, cables, placa ESP/RPi, display OLED I2C SSD1306. lector SD
+  Fecha: 20180307
+  Material: breadboard, cables, placa ESP, display OLED I2C SSD1306
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
@@ -19,8 +19,7 @@
   RPi 1    5   3 -> GPIO3 & GPIO2
 
   Notas:
-  - La tarjeta SD debe contener los archivos de la carpeta data para su correcto funcionamiento.
-  - La librería SD sólo es capaz de leer archivos en notación 8.3, no nombres largos
+  - La memoria interna debe contener los archivos de la carpeta data para su correcto funcionamiento.
   - Los drivers de ESP ya incluyen su propia librería SD.h. Si aparecen problemas por usar múltiples librerías con
     el mismo nombre, es conveniente eliminar la librería SD.h de Arduino al compilar para ESP.
   
@@ -271,7 +270,6 @@ void Test11()
   //Creamos el sprite
   RoJoSprite mySprite;
   //Lo leemos desde el archivo
-  //mySprite.load(F("/mickey.spr"));
   mySprite.load(F("/ball.spr"));
   //Dibujamos el sprite en pantalla
   display.videoMem->drawSpritePage(0,0,&mySprite,1);
@@ -669,7 +667,6 @@ void Test20()
 
 void setup()
 {
-  Serial.begin(115200);
   //Inicializamos el display
   display.begin();
 }

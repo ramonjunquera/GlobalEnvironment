@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180225
+  Fecha: 20180307
   Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
   Objetivo: Demo de librería RoJoSSD1331
   Material: breadboard, cables, placa ESP, display OLED SSD1331
@@ -14,6 +14,7 @@
   -------  --- ---- ---- --
   ESP32    18   19   23  5
   ESP8266  D5   D6   D7  D8
+  RPi      11   9    10  8(CS0)
   
   Cuando se programa un ESP en el entorno de Arduino IDE, se respetan los pines
   seleccionados por hardware. Incluido CS que se gestiona internamente.

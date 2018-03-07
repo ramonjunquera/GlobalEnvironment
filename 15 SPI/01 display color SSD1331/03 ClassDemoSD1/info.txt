@@ -1,1 +1,4 @@
 Test con uso reducido de memoria, compatibles con ESP & Arduino Mega
+
+No se pueden utilizar las librerías *SD con Raspberry Pi porque no se ha 
+creado la librería <SD.h> para esta plataforma.

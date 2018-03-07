@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180219
+  Fecha: 20180307
   Tema: Librería para display Nokia LCD 5110 SPI 84x48
   Objetivo: Demo de librería RoJoLCD5110
-  Material: breadboard, cables, placa ESP8266, display LCD5110
+  Material: breadboard, cables, placa ESP, display LCD5110
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
   
@@ -12,18 +12,19 @@
   -------  --- ---- ---- --
   ESP32    18   19   23  5
   ESP8266  D5   D6   D7  D8
+  RPi      11   9    10  8(CS0)
   
   Nota:
-  La SD debe contener los archivos de la carpeta data para su correcto funcionamiento.
+  La memoria interna (SPIFFS) debe contener los archivos de la carpeta data para su correcto funcionamiento.
  
   Resultado:
   Realizamos varios tests cíclicos
 */
 
 #include <Arduino.h>
-#include "RoJoLCD5110.h" //Librería de gestión del display LCD5110
-#include "RoJoSprite.h" //Gestión de sprites
-#include "RoJoABC.h" //Gestión de fuentes
+#include "RoJoLCD5110.cpp" //Librería de gestión del display LCD5110
+#include "RoJoSprite.cpp" //Gestión de sprites
+#include "RoJoABC.cpp" //Gestión de fuentes
 
 //Definimos los pines del display
 #ifdef ESP8266 //Si es un ESP8266...

@@ -1,49 +1,42 @@
 /*
- * Autor: Ramón Junquera
- * Tema: Librería para display OLED SSD1331 SPI 96x64
- * Versión: 20180124 
- * Objetivo: Demo de librería RoJoSSD1331
- * Material: Raspberry Pi, breadboard, display OLED SSD1331, cables
- * Descripción:
- * El display SSD1331 tiene conexión SPI.
- * Utilizaremos los pines SPI de la Raspberry
- *
- * Conectaremos el display de la siguiente manera:
- *  
- * SSD1331  Raspberry
- * -------  ---------
- *   GND    GND
- *   VCC    3V3
- *   SCL    GPIO11 (SPI_CLK)
- *   SDA    GPIO10 (SPI_MOSI)
- *   RES    GPIO21 [Reset]
- *   DC     GPIO20 [Data/Command]
- *   CS     GPIO8 (SPI_CE0_N)
- * 
- * 
- * Se definen varias funciones de test que se llaman secuencialmente
- * para demostrar las capacidades de la librería.
- * 
- * En este ejemplo se define como pin CS por software el 18.
- * Así está indicado en el diseño del circuito.
- * Como los pines CS no se pueden desactivar en RPi, también se podría
- * conectar al CS0 y funcionaría igual.
- * Por defecto, RPi, toma CS0 como pin CS.
- */
+  Autor: Ramón Junquera
+  Fecha: 20180307
+  Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
+  Objetivo: Demo de librería RoJoSSD1331
+  Material: breadboard, cables, placa RPi, display OLED SSD1331
+
+  Descripción:
+  Descripción y demostración de funcionalidades de la librería.
+
+  Pinout SPI:
+
+  Modelo   CLK MISO MOSI CS
+  -------  --- ---- ---- --
+  ESP32    18   19   23  5
+  ESP8266  D5   D6   D7  D8
+  RPi      11   9    10  8(CS0)
+  
+  En nuestro caso, aunque el dispositivo no devuelva nunca información (no necesita MISO),
+  no podemos utilizar ese pin porque es utilizado por el protocolo SPI.
+
+  Nota:
+  La carpeta data con su contenido debe estar en la carpeta que contiene el ejecutable.
+ 
+  Resultado:
+  Realizamos varios tests cíclicos
+*/
 
 #include <Arduino.h>
-#include "RoJoSSD1331.cpp"
-#include "RoJoSprite16.cpp"
-#include "RoJoABC16.cpp"
+#include "RoJoSSD1331.cpp" //Librería de gestión del display SSD1331
+#include "RoJoSprite16.cpp" //Gestión de sprites color
+#include "RoJoABC16.cpp" //Gestión de fuentes
 
-using namespace std;
+//Definición de pines
+const byte pinDC_display=20;
+const byte pinRES_display=21;
+const byte pinCS_display=16; //Podríamos utilizar también el CS0
 
-//Definimos los pines del display
-const byte pinRES=21;
-const byte pinDC=20;
-const byte pinCS=16; //Podríamos utilizar también el CS0
-
-//Declaración de variables globales
+//Creamos objeto de gestión
 RoJoSSD1331 display;
 
 void Test0()
@@ -66,6 +59,8 @@ void Test0()
   display.rect(0,30,30,60,whiteColor,yellowColor);
   display.rect(30,30,60,60,whiteColor,magentaColor);
   display.rect(60,30,90,60,whiteColor,cyanColor);
+
+  delay(1000);
 }
 
 void Test1()
@@ -79,7 +74,9 @@ void Test1()
   //Dibujamos una matriz de puntos
   for(int x=0;x<10;x++)
     for(int y=0;y<10;y++)
-      display.setPixel(x*5,y*5,blueColor);
+      display.drawPixel(x*5,y*5,blueColor);
+
+  delay(1000);
 }
 
 void Test2()
@@ -98,8 +95,10 @@ void Test2()
       display.setCursorRangeX(x*5,x*5);
       display.setCursorRangeY(y*5,y*5);
       //Dibujamos el pixel
-      display.setPixel(greenColor);
+      display.drawPixel(greenColor);
     }
+
+  delay(1000);
 }
 
 void Test3()
@@ -121,9 +120,11 @@ void Test3()
       //Dibujamos el pixel sin posicionarlo, porque se moverá
       //dentro del rango definido
       //El color siempre será rojo, pero irá¡ variando en intensidad
-      display.setPixel(display.getColor((y+1)*8-1,0,0));
+      display.drawPixel(display.getColor((y+1)*8-1,0,0));
     }
   }
+
+  delay(1000);
 }
 
 void Test4()
@@ -137,6 +138,8 @@ void Test4()
   for(byte x=0;x<96;x+=3) display.line(0,0,x,63,greenColor);
   uint16_t blueColor = display.getColor(0,0,255);
     for(byte x=0;x<96;x+=3) display.line(0,63,x,0,blueColor);    
+    
+  delay(1000);
 }
 
 void Test5()
@@ -156,6 +159,8 @@ void Test5()
   borderColor = display.getColor(255,0,0); //red
   //Dibujamos un rectángulo sin relleno
   display.rect(15,15,35,35,borderColor);
+
+  delay(1000);
 }
 
 void Test6()
@@ -170,6 +175,8 @@ void Test6()
   display.rect(0,0,8,8,borderColor,fillColor);
   //Lo copiamos 5 veces
   for(int i=0;i<5;i++) display.copy(0,0,8,8,i*10,10);
+
+  delay(1000);
 }
 
 void Test7()
@@ -186,6 +193,8 @@ void Test7()
   display.darker(10,10,30,30);
   display.darker(20,20,40,40);
   //Comprobamos que una zona oscurecida ya no se oscurece más
+
+  delay(1000);
 }
 
 void Test8()
@@ -200,6 +209,8 @@ void Test8()
   display.rect(0,0,40,40,borderColor,fillColor);
   //Borramos parte de su interior dibujando un rectángulo relleno negro
   display.rect(10,10,30,30,0,0);
+
+  delay(1000);
 }
 
 void Test9()
@@ -213,14 +224,16 @@ void Test9()
   RoJoSprite16 mySprite;
   //Lo llenamos con una imagen
   //Las imágenes de ejemplo se guardan en la carpeta spr16
-  //Los sprites color tienen extensión .spr16
+  //Los sprites color tienen extensión .s16
   //Pueden ser generados con la aplicación RoJoImageConvert
   //También se han dejado las imágenes .bmp originales
-  mySprite.load(F("spr16/rose.spr16"));
+  mySprite.load(F("data/rose.s16"));
   //Lo mostramos
   display.drawSprite(0,0,&mySprite);
   //Borramos el sprite utilizado
   mySprite.clean();
+
+  delay(1000);
 }
 
 void Test10()
@@ -230,7 +243,7 @@ void Test10()
   //Creamos el sprite
   RoJoSprite16 mySprite;
   //Lo llenamos con una imagen
-  mySprite.load(F("spr16/rainbow.spr16"));
+  mySprite.load(F("data/rainbow.s16"));
   //Definimos el recorrido
   for(int i=-70;i<70;i++)
   {
@@ -256,14 +269,14 @@ void Test11()
   //Creamos el sprite que se moverá
   RoJoSprite16 moveSprite;
   //Lo llenamos con una imagen
-  moveSprite.load(F("spr16/rainbow.spr16")); 
+  moveSprite.load(F("data/rainbow.s16")); 
   //Definimos el recorrido
   for(int i=-70;i<70;i++)
   {
     //Borramos la imagen del sprite de fondo
     backSprite.clear();
     //Copiamos el sprite en movimiento sobre el de fondo
-    backSprite.copy(i,i,&moveSprite);
+    backSprite.drawSprite(i,i,&moveSprite);
     //Mostramos el sprite de fondo
     display.drawSprite(0,0,&backSprite);
     //Esta vez no esperamos, porque el desplazamiento no es muy rápido
@@ -282,15 +295,15 @@ void Test12()
   //Creamos el sprite base del que recortaremos un trozo
   RoJoSprite16 baseSprite;
   //Leemos la imagen
-  baseSprite.load(F("spr16/rainbow.spr16"));
+  baseSprite.load(F("data/rainbow.s16"));
   //Creamos el sprite que se moverá (pequeño)
   RoJoSprite16 smallSprite;
   //Le damos tamaño al sprite pequeño
   smallSprite.setSize(20,20);
   //Recortamos parte del sprite base para crear el sprite pequeño
-  smallSprite.copy(-30,-10,&baseSprite);
+  smallSprite.drawSprite(-30,-10,&baseSprite);
   //Guardamos el sprite pequeño
-  smallSprite.save(F("spr16/small.spr16"));
+  smallSprite.save(F("data/small.s16"));
   //Eliminamos ambos sprites
   baseSprite.clean();
   smallSprite.clean();
@@ -302,18 +315,18 @@ void Test12()
   //Creamos el sprite que se moverá
   RoJoSprite16 moveSprite;
   //Lo llenamos con la imagen recortada antes
-  moveSprite.load("spr16/small.spr16");
+  moveSprite.load("data/small.s16");
   //Creamos el sprite que usaremos de imagen de fondo
   RoJoSprite16 imageSprite;
   //Cargamos la imagen que queremos fijar de fondo
-  imageSprite.load(F("spr16/mountain.spr16"));
+  imageSprite.load(F("data/mountain.s16"));
   //Definimos el recorrido
   for(int16_t i=-10;i<70;i++)
   {
     //Ponemos la imagen sobre el sprite que enviaremos al display
-    backSprite.copy(0,0,&imageSprite);
+    backSprite.drawSprite(0,0,&imageSprite);
     //Copiamos el sprite en movimiento sobre la imagen
-    backSprite.copy(i,i,&moveSprite);
+    backSprite.drawSprite(i,i,&moveSprite);
     //Mostramos el sprite de fondo
     display.drawSprite(0,0,&backSprite);
     //Esta vez no esperamos, porque el desplazamiento no es muy rápido
@@ -325,7 +338,7 @@ void Test12()
   moveSprite.clean();
   imageSprite.clean();
   //Borramos el archivo del sprite pequeño
-  SPIFFS.remove(F("spr16/small.spr16"));
+  SPIFFS.remove(F("data/small.s16"));
 }
 
 void Test13()
@@ -342,16 +355,16 @@ void Test13()
   //Definimos color de texto
   uint16_t color = display.getColor(0,255,0); //green
   //Creamos el sprite con el texto
-  //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("fon/RoJoABC5x7digits.fon"),F("20171028"),&textSprite,color)) return;
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("data/5x7d.fon"),F("20171028"),&textSprite,color)) return;
   //Lo mostramos
   display.drawSprite(0,0,&textSprite);
 
   //Utilizaremos otra fuente más grande
   //Reaprovechamos el objeto de gestión de fuentes
   //Creamos el sprite con el texto
-  //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("20171028"),&textSprite,color)) return;
+  //Si no podemos cargar la fuente desde el archivo...terminamos
+  if(!font.print(F("data/10x15d.fon"),F("20171028"),&textSprite,color)) return;
   //Lo mostramos
   display.drawSprite(0,10,&textSprite);
   
@@ -361,8 +374,7 @@ void Test13()
   uint16_t backColor=display.getColor(0,0,64); //Azul oscuro
   //Creamos otro texto más grande que la pantalla 
   //con color de fondo
-  //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("1234567890"),&textSprite,color,backColor)) return;
+  if(!font.print(F("data/10x15d.fon"),F("1234567890"),&textSprite,color,backColor)) return;
   //Lo mostramos. No se verá el final
   display.drawSprite(0,26,&textSprite);
   //Cambiamos el color del texto del sprite
@@ -373,6 +385,8 @@ void Test13()
 
   //Borramos el sprite utilizado
   textSprite.clean();
+
+  delay(2000);
 }
 
 void Test14()
@@ -382,7 +396,7 @@ void Test14()
   //Creamos el sprite de base
   RoJoSprite16 baseSprite;
   //Leemos la imagen
-  baseSprite.load("spr16/rose.spr16");
+  baseSprite.load("data/rose.s16");
 
   //Creamos el sprite de texto
   RoJoSprite16 textSprite;
@@ -393,22 +407,21 @@ void Test14()
   //Definimos color de fondo que utilizaremos como color invisible (red)
   uint16_t backColor = display.getColor(255,0,255); //red
   //Creamos un texto con color de fondo
-  //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("8765"),&textSprite,textColor,backColor)) return;
+  //Si no podemos crear sprite de texto...hemos terminado  
+  if(!font.print(F("data/10x15d.fon"),F("8765"),&textSprite,textColor,backColor)) return;
   //Ponemos el sprite de texto sobre el sprite base
-  baseSprite.copy(30,5,&textSprite);
+  baseSprite.drawSprite(30,5,&textSprite);
   //Volvemos a poner el mismo sprite pero hacemos invisible el color de fondo
-  baseSprite.copy(30,22,&textSprite,backColor);
+  baseSprite.drawSprite(30,22,&textSprite,backColor);
 
   
   //Creamos el mismo texto pero con borde
   //Color de texto = textColor = blue
   //Color de fondo = backColor = red
   //Color de borde = 0 = black
-  //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("8765"),&textSprite,textColor,backColor,0)) return;
+  if(!font.print(F("data/10x15d.fon"),F("8765"),&textSprite,textColor,backColor,0)) return;
   //Copiamos el nuevo sprite de texto con borde sobre el sprite base
-  baseSprite.copy(29,40,&textSprite,backColor);
+  baseSprite.drawSprite(29,40,&textSprite,backColor);
   
   //Mostramos el sprite base en pantalla
   display.drawSprite(0,0,&baseSprite);
@@ -416,6 +429,8 @@ void Test14()
   //Borramos los sprites utilizados
   baseSprite.clean();
   textSprite.clean();
+
+  delay(2000);
 }
 
 void Test15()
@@ -433,7 +448,7 @@ void Test15()
   RoJoABC16 font;
   //Creamos un sprite con texto de color blanco con fondo negro
   //Si no podemos crear el sprite de texto...hemos terminado
-  if(!font.print(F("fon/RoJoABC5x7digits.fon"),F("654"),&normalSprite,0xFFFF,0x0000)) return;
+  if(!font.print(F("data/5x7d.fon"),F("654"),&normalSprite,0xFFFF,0x0000)) return;
   //Creamos un nuevo sprite para el redimensionado
   RoJoSprite16 resizeSprite;
   //Redimensionamos el sprite de texto. Lo hacemos 4 veces más grande
@@ -475,9 +490,9 @@ void Test15()
   display.clear();
   
   //Cargamos una imagen en el sprite normal
-  normalSprite.load(F("spr16/rainbow.spr16"));
+  normalSprite.load(F("data/rainbow.s16"));
   //Reduciremos la imagen desde un 5% hasta un 100%
-  for(uint16_t r=5;r<100;r++)
+  for(uint16_t r=5;r<=100;r++)
   {
     //Calculamos el sprite redimensionado al factor actual
     resizeSprite.resize((display.xMax*r)/100,(display.yMax*r)/100,&normalSprite);
@@ -489,6 +504,8 @@ void Test15()
   //Borramos los sprites utilizados
   resizeSprite.clean();
   normalSprite.clean();
+
+  delay(1000);
 }
 
 void Test16()
@@ -505,8 +522,8 @@ void Test16()
   //Definimos color de texto
   uint16_t color = display.getColor(0,0,255); //blue
   //Creamos un texto sobre fondo negro
-  //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("fon/RoJoABC10x15digits.fon"),F("20171028"),&textSprite,color)) return;
+  //Si no podemos crear el sprite de texto...hemos terminado
+  if(!font.print(F("data/10x15d.fon"),F("20171028"),&textSprite,color)) return;
   //Definimos un nuevo color
   color = display.getColor(0,255,0); //green
   //El sprite tiene 16 filas porque el texto tiene esa altura
@@ -529,48 +546,35 @@ void Test16()
 
   //Borramos los sprites utilizados
   textSprite.clean();
+
+  delay(3000);
 }
 
 int main(int argc, char **argv)
 {
-    //Inicializamos el display LCD con los pines de reset, data/command
-    //y chip select
-    display.begin(pinRES,pinDC,pinCS);
+	//Inicializamos el display
+	display.begin(pinRES_display,pinDC_display,pinCS_display);
     
     //Bucle infinito
     while(1)
     {
-		  Test0();
-		  delay(1000);
-		  Test1();
-		  delay(1000);
-		  Test2();
-		  delay(1000);
-		  Test3();
-		  delay(1000);
-		  Test4();
-		  delay(1000);
-		  Test5();
-		  delay(1000);
-		  Test6();
-		  delay(1000);
-		  Test7();
-		  delay(1000);
-		  Test8();
-		  delay(1000);
-		  Test9();
-		  delay(1000);
-		  Test10();
-		  Test11();
-		  Test12();
-		  Test13();
-		  delay(2000);
-		  Test14();
-		  delay(2000);
-		  Test15();
-		  delay(1000);
-		  Test16();
-		  delay(3000);
+	  Test0(); //Test de color
+	  Test1(); //Función GetColor y SetPixel
+	  Test2(); //Función de cursor
+	  Test3(); //Rangos de cursor
+	  Test4(); //Líneas
+	  Test5(); //Rectángulos
+	  Test6(); //Función Copy
+	  Test7(); //Función Darker
+	  Test8(); //Función Clear
+	  Test9(); //Cargar y mostrar un sprite
+	  Test10(); //Desplazar un sprite escribiendo directamente en pantalla
+	  Test11(); //Desplazar un sprite escribiendo sobre otro sprite
+	  Test12(); //Función de guardado de sprites
+	  Test13(); //Mostrar texto
+	  Test14(); //Mostrar texto con fondo transparente
+	  Test15(); //Resize
+	  Test16(); //Ejemplo de funciones para dibujar directamente en un sprite
 	}
 	
     //Terminamos de usar los pines
