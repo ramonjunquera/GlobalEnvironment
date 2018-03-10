@@ -1,9 +1,8 @@
 /*
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
-  Fecha: 20171115
-  Objetivo: Demostración de capacidades de la librería RoJoMAX7219 con
-    display led de dígitos
+  Fecha: 20180310
+  Objetivo: Demostración de capacidades de la librería RoJoMAX7219d
   Material: breadboard, cables, MAX7219, 4 digits led display, placa RPi,
     resistencia de 10Kohmios, condensador 10µF, condensador 100 nF
 
@@ -38,15 +37,15 @@
 
   De MAX7219:
            
- DOUT C5 C1 C6 C4 V+ ISETC8 C3 C7 C2 CLK
+   DOUT C5 C1  C6  C4 V+ ISET C8  C3 C7  C2  CLK
     │  │  │  │  │  │  │  │  │  │  │  │
-  ██████████████████████████████████████
-  ██████████████████████████████████████
-   ███████ MAX7219 ██████████████████████
-  ██████████████████████████████████████
-  ██████████████████████████████████████
+  ███████████████████████████
+  ███████████████████████████
+    ██████████ MAX7219 ███████████
+  ███████████████████████████
+  ███████████████████████████
     │  │  │  │  │  │  │  │  │  │  │  │
-  DIN F1 F5 GND F7 F3 F4 F8GND F6 F2 LOAD      
+   DIN  F1 F5 GND  F7 F3  F4  F8 GND F6  F2 LOAD      
         
         
   DIN = Primero de los tres pines conectados a la placa
@@ -60,6 +59,11 @@
   Cx = Columnas
   
   Descripción y demostración de funcionalidades de la librería.
+  La librería RoJoMAX7219d es una variación de RoJoMAX7219, de la que se ha
+  eliminado eltrabajo con sprites para reducir el consumo de memoria.
+  Especialmente diseñada para trabajar con el chip MAX7219 y con displays
+  de led de dígitos.
+  Permite definir caracteres especiales, aunque ya tiene un alfabeto por defecto.
   
   Resultado:
   Realizamos varios tests cíclicos
@@ -68,27 +72,16 @@
     Los condensadores son opcionales, aunque convenientes para filtrar
     interferencias.
 */
-
 #include <Arduino.h>
-#include "RoJoMAX7219.cpp" //Librería de gestión de MAX7219
+#include "RoJoMAX7219d.cpp" //Librería de gestión de MAX7219 para displays de dígitos de leds
 
-//La librería de gestión de sprites no se utiliza en este ejemplo, pero
-//sí es necesaria para la librería RoJoMAX7219
-#include "RoJoSprite.cpp"
-
-using namespace std;
+//Creamos el objeto display que gestionará la cadena de chips MAX7219
+RoJoMAX7219d display;
 
 //Definimos los pines del display
-const byte pinDIN=21;
-const byte pinCS=20;
-const byte pinCLK=16;
-
-//Declaración de variables globales
-//Creamos el objeto display que gestionará la cadena de chips MAX7219
-//En la creación ya se incluye la activación y la inicialización
-//tras ello estará lista para ser utilizada
-//RoJoMatrix(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
-RoJoMAX7219 display(1,pinDIN,pinCS,pinCLK);
+const byte pinDIN_display=21;
+const byte pinCS_display=20;
+const byte pinCLK_display=16;
 
 void test1()
 {
@@ -133,18 +126,16 @@ void test3()
 void test4()
 {
   //Mostrar números decimales sin ceros a la izquierda
-  //Secuencia de -2.9 a 2.3
-  
-  for(double i=-2.9;i<=2.3;i+=0.1)
+  //Secuencia de -9.9 a 10.0
+  for(double i=-9.9;i<=10;i+=0.1)
   {
     //Escribimos el número decimal i desde la posición 0
     //con 2 dígitos de parte entera y un dígito para decimales
     //sin ceros a la izquierda
     display.printDec(i,0,2,1,false);
     display.show();
-    delay(500);
+    delay(100);
   }
-  return;  
 }
 
 void test5()
@@ -165,6 +156,10 @@ void test5()
 
 int main(int argc, char **argv)
 {
+  //Inicialización del display
+  //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
+  display.begin(1,pinDIN_display,pinCS_display,pinCLK_display);
+  
   while(1)
   {
 	  test1();

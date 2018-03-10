@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
-  Fecha: 20180124
+  Fecha: 20180310
   Objetivo: Demostración de capacidades de la librería RoJoMAX7219
-  Material: breadboard, cables, chip MAX7219, matrix led 8x8, placa ESP32,
+  Material: breadboard, cables, chip MAX7219, matrix led 8x8, placa ESP,
     resistencia de 10Kohmios, condensador 10µF, condensador 100 nF
 
   Descripción:
@@ -55,21 +55,26 @@
 */
 #include <Arduino.h>
 #include "RoJoMAX7219.h" //Librería de gestión de MAX7219
+#include "RoJoSprite.cpp" //Librería de gestión de sprites monocromos
 #include "RoJoABC.h" //Gestión de fuentes
 
-//Definimos los pines del display
-const byte pinDIN=19;
-const byte pinCS=23;
-const byte pinCLK=18;
+//Creamos el objeto display que gestionará la cadena de chips MAX7219
+RoJoMAX7219 display;
 
-//Declaración de variables globales
-//Creamos el objeto display que gestionará el chip MAX7219
-//RoJoMatrix(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
-RoJoMAX7219 display(1,pinDIN,pinCS,pinCLK);
+//Definición de pines
+#ifdef ESP8266 //Si es un ESP8266...
+  const byte pinDIN_display=D0;
+  const byte pinCS_display=D1;
+  const byte pinCLK_display=D2;
+#elif defined(ESP32) //Si es un ESP32...
+  const byte pinDIN_display=22;
+  const byte pinCS_display=21;
+  const byte pinCLK_display=4;
+#endif
 
 void test1()
 {
-  //Un pixel en movimiento rebota contras los bordes
+  //Un pixel en movimiento rebota contra los bordes
 
   //Coordenadas iniciales
   uint8_t x=1;
@@ -83,9 +88,9 @@ void test1()
   while(millis()<maxTime)
   {
     //Limpiamos pantalla
-    display.clear();
+    display.videoMem->clear();
     //Dibujamos el pixel
-    display.setPixel(x,y,1);
+    display.videoMem->drawPixel(x,y,1);
     //Lo mostramos
     display.show();
     //Calculamos las nuevas coordenadas
@@ -106,29 +111,29 @@ void test2()
   //Función de sprite: setPage
   
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   //Creamos el sprite
   RoJoSprite mySprite;
   //Lo dimensionamos. Anchura=7. Páginas=1
   mySprite.setSize(7,1);
   //Lo dibujamos
   //void setPage(int16_t x,int16_t page,byte mask,byte color);
-  mySprite.setPage(0,0,0b00111110,4); //4=escribir el valor tal cual
-  mySprite.setPage(1,0,0b01000001,4);
-  mySprite.setPage(2,0,0b01010101,4);
-  mySprite.setPage(3,0,0b01000001,4);
-  mySprite.setPage(4,0,0b01011101,4);
-  mySprite.setPage(5,0,0b01000001,4);
-  mySprite.setPage(6,0,0b00111110,4);
+  mySprite.drawPage(0,0,0b00111110,4); //4=escribir el valor tal cual
+  mySprite.drawPage(1,0,0b01000001,4);
+  mySprite.drawPage(2,0,0b01010101,4);
+  mySprite.drawPage(3,0,0b01000001,4);
+  mySprite.drawPage(4,0,0b01011101,4);
+  mySprite.drawPage(5,0,0b01000001,4);
+  mySprite.drawPage(6,0,0b00111110,4);
 
   //Desplazamiento horizontal del sprite
   //Recorremos todas las columnas de pantalla
-  for(int x=-mySprite.width();x<display.width()+1;x++)
+  for(int x=-mySprite.width();x<display.videoMem->width()+1;x++)
   {
     //Limpiamos pantalla
-    display.clear();
+    display.videoMem->clear();
     //Dibujamos el sprite
-    display.drawSpritePage(x,0,&mySprite,1);
+    display.videoMem->drawSpritePage(x,0,&mySprite,1);
     //Lo mostramos
     display.show();
     //Esperamos un momento
@@ -139,9 +144,9 @@ void test2()
   for(int8_t y=-8;y<13;y++)
   {
     //Limpiamos pantalla
-    display.clear();
+    display.videoMem->clear();
     //Dibujamos sprite
-    display.drawSprite(0,y,&mySprite,1);
+    display.videoMem->drawSprite(0,y,&mySprite,1);
     //Lo mostramos
     display.show();
     //Esperamos un momento
@@ -157,7 +162,7 @@ void test3()
   //Sprites de texto
   
   //Limpiamos pantalla
-  display.clear();
+  display.videoMem->clear();
   
   //Creamos el sprite que contendrá el texto
   RoJoSprite textSprite;
@@ -165,9 +170,9 @@ void test3()
   RoJoABC font;
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("/RoJoABC5x7digits.fon"),F("2"),&textSprite)) return;
+  if(!font.print(F("/5x7d.fon"),F("2"),&textSprite)) return;
   //Lo mostramos
-  display.drawSpritePage(0,0,&textSprite,4);
+  display.videoMem->drawSpritePage(0,0,&textSprite,4);
   //Refrescamos pantalla
   display.show();
   
@@ -175,9 +180,12 @@ void test3()
   textSprite.clean();
 }
 
+
 void setup()
 {
-  //Nada especial que inicializar
+  //Inicialización del display
+  //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
+  display.begin(1,pinDIN_display,pinCS_display,pinCLK_display);
 }
 
 void loop()

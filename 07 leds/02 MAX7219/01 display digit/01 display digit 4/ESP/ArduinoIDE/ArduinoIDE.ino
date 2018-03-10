@@ -1,10 +1,11 @@
 /*
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
-  Fecha: 20171115
-  Objetivo: Demostración de capacidades de la librería RoJoMAX7219 con display led de dígitos
-  Material: breadboard, cables, MAX7219, 4 digits led display, placa ESP32,
-    resistencia de 10Kohmios, condensador 10µF, condensador 100 nF
+  Fecha: 20180310
+  Objetivo: Demostración de capacidades de la librería RoJoMAX7219d
+  Material: breadboard, cables, MAX7219, 4 digits led display, placa
+    ESP/Arduino, resistencia de 10Kohmios, condensador 10µF,
+    condensador 100 nF
 
   Descripción:
   Recordemos pinouts
@@ -59,6 +60,11 @@
   Cx = Columnas
   
   Descripción y demostración de funcionalidades de la librería.
+  La librería RoJoMAX7219d es una variación de RoJoMAX7219, de la que se ha
+  eliminado eltrabajo con sprites para reducir el consumo de memoria.
+  Especialmente diseñada para trabajar con el chip MAX7219 y con displays
+  de led de dígitos.
+  Permite definir caracteres especiales, aunque ya tiene un alfabeto por defecto.
   
   Resultado:
   Realizamos varios tests cíclicos
@@ -68,19 +74,25 @@
     interferencias.
 */
 #include <Arduino.h>
-#include "RoJoMAX7219.h" //Librería de gestión de MAX7219
+#include "RoJoMAX7219d.h" //Librería de gestión de MAX7219 para displays de dígitos de leds
 
-//Definimos los pines del display
-const byte pinDIN=19;
-const byte pinCS=23;
-const byte pinCLK=18;
-
-//Declaración de variables globales
 //Creamos el objeto display que gestionará la cadena de chips MAX7219
-//En la creación ya se incluye la activación y la inicialización
-//tras ello estará lista para ser utilizada
-//RoJoMatrix(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
-RoJoMAX7219 display(1,pinDIN,pinCS,pinCLK);
+RoJoMAX7219d display;
+
+//Definición de pines
+#ifdef ESP8266 //Si es un ESP8266...
+  const byte pinDIN_display=D0;
+  const byte pinCS_display=D1;
+  const byte pinCLK_display=D2;
+#elif defined(ESP32) //Si es un ESP32...
+  const byte pinDIN_display=22;
+  const byte pinCS_display=21;
+  const byte pinCLK_display=4;
+#elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
+  const byte pinDIN_display=2;
+  const byte pinCS_display=3;
+  const byte pinCLK_display=4;
+#endif
 
 void test1()
 {
@@ -155,7 +167,9 @@ void test5()
 
 void setup()
 {
-  //Nada especial que inicializar
+  //Inicialización del display
+  //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
+  display.begin(1,pinDIN_display,pinCS_display,pinCLK_display);
 }
 
 void loop()

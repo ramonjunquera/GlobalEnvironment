@@ -1,29 +1,43 @@
 /*
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
+  Objetivo: Demostración de librería RoJoMAX7219
   Fecha: 20180310
-  Objetivo: Demostración de capacidades de la librería RoJoMAX7219
-  Material: breadboard, cables, 4 soportes para chip MAX7219, 4 matrix
-    led 8x8, placa RPi
+  Material: breadboard, cables, 4 soportes para chip MAX7219, 4 matrix led 8x8, placa ESP/Arduino, lector SD
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
+  La tarjeta SD debe contener los archivos de la carpeta data para su correcto funcionamiento.
+  La librería SD sólo es capaz de leer archivos en notación 8.3, no nombres largos
   
   Resultado:
   Realizamos varios tests cíclicos
 */
-#include <Arduino.h>
-#include "RoJoMAX7219.cpp" //Librería de gestión de MAX7219
-#include "RoJoSprite.cpp" //Librería de gestión de sprites monocromos
-#include "RoJoABC.cpp" //Gestión de fuentes
 
-//Definimos los pines del display
-const byte pinDIN_display=16;
-const byte pinCS_display=20;
-const byte pinCLK_display=21;
+#include <Arduino.h>
+#define SPIFFS SD //Cuando referenciemos a SPIFFS se redireccionará a SD
+#include <SD.h> //Librería de gestión SD
+#include "RoJoMAX7219SD.h" //Librería de gestión de MAX7219
+#include "RoJoSpriteSD.h" //Librería de gestión de sprites monocromos
+#include "RoJoABCSD.h" //Gestión de fuentes
 
 //Creamos el objeto display que gestionará la cadena de chips MAX7219
 RoJoMAX7219 display;
+
+//Definición de pines
+#ifdef ESP8266 //Si es un ESP8266...
+  const byte pinDIN_display=D0;
+  const byte pinCS_display=D1;
+  const byte pinCLK_display=D2;
+#elif defined(ESP32) //Si es un ESP32...
+  const byte pinDIN_display=22;
+  const byte pinCS_display=21;
+  const byte pinCLK_display=4;
+#elif defined(ARDUINO_ARCH_AVR) //Si una placa Arduino
+  const byte pinDIN_display=4;
+  const byte pinCS_display=3;
+  const byte pinCLK_display=2; 
+#endif
 
 void test1()
 {
@@ -46,7 +60,7 @@ void test2()
   //Sprites definidos en programa
   //Función de display: drawSpritePage
   //Función de sprite: drawPage
-  
+
   //Limpiamos pantalla
   display.videoMem->clear();
   //Creamos el sprite
@@ -65,12 +79,12 @@ void test2()
 
   //Desplazamiento horizontal del sprite
   //Recorremos todas las columnas de pantalla
-  for(int x=-mySprite.width();x<display.videoMem->width()+1;x++)
+  for(int x=-((int)mySprite.width());x<((int)display.videoMem->width()+1);x++)
   {
     //Limpiamos pantalla
     display.videoMem->clear();
     //Dibujamos el sprite
-    display.videoMem->drawSpritePage(x,0,&mySprite,1);
+    display.videoMem->drawSpritePage(x,0,&mySprite,4);
     //Lo mostramos
     display.show();
     //Esperamos un momento
@@ -105,7 +119,7 @@ void test3()
   //Creamoss un nuevo sprite
   RoJoSprite ball;
   //Leemos su contenido desde un archivo
-  ball.load(F("data/ball.spr")); //Su tamaño es x=30,y=30,pages=4
+  ball.load(F("/ball.spr")); //Su tamaño es x=30,y=30,pages=4
   //Offset vertical
   int8_t y=-30;
   //Delta de desplazamiento
@@ -145,7 +159,7 @@ void test4()
   RoJoABC font;
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("data/5x7.fon"),F("12345"),&textSprite)) return;
+  if(!font.print(F("/5x7.fon"),F("12345"),&textSprite)) return;
   //Lo mostramos
   display.videoMem->drawSpritePage(0,0,&textSprite,4);
   //Refrescamos pantalla
@@ -155,10 +169,10 @@ void test4()
 
   //Reaprovechamos el sprite de texto
   //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!font.print(F("data/5x7.fon"),F("Hola!"),&textSprite)) return;
+  if(!font.print(F("/5x7.fon"),F("Hola!"),&textSprite)) return;
   //Desplazamiento horizontal del sprite
   //Recorremos todas las columnas de pantalla
-  for(int x=-textSprite.width();x<display.videoMem->width()+1;x++)
+  for(int x=-((int)textSprite.width());x<((int)display.videoMem->width()+1);x++)
   {
     //Limpiamos pantalla
     display.videoMem->clear();
@@ -192,19 +206,18 @@ void test5()
     }
 }
 
-int main(int argc, char **argv)
+void setup()
 {
   //Inicialización del display
   //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
   display.begin(4,pinDIN_display,pinCS_display,pinCLK_display);
-  
-  while(1)
-  {
-	  test1(); //Función drawPixel
-	  test2(); //Sprites definidos en programa
-	  test3(); //Lectura de sprites de desde archivos
-	  test4(); //Sprites de texto
-	  test5(); //Líneas en sprites
-  }
 }
 
+void loop()
+{
+  test1(); //Función drawPixel
+  test2(); //Sprites definidos en programa
+  test3(); //Lectura de sprites de desde archivos
+  test4(); //Sprites de texto
+  test5(); //Líneas en sprites
+}
