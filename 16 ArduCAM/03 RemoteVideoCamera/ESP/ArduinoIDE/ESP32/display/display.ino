@@ -1,6 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: ArduCAM
+  Versión: 20180311
   Objetivo: Transferir imagen en tiempo real por wifi
   Aplicación: servidor (display).
   Material adicional: placa ESP32, display SSD1331
@@ -122,7 +123,7 @@ void loop()
             //El próximo ciclo procesaremos el primer byte de color
             firstByte=true;
             //Tenemos el color. Lo guardamos en las coordenadas correctas
-            sprite.setPixel(x,y,color);
+            sprite.drawPixel(x,y,color);
             //Calculamos las coordenadas del próximo pixel
             //Si hemos terminado con la fila actual...
             if(++x == 96)

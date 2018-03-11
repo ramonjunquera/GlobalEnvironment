@@ -1,6 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: ArduCAM
+  Versión: 20180311
   Objetivo: Transferir imagen en tiempo real por wifi
   Aplicación: cliente (cámara).
   Material adicional: placa ESP32, ArduCAM-Mini-2MP

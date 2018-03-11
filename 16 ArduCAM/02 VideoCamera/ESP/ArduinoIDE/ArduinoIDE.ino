@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: ArduCAM
+  Versión: 20180311
   Objetivo: Demo de uso de varios dispositivos SPI
-  Material adicional: placa ESP32, ArduCAM-Mini-2MP, display SSD1331
+  Material adicional: placa ESP, ArduCAM-Mini-2MP, display SSD1331
   Descripción:
     El objetivo es mostrar las imágenes capturas por la cámara en tiempo real en
     el display.
@@ -41,11 +42,18 @@
 #include "RoJoSSD1331.h" //Librería de gestión del display SSD1331
 #include "RoJoSprite16.h" //Gestión de sprites color
 
-//Definimos pines
-const byte pinCScamera=4;
-const byte pinDC=2;
-const byte pinRES=15;
-const byte pinCSdisplay=5;
+////Definimos pines según el modelo de placa
+#ifdef ESP32
+  const byte pinCScamera=4;
+  const byte pinDC=2;
+  const byte pinRES=15;
+  const byte pinCSdisplay=5;
+#elif defined(ESP8266) //Si es ESP8266...
+  const byte pinCScamera=D0;
+  const byte pinDC=D4;
+  const byte pinRES=D8;
+  const byte pinCSdisplay=D3;
+#endif
 
 //Creamos los objetos de gestión
 RoJoArduCAM camera;

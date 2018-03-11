@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: ArduCAM
+  Versión: 20180311
   Objetivo: Demo de librería RoJoArduCAM
-  Material adicional: placa ESP8266, ArduCAM-Mini-2MP
+  Material adicional: placa ESP, ArduCAM-Mini-2MP
 
   Descripción:
   Crearemos una aplicación para mostrar el uso de la librería RoJoArduCAM.
@@ -58,7 +59,7 @@
     Modelo        SCK MISO MOSI CS SCL SDA
     ------------  --- ---- ---- -- --- ---
     ESP8266       D5   D6   D7  D8 D1  D2
-    ESP32         18   19   23   5 22  21       
+    ESP32         18   19   23   5 22  21    
   
   Resultado:
   Podemos cambiar la resolución de la imágen y sacar fotos.
@@ -67,8 +68,12 @@
 #include "Arduino.h"
 #include "RoJoArduCAM.h"
 
-//Definimos pin CS
-const byte pinCS=D0;
+//Definimos el pin CS de la cámara según el modelo de placa
+#ifdef ESP32
+  const byte pinCS=4;
+#elif defined(ESP8266) //Si es ESP8266...
+  const byte pinCS=D0;
+#endif
 
 //Creamos el objeto de gestión
 RoJoArduCAM camera;
@@ -99,7 +104,7 @@ void setup()
 {
   Serial.begin(115200);
 
-  //Inicializamos la cámara con el pin CS conectado al D0
+  //Inicializamos la cámara con el pin CS conectado al pin 4
   byte errorCode = camera.begin(pinCS);
   //Si tenemos algún error en la inicialización...
   if(errorCode)
