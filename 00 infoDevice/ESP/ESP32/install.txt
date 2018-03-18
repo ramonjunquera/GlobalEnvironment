@@ -1,5 +1,21 @@
 Instalación y configuración placas ESP32 con Arduino IDE
 
+Nota.
+Antes de comenzar la instalación del entorno de desarrollo de ESP32 es
+conveniente instalar el driver USB para evitar problemas de comunicación,
+aunque no sea imprescindible para todas las placas.
+
+Instalación del driver USB.
+Siempre se puede descargar la última versión desde la URL:
+https://startingelectronics.org/articles/ESP32-WROOM-testing/
+En la carpeta se puede encontrar el archivo:
+CP210x_Windows_Drivers_with_Serial_Enumeration.zip
+Para instalar se descomprime y en teoría es suficiente con ejecutar 
+CP210xVCPInstaller_x64.exe
+Pero no termina de funcionar porque no permite pasar de página.
+En su lugar podemos hacer clic con el botón derecho sobre slabvcp.inf
+y seleccionar "Instalar".
+
 Los pasos generales son los siguientes:
   1. Clonamos en local la última versión del listado de tarjetas de
      Espressif (fabricante). Esto nos permitirá tener nuestra nueva

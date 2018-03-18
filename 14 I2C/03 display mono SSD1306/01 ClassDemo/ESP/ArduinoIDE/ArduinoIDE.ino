@@ -521,7 +521,7 @@ void Test18()
   RoJoSprite textSprite;
   //Creamos objeto de gestión de fuentes
   RoJoABC font;
-  //Si no hemos podido crear el sprite de texto...terminamos
+  //Creamos el sprite de texto
   font.print(F("/5x7d.fon"),F("20171101"),&textSprite);
   //Lo mostramos
   display.videoMem->drawSpritePage(0,0,&textSprite,4);
