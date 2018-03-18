@@ -3,7 +3,7 @@
   Tema: Rotary encoder
   Objetivo: Leer un rotary encoder KY-040 por interrupciones
   Fecha: 20180318  
-  Material: breadboard, ESP board, rotary encoder Keyes KY-040
+  Material: breadboard, ESP board, rotary encoder Keyes KY-040, display SSD1306
   Descripción:
     Utilizaremos un rotary encoder.
     Lo gestionaremos por interrupciones.

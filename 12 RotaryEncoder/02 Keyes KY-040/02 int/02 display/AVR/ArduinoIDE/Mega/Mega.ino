@@ -3,7 +3,7 @@
   Tema: Rotary encoder
   Objetivo: Leer un rotary encoder KY-040 por interrupciones
   Fecha: 20180318  
-  Material: breadboard, Arduino Mega, rotary encoder Keyes KY-040, lector SD
+  Material: breadboard, Arduino Mega, rotary encoder Keyes KY-040, lector SD, display SSD1306
   Descripción:
     Utilizaremos un rotary encoder.
     Lo gestionaremos por interrupciones.
