@@ -72,3 +72,7 @@ Timers:
     1    16 bits   Librería Servo y PWM de pines 9 y 10
     2     8 bits   Función tone() y PWM de pines 3 y 11
 
+Atención!
+Si la placa es antigua, al intentar subir el programa dará un error de sincronización.
+Si esto ocurre, se debe indicar en:
+  Herramientas/Procesador/ATmega328P (Old Bootloader)
