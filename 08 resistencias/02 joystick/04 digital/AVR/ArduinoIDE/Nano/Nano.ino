@@ -2,6 +2,7 @@
   Autor: Ramón Junquera
   Tema: Lectura y escritura de señales digitales
   Objetivo: Funcionamiento del joystick de PS2
+  Fecha: 20180319
   Material: breadboard, Arduino Nano, joystick de PS2, cables
 
   Descripción:
@@ -19,7 +20,7 @@
   En ese caso tendríamos 1024/341=3. Este es valor no contemplado, porque queríamos
   reducirlo a 0, 1 y 2.
   Por lo tanto, tomaremos como valor de corte 342.
-  Por lo tanto, dividiremos el valore analógico por 342 y nos dará los valores:
+  Por lo tanto, dividiremos el valor analógico por 342 y nos dará los valores:
     0 = bajo
     1 = centro
     2 = alto
@@ -33,27 +34,29 @@
 */
 
 #include <Arduino.h>
-#include <RoJoMatrix.h>
+#include "RoJoMAX7219SD.h" //Librería de gestión de MAX7219
 
-//Creamos el objeto m que gestionará la matriz (de matrices) de leds
-//En la creación ya se incluye la activación y la inicialización
-//tras ello estará lista para ser utilizada
-//Los parámetros son:
-//  pin del DIN (DATA)
-//  pin del CLK
-//  pin del LOAD(/CS)
-//  número de matrices enlazadas
-RoJoMatrix m(4,2,3,1);
-//Creamos las variables del sprite
-const byte spriteWidth=2; //Anchura (número de columnas)
-byte spriteGraphic[spriteWidth]=
-{
-  B11,
-  B11
-}; //Datos gráficos
+//Creamos el objeto display que gestionará la cadena de chips MAX7219
+RoJoMAX7219 display;
+//Creamos el sprite del bloque
+RoJoSprite block;
+
+//Definición de pines
+const byte pinDIN_display=4;
+const byte pinCS_display=3;
+const byte pinCLK_display=2;
 
 void setup()
 {
+  //Inicialización del display
+  //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
+  display.begin(1,pinDIN_display,pinCS_display,pinCLK_display);
+  //Dimensionamos el sprite del bloque. Anchura=2. Páginas=1
+  block.setSize(2,1);
+  //Lo dibujamos
+  //void drawPage(int16_t x,int16_t page,byte mask,byte color);
+  block.drawPage(0,0,0b00000011,4); //4=escribir el valor tal cual
+  block.drawPage(1,0,0b00000011,4);
 }
 
 void loop()
@@ -67,11 +70,11 @@ void loop()
   x/=342;
   y/=342;
   //Borramos el fondo
-  m.Clear();
+  display.videoMem->clear();
   //Dibujamos el sprite sobre la memoria de video
-  m.SetSprite(spriteGraphic,spriteWidth,x*3,y*3,false);
+  display.videoMem->drawSprite(x*3,y*3,&block,1); //1=dibujar
   //Mostramos la memoria de vídeo en la matriz
-  m.Refresh();
+  display.show();
   //Esperamos un momento
   delay(50);
 }

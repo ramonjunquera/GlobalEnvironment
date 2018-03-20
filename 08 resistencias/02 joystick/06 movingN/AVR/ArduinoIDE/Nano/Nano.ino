@@ -2,6 +2,7 @@
   Autor: Ramón Junquera
   Tema: Lectura y escritura de señales digitales
   Objetivo: Funcionamiento del joystick de PS2
+  Fecha: 20180320
   Material: breadboard, Arduino Nano, joystick de PS2, cables
 
   Descripción:
@@ -15,23 +16,21 @@
 
   Tras leer la posición del joystick, calcularemos las coordenadas de la nueva cabeza.
   Si coinciden con un led ya encendido, terminaremos el juego.
-  Si no coinciden, se desplazarán todoa las coordenadas una posición.
+  Si no coinciden, se desplazarán todas las coordenadas una posición.
 */
 
 #include <Arduino.h>
-#include <RoJoMatrix.h>
+#include "RoJoMAX7219SD.h" //Librería de gestión de MAX7219
 
-//Creamos el objeto m que gestionará la matriz (de matrices) de leds
-//En la creación ya se incluye la activación y la inicialización
-//tras ello estará lista para ser utilizada
-//Los parámetros son:
-//  pin del DIN (DATA)
-//  pin del CLK
-//  pin del LOAD(/CS)
-//  número de matrices enlazadas
-RoJoMatrix m(4,2,3,1);
-//Posición de la cabeza
-byte headX,headY;
+//Creamos el objeto display que gestionará la cadena de chips MAX7219
+RoJoMAX7219 display;
+
+//Definición de pines
+const byte pinDIN_display=4;
+const byte pinCS_display=3;
+const byte pinCLK_display=2;
+//Posición
+int headX,headY;
 //Dirección
 int dx,dy;
 //Máxima longitud
@@ -41,8 +40,11 @@ byte bodyX[maxBody],bodyY[maxBody];
 
 void setup()
 {
+  //Inicialización del display
+  //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
+  display.begin(1,pinDIN_display,pinCS_display,pinCLK_display);
   //Inicializamos la semilla de números aleatorios
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(A2));
   //Calculamos las coordenadas del punto inicial
   headX=random(8);
   headY=random(8);
@@ -55,7 +57,7 @@ void setup()
   //Calculamos la dirección inicial
   dy=0;
   dx=random(3)-1;
-  if(dx==0) dy=random(3)-1;
+  if(dx==0) dy=random(2)*2-1;
 }
 
 void loop()
@@ -89,25 +91,25 @@ void loop()
   headX=(headX+8)%8;
   headY=(headY+8)%8;
   //Si en esa posición ya hay un led encendido...
-  if(m.GetLed(headX,headY))
+  if(display.videoMem->getPixel(headX,headY))
   {
     //...hemos terminado
     while(1)
     {
-       m.SetLed(headX,headY,0);
-       m.Refresh();
+       display.videoMem->drawPixel(headX,headY,0);
+       display.show();
        delay(100);
-       m.SetLed(headX,headY,1);
-       m.Refresh();
+       display.videoMem->drawPixel(headX,headY,1);
+       display.show();
        delay(100);
     }
   }
   //Podemos avanzar
 
   //Encendemos el led de cabeza
-  m.SetLed(headX,headY,1);
+  display.videoMem->drawPixel(headX,headY,1);
   //Apagamos el último punto del cuerpo
-  m.SetLed(bodyX[maxBody-1],bodyY[maxBody-1],0);
+  display.videoMem->drawPixel(bodyX[maxBody-1],bodyY[maxBody-1],0);
   //Desplazamos las coordenadas del cuerpo una posición
   for(byte i=maxBody-2;i<250;i--)
   {
@@ -118,7 +120,7 @@ void loop()
   bodyX[0]=headX;
   bodyY[0]=headY;
   //Dibujamos los leds
-  m.Refresh();
+  display.show();
   
   //Esperamos un momento
   delay(200);

@@ -2,6 +2,7 @@
   Autor: Ramón Junquera
   Tema: Lectura y escritura de señales digitales
   Objetivo: Funcionamiento del joystick de PS2
+  Fecha: 20180320
   Material: breadboard, Arduino Nano, joystick de PS2, cables
 
   Descripción:
@@ -11,17 +12,15 @@
 */
 
 #include <Arduino.h>
-#include <RoJoMatrix.h>
+#include "RoJoMAX7219SD.h" //Librería de gestión de MAX7219
 
-//Creamos el objeto m que gestionará la matriz (de matrices) de leds
-//En la creación ya se incluye la activación y la inicialización
-//tras ello estará lista para ser utilizada
-//Los parámetros son:
-//  pin del DIN (DATA)
-//  pin del CLK
-//  pin del LOAD(/CS)
-//  número de matrices enlazadas
-RoJoMatrix m(4,2,3,1);
+//Creamos el objeto display que gestionará la cadena de chips MAX7219
+RoJoMAX7219 display;
+
+//Definición de pines
+const byte pinDIN_display=4;
+const byte pinCS_display=3;
+const byte pinCLK_display=2;
 //Posición de la cabeza
 byte headX,headY;
 //Posición de la galleta
@@ -37,17 +36,20 @@ byte bodyX[maxBody],bodyY[maxBody];
 
 void setup()
 {
+  //Inicialización del display
+  //begin(byte chainedChips,byte pinDIN, byte pinCS, byte pinCLK)
+  display.begin(1,pinDIN_display,pinCS_display,pinCLK_display);
   //Inicializamos la semilla de números aleatorios
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(A2));
   //Calculamos las coordenadas del punto inicial
   bodyX[0]=random(8);
   bodyY[0]=random(8);
   //Calculamos la dirección inicial
   dy=0;
   dx=random(3)-1;
-  if(dx==0) dy=random(3)-1;
+  if(dx==0) dy=random(2)*2-1;
   //Dibujamos le cabeza
-  m.SetLed(bodyX[0],bodyY[0],1);
+  display.videoMem->drawPixel(bodyX[0],bodyY[0],1);
   //Creamos una nueva galleta
   NewCookie();
 }
@@ -95,7 +97,7 @@ void loop()
   else //La nueva posición de la cabeza no coincide con la galleta
   {
     //Si la nueva posición ya está ocupada...
-    if(m.GetLed(headX,headY))
+    if(display.videoMem->getPixel(headX,headY))
     {
       //...hemos terminado
       GameOver();
@@ -103,21 +105,21 @@ void loop()
     else //La nueva posición está libre
     {
       //Apagamos el último punto del cuerpo
-      m.SetLed(bodyX[bodyLength-1],bodyY[bodyLength-1],0);
+      display.videoMem->drawPixel(bodyX[bodyLength-1],bodyY[bodyLength-1],0);
       //Desplazamos las coordenadas del cuerpo una posición
       Move();
     }
   }
   //Apagamos la galleta
-  m.SetLed(cookieX,cookieY,0);
+  display.videoMem->drawPixel(cookieX,cookieY,0);
   //Dibujamos el escenario
-  m.Refresh();
+  display.show();
   //Esperamos un momento
   delay(150);
   //Encendemos la galleta
-  m.SetLed(cookieX,cookieY,1);
+  display.videoMem->drawPixel(cookieX,cookieY,1);
   //Dibujamos el escenario
-  m.Refresh();
+  display.show();
   //Esperamos un momento
   delay(150);
 }
@@ -131,7 +133,7 @@ void NewCookie()
     cookieX=random(8);
     cookieY=random(8);
   } 
-  while (m.GetLed(cookieX,cookieY));
+  while (display.videoMem->getPixel(cookieX,cookieY));
 }
 
 void GameOver()
@@ -142,11 +144,11 @@ void GameOver()
   //Repite para siempre
   while(1)
   {
-     m.SetLed(headX,headY,0);
-     m.Refresh();
+     display.videoMem->drawPixel(headX,headY,0);
+     display.show();
      delay(100);
-     m.SetLed(headX,headY,1);
-     m.Refresh();
+     display.videoMem->drawPixel(headX,headY,1);
+     display.show();
      delay(100);
   }
 }
@@ -165,6 +167,6 @@ void Move()
   bodyX[0]=headX;
   bodyY[0]=headY;
   //Encendemos el led de cabeza
-  m.SetLed(headX,headY,1);
+  display.videoMem->drawPixel(headX,headY,1);
 }
 
