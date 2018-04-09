@@ -1,0 +1,70 @@
+Detalles técnicos de display LCD TFT 3.5" 480x320
+Touch screen resistive
+
+Modelo especialmente construido para conexión directa a RPi.
+Pero también puede utilizarse con placas Arduino y compatibles.
+
+Model: Kuman
+Resolution: 480x320 (HVGA)
+LCD type: TFT
+LCD interface: SPI
+SPI video driver speed: 80MHz
+LCD controller: 9486 (ILI9486)
+Touch screen type: resistive
+Touch screen controller: XPT2046
+Backlight: LED
+Colors: 65536
+Aspect Ratio: 4:3
+Video Memory: 300Kb
+Interface: SC06 (RPi)
+Producto: http://www.kumantech.com/kuman-35quot-inch-480x320-rgb-tft-lcd-pixels-touch-screen-with-touch-pen-for-raspberry-pi-3-2-model-b-b-a-a-module-spi-interface-sc06_p0014.html
+
+Pinout (pantalla por debajo):
+                                                        -------------------------------
+                5V :  2 |  1 : not used                |oo                             |
+          not used :  4 |  3 : not used                |oo                             |
+          not used :  6 |  5 : not used                |oo                             |
+          not used :  8 |  7 : not used                |oo                             |
+          not used : 10 |  9 : not used                |oo                             |
+          not used : 12 | 11 : TP_IRQ                  |oo                             |
+          not used : 14 | 13 : not used                |oo                             |
+          not used : 16 | 15 : not used                |oo                             |
+            LCD_DC : 18 | 17 : not used                |oo                             |
+          not used : 20 | 19 : SPI_MOSI                |oo                             |
+               RST : 22 | 21 : SPI_MISO                |oo                             |
+        LCD_SPI_CS : 24 | 23 : SPI_SCLK                |oo                             |
+         TP_SPI_CS : 26 | 25 : GND                     |oo                             |
+                                                       |                               |
+                                                       |                               |
+                                                       |                               |
+                                                       |                               |
+                                                       |                               |
+                                                       |                               |
+                                                       |                               |
+                                                       |                               |
+                                                       |     3.5inch RPi Display       |
+                                                       |                               |
+                                                       |                               |
+                                                       |  CE             480X320 Pixel |
+                                                       |       XPT2046 Touch Controller|
+                                                        -------------------------------
+
+TP_IRQ : LOW si se está pulsando el touch panel
+LCD_DC : Data/Command. Selector de envío de comando o datos. HIGH (data) / LOW (command)
+SPI_MOSI : Recepción de datos del LCD/touch panel
+SPI_MISO : Envío de datos al touch panel
+RST : HIGH (normal) / LOW (reset)
+SPI_CLK : Señal de reloj SPI para LCD/touch panel
+LCD_SPI_CS : Pin SPI/CS para LCD. LOW = active
+TP_SPI_CS : Pin SPI/CS para touch panel. LOW (selected) / HIGH (unselected)
+
+Notas:
+- Aunque el procesador gráfico permite tanto la escritura como la lectura de la memoria de vídeo, en este
+  modelo se ha eliminado la posibilidad de lectura. Por lo tanto no necesitaremos la conexión MISO para
+  el vídeo.
+
+
+Links:
+https://makerfabs.com/index.php?route=product/product&product_id=189
+https://es.aliexpress.com/item/Free-Shipping-New-PI-TFT-3-5-TFT-Touchscreen-Display-Touch-Shield-Module-for-Raspberry-Pi/2049139874.html
+http://www.raspberrypiwiki.com/index.php/3.5_inch_TFT_LCD_Touch_Screen_SKU:363295
