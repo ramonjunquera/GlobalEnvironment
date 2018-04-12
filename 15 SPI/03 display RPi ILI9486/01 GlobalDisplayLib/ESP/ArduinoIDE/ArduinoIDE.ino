@@ -99,7 +99,7 @@ void Test2()
   //Las imágenes de ejemplo se guardan en la carpeta spr16
   //Los sprites color tienen extensión .s16
   //Pueden ser generados con la aplicación RoJoImageConvert
-  //También se han dejado las imágenes .bmp originales
+  //También se han dejado las imágenes originales
   mySprite.load(F("/rose.s16"));
   //Lo mostramos
   display.drawSprite(0,0,&mySprite);
@@ -188,7 +188,7 @@ void Test5()
   display.print(F("/10x15d.fon"),F("1234567890"),color,-5,25); //No se ve el principio
   display.print(F("/10x15d.fon"),F("1234567890"),color,240,25); //No se ve el final
   //Fuente más grande
-  display.print(F("/21x33d.fon"),F("1234567890"),color,0,45); //No se ve el principio
+  display.print(F("/21x33d.fon"),F("1234567890"),color,0,45);
   //Texto
   color=display.getColor(255,0,0); //red
   display.print(F("/7x11.fon"),F("Hola, esto es una prueba!"),color,0,80);
@@ -223,8 +223,8 @@ void Test7()
 {
   //Cargar y mostrar un sprite a pantalla completa
 
-  //Mostramos varios sprites grandes (pantalla completa) con la función de cargar directamente de archivo
-  //a display sin pasar por memoria 
+  //Mostramos varios sprites grandes (pantalla completa) con la función
+  //de cargar directamente de archivo a display sin pasar por memoria 
   display.drawSprite(0,0,F("/arbol.s16")); delay(2000);
   display.drawSprite(0,0,F("/campo.s16")); delay(2000);
   display.drawSprite(0,0,F("/ghosts.s16")); delay(2000);
@@ -232,11 +232,8 @@ void Test7()
 
 void setup()
 {
-  Serial.begin(115200);
   //Inicializamos el display
   display.begin(pinRES_display,pinDC_display,pinCS_display);
-  //Test1();
-  //Serial.println("SEND_16_BITS="+String(SEND_16_BITS));
 }
 
 void loop()
@@ -244,7 +241,7 @@ void loop()
   Test0(); //Test de color
   Test1(); //Función getColor y drawPixel
   Test2(); //Cargar y mostrar un sprite
-  Test3(); //Desplazar un sprite escribiendo sobre otro sprite
+  Test3(); //Desplazar un sprite
   Test4(); //Lineas
   Test5(); //Mostrar texto
   Test6(); //Rotación de pantalla
