@@ -1,29 +1,16 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180410
+  Fecha: 20180413
   Tema: Librería para display RPI_ILI9486 SPI 3.5" 480*320
-  Objetivo: Demo de librería RoJoILI9486
+  Objetivo: Demo de librería RoJoRPiILI9486
   Material: breadboard, cables, placa RPi, display ILI9486
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
-
-  Pinout SPI:
-
-  Modelo   CLK MISO MOSI CS
-  -------  --- ---- ---- --
-  ESP32    18   19   23  5
-  ESP8266  D5   D6   D7  D8
-  RPi      11   9    10  8(CS0)
-  
+ 
   Este display está especialmente preparado para ser integrado en
   Raspberry Pi con una caja que hace de soporte. La conexión es directa.
   Los pines no pueden ser seleccionados.
-  En el desarrollo se deben utilizar los siguientes pines como fijos:
-  
-  const byte pinDC_display=24;
-  const byte pinRES_display=25;
-  const byte pinCS_display=8;
  
   Resultado:
   Realizamos varios tests cíclicos
@@ -33,11 +20,6 @@
 #include "RoJoRPiILI9486.cpp" //Librería de gestión del display ILI9486
 #include "RoJoSprite16.cpp" //Gestión de sprites color
 #include "RoJoABC16.cpp" //Gestión de fuentes color
-
-//Definición de pines
-const byte pinDC_display=24;
-const byte pinRES_display=25;
-const byte pinCS_display=8;
 
 //Creamos objeto de gestión
 RoJoRPiILI9486 display;
@@ -313,7 +295,7 @@ void Test7()
 int main(int argc, char **argv)
 {
   //Inicializamos el display
-  display.begin(pinRES_display,pinDC_display,pinCS_display);
+  display.begin();
 	
   while(1)
   {
