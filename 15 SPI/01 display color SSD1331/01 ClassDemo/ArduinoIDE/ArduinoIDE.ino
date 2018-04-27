@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180307
+  Fecha: 20180427
   Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
   Objetivo: Demo de librería RoJoSSD1331
   Material: breadboard, cables, placa ESP, display OLED SSD1331
@@ -558,7 +558,31 @@ void Test16()
   //Borramos los sprites utilizados
   textSprite.clean();
 
-  delay(3000);
+  delay(2000);
+}
+
+void Test17()
+{
+  //Ejemplo de funciones para dibujar triángulos en sprites
+
+  //Creamos el sprite de fondo
+  RoJoSprite16 backSprite;
+  //Con el mismo tamaño que la pantalla
+  backSprite.setSize(display.xMax,display.yMax);
+  //Definimos color
+  uint16_t color = display.getColor(0,0,255); //blue
+  //Dibujamos un triángulo relleno
+  backSprite.triangleFill(40,5,70,30,10,60,color);
+  //Cambiamos de color
+  color = display.getColor(255,255,0); //yellow
+  //Dibujamos un triángulo sin relleno
+  backSprite.triangle(30,10,10,25,70,50,color);
+  //Mostramos el sprite en pantalla
+  display.drawSprite(0,0,&backSprite);
+  //Borramos el sprite utilizado
+  backSprite.clean();
+
+  delay(2000);
 }
 
 void setup()
@@ -586,5 +610,6 @@ void loop()
   Test14(); //Mostrar texto con fondo transparente
   Test15(); //Resize
   Test16(); //Ejemplo de funciones para dibujar directamente en un sprite
+  Test17(); //Triángulos
 }
 
