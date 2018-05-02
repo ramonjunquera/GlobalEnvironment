@@ -51,7 +51,7 @@ Tiene 4Mb de memoria total: 1280Kb para flash (programa), 288Kb para RAM (variab
                |         |
                -----------
 
-Esta placa tiene un leds integrados en placa asociado al pin 5 y a la constante LED_BUILTIN.
+Esta placa tiene un leds integrado en placa asociado al pin 5 y a la constante LED_BUILTIN.
 
 Los estados del led son inversos a los del pin:
   HIGH = apagado
