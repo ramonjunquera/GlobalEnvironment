@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 02/05/2018
+  Fecha: 03/05/2018
   Tema: Multitasking / FreeRTOS
   Objetivo: Forzar la ejecución de un proceso por un core
   Material adicional: placa ESP32
@@ -11,6 +11,9 @@
 
   Repetiremos el mismo ejercicio, pero esta vez forzaremos a que 
   ejecute por el core 0.
+
+  La documentación oficial para la creación de tareas se encuentra en:
+  https://www.freertos.org/a00125.html
 */
 
 #include <Arduino.h>
@@ -31,8 +34,10 @@ void setup()
 {
   //Inicializamos el puerto serie
   Serial.begin(115200);
+  //Definimos la variable en la que guardaremos el resultado de la creación de la tarea
+  BaseType_t answer;
   //Asignamos los parámetros al objeto tarea y lo lanzamos
-  xTaskCreatePinnedToCore
+  answer=xTaskCreatePinnedToCore
   (
     sayCore, //Nombre de la función que se lanza cuando se ejecuta esta tarea
     "task1", //Nombre de la tarea (identificador único)
@@ -42,6 +47,9 @@ void setup()
     &myTask, //Puntero del objeto tarea que lo mantendrá
     0  //Core en el que se ejecutará: 0 ó 1
   );
+  //Comprobamos si se ha creado correctamente
+  if(answer==pdPASS) Serial.println("La tarea se ha creado correctamente");
+  else Serial.println("Error al crear la tarea");
 }
 
 void loop()

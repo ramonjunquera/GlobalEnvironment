@@ -1,8 +1,8 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 02/05/2018
+  Fecha: 03/05/2018
   Tema: Multitasking / FreeRTOS
-  Objetivo: Eliminación de tareas
+  Objetivo: Eliminación de tarea en curso
   Material adicional: placa ESP32
   Descripción:
 
@@ -42,5 +42,4 @@ void loop()
   xTaskCreatePinnedToCore(sayCore,"task1",1000,NULL,1,&myTask,0);
   //Esperamos un momento
   delay(1000);
-
 }
