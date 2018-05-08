@@ -1,7 +1,6 @@
-
 /*
   Autor: Ramón Junquera
-  Fecha: 07/05/2018
+  Fecha: 08/05/2018
   Tema: Multitasking / FreeRTOS
   Objetivo: Destección de eliminación de tareas
   Material adicional: placa ESP32
@@ -26,6 +25,17 @@
   elimina la tarea actual.
   Gracias a ello, desde el programa principal detectaremos cuándo ha terminado la tarea
   y se ha eliminado, comprobando si el puntero es nulo.
+
+  Nota
+  FreeRTOS contiene la función
+    TaskHandle_t xTaskGetHandle( const char *pcNameToQuery );
+  Devuelve el puntero al objeto que gestiona la tarea. Sólo le tenemos que entregar el nombre
+  que le hemos asignado a la tarea.
+  Si no existe una tarea con el nombre indicado, devuelve NULL.
+  Esta función no está activa por defecto. Según las instrucciones oficiales, hay que mofificar
+  el archivo de configuración de FreeRTOS (FreeRTOSConfig.h).
+  Aun así, esta función NO está disponible para ESP32. Por lo tanto no podemos utilizarla
+  para detectar si una tarea aún existe.
 */
 
 #include <Arduino.h>

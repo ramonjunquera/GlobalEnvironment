@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 03/05/2018
+  Fecha: 08/05/2018
   Tema: Multitasking / FreeRTOS
   Objetivo: Forzar la ejecución de un proceso por un core
   Material adicional: placa ESP32
@@ -14,6 +14,11 @@
 
   La documentación oficial para la creación de tareas se encuentra en:
   https://www.freertos.org/a00125.html
+
+  Nota
+  El tipo BaseType_t es binario y sus valores son:
+    errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY = 0 = Error. La tarea no se ha creado
+                                   pdPASS = 1 = Ok. Tarea creada correctamente
 */
 
 #include <Arduino.h>
