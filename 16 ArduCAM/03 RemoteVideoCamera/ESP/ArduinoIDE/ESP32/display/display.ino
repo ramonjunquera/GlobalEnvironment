@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: ArduCAM
-  Versión: 20180311
+  Versión: 20180509
   Objetivo: Transferir imagen en tiempo real por wifi
   Aplicación: servidor (display).
   Material adicional: placa ESP32, display SSD1331
@@ -38,7 +38,7 @@ void setup()
   sprite.setSize(96,64);
 
   //Inicializamos el display
-  display.begin(pinDC,pinRES,pinCS);
+  display.begin(pinRES,pinDC,pinCS);
 
   //Creamos el punto de acceso
   WiFi.mode(WIFI_AP); //Modo punto de acceso
@@ -46,7 +46,7 @@ void setup()
 
   //Arrancamos el servidor
   server.begin();
-
+  
   Serial.println("setup end");
 }
 

@@ -1,4 +1,4 @@
-Autor: Ramón Junquera
+﻿Autor: Ramón Junquera
 Tema: ArduCAM
 Objetivo: Transferir imagen en tiempo real por wifi
 Material: 2x placa ESP32, ArduCAM-Mini-2MP, display SSD1331
@@ -16,7 +16,7 @@ la información gráfica que consiga en tiempo real.
 
 La cámara captura imágenes en la resolución más baja y sin comprimir, que
 almacena en un sprite con el mismo tamaño que el display.
-Al complertar la captura y descargarla al sprite, envía su información
+Al completar la captura y descargarla al sprite, envía su información
 al servidor byte a byte.
 Para evitar problemas de sincronización, debemos indicar de alguna manera
 cuándo comienza el envío de una nueva imagen.
@@ -31,3 +31,17 @@ Sólo necesitamos dos códigos:
 Para el correcto funcionamiento, es importante que primero se inicie el 
 servidor y a continuación el cliente.
 La velocidad de refresco es de un frame cada dos o tres segundos (aprox.).
+
+Nota.
+Es posible que tengamos conflictos a la hora de compilar porque se encuentran
+varias versiones de la librería WiFi.h
+Normalmente en la instalación del IDE de Arduino y en la instalación del ESP32.
+Puesto que queremos utilizar la de ESP32, la opción más sencilla es renombrar la
+carpeta de la librería WiFi de la instalación del IDE.
+Habitualmente es suficiente con renombrar el archivo que preovoca el conflicto.
+En este caso C:\Program Files (x86)\Arduino\libraries\WiFi\src\WiFi.h a
+WiFi.h.renamed
+Si se necesitan utilizar de nuevo las librerías originales, deberíamos volver a recuperar
+el nombre original.
+
+
