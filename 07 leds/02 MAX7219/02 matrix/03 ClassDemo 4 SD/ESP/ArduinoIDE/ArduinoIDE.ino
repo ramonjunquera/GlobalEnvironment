@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
   Objetivo: Demostración de librería RoJoMAX7219
-  Fecha: 20180310
+  Fecha: 20180511
   Material: breadboard, cables, 4 soportes para chip MAX7219, 4 matrix led 8x8, placa ESP/Arduino, lector SD
 
   Descripción:
@@ -173,6 +173,23 @@ void test4()
   //Desplazamiento horizontal del sprite
   //Recorremos todas las columnas de pantalla
   for(int x=-((int)textSprite.width());x<((int)display.videoMem->width()+1);x++)
+  {
+    //Limpiamos pantalla
+    display.videoMem->clear();
+    //Dibujamos el sprite
+    display.videoMem->drawSpritePage(x,0,&textSprite,1);
+    //Lo mostramos
+    display.show();
+    //Esperamos un momento
+    delay(80);
+  }
+
+  //Reaprovechamos el sprite de texto
+  //Si no podemos crear el sprite de texto...hemos terminado  
+  if(!font.print(F("/5x7.fon"),F("Hasta luego!"),&textSprite)) return;
+  //Desplazamiento horizontal del sprite
+  //Recorremos todas las columnas de pantalla
+  for(int x=(int)display.videoMem->width()+1;x>-((int)textSprite.width());x--)
   {
     //Limpiamos pantalla
     display.videoMem->clear();
