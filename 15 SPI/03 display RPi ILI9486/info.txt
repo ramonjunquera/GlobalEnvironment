@@ -62,6 +62,7 @@ Notas:
 - Aunque el procesador gráfico permite tanto la escritura como la lectura de la memoria de vídeo, en este
   modelo se ha eliminado la posibilidad de lectura. Por lo tanto no necesitaremos la conexión MISO para
   el vídeo.
+- El touch panel SI necesita de la conexión MISO porque envía las coordenadas de la pulsación a la placa.
 
 
 Links:
