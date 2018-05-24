@@ -2,6 +2,7 @@
   Autor: Ramón Junquera
   Tema: Pines digitales de salida
   Objetivo: Configuración y escritura de pines digitales en ESP32
+  Fecha: 20180523
   Material adicional: placa ESP32
   Descripción:
 
@@ -17,7 +18,8 @@
   El programa configura un pin como salida en su inicialización (setup).
   Enciende el led, espera, lo apaga, espera y repite el ciclo.
 
-  En estas placas el led integrado en placa viene asociado a la constante LED_BUILTIN
+  En casi todas las placas ESP32, el led integrado en placa viene asociado a
+  la constante LED_BUILTIN. Si no fuese así, se debe sustituir por el pin correcto.
  */
 
 #include <Arduino.h>

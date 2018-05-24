@@ -1,0 +1,94 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa ESP32 OLED
+
+Título del fabricante:
+16 Mt Bytes (128 Mt bit) Pro ESP32 OLED V2.0 TTGO For Arduino ESP32 OLED
+WiFi Modules+Bluetooth Double ESP-32 ESP8266 Et OLED
+
+Descripción del fabricante:
+1. The main control chip using Le Xin ESP32, Tensilica LX6 dual core processor, clocked at 240MHz, computing capacity of up to 600DMIPS,
+520 SRAM, 802.11 KB chip b/g/n HT40 Wi-Fi transceiver, baseband, and LWIP protocol stack, Bluetooth (Bluetooth dual-mode integrated
+traditional and BLE low-power Bluetooth).
+2. onboard 16 Mt bytes (128 Mt bit), Flash, and Wi-Fi antennas
+3. 0.96 inch White OLED display
+4. lithium battery charging circuit and interface
+5.CP2102 USB to serial chip, perfect support for Arduino development environment
+Note:This product does not include the battery.
+
+URL de compra:
+https://www.banggood.com/16-Mt-Bytes-128-Mt-bit-Pro-ESP32-OLED-V2_0-TTGO-For-Arduino-ESP32-OLED-WiFi-ModulesBluetooth-p-1205876.html?rmmds=myorder&cur_warehouse=CN
+
+Placa.
+En el IDE de Arduino se debe seleccionar:
+  Placa: ESP32 Dev Module
+  Flash mode: QIO
+  Flash size: 4MB (32Mb)
+  Partition Scheme: Por defecto
+
+LED integrado.
+Esta placa tiene dos leds integrados en placa.
+El rojo no se puede controlar. Sólo indica cuando tiene alimentación.
+El azul corresponde al pin 2.
+Los estados del led son iguales a los del pin:
+  HIGH = encendido
+  LOW = apagado
+
+Botones.
+Tiene integrados dos botones.
+El botón RST para sesetear la placa, asociado al pin RST.
+El botón PRG asociado al pin 0. Programable.
+
+Gestión de batería.
+En la parte inferior de la placa se incluye un conector para una batería externa.
+La placa incluye el circuto de gestión de recarga de la batería.
+
+Memoria SPIFFS.
+En vez de los 4Mb de memoria interna, incluye 16Mb.
+Como siempre el primer Mb es para programa. Es resto se puede configurar para archivos.
+No es obligatorio configurar toda la memoria. Se puede utilizar como si tuviese 4Mb.
+
+OLED.
+Incluye un display OLED con conexión I2C modelo SSD1306 con una resolución de 128x64.
+El pinout es:
+  SDA = 4
+  SCL = 15
+  RST = 16
+Los pines no coinciden con los definidos en el estandar I2C. La solución a este
+problema es definir el begin de Wire de la siguiente manera:
+  Wire.begin(4,15)
+El identificador del display es 0x3C
+Es obligatorio resetear el display antes de utilizarlo, con la siguiente rutina:
+  pinMode(16,OUTPUT);
+  digitalWrite(16,LOW);
+  delay(50);
+  digitalWrite(16,HIGH);
+
+
+  Pinout
+  ------
+                             ---------------
+                        GND -| O         O |- GND
+                         5V -|             |- 5V
+                        3V3 -|             |- 3V3
+                        RST -|             |- GND
+       Touch4/ADC2_4/GPIO13 -|             |- GPIO01/TX/CLX3/UO_TXD
+       Touch5/ADC2_5/GPIO12 -|             |- GPIO03/RX/CLX2/UO_RXD
+       Touch6/ADC2_6/GPIO14 -|             |- GPIO15/ADC2_3/HSPI_CSO/Touch3/OLED_SCL
+       Touch7/ADC2_7/GPIO27 -|             |- GPIO02/CS/ADC2_2/HSPI_WP/Touch2/LED
+         DAC1/ADC2_9/GPIO26 -|             |- GPIO00/CLK1/ADC2_1/Touch1/Button
+         DAC2/ADC2_8/GPIO25 -|             |- GPIO04/ADC2_0/HSPI_HD/Touch0/OLED_SDA
+Touch9/ADC1_5/XTAL32/GPIO33 -|             |- GPIO16/U2_RXD/OLED_RST
+Touch8/ADC1_4/XTAL32/GPIO32 -|             |- GPIO17/U2_TXD
+              ADC1_7/GPIO35 -|             |- GPIO05/V_SPI_CS0
+              ADC1_6/GPIO34 -|             |- GPIO18/SCK/V_SPI_CLK
+       ADC1_3/Sensvn/GPIO39 -|             |- GPIO23/MOSI/V_SPI_0
+        ADC1_2/CapVN/GPIO38 -|             |- GPIO19/MISO/V_SPI/Q/UO_CTS
+        ADC1_1/CapVP/GPIO37 -|             |- GPIO22/SCL/V_SPI_WP/UO_RTS
+      ADC1_0/Sensevp/GPIO36 -|             |- GPIO21/SDA/V_SPI_HD
+                             |             |
+                             ---------------
+
+Comentarios:
+Que el etiquetado de los pines esté por debajo de la placa lo hace muy incómodo.
+Siempre hay que tener un esquema de pinout delante!.
