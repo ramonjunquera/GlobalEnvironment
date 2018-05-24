@@ -64,6 +64,14 @@ Es obligatorio resetear el display antes de utilizarlo, con la siguiente rutina:
   delay(50);
   digitalWrite(16,HIGH);
 
+SPI.
+Mantienen el estandar de ESP32.
+  pin SPI
+  --- ---
+   19 MISO
+   23 MOSI
+   18 SCLK
+    5 CS
 
   Pinout
   ------

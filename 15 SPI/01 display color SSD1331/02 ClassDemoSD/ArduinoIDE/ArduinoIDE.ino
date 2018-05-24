@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180224
+  Fecha: 20180524
   Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
   Objetivo: Demo de librería RoJoSSD1331
   Material: breadboard, cables, placa ESP, display OLED SSD1331
@@ -38,7 +38,7 @@
   const byte pinCS_SD=D3;
 #elif defined(ESP32) //Si es un ESP32...
   const byte pinDC_display=22;
-  const byte pinRES_display=21;
+  const byte pinRES_display=2;
   const byte pinCS_display=5; //CS por defecto
   const byte pinCS_SD=4;
 #endif

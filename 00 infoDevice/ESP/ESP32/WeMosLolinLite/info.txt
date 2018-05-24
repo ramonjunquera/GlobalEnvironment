@@ -97,3 +97,12 @@ Por esa razón no tenemos pines fijos para ello.
 De todas maneras, y para guardar coherencia con las placas que ya incluyen
 un display I2C, procuraremos utilizar siempre los mismos pines:
   SDA=4 y SCL=15
+
+SPI.
+Mantienen el estandar de ESP32.
+  pin SPI
+  --- ---
+   19 MISO
+   23 MOSI
+   18 SCLK
+    5 CS
