@@ -32,6 +32,10 @@ Para probarlo sólo tenemos que ejecutar:
 La carpeta compartida de la unidad de red se ha montado en la carpeta local que
 hemos creado.
 
+Si no estamos seguros de la línea escrita en fstab, siempre podemos montar la unidad
+manualmente con el siguiente comando:
+sudo mount -t cifs -o username=user,password=pass,vers=1.0 //192.168.1.197/public /home/pi/synology
+
 En el proceso de arranque, si al procesar el archivo fstab no se ha inicializado la red,
 las unidades remotas no se montarán.
 Para evitar que esto ocurra, debemos obligar al sistema operativo que finalice la

@@ -30,7 +30,8 @@ WiFiClient client;
 void setup()
 {
   Serial.begin(115200);
-
+  Serial.println();
+  
   //Inicializamos la cámara
   byte errorCode = camera.begin(pinCS);
   //Si tenemos algún error en la inicialización...
@@ -61,6 +62,7 @@ void setup()
   //Utilizaremos la resolución más baja (160x120)
   camera.setResolution(0);
   //Conexión wifi
+  WiFi.mode(WIFI_STA); //Conectado como cliente a un punto de acceso
   WiFi.begin(wifiSSID,wifiPassword);
   Serial.print(F("Conectando a punto de acceso"));
   while (WiFi.status() != WL_CONNECTED)
@@ -73,10 +75,7 @@ void setup()
   if(!client.connect(host,8266))
   {
     Serial.println(F("Error al conectar con el servidor"));
-    while(1)
-    {
-      yield();
-    }
+    while(1) yield(); //Paramos para siempre
   }
   //Hemos conseguido conectar con el servidor
   Serial.println("Conectado con el servidor");
