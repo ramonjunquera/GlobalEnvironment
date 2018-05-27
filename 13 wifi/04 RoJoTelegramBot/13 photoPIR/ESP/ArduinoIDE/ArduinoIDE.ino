@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180315
+  Fecha: 20180527
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -33,7 +33,7 @@ const uint32_t maxWait=30000; //Tiempo máximo de espera = 30 segundos
 const float factorWait=1.2; //Factor de la progresión geométrica para calcular el siguiente tiempo de espera
 bool enabled = true; //Por defecto, cuando arranca, se enciende
 #ifdef ESP8266 //Si es una ESP8266...
-  const byte pinPIR=D4; //Pin del sensor PIR
+  const byte pinPIR=D3; //Pin del sensor PIR
   const byte pinCS=D0; //Pin CS de la cámara
 #elif defined(ESP32)
   const byte pinPIR=2; //Pin del sensor PIR
@@ -59,6 +59,8 @@ RoJoArduCAM camera;
 bool movementDetected=false;
 //Creamos objeto de gestión de diccionarios
 RoJoFileDictionary subscribers;
+//Teclado por defecto
+String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/res\",\"/users\"]]";
 
 void broadcast(String text)
 {
@@ -67,7 +69,7 @@ void broadcast(String text)
   //Recorremos todos los suscriptores...
   for(uint16_t i=0;i<subscribers.count();i++)
     //...y les enviamos el mensaje
-    bot.sendMessage(subscribers.key(i),text);
+    bot.sendMessage(subscribers.key(i),text,defaultKeyb,true);
 }
 
 void broadcastPhoto(String filename)
@@ -145,12 +147,15 @@ void handleNewMessages()
   //Mientras haya mensaje...
   while(msg.text.length())
   {
+    Serial.println("Recibido mensaje: "+msg.text);
     //Si no hay suscriptores...
     if(subscribers.count()==0)
     {
+      Serial.println("Aun no hay suscriptores");
       //Si se trata del comando /start...
       if(msg.text=="/start")
       {
+        Serial.println("Reconocido mensaje /start");
         //Componemos el mensaje a enviar en una sola cadena (es más rápido)
         String message = "RoJo Telegram Bot library\n";
         message += "Photo PIR\n\n";
@@ -160,6 +165,7 @@ void handleNewMessages()
       }
       else if(msg.text=="/subscribe")
       {
+        Serial.println("Reconocido mensaje /subscribe");
         //El primer usuario en suscribirse
         subscriptionCodeGenerator=" él mismo";
         subscribe(&msg);
@@ -167,31 +173,59 @@ void handleNewMessages()
     }
     else //Hay algún suscriptor
     {
+      Serial.println("Hay suscriptores");
       //Sólo atenderemos peticiones de suscriptores
       //Lo primero que necesitamos saber es si el autor del mensaje recibido es suscriptor
-
+      
+      Serial.println("Identificador de suscriptor: "+msg.chat_id);
       //Si el autor es suscriptor...
       if(subscribers.containsKey(msg.chat_id))
       {
+        Serial.println("Suscriptor reconocido");
         //Podemos hacerle caso
         //Si se trata del comando /start...
         if(msg.text=="/start")
         {
+          Serial.println("Reconocido mensaje /start");
           String message = "RoJo Telegram Bot library\n";
           message += "Photo PIR\n\n";
+          message += "/on : Activa el detector\n";
+          message += "/off : Desactiva el detector\n";
           message += "/photo : toma foto\n";
           message += "/resX : resolución [0,8]\n";
           message += "/generate : Genera un código de suscripción\n";
           message += "/subscribe code : Añadirse a la lista\n";
           message += "/unsubscribe : Borrarse de la lista\n";
           message += "/list : Mostrar la lista de suscriptores\n";
-          message += "/on : Activa el detector\n";
-          message += "/off : Desactiva el detector\n";
-          //Enviamos el mensaje
-          bot.sendMessage(msg.chat_id,message);
+          String keyb="[[\"/on\",\"/off\"],[\"/photo\",\"/res\",\"/users\"]]";
+          //Enviamos el mensaje con menú de selección de un sólo uso
+          bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
+        }
+        else if(msg.text=="/res")
+        {
+          Serial.println("Reconocido mensaje /res");
+          //Sólo presentaremos las opciones y el menú de selección
+          String message = "Selecciona resolución\n";
+          String keyb="[[\"/res0\",\"/res1\",\"/res2\",\"/res3\"],[\"/res4\",\"/res5\",\"/res6\",\"/res7\"]]";
+          //Enviamos el mensaje con menú de selección
+          bot.sendMessage(msg.chat_id,message,keyb,true);
+        }
+        else if(msg.text=="/users")
+        {
+          Serial.println("Reconocido mensaje /users");
+          //Sólo presentaremos las opciones y el menú de selección
+          String message = "RoJo Telegram Bot library\n";
+          message += "Photo PIR\n\n";
+          message += "/generate : Genera un código de suscripción\n";
+          message += "/list : Mostrar la lista de suscriptores\n";
+          message += "/unsubscribe : Borrarse de la lista\n";
+          String keyb="[[\"/generate\",\"/list\",\"/unsubscribe\"]]";
+          //Enviamos el mensaje con menú de selección
+          bot.sendMessage(msg.chat_id,message,keyb,true);
         }
         else if(msg.text=="/generate")
         {
+          Serial.println("Reconocido mensaje /generate");
           //Genera un código de suscripción que será válido durante el próximo minuto
           subscriptionCode=random(65535)+1; //Entre 1 y 65535
           //Anotamos el nombre del generador
@@ -199,10 +233,11 @@ void handleNewMessages()
           //Anotamos la hora en la que caduca. Dentro de 60 segundos
           subscriptionCodeTimeout=millis()+60000;
           //Informamos del código
-          bot.sendMessage(msg.chat_id,"Código: " + String(subscriptionCode));
+          bot.sendMessage(msg.chat_id,"Código: " + String(subscriptionCode),defaultKeyb,true);
         }
         else if(msg.text=="/unsubscribe")
         {
+          Serial.println("Reconocido mensaje /unsubscribe");
           //El usuario actual quiere eliminar la suscripción
           unsubscribe(&msg);
           //Informamos al usuario
@@ -210,11 +245,13 @@ void handleNewMessages()
         }
         else if(msg.text=="/list")
         {
+          Serial.println("Reconocido mensaje /list");
           //Solicitan la lista de suscriptores
-          bot.sendMessage(msg.chat_id,"Suscriptores:"+list());
+          bot.sendMessage(msg.chat_id,"Suscriptores:"+list(),defaultKeyb,true);
         }
         else if(msg.text=="/photo")
         {
+          Serial.println("Reconocido mensaje /photo");
           //...solicitamos que se haga la foto...
           camera.takePhoto();
           //...enviamos un mensaje de acción de "escribiendo"
@@ -233,7 +270,7 @@ void handleNewMessages()
           }
           else //No hubo errores
           {
-            //...enviamos un mensaje de acción de "enviado foto"
+            //...enviamos un mensaje de acción de "enviando foto"
             bot.sendChatAction(msg.chat_id,1);
             //...enviamos la foto por Telegram
             bot.sendPhotoLocal(msg.chat_id,"/photo.jpg");
@@ -241,6 +278,7 @@ void handleNewMessages()
         }
         else if(msg.text=="/on")
         {
+          Serial.println("Reconocido mensaje /on");
           //Se activa el detector de movimento
           enabled=true;
           //Informamos
@@ -248,6 +286,7 @@ void handleNewMessages()
         }
         else if(msg.text=="/off")
         {
+          Serial.println("Reconocido mensaje /off");
           //Se desactiva el detector de movimento
           enabled=false;
           //Informamos
@@ -263,6 +302,7 @@ void handleNewMessages()
             String n=msg.text.substring(4);
             if(n>="0" && n<="8")
             {
+              Serial.println("Reconocido mensaje /resX");
               //...obtenemos el valor del código de la resolución
               byte res=n[0]-48;
               //Aplicamos la resolución
@@ -274,14 +314,17 @@ void handleNewMessages()
         }
         else //Si no es ningún comando reconocido...
         {
+          Serial.println("Mensaje no reconocido");
           //...enviamos el mensaje a todos los suscriptores
           broadcast(msg.from_name + " dijo: " + msg.text);
         }
       }
       else //Al autor no es suscriptor
       {
+        Serial.println("Suscriptor no reconocido");
         if(msg.text.substring(0,11)=="/subscribe ")
         {
+          Serial.println("Reconocido mensaje /subscribe");
           //Si parece que alguien quiere suscribirse...
           //Si tenemos algún código válido...
           if(subscriptionCode)
@@ -323,6 +366,7 @@ void interruptPIR()
 
 void setup()
 {
+  Serial.begin(115200);
   //Inicializamos el bot
   bot.begin(botToken);
   //Configuramos el pin del led como salida
@@ -335,15 +379,18 @@ void setup()
   delay(100);
   //Pedimos conexión al punto de acceso
   WiFi.begin(ssid,password);
+  Serial.print("Conectando");
   //Mientras no estemos conectados...
   while (WiFi.status() != WL_CONNECTED)
   {
     //Cambiaremos el estado del led
     digitalWrite(pinLed,!digitalRead(pinLed));
+    Serial.print(".");
     yield();
     delay(100);
   }
   //Hemos conseguido conectar
+  Serial.println("conectado!");
 
   //Inicializamos la cámara con el pin CS conectado al D0
   byte errorCode = camera.begin(pinCS);
@@ -360,6 +407,7 @@ void setup()
   }
   //Hemos inicializado la cámara correctamente
   //Por defecto arranca en modo jpg con la resolución 2 = 320x240
+  Serial.println("Cámara inicializada");
 
   //Nos aseguramos que el led esté apagado
   digitalWrite(pinLed,HIGH);
@@ -372,6 +420,7 @@ void setup()
   subscribers.begin("/subscribers.txt");
   //Inicializamos la semilla de números aleatorios
   randomSeed(millis());
+  Serial.println("Inicio correcto");
 }
 
 void loop()

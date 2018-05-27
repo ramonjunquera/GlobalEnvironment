@@ -15,6 +15,7 @@ void setup()
   Serial.begin(115200);
 
   //Conexión wifi
+  WiFi.mode(WIFI_STA); //Conectado como cliente a un punto de acceso
   WiFi.begin(wifiSSID,wifiPassword);
   Serial.print(F("Conectando a punto de acceso"));
   while (WiFi.status() != WL_CONNECTED)
