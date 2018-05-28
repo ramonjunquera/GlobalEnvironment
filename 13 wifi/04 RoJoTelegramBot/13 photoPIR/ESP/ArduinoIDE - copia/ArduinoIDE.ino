@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180528
+  Fecha: 20180527
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -206,7 +206,7 @@ void handleNewMessages()
           Serial.println("Reconocido mensaje /res");
           //Sólo presentaremos las opciones y el menú de selección
           String message = "Selecciona resolución\n";
-          String keyb="[[\"/res0\",\"/res1\",\"/res2\"],[\"/res3\",\"/res4\",\"/res5\"],[\"/res6\",\"/res7\",\"/res8\"]]";
+          String keyb="[[\"/res0\",\"/res1\",\"/res2\",\"/res3\"],[\"/res4\",\"/res5\",\"/res6\",\"/res7\"]]";
           //Enviamos el mensaje con menú de selección
           bot.sendMessage(msg.chat_id,message,keyb,true);
         }
@@ -392,23 +392,18 @@ void setup()
   //Hemos conseguido conectar
   Serial.println("conectado!");
 
-  //Inicializamos la cámara con el pin CS
+  //Inicializamos la cámara con el pin CS conectado al D0
   byte errorCode = camera.begin(pinCS);
   //Si tenemos algún error en la inicialización...
   if(errorCode)
   {
-    Serial.println("Error "+String(errorCode)+" al inicializar la cámara");
-    //Hacemos parpadear el led, rapidamente durante unos segundos y despues reiniciamos la placa
-    for(byte i=0;i<200;i++)
+    //Hacemos parpadear el led, rápido y para siempre
+    while(1)
     {
       digitalWrite(pinLed,!digitalRead(pinLed));
       delay(30);
       yield();
-    }
-    //Reiniciamos
-    //Atención!. La primera vez que reinicia trasel flashing (transferir el programa), NO FUNCIONA
-    //y se queda parado. Es conveniente que esta primera vez de haga manualmente.
-    ESP.restart();
+    };
   }
   //Hemos inicializado la cámara correctamente
   //Por defecto arranca en modo jpg con la resolución 2 = 320x240
