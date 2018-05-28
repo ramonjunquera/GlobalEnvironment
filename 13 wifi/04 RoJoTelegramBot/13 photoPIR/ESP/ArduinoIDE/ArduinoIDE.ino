@@ -406,8 +406,8 @@ void setup()
       yield();
     }
     //Reiniciamos
-    //Atención!. La primera vez que reinicia trasel flashing (transferir el programa), NO FUNCIONA
-    //y se queda parado. Es conveniente que esta primera vez de haga manualmente.
+    //Atención!. La función restart se queda colgada la primera vez que se ejecuta después de
+    //transferir el programa. Para evitarlo se debe reiniciar manualmente una vez.
     ESP.restart();
   }
   //Hemos inicializado la cámara correctamente
