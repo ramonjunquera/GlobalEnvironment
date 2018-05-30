@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 08/05/2018
+  Fecha: 20180528
   Tema: Multitasking / FreeRTOS
   Objetivo: Lanzar dos tareas simultáneas
   Material adicional: placa ESP32
@@ -21,11 +21,15 @@
   Nota
   En teoría, el nombre del identificador que se le asigna a una tarea debe ser único.
   Gracias a ello, podríamos obtener el puntero del objeto de la tarea gracias a él.
-  En la práctica la versión de FreeRTOS que se incluye para ESP32 no incluye la
-  función para obtener punteros en base al identificador. Por lo tanto, el identificador
+  En la práctica la versión de FreeRTOS que para ESP32 no incluye la función para
+  obtener punteros en base al identificador. Por lo tanto, el identificador
   no nos es útil.
   Además no hay ningún tipo de restricción ni error si asignamos a dos tareas distintas
   el mismo identificador.
+
+  Nota:
+  No es un problema asignar a más de una tarea la misma prioridad.
+  Así se hace en este ejemplo.
   
   Sugerencia: para ahorrar algo de memoria siempre asignaremos un nombre de longitud
   nula ("") para todas las tareas.

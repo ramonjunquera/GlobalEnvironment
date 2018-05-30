@@ -12,5 +12,8 @@ Las placas Arduino tienen alguno pines con estas capacidades, no todos.
 Se identifican por que la nomenclatura va precedida por el símbolo ~.
 En las placas ESP suelen ser casi todos.
 
-Las placas se encargan autométicamente ce variar la anchura del pulso.
+Las placas se encargan automáticamente de variar la anchura del pulso.
 La resolución suele ser de 8bits, 256 niveles.
+
+Raspberry Pi no tiene capacidades PWM nativas. Para sustituirlas es normal
+utilizar circuitos externos como el PCA9685.

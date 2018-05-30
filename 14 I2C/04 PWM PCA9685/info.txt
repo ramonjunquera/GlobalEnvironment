@@ -1,0 +1,30 @@
+Descripción de módulo PCA9685
+
+Es un controlador de 16 pines extra con capacidades PWM.
+Tiene una resolución de 12 bits (rango de 0 a 4095).
+Preparado para trabajar con servomotores, porque cada canal viene con la conexión
+de señal, tierra y voltaje. Sólo hay que conectar el servo.
+Además separa el circuito de control del de trabajo.
+Se controla a través de una conexión I2C.
+El rango de frecuencias PWM es de 24 a 1600Hz.
+El rango de voltajes para el circuito de control es de 2.3 a 5.5V.
+
+Es muy aconsejable en placas como Raspberry Pi que no dispone de posibilidades
+PWM por hardware.
+
+No es raro que debido al condensador integrado en el módulo, se cuelgue cuando
+enviamos peticiones incorrectas (no dar tiempo suficiente para completar un reset,
+forzar el apagado de todos los canales tras un reset, etc...).
+En estos casos no es suficiente con desconectar el módulo.
+Para desargar el condensador es necesario desconectarlo y hacer un cortocircuito.
+Así volverá a su correcto funcionamiento.
+
+Por defecto el identificador I2C del módulo es 0x40.
+Si necesitamos utilizar varios módulos simultáneamente, no tenemos más remedio que
+cambiar el identificador para reconocerlos en el bus I2C.
+para ello tenemos unos jumpers en la parte superior derecha, etiquetados desde A5 a
+A0 que nos permitirá cambiarlo.
+Representan los bits del número binaro que se sumará a la base 0x40.
+por defecto vienen todos sueltos.
+Si quieramos cambiar un módulo al identificador 0x41 tendríamos que soldar (unir)
+el jumper A0.
