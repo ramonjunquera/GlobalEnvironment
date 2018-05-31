@@ -24,7 +24,16 @@ Si necesitamos utilizar varios módulos simultáneamente, no tenemos más remedio q
 cambiar el identificador para reconocerlos en el bus I2C.
 para ello tenemos unos jumpers en la parte superior derecha, etiquetados desde A5 a
 A0 que nos permitirá cambiarlo.
-Representan los bits del número binaro que se sumará a la base 0x40.
-por defecto vienen todos sueltos.
+Representan los 6 bits más bajos del número binaro que se sumará a la base 0x40.
+Por defecto vienen todos sueltos.
 Si quieramos cambiar un módulo al identificador 0x41 tendríamos que soldar (unir)
 el jumper A0.
+
+Con 6 jumpers, podemos conseguir hasta 2^6=64 direcciones I2C distintas.
+De las 64, tenemos 2 que no podemos utilizar:
+- Software Reset = 0b111000 = 56
+- LED All Call = 0b000011 = 3
+Ambas están reservadas.
+Por lo tanto, el máximo número de módulo que podemos conectar al mismo bus I2C es de 62.
+Y el número máximo de pines PWM = 62*16=996
+
