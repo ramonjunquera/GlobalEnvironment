@@ -1,0 +1,9 @@
+Interruptores Touch en ESP32
+
+Cuando tocamos un elemento conductor, transmitimos o absorbermos electricidad en
+una cantidad mínima.
+Las placas ESP32 vienen con unos cuantos pines preparados para detectar estas diferencias.
+
+Este sistema puede ser utilizado como interruptor, con la ventaja de que no existe
+un interruptor físico.
+Cualquier material conductor servirá.
