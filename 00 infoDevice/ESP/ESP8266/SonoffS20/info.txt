@@ -22,14 +22,19 @@ La conexión entre el FTDI y Sonoff S20 es la siguiente:
   GND     GND
 
 Debemos configurar el dispositivo con estos parámetros:
-    Placa: “Generic ESP8266 Module”
-    Flash Mode: “DOUT”
-    Flash Frequency: “40MHz”
-    Upload Using: “Serial”
-    CPU Frequency: “80 MHz”
-    Flash Size: “1M(64K SPIFFS)”
-    Reset Method: “ck”
-    Upload Speed: “115200”
+    Placa: "generic ESP8266 Module"
+    Flash Mode: "DOUT"
+    Flash Size: "1M (64K SPIFFS)"
+    Debug port: "Disabled"
+    Debug Level: "Ninguno"
+    IwIP Varian: "v2 Lower Memory"
+    Reset Method: "ck"
+    Crystal Frequency: "26 MHz"
+    Flash Frequency: "40MHz"
+    CPU Frequency: "80 MHz"
+    Bultin Led: "13"
+    Upload Speed: "115200"
+    Erase Flash: "Only Sketch"
 
 Es muy importante recordar que para que Sonoff S20 se encuentre en
 modo de recepción de datos, se debe arrancar manteniendo el 

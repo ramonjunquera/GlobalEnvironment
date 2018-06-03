@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180528
+  Fecha: 20180603
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -24,14 +24,15 @@
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
 
 //Definición de constantes globales
-const char ssid[]="xxx"; //Nombre del punto de acceso (SSID)
-const char password[]="xxx"; //Contraseña
-const String botToken="xxx"; //Token del bot
+const char ssid[]="xxxx"; //Nombre del punto de acceso (SSID)
+const char password[]="xxxx"; //Contraseña
+const String botToken="xxxx"; //Token del bot
 const uint32_t checkingGap=1000; //Tiempo de espera en misisegundos para comprobación de nuevos mensajes
 const byte pinLed=LED_BUILTIN; //Pin del led integrado en placa
 const uint32_t maxWait=30000; //Tiempo máximo de espera = 30 segundos
 const float factorWait=1.2; //Factor de la progresión geométrica para calcular el siguiente tiempo de espera
 bool enabled = true; //Por defecto, cuando arranca, se enciende
+byte currentRes=3; //Resolución actual
 #ifdef ESP8266 //Si es una ESP8266...
   const byte pinPIR=D3; //Pin del sensor PIR
   const byte pinCS=D0; //Pin CS de la cámara
@@ -60,7 +61,53 @@ bool movementDetected=false;
 //Creamos objeto de gestión de diccionarios
 RoJoFileDictionary subscribers;
 //Teclado por defecto
-String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/res\",\"/users\"]]";
+const String defaultKeyb="[[\"/on\",\"/off\",\"/status\"],[\"/photo\",\"/users\"],[\"/res\",\"/resX\"]]";
+//Nombre del archivo que guarda el estado
+const String statusFile="/status.txt"; 
+
+void saveStatus()
+{
+  //Guarda la configuración actual (resolución y estado)
+  //en un archivo en SPIFFS
+
+  //Abrimos el archivo del estado para escritura
+  File f=SPIFFS.open(statusFile,"w");
+  //Guardamos la resolución actual en los 4 primeros bits y el estado en el bit 5
+  byte statusCode=currentRes;
+  if(enabled) statusCode+=0b00010000;
+  f.write(statusCode);
+  //Cerramos el archivo
+  f.close();
+}
+
+void readStatus()
+{
+  //Recupera la configuración guardada (resolución y estado) y la aplica
+
+  //Abrimos el archivo del estado del relé como sólo lectura
+  File f=SPIFFS.open(statusFile,"r");
+  //Si no se pudo abrir...
+  if(!f)
+  {
+    //Se guarda la confirguración actual
+    saveStatus();
+    //Ahora seguro que sí existe el archivo de configuración
+    //Se vuelve a abrir como sólo lectura
+    f=SPIFFS.open(statusFile,"w");
+  }
+  //Tenemos el archivo abierto
+  
+  //Leemos el estado guardado
+  byte statusCode=f.read();
+  //Cerramos el archivo
+  f.close();
+  //Extraemos la resolución
+  currentRes=statusCode & 0b00001111;
+  //Aplicamos la resolución
+  camera.setResolution(currentRes);
+  //Extraemos el estado
+  enabled=statusCode & 0b00010000;
+}
 
 void broadcast(String text)
 {
@@ -191,7 +238,9 @@ void handleNewMessages()
           message += "Photo PIR\n\n";
           message += "/on : Activa el detector\n";
           message += "/off : Desactiva el detector\n";
+          message += "/status : Estado actual\n";
           message += "/photo : toma foto\n";
+          message += "/res : resolución actual\n";
           message += "/resX : resolución [0,8]\n";
           message += "/generate : Genera un código de suscripción\n";
           message += "/subscribe code : Añadirse a la lista\n";
@@ -204,6 +253,22 @@ void handleNewMessages()
         else if(msg.text=="/res")
         {
           Serial.println("Reconocido mensaje /res");
+          //Mostramos la resolución actual
+          String message = "Resolución actual: "+String(currentRes)+"\n";
+          //Enviamos el mensaje con menú de selección
+          bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
+        }
+        else if(msg.text=="/status")
+        {
+          Serial.println("Reconocido mensaje /status");
+          //Mostramos el estado actual
+          String message = enabled?"encendido\n":"apagado\n";
+          //Enviamos el mensaje con menú de selección
+          bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
+        }
+        else if(msg.text=="/resX")
+        {
+          Serial.println("Reconocido mensaje /resX");
           //Sólo presentaremos las opciones y el menú de selección
           String message = "Selecciona resolución\n";
           String keyb="[[\"/res0\",\"/res1\",\"/res2\"],[\"/res3\",\"/res4\",\"/res5\"],[\"/res6\",\"/res7\",\"/res8\"]]";
@@ -281,6 +346,8 @@ void handleNewMessages()
           Serial.println("Reconocido mensaje /on");
           //Se activa el detector de movimento
           enabled=true;
+          //Guardamos configuración actual
+          saveStatus();
           //Informamos
           broadcast(msg.from_name + " ha activado el detector");
         }
@@ -289,6 +356,8 @@ void handleNewMessages()
           Serial.println("Reconocido mensaje /off");
           //Se desactiva el detector de movimento
           enabled=false;
+          //Guardamos configuración actual
+          saveStatus();
           //Informamos
           broadcast(msg.from_name + " ha desactivado el detector");
         }
@@ -304,9 +373,11 @@ void handleNewMessages()
             {
               Serial.println("Reconocido mensaje /resX");
               //...obtenemos el valor del código de la resolución
-              byte res=n[0]-48;
+              currentRes=n[0]-48;
               //Aplicamos la resolución
-              camera.setResolution(res);
+              camera.setResolution(currentRes);
+              //Guardamos la configuración actual
+              saveStatus();
               //Informamos a todos los suscriptores del cambio de resolución
               broadcast(msg.from_name + " cambia resolución a " + n);
             }
@@ -349,6 +420,8 @@ void handleNewMessages()
     
     //Reseteamos el tiempo de espera
     currentWait=startWait;
+    //Refrescamos los procesos de fondo
+    yield();
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
     msg=bot.getNextMessage();
@@ -425,6 +498,10 @@ void setup()
   subscribers.begin("/subscribers.txt");
   //Inicializamos la semilla de números aleatorios
   randomSeed(millis());
+  //Leemos la última configuración guardada
+  readStatus();
+  //Informamos del reinicio
+  broadcast("Dispositivo reiniciado");
   Serial.println("Inicio correcto");
 }
 

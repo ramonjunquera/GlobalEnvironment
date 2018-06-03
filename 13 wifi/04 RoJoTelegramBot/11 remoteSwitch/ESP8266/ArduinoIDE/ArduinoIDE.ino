@@ -1,12 +1,12 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180314
+  Fecha: 20180603
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Control remoto a distancia
   Material: placa ESP-12E o Sonoff S20
   Descripción:
     Basado en el ejemplo de suscripción segura.
-    Se incluye la definición de contantes del led, interruptor y relay.
+    Se incluye la definición de constantes del led, interruptor y relay.
     El estado actual del relay se guarda siempre en un archivo.
     Cuando el sistema es reseteado, siempre recupera el último estado que tenía el realy y lo comunica.
     El interruptor permite cambiar localmente el estado del relay. Esta acción también es comunicada
@@ -15,7 +15,7 @@
 
 //Si se define la siguiente constante se compilará para Sonoff S20
 //Si no se define, se hará para un ESP12-E
-//#define SONOFF
+#define SONOFF
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h> //Librería para gestión de wifi
@@ -24,10 +24,11 @@
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
 
 //Definición de constantes globales
-const char ssid[]="xxx"; //Nombre del punto de acceso (SSID)
-const char password[]="xxx"; //Contraseña
-const String botToken="xxx"; //Token del bot
+const char ssid[]="xxxx"; //Nombre del punto de acceso (SSID)
+const char password[]="xxxx"; //Contraseña
+const String botToken="xxxx"; //Token del bot
 const uint32_t checkingGap=1000; //Tiempo de espera en misisegundos para comprobación de nuevos mensajes
+String defaultKeyb="[[\"/on\",\"/off\"],[\"/status\",\"/users\"]]"; //Teclado por defecto
 
 #ifdef SONOFF
   //Definición de constantes de pin para Sonoff S20
@@ -64,7 +65,7 @@ void broadcast(String text)
   //Recorremos todos los suscriptores...
   for(uint16_t i=0;i<subscribers.count();i++)
     //...y les enviamos el mensaje
-    bot.sendMessage(subscribers.key(i),text);
+    bot.sendMessage(subscribers.key(i),text,defaultKeyb,true);
 }
 
 void subscribe(TelegramMessage *msg)
@@ -140,8 +141,7 @@ void handleNewMessages()
       if(msg.text=="/start")
       {
         //Componemos el mensaje a enviar en una sola cadena (es más rápido)
-        String message = "RoJo Telegram Bot library\n";
-        message += "Secure Switch\n\n";
+        String message = "RoJo Remote Switch\n";
         message += "/subscribe : Añadirse a la lista\n";
         //Enviamos el mensaje
         bot.sendMessage(msg.chat_id,message);
@@ -166,8 +166,7 @@ void handleNewMessages()
         if(msg.text=="/start")
         {
           //Componemos el mensaje a enviar en una sola cadena (es más rápido)
-          String message = "RoJo Telegram Bot library\n";
-          message += "Secure Switch\n\n";
+          String message = "RoJo Remote Switch\n";
           message += "/generate : Genera un código\n";
           message += "/subscribe code : Añadirse a la lista\n";
           message += "/unsubscribe : Borrarse de la lista\n";
@@ -176,7 +175,18 @@ void handleNewMessages()
           message += "/off : Apagar\n";
           message += "/status : Estado actual\n";
           //Enviamos el mensaje
-          bot.sendMessage(msg.chat_id,message);
+          bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
+        }
+        else if(msg.text=="/users")
+        {
+          //Sólo presentaremos las opciones y el menú de selección
+          String message = "RoJo Remote Switch\n";
+          message += "/generate : Genera un código de suscripción\n";
+          message += "/list : Mostrar la lista de suscriptores\n";
+          message += "/unsubscribe : Borrarse de la lista\n";
+          String keyb="[[\"/generate\",\"/list\",\"/unsubscribe\"]]";
+          //Enviamos el mensaje con menú de selección
+          bot.sendMessage(msg.chat_id,message,keyb,true);
         }
         else if(msg.text=="/generate")
         {
@@ -187,7 +197,7 @@ void handleNewMessages()
           //Anotamos la hora en la que caduca. Dentro de 60 segundos
           subscriptionCodeTimeout=millis()+60000;
           //Informamos del código
-          bot.sendMessage(msg.chat_id,"Código: " + String(subscriptionCode));
+          bot.sendMessage(msg.chat_id,"Código: " + String(subscriptionCode),defaultKeyb,true);
         }
         else if(msg.text=="/unsubscribe")
         {
@@ -199,7 +209,7 @@ void handleNewMessages()
         else if(msg.text=="/list")
         {
           //Solicitan la lista de suscriptores
-          bot.sendMessage(msg.chat_id,"Suscriptores:"+list());
+          bot.sendMessage(msg.chat_id,"Suscriptores:"+list(),defaultKeyb,true);
         }
         else if(msg.text=="/on")
         {
@@ -207,7 +217,7 @@ void handleNewMessages()
           if(statusRelay)
           {
             //Informamos al usuario
-            bot.sendMessage(msg.chat_id,"Ya estaba encendido");
+            bot.sendMessage(msg.chat_id,"Ya estaba encendido",defaultKeyb,true);
           }
           else //Si estaba apagado...
           {
@@ -225,7 +235,7 @@ void handleNewMessages()
           if(!statusRelay)
           {
             //Informamos al usuario
-            bot.sendMessage(msg.chat_id,"Ya estaba apagado");
+            bot.sendMessage(msg.chat_id,"Ya estaba apagado",defaultKeyb,true);
           }
           else //Si estaba encendido...
           {
@@ -242,7 +252,7 @@ void handleNewMessages()
           //Obtenemos el texto del estado
           String statusText = statusRelay?"Encendido":"Apagado";
           //Enviamos mensaje informado del estado
-          bot.sendMessage(msg.chat_id,statusText);
+          bot.sendMessage(msg.chat_id,statusText,defaultKeyb,true);
         }
         else //Si no es ningún comando reconocido...
         {
@@ -275,9 +285,9 @@ void handleNewMessages()
         }
       }
     }
-    //Hemos terminado de procesar el mensaje actual
-    //Refrescamos los proceos de fondo
+    //Refrescamos los procesos de fondo
     yield();
+    //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
     msg=bot.getNextMessage();
   }
@@ -287,15 +297,23 @@ void setStatus()
 {
   //Aplica el estado actual (statusRelay) al relé y lo guarda
   
-  //Aplicamos estado al relé (estados intercambiados)
-  digitalWrite(pinRelay,!statusRelay);
+  //Aplicamos estado al relé
+  #ifdef SONOFF
+    digitalWrite(pinRelay,statusRelay);
+  #else
+    digitalWrite(pinRelay,!statusRelay);
+  #endif
   //Abrimos el archivo del estado del relé como sólo lectura
   File f=SPIFFS.open(statusRelayFile,"w");
   //Guardamos el estado del led en el archivo
   f.write(statusRelay);
   //Cerramos el archivo
   f.close();
-  //Apagamos el led (estados intercambiados)
+    
+  //Apagamos el led
+  //Lo hacemos aquí porque al pulsar el interruptor físico,
+  //encendemos el led para informar que tenemos pendiente esta
+  //operación.
   digitalWrite(pinLed,HIGH);
 }
 
