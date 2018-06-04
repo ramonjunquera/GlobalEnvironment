@@ -61,7 +61,7 @@
   
   Descripción y demostración de funcionalidades de la librería.
   La librería RoJoMAX7219d es una variación de RoJoMAX7219, de la que se ha
-  eliminado eltrabajo con sprites para reducir el consumo de memoria.
+  eliminado el trabajo con sprites para reducir el consumo de memoria.
   Especialmente diseñada para trabajar con el chip MAX7219 y con displays
   de led de dígitos.
   Permite definir caracteres especiales, aunque ya tiene un alfabeto por defecto.
