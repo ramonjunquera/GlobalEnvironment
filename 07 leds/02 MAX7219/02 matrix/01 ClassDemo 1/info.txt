@@ -1,2 +1,4 @@
-demo de la clase para una matrix
-Debe contener el esquema del montaje manual y montaje con el kit
+Demo de la clase de gestión del chip MAX7219
+
+Sólo se utiliza un chip y una matriz.
+No se utilizan soportes.

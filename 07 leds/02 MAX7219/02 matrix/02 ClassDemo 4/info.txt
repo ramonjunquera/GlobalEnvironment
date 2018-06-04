@@ -1,0 +1,3 @@
+Demo de la clase de gestión del chip MAX7219
+
+Se utilizan 4 chips y 4 matrices con sus correspondiente soportes.
