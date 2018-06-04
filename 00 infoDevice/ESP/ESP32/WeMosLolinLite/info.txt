@@ -71,32 +71,39 @@ No necesita más de 500mA.
 
   Pinout
   ------
-                                ---------------
-                                |             |
-                                |             |
-         RTCIO0/A1.0/VP/GPIO36 -|             |- 3V3
-         RTCIO3/A1.3/VN/GPIO39 -|             |- GPIO22/LED
-                            EN -|             |- GPIO19/V_SPI_MISO
-            A1.6/RTCIO4/GPIO34 -|             |- GPIO23/V_SPI_MOSI
-            A1.7/RTCIO5/GPIO35 -|             |- GPIO18/V_SPI_CLK
-            A1.4/RTCIO9/GPIO32 -|             |- GPIO05/V_SPI_CS
-            A1.5/RTCIO8/GPIO33 -|             |- GPIO17/U2_TX
-       DAC1/A2.8/RTCIO6/GPIO25 -|             |- GPIO16/U2_RX
-       DAC2/A2.9/RTCIO7/GPIO26 -|             |- GPIO04/RTCIO10/A2.0/SCL2
-                   A2.7/GPIO27 -|             |- GPIO00/RTCIO11/Boot/SDA2
- H_SPI_CLK/A2.6/RTCIO16/GPIO14 -|             |- GPIO02/RTCIO12/Boot/SCL1
-H_SPI_MISO/A2.5/RTCIO15/GPIO12 -|             |- GPIO15/RTCIO13/A2.3/H_SPI_CS/SDA1
-                           GND -|             |- GPIO13/RTCIO14/A2.4/H_SPI_MOSI
-                                |             |
-                                | |||  O  ||| |
-                                ---------------
+                                  ---------------
+                                  |             |
+                                  |             |
+                RTCIO0/VP/GPIO36 -|             |- 3V3
+                RTCIO3/VN/GPIO39 -|             |- GPIO22/LED
+                              EN -|             |- GPIO19/V_SPI_MISO
+                   RTCIO4/GPIO34 -|             |- GPIO23/V_SPI_MOSI
+                   RTCIO5/GPIO35 -|             |- GPIO18/V_SPI_CLK
+            Touch8/RTCIO9/GPIO32 -|             |- GPIO05/V_SPI_CS
+            Touch9/RTCIO8/GPIO33 -|             |- GPIO17/U2_TX
+              DAC1/RTCIO6/GPIO25 -|             |- GPIO16/U2_RX
+              DAC2/RTCIO7/GPIO26 -|             |- GPIO04/RTCIO10/Touch0/SCL2
+                   Touch7/GPIO27 -|             |- GPIO00/RTCIO11/Boot/SDA2
+ H_SPI_CLK/Touch6/RTCIO16/GPIO14 -|             |- GPIO02/RTCIO12/Boot/Touch2/SCL1
+H_SPI_MISO/Touch5/RTCIO15/GPIO12 -|             |- GPIO15/RTCIO13/Touch3/H_SPI_CS/SDA1
+                             GND -|             |- GPIO13/RTCIO14/Touch4/H_SPI_MOSI
+                                  |             |
+                                  | |||  O  ||| |
+                                  ---------------
 
 I2C.
-Esta placa, no implementa el protocolo I2C por hardware.
-Por esa razón no tenemos pines fijos para ello.
-De todas maneras, y para guardar coherencia con las placas que ya incluyen
-un display I2C, procuraremos utilizar siempre los mismos pines:
-  SDA=4 y SCL=15
+Por defecto los pines de I2C son 22-SCL y 21-SDA.
+Esta placa carece del pin 21, por lo tanto no podemos utilizar el estandar.
+Lo que hacemos es definir dos nuevos pines:
+  pin I2C
+  --- ---
+   15 SCL
+    4 SDA
+Podríamos haber tomado cualquier otra pareja, pero estos son los utilizados
+en las placas que incluyen un display I2C. Así no tendremos que redefinirlos
+si las usamos.
+La función Wire.begin de ESP32 permite pasar como parámetros estos pines:
+  Wire.begin(4,15)
 
 SPI.
 Mantienen el estandar de ESP32.

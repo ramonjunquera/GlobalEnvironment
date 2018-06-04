@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180603
+  Fecha: 20180604
   Tema: ESP32 Touch pins
   Objetivo: Definición de interripciones en pines touch
   Material adicional: placa ESP32
@@ -10,15 +10,15 @@
     En su lugar utilizaremos el comando touchAttachInterrupt que acepta 3 parámetros:
     - Número de pin
     - Función a la que llamar
-    - Diferencia mínima entre la lectura actual y la lectura en vacío.
+    - Valor máximo permitido
 
     En este ejemplo usaremos los pines touch 2 y 3, correspondientes a los pines 2 y 15.
-    Indicaremos que si se detecta una diferencia superior a 40 desde el valor del pin en
-    vacío (si conexión a nada), debe saltar la interrupción.
-    Cuando menor sea este valor, más sensible será, pero corremos el riesgo de tener 
-    falsos positivos.
-    Las interrupciones de los pines touch no diferencian entre RAISE o LOW como las digitales.
-    Sólo se contemplan las del tipo CHANGE.
+    Indicaremos que si se detecta un valor touch en el pin que esté por debajo de 40,
+    consideraremos que está siendo tocado y debe saltar una interrupción.
+    Cuando menor sea este valor, menos sensible será.
+    Las interrupciones de los pines touch no diferencian entre RAISE, LOW o CHANGE.
+    Simplemente se producirán cuando el valor del pin touch esté por debajo del umbral
+    indicado.
 */
 
 #include <Arduino.h>

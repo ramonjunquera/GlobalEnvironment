@@ -32,8 +32,8 @@ Tiene 4Mb de memoria total: 1280Kb para flash (programa), 288Kb para RAM (variab
            EN -|         |- 1/TX
      A0/VP/36 -|         |- 3/RX
      A3/VN/39 -|         |- 3V3
- Touch9/A4/32 -|         |- 22/SCL
- Touch8/A5/33 -|         |- 21/SDA
+ Touch8/A4/32 -|         |- 22/SCL
+ Touch9/A5/33 -|         |- 21/SDA
         A6/34 -|         |- GND
         A7/35 -|         |- GND
   DAC1/A18/25 -|         |- 19/MISO
