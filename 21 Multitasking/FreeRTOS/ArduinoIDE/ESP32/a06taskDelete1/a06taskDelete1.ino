@@ -27,7 +27,7 @@ void sayCore(void *parameter)
   //Finalizamos la tarea actual y la eliminamos
   vTaskDelete(NULL);
   //Esta línea no se ejecutará nunca porque el objeto de la tarea de destuye antes
-  Serial.println("nobody read me!");
+  Serial.println("nobody reads me!");
 }
 
 void setup()

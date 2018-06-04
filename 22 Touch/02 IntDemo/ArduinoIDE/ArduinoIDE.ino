@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Fecha: 20180604
   Tema: ESP32 Touch pins
-  Objetivo: Definición de interripciones en pines touch
+  Objetivo: Definición de interrupciones en pines touch
   Material adicional: placa ESP32
   Descripción:
     Puesto que los pines Touch no son digitales, no podemos utilizar las funciones
