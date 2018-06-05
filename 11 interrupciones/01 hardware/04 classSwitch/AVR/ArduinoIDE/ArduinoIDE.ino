@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Gestión de interrupciones
   Objetivo: Utilizar interrupciones con la librería de gestión de interruptores
-  Material adicional: breadboard, cables, interruptor de pulsador, placa Arduino UNO
+  Material: breadboard, cables, interruptor de pulsador, placa Arduino
 
   Descripción:
   Ahora que ya sabemos gestionar interrupciones, utilizaremos la librería de gestión

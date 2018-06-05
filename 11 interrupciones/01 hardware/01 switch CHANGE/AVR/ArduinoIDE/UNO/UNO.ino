@@ -70,7 +70,7 @@
     - detachInterrupt(número de interrupción) : Desactiva una interrupción concreta
 
   El ejemplo actual aplica el estado inverso del pin del interruptor al led.
-  Es inversso porque hemos activado las resistencias de pullup del pin del interruptor y cuando no se pulsa
+  Es inverso porque hemos activado las resistencias de pullup del pin del interruptor y cuando no se pulsa
   su estado será HIGH.
   La diferencia con la técnica de polling es que no estamos contínuamente consultando el estado del interruptor.
   Sólo lo hacemos cuando tenemos la certeza que ha cambiado.

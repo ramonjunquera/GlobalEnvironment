@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Interruptores
   Objetivo: Demostración de las capacidades de la clase RoJoSwitch
-  Material adicional: breadboard, interruptor, 4 leds, 4 resistencias de 220ohmish, cables, Arduino UNO
+  Material adicional: breadboard, interruptor, 4 leds, 4 resistencias de 220 ohmios, cables, Arduino UNO
 
   Descripción:
   Tenemos 4 leds y un interruptor, que cuando se pulsa hace que se encienda el siguiente led.
