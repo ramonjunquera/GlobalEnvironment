@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20180609
   Tema: Gestión de la memoria EEPROM integrada
   Objetivo: Guardar y leer valores en la memoria EEPROM integrada
-  Material adicional: breadboard, cualquier placa Arduino o ESP8266, cables
+  Material: breadboard, cualquier placa Arduino o ESP, cables
 
   Descripción:
   Crearemos un programa que nos permita interactuar con la memoria EEPROM.
@@ -14,22 +15,16 @@
     Lee el contenido de la posición de memoria 932
       peek 932
 
-  Con estos simples comandos podemos leer y escrbir en la memoria EEPROM.
-
   Resultado:
-  Con la colección de comando podemos escribir y leer en la memoria EEPROM
+  Con la colección de comandos podemos escribir y leer en la memoria EEPROM
 */
-
-#if defined(ESP32)
-  #error Las placas ESP32 actualmente no soportan gestión de EEPROM integrada
-#endif 
 
 #include <Arduino.h>
 #include <EEPROM.h>
 
 //Definimos la cantidad de memoria en función de la placa
-//Todas tienen 1Kb, excepto Mega y las ESP8266 tiene 4Kb
-#if defined(ARDUINO_AVR_MEGA2560) || defined(ESP8266)
+//Todas tienen 1Kb, excepto Mega y las ESP que tienen 4Kb
+#if defined(ARDUINO_AVR_MEGA2560) || defined(ESP8266) || defined(ESP32)
   const uint16_t maxMem=4096;
 #else
   const uint16_t maxMem=1024;
@@ -45,7 +40,7 @@ void setup()
   Serial.begin(115200);
 
   //En las placas ESP8266 el tamaño de mamoria EEPROM debe ser inicializado
-  #if defined(ESP8266)
+  #if defined(ESP8266) || defined(ESP32)
     //Podemos definir el tamaño de la memoria EEPROM entre 1 y 4096 bytes
     //Realmente no es memoria EEPROM sino parte de SPIFFS
     EEPROM.begin(4096);
@@ -72,18 +67,11 @@ void loop()
         //...obtenemos la dirección
         address=Serial.parseInt();
         //Mostramos el comando reconocido
-        Serial.print(F("peek "));
-        Serial.println(address);
+        Serial.println("peek "+String(address));
         //Si la dirección es mayor que la memoria real...error
-        if(address>=maxMem)
-        {
-          Serial.println(F("Error. Direccion demasiado grande"));
-        }
-        else
-        {
-          //Recuperamos el valor de esa dirección y lo mostramos
-          Serial.println(EEPROM.read(address));
-        }
+        if(address>=maxMem) Serial.println(F("Error. Direccion demasiado grande"));
+        //Si no...recuperamos el valor de esa dirección y lo mostramos
+        else Serial.println(EEPROM.read(address));
       }
       //Si se trata del comando poke...
       else if(textBuffer[0]=='p' && textBuffer[1]=='o' && textBuffer[2]=='k' && textBuffer[3]=='e')
@@ -92,31 +80,23 @@ void loop()
         address=Serial.parseInt();
         //...obtenemos el valor
         value=Serial.parseInt();
-        Serial.print(F("poke "));
-        Serial.print(address);
-        Serial.print(F(","));
-        Serial.println(value);
+        Serial.println("poke "+String(address)+","+String(value));
         //Si la dirección es mayor que la memoria real...error
-        if(address>=maxMem)
-        {
-          Serial.println(F("Error. Direccion demasiado grande"));
-        }
-        else
+        if(address>=maxMem) Serial.println(F("Error. Direccion demasiado grande"));
+        else //Si la dirección es correcta...
         {
           //Escribimos el valor en la dirección
           EEPROM.write(address,value);
           //En las placas ESP8266 es necesario hacer un commit para que se guarden los posibles
           //cambios pendientes de escribir que aun quedan en cache
-          #if defined(ESP8266)
+          #if defined(ESP8266) || defined(ESP32)
             EEPROM.commit();
           #endif
           Serial.println(F("ok"));
         }
       }
-      else
-      {
-        Serial.println(F("Comando desconocido"));
-      }
+      //Si no conocemos el comando...informamos
+      else Serial.println(F("Comando desconocido"));
     }
   }
 }
