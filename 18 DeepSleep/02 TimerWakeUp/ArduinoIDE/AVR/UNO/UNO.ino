@@ -2,17 +2,17 @@
   Autor: Ramón Junquera
   Tema: Modo de bajo consumo
   Objetivo: Uso del bajo consumo con interrupciones software (timers)
-  Material adicional: Arduino UNO, breadboard, interruptor de pulsador, cables
+  Material: Arduino UNO, breadboard, interruptor de pulsador, cables
 
   Descripción:
   En el ejercicio anterior hemos aprendido a entrar en el modo de bajo consumo y salir a través de una interrupción
   de cambio de estado de un pin.
   Hay una segunda manera de salir... con un timer.
-  El timer no es ninguno de los utilizados en ejercicios anteiores. Esta vez se llama WatchDog.
+  El timer no es ninguno de los utilizados en ejercicios anteriores. Esta vez se llama WatchDog.
   Es un timer que se encarga de que el programa no se quede atascado, y si lo hace resetea la placa.
-  Se ha creado una librería para fcilitar la gestión: RoJoLowPowerWDT.
+  Se ha creado una librería para facilitar la gestión: RoJoLowPowerWDT.
 
-  El programa pasa a modo de bajo consumo surante un tiempo determinado.
+  El programa pasa a modo de bajo consumo durante un tiempo determinado.
   Cuando despierta hace parpadear el led integrado y vuelve a entrar.
 
   Para comprobar que las interrupciones hardware también hacen salir del modo de bajo consumo, se incluye
@@ -51,7 +51,7 @@ void loop()
   lowPowerWDT.sleep(sleepTime);
     
   //A partir de este punto ya no se ejecuta el programa hasta que despertemos de nuevo
-  //Ya sea porque ha finalizado el tiempo del timer o porque se ha sedactivador el timer
+  //Ya sea porque ha finalizado el tiempo del timer o porque se ha desactivador el timer
     
   //Encendemos el led por un momento
   digitalWrite(pinLed,HIGH);

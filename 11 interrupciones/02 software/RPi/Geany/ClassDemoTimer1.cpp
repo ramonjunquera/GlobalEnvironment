@@ -53,8 +53,6 @@ int main(int argc, char **argv)
 	//Deshabilitamos el timer
 	timer1.end();
 	
-	//Terminamos de utrabajar con los pines
-	ArduinoEnd();
 	//Hemos terminado si errores
 	return 0;
 }

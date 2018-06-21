@@ -1,6 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Gestión de interrupciones
+  Fecha: 20180621
   Objetivo: Demostración de clase de gestión del timer 5
   Material: placa Arduino
 
@@ -9,7 +10,11 @@
   tiempo.
   La función sólo cambia el estado del led integrado.
   Llamaremos varias veces a la función de inicialización y cambiaremos los periodos.
-  
+
+  Nota:
+  La librería RoJoTimer5 sólo es compatible con Arduino Mega, puesto que tiene 5 timers disponibles.
+  Arduino UNO/Nano sólo tienen los timers 1 y 2.
+
   Resultado:
   El led integrado en placa parpadea a distintas frecuencias.
 */

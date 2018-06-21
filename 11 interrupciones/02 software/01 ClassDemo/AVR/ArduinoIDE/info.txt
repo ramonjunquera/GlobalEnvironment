@@ -1,7 +1,0 @@
-Demostración de clase de interrupciones para placas Arduino.
-
-Es una recopilación de ejemplos que van aumentando en complejidad que
-sirven para explicar los conceptos básicos de las interrupciones por
-software.
-Termina con la creación de una colección de librerías, una para cada timer,
-que permiten su gestión sencilla.
