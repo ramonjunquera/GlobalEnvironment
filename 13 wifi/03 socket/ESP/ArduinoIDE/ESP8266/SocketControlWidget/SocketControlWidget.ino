@@ -37,8 +37,8 @@
 #include <ESP8266WiFi.h>
 
 //Definimos el nombre del punto de acceso y la constraseña que se utilizarán para conectar
-const char* ssid = "RoJo";
-const char* password = "ZAMPABOLLOS5";
+const char* ssid = "xxx";
+const char* password = "xxx";
 
 //Definimos el pin que vamos a utilizar
 const byte pin=BUILTIN_LED; //El del led integrado
