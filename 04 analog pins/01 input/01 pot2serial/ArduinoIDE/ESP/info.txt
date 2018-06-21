@@ -1,0 +1,30 @@
+Entrada analógica en placas ESP
+
+Esta familia de placas funciona a 3.3V.
+La familia ESP8266 sólo tiene un pin anaógico de entrada.
+En cambio las ESP32 tienen varios (entre 6 y 12).
+Si intentamos meter más de 3.3V por un pin analógico de entrada, probablemente
+lo quemaremos.
+
+La placa tiene un circuito conversor analógico-digital que digitaliza el valor.
+
+Tienen una resolución de 10bits (2^10=2014).
+No es extraño que no se alcanzan los valores extremos (0,1023).
+El valor mínimo no se alcanza porque puede detectar un mínimo de voltaje, 
+sobre todo si utilizamos una resistencia variable.
+Y el valor máximo tampoco si estamos utilizando como alimentación la propia
+placa, porque realmente no trabajan a 3.3V exactos. Habitualmente es un poco
+menos. Unos 3.28V.
+
+Sugerencias para el proyecto de calcular el voltaje de la fuente de alimentación:
+- Si la fuente tiene más de 3.3V tendremos que reducirla con alguna resistencia. Si
+  metemos más de 3.3V al pin A0, lo quemaremos.
+- Esta conexión es la mejor manera para descargar una batería. Realmente no necesitamos
+  medirlo constantemente. Es muy conveniente incluir un "interruptor" que permita
+  desconectar el ánodo de la fuente de alimentación del pin A0. Este interruptor puede
+  ser perfectamente un transistor.
+  - Cuando alimentamos un circuito con una batería externa, normalmente queremos que la
+  batería dure lo máximo. Por eso es importante pensar en poner la placa en modo de
+  bajo consumo.
+
+

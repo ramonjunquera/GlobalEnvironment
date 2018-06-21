@@ -27,8 +27,6 @@
 #include <ESP8266mDNS.h> //Librería de gestión de nombres locales
 #include <FS.h> //Gestión de SPIFFS
 
-#define DBG_OUTPUT_PORT Serial
-
 //Nombre del punto de acceso
 const char *ssid = "ESP";
 //Contraseña para el punto de acceso
