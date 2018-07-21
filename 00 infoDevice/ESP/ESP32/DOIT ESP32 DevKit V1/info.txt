@@ -57,8 +57,6 @@ Los estados del led son iguales a los del pin:
 
 El interruptor FLASH está asociado con el GPIO 0, que no tiene pin físico.
 
-Actualmente no se han desarrollado las librerías que compatibilizan el uso de la memoria EEPROM.
-
 Consumo medio:
   modo      consumo
   --------- -------

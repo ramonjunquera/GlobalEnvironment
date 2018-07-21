@@ -79,3 +79,5 @@ Los pines de conexión I2C son:
    22 SCL
    21 SDA
 
+Pines digitales:
+Pueden utilizarse todos ellos excepto el 34 y 35

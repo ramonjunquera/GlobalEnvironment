@@ -1,11 +1,12 @@
 Autor: Ramón Junquera
 Tema: Fotorresistencia infrarroja AX-1838HS
+Fecha: 20180627
 Objetivo: Funcionamiento de una fotorresistencia infrarroja AX-1838HS con librería IRremote.h
 Material: breadboard, receptor de infrarrojos modelo AX-1838HS, led emisor infrarrojo, 2 leds, 3 resistencias de 220 ohmios,
   keypad 4x4, Arduino Nano, Arduino UNO
 
 Descripción:
-Basándonos en el ejercicio anterior. añadiremos un teclado al emisor. De esta manera, enviaremos el carácter de la tecla pulsada.
+Basándonos en el ejercicio anterior. Añadiremos un teclado al emisor. De esta manera, enviaremos el carácter de la tecla pulsada.
 En recepción, lo único que cambia es que en vez de mostrar el valor del código recibido en binario, mostramos el carácter al
 que corresponde para facilitarnos la identificación.
   

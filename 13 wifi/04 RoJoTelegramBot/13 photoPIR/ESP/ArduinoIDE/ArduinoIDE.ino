@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180603
+  Versión: 20180711
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -24,9 +24,9 @@
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
 
 //Definición de constantes globales
-const char ssid[]="xxxx"; //Nombre del punto de acceso (SSID)
-const char password[]="xxxx"; //Contraseña
-const String botToken="xxxx"; //Token del bot
+const char ssid[]="xxx"; //Nombre del punto de acceso (SSID)
+const char password[]="xxx"; //Contraseña
+const String botToken="xxx"; //Token del bot
 const uint32_t checkingGap=1000; //Tiempo de espera en misisegundos para comprobación de nuevos mensajes
 const byte pinLed=LED_BUILTIN; //Pin del led integrado en placa
 const uint32_t maxWait=30000; //Tiempo máximo de espera = 30 segundos
@@ -331,6 +331,7 @@ void handleNewMessages()
           if(errorCode)
           {
             //...informamos
+            Serial.println("Fallo al enviar. Error " + String(errorCode));
             bot.sendMessage(msg.chat_id,"Fallo al enviar. Error " + String(errorCode));
           }
           else //No hubo errores
@@ -439,17 +440,43 @@ void interruptPIR()
 
 void setup()
 {
+  //Activamos el puerto serie para mensajes de debug
   Serial.begin(115200);
   //Inicializamos el bot
   bot.begin(botToken);
   //Configuramos el pin del led como salida
   pinMode(pinLed,OUTPUT);
+  //Nos aseguramos que el led esté apagado
+  digitalWrite(pinLed,HIGH);
   //Fijamos el modo de conexión a un punto de acceso
   WiFi.mode(WIFI_STA);
   //Forzamos a su desconexión (por si estaba conectado anteriormente)
   WiFi.disconnect();
-  //Esperamos un momento
-  delay(100);
+
+  //Inicializamos la cámara con el pin CS
+  Serial.print("\nInicializando cámara...");
+  byte errorCode=camera.begin(pinCS);
+  //Si hubo algún error...
+  if(errorCode)
+  {
+    Serial.println("Error "+String(errorCode));
+    //Hacemos parpadear el led tantas veces como el código de error
+    for(byte i=0;i<errorCode*2;i++)
+    {
+      digitalWrite(pinLed,!digitalRead(pinLed));
+      delay(300);
+      yield();
+    }
+    //Reiniciamos
+    //Atención!. La función restart se queda colgada la primera vez que se ejecuta después de
+    //transferir el programa. Para evitarlo se debe reiniciar manualmente una vez.
+    ESP.restart();
+  }
+  //Hemos inicializado la cámara correctamente
+  //Por defecto arranca en modo jpg con la resolución 2 = 320x240
+  Serial.println("Ok");
+  
+  //Inicializamos WiFi
   //Pedimos conexión al punto de acceso
   WiFi.begin(ssid,password);
   Serial.print("Conectando");
@@ -463,36 +490,13 @@ void setup()
     delay(100);
   }
   //Hemos conseguido conectar
-  Serial.println("conectado!");
-
-  //Inicializamos la cámara con el pin CS
-  byte errorCode = camera.begin(pinCS);
-  //Si tenemos algún error en la inicialización...
-  if(errorCode)
-  {
-    Serial.println("Error "+String(errorCode)+" al inicializar la cámara");
-    //Hacemos parpadear el led, rapidamente durante unos segundos y despues reiniciamos la placa
-    for(byte i=0;i<200;i++)
-    {
-      digitalWrite(pinLed,!digitalRead(pinLed));
-      delay(30);
-      yield();
-    }
-    //Reiniciamos
-    //Atención!. La función restart se queda colgada la primera vez que se ejecuta después de
-    //transferir el programa. Para evitarlo se debe reiniciar manualmente una vez.
-    ESP.restart();
-  }
-  //Hemos inicializado la cámara correctamente
-  //Por defecto arranca en modo jpg con la resolución 2 = 320x240
-  Serial.println("Cámara inicializada");
+  Serial.println("Ok");
 
   //Nos aseguramos que el led esté apagado
   digitalWrite(pinLed,HIGH);
   //Configuramos el pin del PIR como entrada
   pinMode(pinPIR,INPUT);
   //Activamos las interrupciones para el pin del PIR
-  //Sólo para cuando se activa
   attachInterrupt(pinPIR,interruptPIR,RISING);
   //Inicializamos el diccionario de suscriptores
   subscribers.begin("/subscribers.txt");

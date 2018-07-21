@@ -34,8 +34,6 @@ void setup()
 {
   //Activamos el puerto serie
   Serial.begin(115200);
-  //Inicializamos la librería de comunicaciones
-  Wire.begin();
 }
 
 void loop()
@@ -44,6 +42,8 @@ void loop()
 
   //Indicamos que comenzamos a escanear el bus I2C
   Serial.println(F("Scanning..."));
+  //Inicializamos la librería de comunicaciones
+  Wire.begin();
 
   //Inicialmente no hemos encontrado ningún dispositivo
   nDevices = 0;

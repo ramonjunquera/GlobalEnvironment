@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include <IRremote.h>
-#include <LiquidCrystal.h>
+#include "RoJoLCD1602A.h"
 
 //Definición de pines
 const byte pinIRrec=3;
@@ -10,7 +10,7 @@ const byte pinLed=2;
 
 //Creación de objetos globales
 IRrecv ir(pinIRrec);
-LiquidCrystal lcd(7,8,9,10,11,12);
+RoJoLCD1602A lcd;
 
 //Definición de variables globales
 byte x=0;
@@ -18,16 +18,14 @@ byte y=0;
 
 void setup()
 {
-  //Activamos el puerto serie
+  //Activamos el puerto serie para mensajes de debug
   Serial.begin(115200);
   //Activamos el receptor de infrarrojos
   ir.enableIRIn();
   //El pin del led será de salida
   pinMode(pinLed,OUTPUT);
-  //Definimos el tamaño de la pantalla
-  lcd.begin(16,2);
-  //Limpiamos la pantalla
-  lcd.clear();
+  //Inicializamos el display
+  lcd.begin(7,8,9,10,11,12); //begin(RS,E,D0,D1,D2,D3)
 }
 
 void loop()
@@ -40,10 +38,12 @@ void loop()
     //Encendemos el led
     digitalWrite(pinLed,HIGH);
     //Tomamos nota del carácter recibido
-    char c = char(results.value);
+    char c = (char)results.value;
     //Lo mostramos en el display
-    lcd.write(c);
+    lcd.printChar(c);
     //Lo enviamos por el puerto serie (para debug)
+    Serial.print(c,HEX);
+    Serial.print(" - ");
     Serial.println(c);
     //El siguiente carácter se escribirá en la siguiente posición
     x++;
@@ -71,7 +71,7 @@ void loop()
       y=0;
     }
     //Fijamos la posición del cursor
-    lcd.setCursor(x,y);
+    lcd.pos(x,y);
     //Apagamos el led
     digitalWrite(pinLed,LOW);
     //Indicamos que estamos preparados para recibir el siguiente código

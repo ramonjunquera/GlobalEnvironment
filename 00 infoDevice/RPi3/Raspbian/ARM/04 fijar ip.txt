@@ -1,0 +1,26 @@
+Cómo fijar la dirección ip de Raspberry Pi
+
+Por defecto las conexiones ip (ethernet y wifi) están configuradas para trabajar con DHCP
+(en modo automático).
+El sistema es cómodo, pero si pretendemos tomar el control remoto, es un problema, porque
+no sabremos la dirección ip asignada. En estos casos, es conveniente asignar una ip fija.
+
+En el icono de de abajo a la derecha de conexión de red, hacemos click con el botón derecho
+y seleccionamos "Wireless & Wired Network Settings".
+Nos aparecerá la ventana de "Network Preferences".
+Desde aquí podemos configurar nuestras preferencias en base a las interfases de red (ethernet
+y wifi), o en base al punto de acceso wifi al que nos conectamos (SSID).
+
+Para asignar una ip fija a la conexión ethernet, seleccionaremos "interface" y "eth0".
+Completaremos los parámetros y quitaremos el check de "Automatically configura empty options".
+Cuando se pulsa el botón "Apply", la configuración se guarda pero no se aplica al instante.
+Se debe reiniciar para que la tenga en cuenta.
+
+Para fijar una ip al wifi podemos hacerla de dos maneras.
+Fijando la ip al interface wifi (wlan0) o fijando la ip al punto de acceso (SSID).
+Puesto que es frecuente trabajar con más de un punto de acceso, lo más cómodo es fijar la ip
+por SSID. Así que seleccionamos "SSID", el nombre del punto de acceso, completamos los
+parámetros, quitamos el check de "Automatically configura empty options", aplicamos y reiniciamos.
+
+Nota:
+Cuando se reinicia, se intenta conectar automáticamente al mismo punto de acceso que tenía antes.

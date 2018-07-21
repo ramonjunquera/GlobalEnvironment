@@ -37,4 +37,14 @@ Puesto que SPI es más rápido que I2C, se utiliza para la transferencia
 EL canal I2C se utiliza para enviar los comandos de configuración del
 sensor.
 
+Esta cámara permite ser alimentada tanto por 3.3V como por 5V.
+
+Nota:
+He notado que después de un tiempo de uso la cámara se degrada.
+Comienza a fallar con una alimentación de 3.3V y es necesario conectarla a 5V.
+Más tarde comienza a fallar la conexión I2C. No responde a una conexión y desde
+el programa de I2Cscanner no se detecta el dispositivo algunas veces.
+Finalmente falla contínuamente I2C y no se puede utilizar la cámara.
+No es un problema de estabilidad de alimentación. Incluyendo condensadores no
+se soluciona el problema.
 

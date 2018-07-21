@@ -27,10 +27,12 @@ void loop()
   {
     //Encendemos el led
     digitalWrite(pinLed,HIGH);
-    //Enviamos el cógigo del carácter pulsado con el protocolo de Sony
-    //Aunque sólo enviamos un byte (8 bits) el protocolo de Sony envía siempre un mínimo de 12 bits
-    //Si lo reducimos, la información se corromperá
-    ir.sendSony(key,12);
+    //Enviamos el cógigo del carácter pulsado con el protocolo RC5
+    //Los protocolos se Sony o Nec no son apropiados para transmisión de datos
+    //Aunque sólo enviamos un byte (8 bits) el protocolo de RC5 necesita enviar 9 bits como mínimo
+    //si lo reducimos a 8, los caracteres más altos (como el *) se enviarán incompletos y no se
+    //podrán decodificar correctamente.
+    ir.sendRC5(key,9);
     //Apagamos el led
     digitalWrite(pinLed,LOW);
   }

@@ -35,13 +35,12 @@ En Connection/SSH/Remote command escribimos "lxsession.sh"
 Lanzamos la conexión.
 Escribimos la contraseña y automáticamente se abre el IDE en una nueva ventana.
 
-
 Solución Ubuntu:
 Aquí no es necesario instalar el servidor Xwindows porque ya está incluido.
 Abrimos el Terminal.
 Escribimos: ssh -X -Y pi@192.168.1.195
 Escribimos la contraseña
-Lanzamos qtcreator se abrirá como una aplicación local más.
+Lanzamos qtcreator (./qt.sh) que se abrirá como una aplicación local más.
 
 Estas soluciones son totalmente compatible con mantener xrdp.
 

@@ -5,7 +5,7 @@
   Objetivo: Demo de uso de varios dispositivos SPI
   Material adicional: placa ESP, ArduCAM-Mini-2MP, display SSD1331
   Descripción:
-    El objetivo es mostrar las imágenes capturas por la cámara en tiempo real en
+    El objetivo es mostrar las imágenes capturadas por la cámara en tiempo real en
     el display.
     Puesto que no sabemos descomprimir jpg, utilizaremos imágenes sin compresión (bmp).
     Puesto que queremos mostrar la imagen en un display de 96x64 es suficiente tomar
