@@ -674,10 +674,10 @@ void Test20()
 
 void setup()
 {
-  //Inicializamos el display con los pines en los que está conectado a placa
-  //En esta tarjeta no son seleccionables y no coinciden con los estandar:
+  //Inicializamos el display con los pines en los que está conectado la placa
+  //En este modelo no son seleccionables y no coinciden con los estandar:
   //void begin(byte pinCS_SD,byte pinSDA,byte pinSCL,byte pinRST);
-  //Nota es este ejemplo no se utiliza una tarjeta SD para almacenar los archivo
+  //Nota es este ejemplo no se utiliza una tarjeta SD para almacenar los archivos
   //por lo tanto el pinCS_SD no se tiene en cuenta. Podríamos escribir cualquier valor
   display.begin(SS,4,15,16);
 }

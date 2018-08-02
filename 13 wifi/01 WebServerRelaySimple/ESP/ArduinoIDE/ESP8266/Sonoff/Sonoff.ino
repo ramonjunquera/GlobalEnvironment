@@ -33,8 +33,8 @@
 
 
 //Definimos los parámetros de la conexión a utilizar
-const char* ssid = "RoJo"; //Nombre del punto de acceso
-const char* password = "ZAMPABOLLOS5"; //Contraseña
+const char* ssid = "***"; //Nombre del punto de acceso
+const char* password = "***"; //Contraseña
 
 //Definimos los pines a utilizar
 const byte pinLed = 13;

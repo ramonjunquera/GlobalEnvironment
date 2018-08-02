@@ -82,8 +82,8 @@
 ESP8266WebServer server(8199);
 
 //Definimos como constantes el nombre del punto de acceso y su contraseña
-const char *wifiSSID = "RoJo";
-const char *wifiPassword = "ZAMPABOLLOS5";
+const char *wifiSSID = "***";
+const char *wifiPassword = "***";
 
 //Definición de pines
 const byte relayPin = 12; //Pin del relé

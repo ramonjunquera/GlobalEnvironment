@@ -73,6 +73,10 @@ Mantienen el estandar de ESP32.
    18 SCLK
     5 CS
 
+Vin.
+La placa se puede alimentar tanto por USB como por los pines de 5V.
+Funciona perfectamente con alimentación externa de 9V.
+
   Pinout
   ------
                              ---------------
@@ -96,6 +100,8 @@ Touch8/ADC1_4/XTAL32/GPIO32 -|             |- GPIO17/U2_TXD
       ADC1_0/Sensevp/GPIO36 -|             |- GPIO21/SDA/V_SPI_HD
                              |             |
                              ---------------
+
+
 
 Comentarios:
 Que el etiquetado de los pines esté por debajo de la placa lo hace muy incómodo.
