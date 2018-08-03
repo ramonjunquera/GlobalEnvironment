@@ -25,7 +25,7 @@ void setup()
   RoJoClass::s=55;
   //Creamos una instancia de la clase
   RoJoClass class1;
-  //Asignamos valor auna variable dinámica (perteneciente a la instancia)
+  //Asignamos valor a una variable dinámica (perteneciente a la instancia)
   class1.d=13;
   //Mostramos los valores
   Serial.println("\nclass1");
