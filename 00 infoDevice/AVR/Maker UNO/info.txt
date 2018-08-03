@@ -1,0 +1,47 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa Maker UNO
+Descripción:
+
+Maker UNO es una placa desarrollada por Cytron con fines educativos.
+Tiene características idénticas a Arduino UNO y le han añadido las
+siguientes modificaciones:
+- Incluye un buzzer en placa asignado al pin 8 que puede desactivarse
+  gracias a un interruptor.
+- Todos los pines del 2 al 13 tienen asignado un led integrado
+- Se incluye un interruptor de pulsador asignado al pin 2
+- Se sustituye la conexión USB por un micro USB
+- La alimentación de 3.3V sube su intensidad de 50mA a 500mA
+- El chip que controla el USB es un CH340G
+
+La web oficial es:
+https://www.cytron.io/p-maker-uno
+
+Tiene como limitación una entrada de voltaje máximo de 5V.
+No como Arduino que puede soportar perfectamente 12V.
+
+La placa puede ser programada como un Arduino UNO, pero existe una 
+configuración particular del fabricante para el IDE:
+- Abrimos Arduino IDE
+- Archivo/Preferencias/Gestor de URLs Adicionales de Tarjetas
+- Pulsamos el botón derecho
+- En el cuadro de texto añadimos la siguiente URL a las existentes
+  (una por línea):
+  https://cytrontechnologies.github.io/package_cytron_makeruno_index.json
+- Aceptamos y salimos a la venta principal del IDE
+- Herramientas/Placa/Gestor de tarjetas...
+- Se descargarán las nuevas librerías
+- Si escribimos "Maker" en el cuadro de búsqueda aparecerá "Maker Uno by Cytron..."
+- Seleccionamos y pulsamos el botón instalar
+- Cerramos
+- A partir de ahora en la selección de tarjetas (Herramientas/Placa), tendremos
+  una nueva sección con la tarjeta "Maker UNO"
+Este cambio no es estrictamente necesario
+
+
+
+
+
+
+
+

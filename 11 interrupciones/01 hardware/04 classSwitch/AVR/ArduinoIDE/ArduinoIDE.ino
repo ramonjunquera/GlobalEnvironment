@@ -1,6 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Gestión de interrupciones
+  Fecha: 20180803
   Objetivo: Utilizar interrupciones con la librería de gestión de interruptores
   Material: breadboard, cables, interruptor de pulsador, placa Arduino
 
@@ -12,6 +13,10 @@
   El led integrado en placa cambiará de estado cuando se detecte una pulsación en el
   interruptor.
   Recordemos que la librería ya gestiona el efecto rebote.
+
+  Nota:
+  Si utilizamos una placa MakerUNO no necesitaremos un interruptor externo. La se incluye uno integrado
+  asociado al pin 2.
   
   Resultado:
   El led integrado en placa cambia de estado cuando se pulsa el interruptor

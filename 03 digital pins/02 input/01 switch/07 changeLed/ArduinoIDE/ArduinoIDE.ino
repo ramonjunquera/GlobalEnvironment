@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: Interruptores
+  Fecha: 20180803
   Objetivo: Demostración de las capacidades de la clase RoJoSwitch
-  Material adicional: breadboard, interruptor, 4 leds, 4 resistencias de 220 ohmios, cables, Arduino UNO
+  Material adicional: breadboard, interruptor, 4 leds, 4 resistencias de 220 ohmios, cables, Arduino UNO o MakerUNO
 
   Descripción:
   Tenemos 4 leds y un interruptor, que cuando se pulsa hace que se encienda el siguiente led.
@@ -19,6 +20,10 @@
   Nota:
   Puesto que sólo encendemos un led cada vez, podríamos simplificar el circuito y utilizar una única
   resistencia para todos los leds.
+
+  Nota:
+  Si utilizamos una placa MakerUNO no necesitamos componentes externos puestos que ya tiene integrados
+  tanto los leds como el interruptor.
 */
 
 #include <Arduino.h>

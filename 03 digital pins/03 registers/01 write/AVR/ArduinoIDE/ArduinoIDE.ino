@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: Características de la placa
+  Fecha: 20180803
   Objetivo: Gestión de pines digitales con registros. Escritura.
-  Material adicional: Arduino Nano o Arduino UNO, 6 leds, resistencia de 220 ohmios
+  Material adicional: placa Arduino, 6 leds, resistencia de 220 ohmios
 
   Descripción:
   El IDE de Arduino nos ofrece algunos comandos para gestionar los pines digitales:
@@ -51,7 +52,7 @@
   Recordemos que los pines analógicos pueden ser utilizados como digitales.
   Su numeración continúa a los del pines del registro B
   
-  Si nos fijamos en una placa Arduino UNO veremos que incluso los pines estás distribuidos en estos grupos.
+  Si nos fijamos en una placa Arduino UNO veremos que incluso los pines están distribuidos en estos grupos.
 
   Explicaremos la funcionalidad de los tipos de registros...
 
@@ -113,6 +114,10 @@
   Iremos encendiendo cada uno de ellos secuencialmente y repetiremos.
   Puesto que nunca encenderemos más de un led al mismo tiempo, podremos utilizar una única
   resistencia para todos ellos.
+
+  Nota:
+  Si utilizamos una placa MakerUNO no son necesarios elementos externos porque ya tiene
+  integrados los leds para los pines.
 
   Resultado:
   Los leds se encienden secuencialmente

@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: Características de la placa
+  Fecha: 20180803
   Objetivo: Gestión de pines digitales con registros. Lectura
-  Material adicional: Arduino Nano o Arduino UNO, led RGB, 3 resistencias de 220 ohmios,
+  Material adicional: placa Arduino, led RGB, 3 resistencias de 220 ohmios,
     3 interruptores
 
   Descripción:

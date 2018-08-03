@@ -1,6 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Tema: Librería RoJoArduino
+ * Fecha: 20180603
  * Objetivo: Gestión de varios pines digitales
  * Material: Raspberry Pi, breadboard, led, cables
  * Descripción:

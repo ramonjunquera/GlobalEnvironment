@@ -76,6 +76,10 @@
   Sólo lo hacemos cuando tenemos la certeza que ha cambiado.
   Esto no permite dedicar el tiempo de proceso a otras tareas.
 
+  Nota:
+  Si utilizamos una placa MakerUNO no necesitaremos un interruptor externo. La se incluye uno integrado
+  asociado al pin 2.
+
   Resultado:
   Cuando pulsamos el interruptor, se enciende el led integrado.
 */

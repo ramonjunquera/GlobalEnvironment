@@ -1,6 +1,7 @@
 /*
   Autor: Ramón Junquera
-  Tema: WeMosD1 R2
+  Tema: Pines digitales
+  Fecha: 20180803
   Objetivo: Uso de pines digitales de salida
   Material adicional: WeMos D1 o Mini, 11x led, breadboard
   Descripción:
