@@ -1,0 +1,2 @@
+Circuito simple, independiente de placa, para probar las características del sensor.
+El led mostrará el estado del pin de señal (OUT).
