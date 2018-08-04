@@ -22,7 +22,6 @@
   Cuando se reciba el comando "0" se cambiará el estado del led integrado.
 
   El comando para configurar el widget será: 192.168.1.189:7755/0
-  
 
   Nota:
   La cadena que se recibe en el servidor es simplemente "0". El comando enviado.

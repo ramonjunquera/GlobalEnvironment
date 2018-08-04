@@ -1,15 +1,17 @@
 Listado de definiciones de directivas de preprocesador para identificación
 de placas:
 
-Arduino Mega    ARDUINO_AVR_MEGA2560                 ARDUINO_ARCH_AVR
-Arduino UNO     ARDUINO_AVR_UNO                      ARDUINO_ARCH_AVR
-Ardunio Nano    ARDUINO_AVR_NANO                     ARDUINO_ARCH_AVR
-ESP-12E         ARDUINO_ESP8266_NODEMCU      ESP8266 ARDUINO_ARCH_ESP8266
-WeMos D1        ARDUINO_ESP8266_WEMOS_D1MINI ESP8266 ARDUINO_ARCH_ESP8266
-ESP01 (generic) ARDUINO_ESP8266_ESP01        ESP8266 ARDUINO_ARCH_ESP8266
-ESP32 DOIT      ARDUINO_ESP32_DEV            ESP32   ARDUINO_ARCH_ESP32
-Lolin32         ARDUINO_LOLIN32              ESP32   ARDUINO_ARCH_ESP32
-RaspberryPi	__arm__
+Arduino Mega          ARDUINO_AVR_MEGA2560                  ARDUINO_ARCH_AVR
+Arduino UNO           ARDUINO_AVR_UNO                       ARDUINO_ARCH_AVR
+Ardunio Nano          ARDUINO_AVR_NANO                      ARDUINO_ARCH_AVR
+ESP-12E               ARDUINO_ESP8266_NODEMCU       ESP8266 ARDUINO_ARCH_ESP8266
+WeMos D1              ARDUINO_ESP8266_WEMOS_D1MINI  ESP8266 ARDUINO_ARCH_ESP8266
+ESP01 (generic)       ARDUINO_ESP8266_ESP01         ESP8266 ARDUINO_ARCH_ESP8266
+ESP32 DOIT            ARDUINO_ESP32_DEV             ESP32   ARDUINO_ARCH_ESP32
+ESP32 OLED TTGO 16Mb  ARDUINO_ESP32_DEV             ESP32   ARDUINO_ARCH_ESP32
+WeMosLolinLite        ARDUINO_ESP32_DEV             ESP32   ARDUINO_ARCH_ESP32
+Lolin32               ARDUINO_LOLIN32               ESP32   ARDUINO_ARCH_ESP32
+RaspberryPi           __arm__
 
 #ifdef ESP8266
   #include <myLib1.h>
