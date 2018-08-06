@@ -1,0 +1,62 @@
+BLE (Bluetooth Low Energy) para Arduino.
+
+Fuente: https://randomnerdtutorials.com/esp32-bluetooth-low-energy-ble-arduino-ide/
+
+BLE es un nuevo protocolo de conexión inalámbrica derivado del Bluetooth.
+Bluetooth estándar y BLE no son compatibles.
+Su objetivo es reducir el consumo de energía y garantizar compatibilidad entre dispositivos.
+Su gestión es bastante más compleja que la del antiguo Bluetooth.
+
+BLE tiene 3 sistemas de conexión:
+- Cliente/Servidor
+- Broadcast mode
+- Mesh mode
+
+El más común y el que desarrollaremos es el primero: cliente/servidor.
+El modo broadcast es un caso particular de cliente/servidor, en el que el servidor envía los mismos
+datos a todos los cliente de manera simultánea, pero los clientes no pueden enviar datos al servidor.
+En el modo mesh todos los nodos son clientes y servidores al mismo tiempo. Cada nodo puede tener
+varios clientes y al mismo tiempo puede ser cliente de otro nodo servidor.
+
+Conexión cliente/servidor
+El servidor define la estructura de datos a compartir con la siguiente jerarquía:
+  Dispositivo (device)
+    Servicio (service)
+      Característica (characteristic)
+        Propiedad
+        Valor (value)
+        Declaración (descriptor)
+
+En lo más alto de la jerarquía tenemos el dispositivo con el hardware y software necesarios para
+que se pueda dar el servicio de BLE.
+En él pueden correr uno o más servicios BLE.
+Un servicio es una colección de informaciones procedentes de las lecturas de uno o varios sensores.
+Existe una lista de servicios predefinidos llamados SIG (Bluetooth Special Interest Group).
+Los servicios predefinidos se pueden consultar en la siguiente URL:
+  https://www.bluetooth.com/specifications/gatt/services
+Podemos encontrar servicios que informan del nivel de batería, presión sanguínea, frecuencia cardíaca,
+potencia de pedalada, información genérica de un dispositivo, temperatura, nivel de glucosa,
+posicionamiento interno, etc.
+Cada uno de estos servicios predefinidos tiene su propio código de identificación único y su
+funcionamiento es siempre igual en todos los dispositivos BLE.
+
+Cada servicio tiene al menos una característica o dato.
+Una característica tiene al menos dos atributos: su declaración o etiqueta descriptiva de la característica
+y su valor.
+
+Existe un tercer atributo, la propiedad, que describe cómo se puede intereactuar con el valor.
+Contiene las operaciones o procedimientos disponibles que se puede utilizar con esa característica: se puede
+hacer broadcast, leer, escribir, escribir sin esperar una respuesta, notificar, indicar, etc.
+
+Toda esta estructura jerárquica está definida en el GATT (Generic Attributes) y es el conjunto de reglas de
+funcionamiento de BLE.
+
+Tanto el servicio, como sus características y sus descriptores tienen un identificador único en formato UUID.
+Un ejemplo de este formato es: 55072829-bc9e-4c53-938a-74a6d4c78776
+
+ESP32 puede comportarse como cliente o como servidor BLE.
+
+Para poder interacturar con un servidor BLE desde nuestro móvil, recomiendo la aplicación: nRF Connect.
+Desde la cual se podrá comprobar la jerarquía GATT explicada.
+
+Una vez creado un servidor, es imprescindible publicarlo. Si no lo hacemos, no podrá ser detectado ni consultado.
