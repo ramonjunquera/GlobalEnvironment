@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: BLE
-  Fecha: 20180806
+  Fecha: 20180807
   Objetivo: Actualizar periódicamente un valor
   Material: placa ESP32 OLED TTGO 16Mb
 
@@ -60,7 +60,8 @@ void setup()
 {
   Serial.begin(115200);
   //Asignamos un nombre descriptivo al dispositivo
-  BLEDevice::init("MyESP32");
+  //Para guardar compatibilidad intentaremos que siempre tenga un máximo de 5 caracteres
+  BLEDevice::init("ESP32");
   //Creamos un servidor dentro del dispositivo
   BLEServer *pServer = BLEDevice::createServer();
   //Modificamos la gestión de las llamadas del servidor con nuestra propia clase
@@ -78,6 +79,8 @@ void setup()
   pService->start();
   //El servidor podrá ser publicado y visible
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  //Añadimos el número de identificación del servicio para que sea publicado y visible
+  pAdvertising->addServiceUUID(pService->getUUID());
   //Iniciamos la publicación del servidor
   pAdvertising->start();
   //Informamos que ya está disponible el servicio BLE
@@ -94,18 +97,13 @@ void valueUpdate()
   //Podríamos guardarlo con el tipo uint32_t, pero cuando lo vemos en la
   //aplicación del móvil como cliente lo visualizamos en hexadecimal.
   //Este sistema no es muy práctico para ser leido por humanos.
-  //Convertiremos el valor numérico en std::string y lo guardaremos como valor.
-
-  //Convertimos el valor numérico en String
-  String myString = String(currentValue);
+  //La función setValue no permite guardar como String (System::String), sólo
+  //como std::string
+  //Convertiremos el valor numérico a std::string y lo guardaremos como valor.
+  //Primero lo convertimos a String y después con c_str a string.
+  pCharacteristic->setValue(String(currentValue).c_str());
   //Lo enviamos por el puerto serie para debug
-  Serial.println(myString);
-  //Creamos una std::string vacío
-  std::string myStdString="";
-  //Recorremos todos los caracteres del String y lo añadimos uno a uno al std::string
-  for(byte i=0;i<myString.length();i++) myStdString+=myString[i];
-  //Escribimos el std::string como valor de la característica
-  pCharacteristic->setValue(myStdString);
+  Serial.println(currentValue);
 }
 
 void loop()

@@ -21,6 +21,13 @@
   - Publicación del servidor
 
   La publicación del servidor es imprescindible. Si no lo hacemos, no podrá ser detectado.
+  Si no añadimos el identificador de servicio a la publicación, sólo se publica el nombre del
+  dispositivo y su TXPower.
+  Si añadimos el identificador del servicio a la publicación, un cliente podrá consultarlo y
+  detectar si se trata del dispositivo que está buscando.
+  Para que un identificador pueda ser publicado es imprescindible que se incluya en la 
+  publicación y que el nombre del dispositivo tenga un máximo de 5 letras.
+  Esta limitación es implicita al sistema BLE.
 
   Resultado:
   Se puede consultar el valor de la característica, del servicio, del servidor BLE.
@@ -34,7 +41,8 @@ void setup()
 {
   Serial.begin(115200);
   //Asignamos un nombre descriptivo al dispositivo
-  BLEDevice::init("MyESP32");
+  //Para guardar compatibilidad intentaremos que siempre tenga un máximo de 5 caracteres
+  BLEDevice::init("ESP32");
   //Creamos un servidor dentro del dispositivo
   BLEServer *pServer = BLEDevice::createServer();
   //Creamos un servicio en el servidor al que asignamos un identificador
@@ -48,6 +56,8 @@ void setup()
   pService->start();
   //El servidor podrá ser publicado y visible
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  //Añadimos el número de identificación del servicio para que sea publicado y visible
+  pAdvertising->addServiceUUID(pService->getUUID());  
   //Iniciamos la publicación del servidor
   pAdvertising->start();
   //Informamos que ya está disponible el servicio BLE

@@ -23,6 +23,11 @@ En el IDE de Arduino se debe seleccionar:
   Flash mode: QIO
   Flash size: 4MB (32Mb)
   Partition Scheme: Por defecto
+  Upload speed: 921600
+Nota:
+  He detectado que en equipos lentos con linux no soportan 921600 baudios y dan errores del tipo:
+  "A fatal error occurred: Invalid head of packet ('\xe0')".
+  Para evitarlo, es suficiente con reducir la velocidad a 460800 baudios.
 
 Características.
   Microcontroller: ESP32-WROOM-32 (TensilicaXtensa LX6 dual core processor)

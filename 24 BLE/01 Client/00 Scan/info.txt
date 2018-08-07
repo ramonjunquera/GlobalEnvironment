@@ -1,0 +1,18 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180807
+Objetivo: Scan de servidores BLE
+Material: 2 placas ESP32
+
+Descripción:
+Necesitamos dos placas para que una sea servidor y la otra cliente.
+Por eso hay dos desarrollos.
+
+El servidor será muy simple. Tendrá un servicio con una característica con un valor fijo
+de sólo lectura. Sin notificaciones.
+
+El cliente hará un scan por un tiempo determinado y después mostrará los detalles de los
+dispositivos detectados.
+
+Resultado:
+El cliente detecta el servidor como uno de los dispositivos disponibles.

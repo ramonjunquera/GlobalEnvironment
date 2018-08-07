@@ -47,7 +47,8 @@ void setup()
 {
   Serial.begin(115200);
   //Asignamos un nombre descriptivo al dispositivo
-  BLEDevice::init("MyESP32");
+  //Para guardar compatibilidad intentaremos que siempre tenga un máximo de 5 caracteres
+  BLEDevice::init("ESP32");
   //Creamos un servidor dentro del dispositivo
   BLEServer *pServer = BLEDevice::createServer();
   //Creamos un servicio en el servidor al que asignamos un identificador
@@ -67,6 +68,8 @@ void setup()
   pService->start();
   //El servidor podrá ser publicado y visible
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  //Añadimos el número de identificación del servicio para que sea publicado y visible
+  pAdvertising->addServiceUUID(pService->getUUID());
   //Iniciamos la publicación del servidor
   pAdvertising->start();
   //Informamos que ya está disponible el servicio BLE

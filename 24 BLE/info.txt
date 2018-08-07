@@ -62,3 +62,11 @@ ESP32 puede comportarse como cliente o como servidor BLE.
 
 Para poder interacturar con un servidor BLE desde nuestro móvil, recomiendo la aplicación: nRF Connect.
 Desde la cual se podrá comprobar la jerarquía GATT explicada.
+
+
+Nota:
+Cuando creamos un servidor y lo publicamos (Advertising) tenemos una limitación intrínseca de BLE.
+El nombre del dispositivo no puede tener una longitud superior a 5 caracteres!.
+Además no podemos olvidar incluir el identificador de nuestro servicio en la publicación para
+que sea reconocido por cualquier cliente.
+
