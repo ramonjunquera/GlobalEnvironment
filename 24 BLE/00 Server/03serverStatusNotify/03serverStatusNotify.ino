@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: BLE
   Fecha: 20180805
-  Objetivo: Publicar un estado en un servidor
+  Objetivo: Publicar un estado con descriptor de notificación
   Material: placa ESP32 OLED TTGO 16Mb
 
   Descripción:
@@ -34,7 +34,7 @@
 #include <BLEServer.h> //Gestión de servidores
 #include <BLE2902.h> //Gestión de descriptores "Client Characteristic Configuration"
 
-//Canstantes globales
+//Constantes globales
 const byte LED_BUILTIN=2; //Led integrado del ESP32 OLED TTGO 16Mb
 const byte pinSwitch=0; //Pin asignado a interruptor integrado en ESP32 OLED TTGO 16Mb
 

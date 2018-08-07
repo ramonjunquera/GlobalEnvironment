@@ -1,64 +1,64 @@
-BLE (Bluetooth Low Energy) para Arduino.
+ÔªøBLE (Bluetooth Low Energy) para Arduino.
 
 Fuente: https://randomnerdtutorials.com/esp32-bluetooth-low-energy-ble-arduino-ide/
 
-BLE es un nuevo protocolo de conexiÛn inal·mbrica derivado del Bluetooth.
-Bluetooth est·ndar y BLE no son compatibles.
-Su objetivo es reducir el consumo de energÌa y garantizar compatibilidad entre dispositivos.
-Su gestiÛn es bastante m·s compleja que la del antiguo Bluetooth.
+BLE es un nuevo protocolo de conexi√≥n inal√°mbrica derivado del Bluetooth.
+Bluetooth est√°ndar y BLE no son compatibles.
+Su objetivo es reducir el consumo de energ√≠a y garantizar compatibilidad entre dispositivos.
+Su gesti√≥n es bastante m√°s compleja que la del antiguo Bluetooth.
 
-BLE tiene 3 sistemas de conexiÛn:
+BLE tiene 3 sistemas de conexi√≥n:
 - Cliente/Servidor
 - Broadcast mode
 - Mesh mode
 
-El m·s com˙n y el que desarrollaremos es el primero: cliente/servidor.
-El modo broadcast es un caso particular de cliente/servidor, en el que el servidor envÌa los mismos
-datos a todos los clientes de manera simult·nea, pero los clientes no pueden enviar datos al servidor.
+El m√°s com√∫n y el que desarrollaremos es el primero: cliente/servidor.
+El modo broadcast es un caso particular de cliente/servidor, en el que el servidor env√≠a los mismos
+datos a todos los clientes de manera simult√°nea, pero los clientes no pueden enviar datos al servidor.
 En el modo mesh todos los nodos son clientes y servidores al mismo tiempo. Cada nodo puede tener
 varios clientes y al mismo tiempo puede ser cliente de otro nodo servidor.
 
-ConexiÛn cliente/servidor
-El servidor define la estructura de datos a compartir con la siguiente jerarquÌa:
+Conexi√≥n cliente/servidor
+El servidor define la estructura de datos a compartir con la siguiente jerarqu√≠a:
   Dispositivo (device)
     Servicio (service)
-      CaracterÌstica (characteristic)
+      Caracter√≠stica (characteristic)
         Propiedad (property)
         Valor (value)
         Descriptor (descriptor)
 
-En lo m·s alto de la jerarquÌa tenemos el dispositivo con el hardware y software necesarios para
+En lo m√°s alto de la jerarqu√≠a tenemos el dispositivo con el hardware y software necesarios para
 que se pueda dar el servicio BLE.
-En Èl pueden correr uno o m·s servicios BLE.
-Un servicio es una colecciÛn de datos procedentes de las lecturas de uno o varios sensores.
+En √©l pueden correr uno o m√°s servicios BLE.
+Un servicio es una colecci√≥n de datos procedentes de las lecturas de uno o varios sensores.
 Existe una lista de servicios predefinidos llamados SIG (Bluetooth Special Interest Group).
 Los servicios predefinidos se pueden consultar en la siguiente URL:
   https://www.bluetooth.com/specifications/gatt/services
-Podemos encontrar servicios que informan del nivel de baterÌa, presiÛn sanguÌnea, frecuencia cardÌaca,
-potencia de pedalada, informaciÛn genÈrica de un dispositivo, temperatura, nivel de glucosa,
+Podemos encontrar servicios que informan del nivel de bater√≠a, presi√≥n sangu√≠nea, frecuencia card√≠aca,
+potencia de pedalada, informaci√≥n gen√©rica de un dispositivo, temperatura, nivel de glucosa,
 posicionamiento interno, etc.
-Cada uno de estos servicios predefinidos tiene su propio cÛdigo de identificaciÛn ˙nico y su
+Cada uno de estos servicios predefinidos tiene su propio c√≥digo de identificaci√≥n √∫nico y su
 funcionamiento es siempre igual en todos los dispositivos BLE.
-Adem·s de estos servicios predefinidos, siempre podemos crear nuestros propios servicios.
+Adem√°s de estos servicios predefinidos, siempre podemos crear nuestros propios servicios.
 
-Cada servicio tiene al menos una caracterÌstica o dato.
-Una caracterÌstica tiene al menos dos atributos: su valor y su propiedad.
+Cada servicio tiene al menos una caracter√≠stica o dato.
+Una caracter√≠stica tiene al menos dos atributos: su valor y su propiedad.
 
 El valor es el dato que se comparte.
-La propiedad es la manera de interactuar con el dato. Indica si el dato ser· de sÛlo lectura, si se podr· actualizar
-(escritura), si tiene asociado un servicio de notificaciÛn, etc.
+La propiedad es la manera de interactuar con el dato. Indica si el dato ser√° de s√≥lo lectura, si se podr√° actualizar
+(escritura), si tiene asociado un servicio de notificaci√≥n, etc.
 
-Un descriptor es un procedimiento asociado a la caracterÌstica.
+Un descriptor es un procedimiento asociado a la caracter√≠stica.
 Por ejemplo, el descriptor "Client Characteristic Configuration" se encarga de gestionar las notificaciones
-(actualizaciÛn del valor) desde el servidor al cliente.
+(actualizaci√≥n del valor) desde el servidor al cliente.
 
-Toda esta estructura jer·rquica est· definida en el GATT (Generic Attributes) y es el conjunto de reglas de
+Toda esta estructura jer√°rquica est√° definida en el GATT (Generic Attributes) y es el conjunto de reglas de
 funcionamiento de BLE.
 
-Tanto el servicio, como sus caracterÌsticas y sus descriptores tienen un identificador ˙nico en formato UUID.
+Tanto el servicio, como sus caracter√≠sticas y sus descriptores tienen un identificador √∫nico en formato UUID.
 Un ejemplo de este formato es: 55072829-bc9e-4c53-938a-74a6d4c78776
 
 ESP32 puede comportarse como cliente o como servidor BLE.
 
-Para poder interacturar con un servidor BLE desde nuestro mÛvil, recomiendo la aplicaciÛn: nRF Connect.
-Desde la cual se podr· comprobar la jerarquÌa GATT explicada.
+Para poder interacturar con un servidor BLE desde nuestro m√≥vil, recomiendo la aplicaci√≥n: nRF Connect.
+Desde la cual se podr√° comprobar la jerarqu√≠a GATT explicada.

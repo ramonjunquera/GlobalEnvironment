@@ -21,7 +21,7 @@
 #include <BLEDevice.h> //Gestión de dispositivos
 #include <BLEServer.h> //Gestión de servidores
 
-//Canstantes globales
+//Constantes globales
 const byte LED_BUILTIN=2; //Led integrado del ESP32 OLED TTGO 16Mb
 const byte pinSwitch=0; //Pin asignado a interruptor integrado en ESP32 OLED TTGO 16Mb
 
