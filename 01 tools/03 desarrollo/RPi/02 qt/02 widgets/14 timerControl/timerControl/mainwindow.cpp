@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QTimer> //Gestión de QTimer
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Creamos una nueva instancia del timer
     myTimer = new QTimer(this);
+    //Le asignamos la función a la que llamar
+    connect(myTimer,SIGNAL(timeout()),this,SLOT(BulbChangeStatus()));
     //Ahora ya podemos inicializar los objetos gráficos
     ui->setupUi(this);
 }
@@ -56,14 +59,11 @@ void MainWindow::on_pushButton_Start_clicked()
     //Desactivamos el botón Once
     ui->pushButton_Once->setEnabled(false);
 
-    //Le asignamos la función a la que llamar
-    connect(myTimer,SIGNAL(timeout()),this,SLOT(BulbChangeStatus()));
     //Arrancamos el timer para que se ejecute cada segundo
     myTimer->start(1000);
 
     //Activamos el botón End
     ui->pushButton_End->setEnabled(true);
-
 }
 
 void MainWindow::on_pushButton_End_clicked()
@@ -72,15 +72,14 @@ void MainWindow::on_pushButton_End_clicked()
 
     //Desactivamos el botón End
     ui->pushButton_End->setEnabled(false);
-    //Activamos el botón Start
-    ui->pushButton_Start->setEnabled(true);
 
     //Paramos el timer
     myTimer->stop();
 
+    //Activamos el botón Start
+    ui->pushButton_Start->setEnabled(true);
     //Activamos el botón Once
     ui->pushButton_Once->setEnabled(true);
-
 }
 
 void MainWindow::on_pushButton_Once_clicked()

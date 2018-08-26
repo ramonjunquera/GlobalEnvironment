@@ -42,8 +42,8 @@ void MainWindow::on_pushButton_Copy_clicked()
     //Copiamos el texto de Source a Destination
 
     //Tomamos nota del texto del plainTextBox_Source
-    //En QT todas la variable String han sido sustituidas por
-    //una variación propria llamada QString
+    //En QT todas las variables String han sido sustituidas por
+    //una variación propia llamada QString
     QString t=ui->plainTextEdit_Source->toPlainText();
     //Escribimos el texto en plainTextBox_Destination
     ui->plainTextEdit_Destination->document()->setPlainText(t);

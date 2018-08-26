@@ -5,6 +5,9 @@ Esto lo hacemos con los siguientes comandos:
   sudo apt-get update
   sudo apt-get upgrade
 
+Es conveniente eliminar los paquetes no utilizados:
+  sudo apt-get autoremove
+
 Es posible que se deba reiniciar tras las actualizaciones.
 Se puede hacer con:
   sudo reboot

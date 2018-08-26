@@ -29,13 +29,13 @@ void MainWindow::on_pushButton_Change_clicked()
 {
     //Pulsado el botón Change
 
-    //Cambiamos el estado del boótn Checkable
+    //Cambiamos el estado del botón Checkable
     ui->pushButton_Checkable->toggle();
 }
 
 void MainWindow::on_pushButton_Checkable_toggled(bool checked)
 {
-    //Se ha cambiado el estado del bóotn Checkable
+    //Se ha cambiado el estado del botón Checkable
 
     //Asignamos el mismo estado al checkBox_Status
     ui->checkBox_Status->setChecked(checked);

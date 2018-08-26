@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTimer>
 
 namespace Ui {
 class MainWindow;

@@ -1,0 +1,16 @@
+Autor: Ramón Junquera
+Tema: Bluetooth
+Fecha: 20180821
+Objetivo: Descripción bluetooth en microprocesadores ESP32
+
+La familia ESP32 incluye capacidades bluetooth, tanto de BLE (Bluetooth Low Energy) como estándar.
+Sólo se ha desarrollado una librería para su gestión: BluetoothSerial.h
+Esta librería tiene unas funcionalidades muy limitadas comparada con el módulo HC-05.
+Sólo permite la configuración de ESP32 como servidor.
+No permite asignar una contraseña.
+
+Por lo tanto, todos los ejemplos serán de servidor.
+
+Para comprobar el correcto funcionamiento de los desarrollos es cómodo utilizar el móvil como cliente.
+Una aplicación básica para hacer pruebas es "Serial Bluetooth Terminal" que se puede encontrar en la Play Store.
+Permite enviar y recibir texto. Además incluye una botonera programable para envío.

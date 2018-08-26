@@ -2,7 +2,7 @@ Objeto label
 
 Muestra un texto no editable y sin caja.
 
-Si hacemos doble click sobre el archivo del fomulario
+Si hacemos doble click sobre el archivo del formulario
 (mainwindow.ui), pasamos al modo gráfico (Design) en
 el que se pueden insertar distintos objetos.
 
@@ -20,7 +20,8 @@ Lo cambiaremos por "Mi etiqueta".
 Redimensionamos el objeto para que se pueda ver el
 texto completo.
 
-Por defecto se le ha asignado un nombre al objeto.
+Por defecto se le ha asignado un nombre al objeto en la
+propiedad "objectName".
 En este caso es "label".
 Se trata de un objeto tipo QLabel.
 No pueden existir dos objetos con el mismo nombre.

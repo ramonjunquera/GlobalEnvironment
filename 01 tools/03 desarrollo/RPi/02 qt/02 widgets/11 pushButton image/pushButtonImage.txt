@@ -1,0 +1,41 @@
+pushButtonImage
+
+Novedades:
+- Botones con imágenes
+- Descripción del objeto QIcon
+- Conversión entre QIcon y QPixmap
+- Descripción del objeto QSize
+- Función qMax()
+- Uso de listas
+
+Tenemos una única ventana con:
+- Tres botones
+- Un label
+
+Funcionalidad:
+- Al pulsar cada uno de los botones cambia el contenido del label
+
+Desarrollo:
+  Un QIcon es un objeto que puede almacenar una colección de imágenes.
+  Incluso de distintos tamaños.
+  El objeto QPushButton permite mostrar una imágen. Concretamente un
+  objeto QIcon. Del cual se pueden seleccionar distintas imágenes para
+  distintas situaciones del botón:
+  - Cuando está en reposo
+  - Cuando está pulsado
+  - Cuando está seleccionado
+  - Cuando está desactivado
+  - etc
+  La situación por defecto de un botón es "Normal Off": no seleccionado y no pulsado
+  Desde el panel de propiedades del objeto podemos asignar las distintas
+  imágenes del icono.
+  Lo más cómodo es asignarlas desde un archivo de recursos previamente creado
+  y cargado.
+  Un botón puede mostrar imégen y texto simultáneamente, siempre que las propiedades
+  de icon y text estén completadas.
+
+  El programa actual muestra tres maneras distintas de asignar una imágen a un QLabel.
+  La primera es la más simple. Se asigna la imágen guardada en un archivo de recursos.
+  La segunda explica los problemas de intentar convertir la imágen de un icono a un
+  QPixmap para asignarla al QLabel.
+  La tercera simplifica el caso anterior.

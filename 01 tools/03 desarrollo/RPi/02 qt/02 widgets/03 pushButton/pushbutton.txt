@@ -13,9 +13,9 @@ Nos aparecerán todos los eventos que puede generar este
 objeto.
 
 Nos interesa el evento "clicked()" (el primero).
-Es al que se le llama al pulsar el botón.
+Es al que se llama al pulsar el botón.
 
-Automáticamente se crean en el código del formulario la
+Automáticamente se crea en el código del formulario la
 función a la que se llamará.
 Se tiene en cuenta el nombre del objeto.
 Si no queremos que se tenga el nombre por defecto
@@ -27,7 +27,7 @@ ui (user interface) y siempre habrá que referirse a ellos
 comenzando por esta clase.
 En este ejemplo, el objeto label se llama label_Hello.
 Y el método para asignar un nuevo texto a un label
-es text().
+es setText().
 Por lo tanto, la línea para cambiar el texto a este label 
 será:
   ui->label_Hello->setText("Adiós");

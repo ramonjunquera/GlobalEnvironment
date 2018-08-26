@@ -39,13 +39,12 @@ void MainWindow::on_pushButton_toggle_clicked()
     //Cambiamos el estado
     status=!status;
 
-    //Leemos la imagen del archivo de recursos dependiendo
-    //del estado
+    //Leemos la imagen del archivo de recursos dependiendo del estado
     QPixmap myImage=QPixmap(status?":/images/icons/bulb-on-48.png":":/images/icons/bulb-off-48.png");
     //La convertimos en un icono
     QIcon myIcon=QIcon(myImage);
     //La asignamos al botón
-    ui->pushButton_bulb->setIcon(myIcon);
-    //No es necesario asignar tamaño, porque todas las imágenes
-    //son igual de grandes
+    ui->pushButton_bulb1->setIcon(myIcon);
+    //No tenemos que preocuparnos por el tamaño del botón, puesto que todas la imágenes
+    //tienen las mismas dimensiones
 }

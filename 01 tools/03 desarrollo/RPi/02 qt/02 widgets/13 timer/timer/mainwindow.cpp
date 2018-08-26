@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Creamos una nueva instancia del timer
     myTimer = new QTimer(this);
     //Le asignamos la función a la que llamaár
-    connect(myTimer,SIGNAL(timeout()),this,SLOT(TimerLauncher()));
+    connect(myTimer,SIGNAL(timeout()),this,SLOT(timerLauncher()));
     //Arrancamos el timer para que se ejecute cada segundo
     myTimer->start(1000);
     //Ahora ya podemos inicializar los objetos gráficos
@@ -22,7 +22,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::TimerLauncher()
+void MainWindow::timerLauncher()
 {
     //Función a la que llama el timer
 

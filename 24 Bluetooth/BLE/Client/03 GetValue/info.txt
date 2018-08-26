@@ -1,0 +1,26 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180813
+Objetivo: Lectura de valor
+Material: 2 placas ESP32
+
+Descripción:
+El servidor tiene un servicio, con una característica y un valor de un byte, de sólo
+lectura.
+El valor será 0 o 1 y corresponde con el estado del led integrado.
+El estado se puede cambiar con el interruptor integrado.
+
+El cliente leerá el valor cada segundo y lo enviará por el puerto serie.
+
+Los pasos a seguir para poder leer el valor son:
+1. Scan. Si detectamos el dispositivo que estamos buscando, porque coincide tanto el
+   nombre como el identificador de publicación, tomamos nota de la dirección del
+   servidor (MAC address)
+2. Creamos un objeto de gestión de un cliente y lo conectamos con el servidor encontrado
+3. Creamos un objeto de gestión de un servicio remoto y lo asignamos al servicio del servidor
+   mediante el identificador del servicio (que conocemos de antemano)
+4. Obtenemos la característica del servicio remoto mediante el identificador de la 
+   característica (que conocemos de antemano).
+
+Resultado:
+El cliente muestra el valor de la característica del servidor

@@ -1,0 +1,27 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180814
+Objetivo: Escritura de valor
+Material: 2 placas ESP32
+
+Descripción:
+El servidor tiene una característica con un valor (byte) que se puede escribir.
+Corresponde a la intensidad del led integrado.
+El led integrado en la placa Wemos Lolin32 Lite no permite PWM, así que utilizamos
+un led externo.
+Puesto que no está implementada la gestión de PWM en ESP32 (a fecha actual),
+utilizamos la librería RoJoAnalogWriteESP32.h
+La resolución PWM de esta librería es de 8 bits. Por eso, el valor de la
+característica es de un byte.
+No es necesario configurar el pin del led como salida (pinMode).
+
+En el cliente hay un potenciómetro que regula la intensidad del led local y escribe
+en el servidor el valor cada cierto tiempo.
+Los ESP32 tienen una resolución de 12 bits (2^12=4096) en la conversión analógica-digital.
+Si sólo podemos enviar con una resolución de 8 bits, debemos convertir el rango.
+Lo dividiremos por 16: 4096/16=256
+Es importante no saturar el canal de comunicación.
+El tiempo de 0.1s de demora entre envíos es correcto. Con un tiempo menor falla.
+
+Resultado:
+La intensidad del led del servidor copia el estado del led del cliente

@@ -1,0 +1,18 @@
+Autor: Ramón Junquera
+Tema: Bluetooth
+Fecha: 20180819
+Objetivo: Descripción genérica de bluetooth
+  
+Bluetooth es una tecnología de transmisión inalámbrica de datos digitales utilizando radiofrecuencia que inventó
+NOKIA para su uso en dispositivos móviles. Su consumo de energía es muy reducido. También su radio de acción.
+Para una conexión bluetooth siempre deben existir 2 dispositivos. uno configurado como máster y otro como slave.
+El slave sólo permite una conexión simultánea con un máster.
+Un máster permite la conexión simultánea de 7 slaves.
+De la misma manera que en redes IP existe también existe el identificador único de dispositico (MAC address) con
+un tamaño de 40 bits.
+Para hacer más cómoda la identificación, se puede asignar un nombre a cada dispositivo.
+La acción de conectar un nodo máster y un slave se llama emparejamiento. Una vez realizado, cada nodo almacena y recuerda
+la configuración del otro para no tener que repetir el proceso cada vez que se vuelven a aproximar.
+Habitualmente un nodo máster tiene habilitada la seguridad. Esto significa que si un slave quiere conectarse, necesitará
+proporcionar el PIN, un código numérico. El PIN también es seleccionable en la configuración del máster.
+Un nodo bluetooth no tiene porqué ser siempre un móvil (o un adaptador). Pueden ser unos auriculares o unos altavoces.

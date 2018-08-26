@@ -19,8 +19,8 @@ void MainWindow::on_checkBox_Source_clicked()
 
     //Anotamos el estado de checkBox_Source
     bool status = ui->checkBox_Source->isChecked();
-    //Lo aplicampos a checkBox_Destination
-    ui->checkBox_Destination->setChecked(status);
+    //Lo aplicampos a checkBox_Clone
+    ui->checkBox_Clone->setChecked(status);
     //Cambiamos el texto de la etiqueta en función del estado
     ui->label_OnOff->setText(status?"ON":"OFF");
 }

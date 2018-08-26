@@ -1,0 +1,17 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180813
+Objetivo: Escritura de valor digital
+Material: 2 placas ESP32
+
+Descripción:
+El servidor tiene una característica con un valor (byte) que se puede escribir.
+El valor se aplica al estado del led integrado: 0=apagado, 1=encendido
+
+El dispositivo utilizado para el cliente tiene un interruptor integrado en placa
+que permite cambiar el estado del led integrado.
+El cliente se conecta el servidor y cada vez que detecta un cambio de estado local
+lo escribe en el servidor.
+
+Resultado:
+El led del servidor copia el estado del led del cliente

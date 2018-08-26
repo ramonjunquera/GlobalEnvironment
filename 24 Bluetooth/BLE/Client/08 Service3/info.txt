@@ -1,0 +1,18 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180817
+Objetivo: Gestión de varios servicios
+Material: 2 placas ESP32
+
+Descripción:
+El servidor tiene 3 servicios. Cada uno con una característica con valor (byte) escribible.
+Los valores corresponden a los estados de 3 leds externos: 0=apagado, 1=encendido
+
+El dispositivo utilizado para el cliente tiene 3 leds y 3 interruptores que permiten
+cambiar sus estados. Al hacerlo también escriben el valor de la característica
+correspondiente a cada servicio en el servidor para replicar el estado.
+
+El desarrollo se ha preparado para escalar fácilmente el número de leds
+
+Resultado:
+Los leds del servidor están sincronizados con los del cliente

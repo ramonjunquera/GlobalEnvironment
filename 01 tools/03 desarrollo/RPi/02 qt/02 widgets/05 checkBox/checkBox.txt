@@ -1,0 +1,21 @@
+Objeto checkBox
+
+Novedades:
+- Objeto checkBox
+- Propiedad isChecked() del objeto checkBox
+- Propiedad setChecked() del objeto checkBox
+
+Tenemos una única ventana con:
+- Un checkBox llamado Source
+- Un checkBox llamado Clone
+- Un label llamado label_OnOff
+
+Funcionalidad:
+- Al interactuar con el checkBox Source, se copia su estado a Clone y 
+  el label muestra en texto el estado actual.
+
+Desarrollo:
+  Introducimos el objeto checkBox de la sección Buttons.
+  El objeto label es siempre de sólo lectura. No tenemos que hacer modificaciones.
+  No queremos que el usuario interactúe con el objeto Clone. Para que no ocurra,
+  simplemente lo deshabilitamos (quitamos el check de enable).

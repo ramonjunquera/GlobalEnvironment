@@ -47,3 +47,27 @@ derecha.
 Finalmente vemos el formulario de la aplicación, que al no tener
 controles, sólo podemos minimizar, maximizar, cerrar o cambiar de 
 tamaño.
+
+Al compilar el proyecto, se crea una nueva carpeta a la misma altura que la
+del proyecto con el pregijo "build-".
+En ella se guardan los archivos precompilados y el compilado final con el
+nombre del proyecto.
+No es necesario guardar esta carpeta porque puede ser regenerada de nuevo en
+la siguiente compilación.
+
+QT guarda tanto el usuario que ha generado los fuentes como el path original.
+Esto lo hace en un archivo con extensión .user en la carpeta de proyecto.
+Cuando intentamos utilizar los fuentes en otro equipo y el usuario no coincide,
+QT nos pregunta si queremos abrir el proyecto. La respuesta es Yes.
+En ese momento QT hace un parseo rápido de los fuentes, habitualmente sin incidentes.
+A continuación pregunta si se quiere cancelar la carga o queremos continuar
+configurando el proyecto. Pulsaremos el botón "Configure Project".
+Es entonces cuando se abre el entorno habitual de desarrollo y se hace una parseo en
+profundidad.
+La configuración se actualiza y guarda.
+La próxima vez que se abra el proyecto ya no preguntará nada sobre importación.
+Esta actualización crea en la carpeta de proyecto una copia del antiguo archivo .user
+con una extensión de 8 dígitos hexadecimales.
+Este archivo puede ser eliminado sin problema.
+Es conveniente eliminemos el archivo .user de los fuentes, para que no intente generar la
+carpeta "build-" en la ubicación original.

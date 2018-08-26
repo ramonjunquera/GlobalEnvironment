@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>194</width>
-    <height>110</height>
+    <width>191</width>
+    <height>141</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,39 +17,42 @@
    <widget class="QCheckBox" name="checkBox_Source">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>72</width>
-      <height>16</height>
+      <width>79</width>
+      <height>26</height>
      </rect>
     </property>
     <property name="text">
      <string>Source</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_Destination">
+   <widget class="QCheckBox" name="checkBox_Clone">
     <property name="enabled">
      <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>100</x>
       <y>10</y>
-      <width>81</width>
-      <height>16</height>
+      <width>70</width>
+      <height>26</height>
      </rect>
     </property>
     <property name="text">
-     <string>Destination</string>
+     <string>Clone</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_OnOff">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>40</y>
-      <width>46</width>
-      <height>10</height>
+      <y>50</y>
+      <width>68</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -62,8 +65,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>194</width>
-     <height>15</height>
+     <width>191</width>
+     <height>27</height>
     </rect>
    </property>
   </widget>

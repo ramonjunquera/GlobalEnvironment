@@ -99,10 +99,15 @@ void MainWindow::on_pushButton_Text_clicked()
 
 void MainWindow::on_pushButton_empty_clicked()
 {
-    //Pulsado el boótn para vaciar el label
+    //Pulsado el botón para vaciar el label
 
-    //Si fuese de texto, Sería suficiente con asignar un QString vacío.
-    //Como no sabemos qué muestra, le asignamos una imagen vacía.
-
+    //No sabemos si ahora mismo el label contiene texto o imagen.
+    //Si tuviesemos la certeza de que es texto, sería suficiente con asignar
+    //un QString vacío con ui->label->setText("");
+    //El problema es que si lo asignamos y el label está mostrando una imagen
+    //no cambiará su aspecto.
+    //También podríamos asignar un texto cualquiera y a continuación asignar
+    //un QString vacío, pero serían 2 instrucciones.
+    //Lo más sencillo es asignar una imagen vacía. Funcionará siempre.
     ui->label->setPixmap(QPixmap());
 }

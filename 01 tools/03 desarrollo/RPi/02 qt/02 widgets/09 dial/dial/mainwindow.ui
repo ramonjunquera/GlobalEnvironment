@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>172</width>
-    <height>199</height>
+    <width>187</width>
+    <height>282</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QDial" name="dial_1">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>10</y>
       <width>50</width>
       <height>64</height>
@@ -27,7 +27,7 @@
    <widget class="QDial" name="dial_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>80</y>
       <width>50</width>
       <height>64</height>
@@ -38,34 +38,61 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>90</y>
-      <width>64</width>
+      <y>20</y>
+      <width>71</width>
       <height>41</height>
      </rect>
     </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>90</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhNone</set>
+    </property>
+    <property name="documentTitle">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="plainText">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QDial" name="dial_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>150</y>
+      <width>50</width>
+      <height>64</height>
+     </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>20</y>
-      <width>61</width>
+      <x>92</x>
+      <y>160</y>
+      <width>71</width>
       <height>41</height>
      </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>22</pointsize>
-     </font>
     </property>
     <property name="text">
      <string>0</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -74,8 +101,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>172</width>
-     <height>15</height>
+     <width>187</width>
+     <height>27</height>
     </rect>
    </property>
   </widget>
@@ -93,18 +120,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>dial_2</sender>
+   <sender>dial_1</sender>
    <signal>valueChanged(int)</signal>
    <receiver>lcdNumber</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>29</x>
-     <y>147</y>
+     <x>44</x>
+     <y>81</y>
     </hint>
     <hint type="destinationlabel">
-     <x>110</x>
-     <y>144</y>
+     <x>125</x>
+     <y>80</y>
     </hint>
    </hints>
   </connection>

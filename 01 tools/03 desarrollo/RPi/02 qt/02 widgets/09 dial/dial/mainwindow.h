@@ -16,7 +16,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_dial_1_valueChanged(int value);
+    void on_dial_2_valueChanged(int value);
+
+    void on_dial_3_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

@@ -33,6 +33,8 @@ El azul corresponde al pin 2.
 Los estados del led son iguales a los del pin:
   HIGH = encendido
   LOW = apagado
+Este led permite PWM, pero con muy mal resultado. Comienza a encenderse a partir de
+un 70% del pulso. Para PWM es preferible usar un led externo.
 
 Botones.
 Tiene integrados dos botones.

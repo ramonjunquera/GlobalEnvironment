@@ -21,7 +21,7 @@ private:
     QTimer *myTimer;
 
 private slots:
-    void TimerLauncher();
+    void timerLauncher();
 };
 
 #endif // MAINWINDOW_H

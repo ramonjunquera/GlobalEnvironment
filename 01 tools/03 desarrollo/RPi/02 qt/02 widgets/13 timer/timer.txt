@@ -1,34 +1,70 @@
-Ejemplo de uso del objeto QTimer
+timer
 
-QTimer es un temporizador, como Timer.
-Es capaz de lanzar un función determinada cada cierto tiempo.
+Novedades:
+- Uso del objeto QTimer
+- Uso del constructor de la clase del formulario
 
-Pone en marcha un QTimer que se ejecuta cada segundo y se dedica a cambiar la
-imagen de un label.
+Tenemos una única ventana con:
+- Un QLabel grande con una imágen
 
-Utilizaremos la misma clase del formulario (.cpp y .h) para añadirle los distintos
-métodos y variables que necesitamos.
+Funcionalidad:
+- Cada segundo cambia la imagen del QLabel
 
-Comenzamos añadiendo la librería QTimer en mainwindow.h para tenerla disponible en toda la clase:
-  #include <QTimer>
-
-También añadimos un objeto QTimer en la sección privada.
-Será el objeto que utilizaremos.
-  QTimer *myTimer;
-
-En la sección de slots privados (private slots:) añadimos el nombre de la función que utilizaremos
-cada vez que salte el timer:
-  void TimerLauncher();
-
-Pasamos al archivo mainwindows.cpp
-Creamos el método de la función en mainwindow.cpp:
-  void MainWindow::TimerLauncher()
-
-En el constructor de la clase formulario añadimos el código necesario para crear, configurar y
-arrancar el timer.
-
-Finalmente creamos el código de la función a la que llama el timer.
-Definimos una variable estática para mantener el estado actual.
-Cambiamos el estado.
-Cargamos la imagen del archivo de recursos que corresponde al estado actual.
-Asignamos la imagen al label.
+Desarrollo:
+  Comenzamos eliminando las barras de menú y estado.
+  Creamos el archivo de recursos e incluimos la imágenes.
+  Creamos el QLabel y le asignamos una de las imágenes.
+  En el editor de fuentes tenemos siempre creado el constructor de la clase que representa
+  el formulario de la ventana principal:
+    MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWindow)
+    {
+      ui->setupUi(this);
+    }
+  Lo único que hace es inicializar el interface de usuario (ui). Imprescindible para que
+  funcione el diseño.
+  Utilizaremos este constructor para inicializar cualquier otro tema que nos interese.
+  En este ejemplo utilizaremos el objeto QTimer para lanzar periódicamente una función.
+  Inicializamos el timer en este constructor.
+  Puesto que queremos que el objeto QTimer esté disponible desde cualquier método de la
+  clase del formulario, tendremos que definirlo en el archivo .h (mainwindow.h).
+  En la sección privada (no queremos publicarlo) crearemos un puntero a un objeto de
+  tipo QTimer:
+    QTimer *myTimer;
+  Aprovechamos que estamos aquí para definir la función a la que llamará el timer
+  periódicamente.
+  No podemos crear una función totalmente desligada de la clase del formulario, porque 
+  pretendemos interacturar con el interface de usuario. En una función independiente no
+  estaría disponible (a no ser que lo pasemos como parámetro).
+  Además esta función no puede ser un método normal, puesto que se llamará cuando ocurra
+  un evento. Por lo tanto deberá estar definido como slot. Para este caso será un
+  slot privado.
+  Por defecto cuando se crea una nueva aplicación, ni siquiera está definida la sección de
+  slots privados, la crearemos nosotros, a continuación de la sección private:
+    private slots:
+  Dentro definimos la función:
+    void timerLauncher();
+  Ahora podemos regresar al archivo de definición de métodos (mainwindow.cpp).
+  Es imprescindible incluir la librería de gestión de este tipo de objetos.
+  Añadimos en la sección include:
+    #include <QTimer>
+  Ahora el tipo QTimer será reconocido.
+  Antes de definir la inicialización del QTimer nos ocuparemos de crear la función a la que
+  llamaremos para cambiar la imagen del QLabel.
+  Creamos la definición con:
+    void MainWindow::timerLauncher()
+  La función no devolverá nada, ni tendrá parámetros y pertenece a la clase MainWindow que
+  gestiona el formulario principal.
+  La función a la que llama un timer no puede devolver nada ni tener parámetros.
+  La función que se define no es complicada. Hace uso de una variable bool estática para
+  almacenar el estado actual. Lo cambia, crea la imagen y la asigna al QLabel.
+  Finalmente definimos la inicialización del QTimer en el constructor del formulario.
+  Creamos una nueva instancia del objeto QTimer y guardamos su puntero en la variable
+  privada que hemos creado antes:
+    myTimer = new QTimer(this);
+  Indicamos que cuando el objeto QTimer produzca un evento de timeout (cuando haya transcurrido
+  el tiempo definido) se llame en la misma clase (de formulario) al slot definido por nuestra 
+  función que hemos creado:
+    connect(myTimer,SIGNAL(timeout()),this,SLOT(timerLauncher()));
+  Después definimos el tiempo que debe transcurrir en el timer para que produzca el evento de
+  timeout:
+    myTimer->start(1000);
