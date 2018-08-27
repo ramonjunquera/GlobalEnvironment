@@ -1,4 +1,4 @@
-Autor: Ramón Junquera
+﻿Autor: Ramón Junquera
 Tema: Bluetooth
 Fecha: 20180821
 Objetivo: Descripción bluetooth en microprocesadores ESP32
@@ -14,3 +14,4 @@ Por lo tanto, todos los ejemplos serán de servidor.
 Para comprobar el correcto funcionamiento de los desarrollos es cómodo utilizar el móvil como cliente.
 Una aplicación básica para hacer pruebas es "Serial Bluetooth Terminal" que se puede encontrar en la Play Store.
 Permite enviar y recibir texto. Además incluye una botonera programable para envío.
+
