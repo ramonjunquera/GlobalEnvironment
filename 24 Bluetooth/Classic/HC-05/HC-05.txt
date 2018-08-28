@@ -4,6 +4,9 @@ Fecha: 20180829
 Objetivo: Descripción de adaptador bluetooth HC-05
 
 El adaptador HC-05 permite a Arduino la conexión bluetooth. Puede trabajar tanto en modo máster como en slave.
+Existe otro adaptado llamado HC-06 que sólo permite conexión como slave.
+HC-05 permite más versatilidad.
+
 Tiene 6 pines. Incluye una antena integrada. El rango de voltaje de trabajo es de 3.6V a 6V y su consumo es
 muy reducido.
 Teniendo en cuenta que trabajamos con placas con voltajes de 3.3V y 5V, debemos alimentarlo obligatoriamente
@@ -108,7 +111,7 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
   Nombre del adaptador: H-C-2010-06-01
   Contraseña: 1234
   Velocidad de conexión: 38400 baudios, stop bit: 1 bit, parity bit: none
-  Modo: 0 (slave)
+  Modo: 0 (master)
   Respuesta:
     OK
     
@@ -121,8 +124,8 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
   AT+ROLE
   Muestra el role en el que se encuentra configurado el adaptador.
   Lo más habitual es configurar el dispositivo como máster para poder conectarnos a él desde cualquier móvil.
-    0 = Slave role (default)
-    1 = Master role
+    0 = Master role (default)
+    1 = Slave role
     2 = Slave-Loop role
   Nota: El modo Slave-Loop recibe datos del dispositivo remoto (slave) y los envía de vuelta al máster
   Respuesta:
@@ -218,7 +221,7 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
   AT+CMODE  
   Muestra el modo de conexión. Posibles valores:
     0 = Conecta el adaptador a una dirección concreta
-    1 = Conecta el adaptador a cualquier dirección
+    1 = Conecta el adaptador a cualquier dirección de las que tiene memorizadas
     3 = Slave-Loop
   Respuesta:
     +CMOD:0
@@ -236,10 +239,10 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
     +BIND:0:0:0
     OK
 
-  AT+BIND=X,Y,Z
+  AT+BIND=XXXX,XX,XXXXXX
   Cambia la dirección con la que conectará.
   Los 3 valores están escritos en hexadecimal
-  Ejemplo: AT+BIND=0000,00,000000
+  Ejemplo: AT+BIND=98D3,31,203092
   Respuesta:
     OK
   
@@ -379,17 +382,21 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
       <RSSI signal strength> es la fuerza de recepción de la señal (Ej: 7FFF)
   Ejemplo de respuesta:
     +INQ:1:6C:E38AEA,2508,7FFF
+    OK
 
   AT+INQC
     Cancela la solicitud de dispositivos disponibles (AT+INQ).
   Posibles respuestas:
     OK
 
-  AT+PAIR
+  AT+PAIR=XXXX,XX,XXXXXX,T
     Empareja un dispositivo
-    Parámetro 1 = device address
-    Parámetro 2 = time out
-  Ejemplo de respuestas:
+    Los 3 primeros parámetros corresponden con la dirección del dispositivo, que se puede obtener del comando AT+INQ
+    El último parámetro (T) corresponde con el tiempo máximo que debe esperar para completar el emparejado
+    Ejemplo: Si una de las respuestas de AT+INQ es +INQ:98D3:31:203092,0,7FFF y no queremos esperar más de 9 segundos
+    para emparejar, componemos el siguiente comando:
+      AT+PAIR=98D3,31,203092,9
+  Posibles respuestas:
     OK
     FAIL
 
@@ -397,7 +404,7 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
     Empareja un dispositivo
     Parámetro 1 = device address
     Ejemplo de uso:
-      AT+LINK=1234,56,abcdef
+      AT+LINK=98D3,31,203092
     Ejemplo de respuestas:
       OK
       FAIL
@@ -424,13 +431,16 @@ El listado completo se encuentra en el documento HC-0305_serial_module_AT_commam
      Ejemplo de respuestas:
        OK 
     
-  AT+RNAME? 0002,72,0D2224
+  AT+RNAME?XXXX,XX,XXXXXX
     Solicita el nombre de un dispositivo remoto si le damos su dirección.
     La dirección es la misma que puede proporcionar el comando AT+INQ en su primer parámetro, pero el carácter : se debe
     sustituir por , para usarlo ahora.
     Si no encuentra el dispositivo con la dirección indicada, devuelve FAIL
-  Respuesta:
-    +RNAME:Bluetooth
+    Ejemplo: Si una de las respuestas de AT+INQ es +INQ:98D3:31:203092,0,7FFF creamos el comando:
+      AT+RNAME?98D3,31,203092
+  Ejemplo de respuesta:
+    +RNAME:HC05server
+    OK
 
   AT+FSAD
     Buscar dispositivos autenticados

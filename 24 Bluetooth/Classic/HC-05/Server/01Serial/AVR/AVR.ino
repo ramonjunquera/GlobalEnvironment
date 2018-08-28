@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: Bluetooth
-  Fecha: 20180827
+  Fecha: 20180828
   Objetivo: Modificar la configuración del módulo 
-  Material: Placa Arduino UNO, módulo HC-05
+  Material: Placa Arduino, módulo HC-05
   
   Descripción:
   El programa permite arrancar el módulo HC-05 en modo comandos y lo conecta directamente con el

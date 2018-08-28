@@ -1,0 +1,110 @@
+Autor: Ramón Junquera
+Tema: Bluetooth
+Fecha: 20180828
+Objetivo: Conexión cliente/servidor
+Material: 2x placas, 2x módulo HC-05, 2x pulsadores
+
+Descripción:
+  Desarrollaremos un ejemplo en con dos circuitos idénticos (para simplificarlo).
+  Uno de ellos se configurará como servidor (master). Configuración por defecto del
+  módulo HC-05. Y el otro como cliente (slave).
+  En el servidor, cuando se pulsa el interruptor o se recibe el código X, se cambia el
+  estado del led integrado y se informa a todos los posibles clientes conectados del
+  nuevo estado con los códigos 0 y 1.
+  En el cliente, cuando se pulsa el interruptor, se envía al servidor el código X.
+  Si se recibe un código reconocido de estado (0 o 1) se le aplica al led integrado.
+  Conclusión cuando se pulsa cualquier interruptor se cambia el estado de los leds
+  integrados que están sincronizados.
+  Todo esto lo conseguimos con el envío de la información en ambos sentidos.
+
+  No hay problema en mezclar placas diferentes. Incluso de distinto fabricante.
+
+  En el caso de incluir un segundo cliente, todo seguiría funcionando igual.
+  Y su interruptor también cambiaría el estado de todos mlos leds integrados.
+
+  La parte novedosa es la configuración de un módulo HC-05 como cliente.
+  Para ellos necesitaremos configurarlo manualmente a base de comandos AT.
+  El circuito actual no sirve para que arranque en modo comandos porque el pin
+  KEY está suelto.
+  Necesitaremos utilizar el primero de los ejemplos (de servidor) en el que a
+  través del puerto serie podíamos acceder directamente al dispositivo.
+  Antes de comenzar se debería tener preparado el módulo HC-05 que hará de
+  servidor (master) y encendido, para poder emparejar el cliente (slave).
+
+Configuración de HC-05 en modo servidor:
+  Comenzamos comprobando que tenemos conexión con el módulo en modo comandos
+    Comando: AT
+    Respuesta: OK
+  Para asegurarnos que los pasos funcionarán, reseteamos el adaptador a los
+  valores por defecto.
+    Comando: AT+ORGL
+    Respuesta: OK
+  Asignamos el nombre sl dispositivo
+  Comando: AT+NAME=HC05server
+  Respuesta: OK
+  Solicitamos de nuevo el nombre para comprobar que es correcto
+  Comando: AT+NAME
+  Respuesta:
+    +NAME:HC05server
+    OK
+
+Configuración de HC-05 en modo cliente:
+  Comenzamos comprobando que tenemos conexión con el módulo en modo comandos
+    Comando: AT
+    Respuesta: OK
+  Para asegurarnos que los pasos funcionarán, reseteamos el adaptador a los
+  valores por defecto.
+    Comando: AT+ORGL
+    Respuesta: OK
+  Activamos el modo cliente (slave)
+    Comando: AT+ROLE=1
+    Respuesta: OK
+  Configuramos que la búsqueda de dispositivos de detenga si encuentra 5 o
+  transcurren más de 11.52 segundos
+  AT+INQM=X,Y,Z
+  X=0 (inquiry_mode_standard)
+  Y=Máximo número de dispositivos a localizar
+  Z*1,28=tiempo límite de espera en segundos (9*1.28=11.52)
+    Comando: AT+INQM=0,5,9
+    Respuesta: OK
+  Inicializa el dispositivo
+    Comando: AT+INIT
+    Respuesta: OK
+  Solicita la lista de dispositivos disponibles
+    Comando: AT+INQ
+    Respuesta:
+      +INQ:ACC1:EE:F5C022,5A020C,7FFF
+      +INQ:98D3:31:203092,0,7FFF
+      OK
+    Estas respuestas son un ejemplo. Aparecerán los dispositivos detectados (o ninguno)
+    y tras 11.52s el OK de finalización de comando.
+  Con estos códigos no podemos saber los nombres de los dispositivos que son los que nos
+  darán la pista de si es el correcto.
+  Para ello utilizamos el comando AT+RNAME, al cual le debemos pasar como parámetros
+  los tres grupos de valores hexadecimales del primer parámetro devuelto por AT+INQ
+  En este ejemplo tomaremos la respuesta: +INQ:98D3:31:203092,0,7FFF para componer
+  el comando
+    Comando: AT+RNAME?98D3,31,203092
+    Respuesta:
+      +RNAME:HC05server
+      OK
+  Imaginemos que este es el dispositivo que estamos buscando.
+  Emparejamos:
+    Comando: AT+PAIR=98D3,31,203092,9
+    Respuesta: OK
+  En cuanto se emparejan los dispositivos, sus leds integrados pasan de parpadear rápidamente
+  a parpadear una sóla vez cada 3 segundos.
+  Pedimos que siempre intente emparejarse con los dispositivos que tiene memorizados (con los
+  que ya se emparejó anteriormente)
+    Comando: AT+CMODE=1
+    Respuesta: OK
+  Las siguientes acciones no son necesarias porque están incluidas en el primer reset
+  - Fijar la misma velocidad en ambos dispositivos (38400 baudios por defecto)
+  - Fijar la misma contraseña (1234 por defecto)
+
+Nota:
+  Una vez que hemos configurado correctamente tanto el servidor como el cliente no importa el orden de
+  encendido de los dispositivos. Siempre acabarán conectando.
+  Incluso si desconectamos la alimentación al cliente, pocos segundos más tarde el servidor vuelve a
+  parpadear rápidamente indicando que nadie está conectado a él.
+  Si desconectamos el servidor, es el cliente el que indica que ha perdido la conexión.
