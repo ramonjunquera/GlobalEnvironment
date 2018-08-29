@@ -1,0 +1,35 @@
+Servomotores
+
+Se llama servomotor al conjunto de motor+potenciómetro.
+Es un motor cuyo eje también mueve un potenciómetro que le indica la posición del eje.
+Gracias a esto, podemos girar el eje del motor hasta un ángulo concreto.
+El propio circuito del servomotor se encarga de controlar la dirección hacia la que debe 
+girar el motor para alcanzar el ángulo que le pedimos.
+
+El ángulo de giro suele estar limitado y no gira una vuelta completa.
+
+Tienen tres pines diferenciados por colores:
+  - ROJO: VCC
+  - NEGRO o MARRON: GND
+  - BLANCO o NARANJA: señal
+
+A través del pin de señal se le envía periódicamente un pulso.
+La duración del pulso es el indicador del ángulo que debe girar.
+Cuando más dure el pulso, mayor será el ángulo.
+La frecuencia habitual de envío de pulsos está entre 50 y 60Hz
+La duración del pulso se encuentra (habitualmente) entre 500 y 2500 microsegundos.
+
+Para automatizar el envío de pulsos se suelen utilizar pines con posibilidades PWM, siempre
+que también podamos regular la frecuencia de PWM.
+
+Otra característica del servo motor es el par de giro.
+Un servomotor estándar tiene un par de 5Kg/cm. Es decir, es capaz de mover 5Kg a 1cm.
+Con este valor podríamos calcular que si queremos mover un peso 5cm, el máximo será de 1Kg.
+
+Uno de los modelos de microservos pequeños más comunes es el modelo Tower Pro SG90 9g.
+El rango de giro es de 180º, pero hay servos que giran 360º.
+Debido a su bajo consumo, podemos alimentarlo directamente desde la placa.
+Este motor es capaz de funcionar tanto a 5 como a 3.3V.
+Pero a 3.3V no tiene el mismo par ni la misma velocidad de posicionamiento.
+
+Los servomotores vienen con unos accesorios para poder sujetar objetos llamados cuernos (horns).

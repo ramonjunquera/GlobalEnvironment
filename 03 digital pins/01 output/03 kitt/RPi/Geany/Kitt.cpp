@@ -24,11 +24,11 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	//Definimos las constantes de la función
+	//Definición de constantes globales
 	const byte leds[8]={18,23,24,25,12,16,20,21};
     const uint32_t waitTime = 80;
     
-	//Variables
+	//Definición de variables globales
 	byte currentLed=0; //Led procesado actualmente
 	int8_t delta=-1; //Dirección
     

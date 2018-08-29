@@ -22,7 +22,7 @@
 
 #include <Arduino.h>
 
-//Declaración de variables globales
+//Declaración de constantes globales
 const byte pinLed = 3;
 
 void setup()
