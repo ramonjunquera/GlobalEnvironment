@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 		if((channel==0) || (channel==pinCount-1)) delta=-delta;
 		//Aplicamos el nivel máximo al canal afectado
 		levels[channel]=0xFF;
-		//Repetimos un bucle que sólo baja la intensidad se todos los
+		//Repetimos un bucle que sólo baja la intensidad de todos los
 		//leds en cada ciclo
 		for(byte z=0;z<14;z++)
 		{

@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 	RoJoServo servo; //Objeto de gestión del servomotor
 	
 	//Inicializamos el servo con el pin y los valores máximo y mínino
-	servo.begin(18,5,18);
+	servo.begin(18,4,18);
 	//Puesto que hemos utilizado los valores por defecto, también
 	//podríamos haberlo definido sólo con el pin
 	//  servo.begin(18);

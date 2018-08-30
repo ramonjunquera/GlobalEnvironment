@@ -26,10 +26,12 @@ Otra característica del servo motor es el par de giro.
 Un servomotor estándar tiene un par de 5Kg/cm. Es decir, es capaz de mover 5Kg a 1cm.
 Con este valor podríamos calcular que si queremos mover un peso 5cm, el máximo será de 1Kg.
 
+Servomotor Tower Pro SG90 9g
 Uno de los modelos de microservos pequeños más comunes es el modelo Tower Pro SG90 9g.
-El rango de giro es de 180º, pero hay servos que giran 360º.
+El rango de giro es de 180º.
 Debido a su bajo consumo, podemos alimentarlo directamente desde la placa.
-Este motor es capaz de funcionar tanto a 5 como a 3.3V.
-Pero a 3.3V no tiene el mismo par ni la misma velocidad de posicionamiento.
+Trabaja en el rango de 3.0 a 7.2V
+Tiene un par de giro (torque) de 1.8Kg/cm a 4.8V.
+Su velocidad de giro es de 60 grados en una décima de segundo a 4.8V.
 
 Los servomotores vienen con unos accesorios para poder sujetar objetos llamados cuernos (horns).

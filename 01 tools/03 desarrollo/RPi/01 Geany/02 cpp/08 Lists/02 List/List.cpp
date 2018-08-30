@@ -1,5 +1,6 @@
 /*
  * Autor: Ramón Junquera
+ * Fecha: 20180830
  * Tema: Programación en C++
  * Objetivo: Lista doblemente enlazada
  * Material: Raspberry Pi
@@ -15,7 +16,7 @@
  * detrás.
  * 
  * Se muestra un ejemplo de cómo eliminar los nodos que contienen un
- * valor determinado.
+ * valor determinado o en una posición determinada.
  * También se muestra cómo vaciar una lista (borrar todos sus nodos).
  */
 
@@ -43,22 +44,31 @@ void PrintList(list<int> list)
 int main(int argc, char **argv)
 {
 	//Creamos una lista sencilla de números enteros
-	list<int> list;
+	list<int> myList;
 	
 	//Añadimos varios valores a la lista por el inicio
-	list.push_front(3);
-	list.push_front(7);
-	list.push_front(8);
+	myList.push_front(3);
+	myList.push_front(7);
+	myList.push_front(8);
 	//Y alguno por el final
-	list.push_back(2);
+	myList.push_back(2);
 	//Mostramos el contenido de la lista
-	PrintList(list);
+	PrintList(myList);
 	//Eliminamos el nodo con el valor 7
-	list.remove(7);
+	cout << "Eliminando nodo con valor 7" << endl;
+	myList.remove(7);
 	//Mostramos el contenido de la lista
-	PrintList(list);
+	PrintList(myList);
+	//Obtenemos el iterator del primer nodo
+	list<int>::iterator itr=myList.begin();
+	cout << "Valor del primer nodo = " << *itr << endl;
+	cout << "Borrando el primer nodo" << endl;
+	//Lo borramos
+	myList.erase(itr);
+	//Mostramos el contenido de la lista
+	PrintList(myList);
 	//Vaciamos la lista
-	list.clear();
+	myList.clear();
 
 	//Todo ok
 	return 0;

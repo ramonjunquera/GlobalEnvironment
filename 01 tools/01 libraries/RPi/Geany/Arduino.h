@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3 con comandos de Arduino
- * Versión: 20180829
+ * Versión: 20180830
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -42,6 +42,7 @@
 #include <sys/mman.h> //Para MAP_FAILED
 #include <fcntl.h> //Para O_RDWR 
 #include <unordered_map> //Para diccionario de interrupciones
+#include <list> //Para lista de peticiones PWM
 #include <signal.h> //para signal
 #include <sys/time.h> //para itimerval
 #include <thread> //Para gestionar threads
@@ -680,26 +681,21 @@ struct pwmsStruct
 {
   //Diccionario de los pines y valores PWM
   //La key es el pin
-  //El dato es el valor PWM del asignado al pin
-  //Nota:
-  //Cuando asignamos un valor de PWM 0 a un pin, simplemente lo apagamos y
-  //eliminamos su referencia del diccionario.
-  //Por lo tanto, nunca tendremos nodos con valor 0 en el diccionario.
-  //En el bucle principal existe una variable de tipo byte cuyo valor
-  //aumenta en cada ciclo (tick) y cuando se desborda vuelve a 0.
-  //Gracias a ella podemos controlar cuando un pin debe cambiar de estado.
-  //El valor PWM lo entendemos como el número de ticks que el pin está
-  //en estado HIGH. Después pasará a LOW.
-  //Si indicamos un valor PWM de 255, el pin siempre estará en HIGH.
-  //Para evitar que en el tick 255 todos los pines pase a LOW, guardaremos
-  //siempre el valor-1 de PWM.
+  //El dato es el valor PWM asignado al pin
   unordered_map<byte,byte> pwmDicc;
   //Tiempo en microsegundos entre ticks (periodo)
   //Está relacionado con la frecuencia de PWM
-  uint16_t period=0; //Inicialmente utilizamos la máxima frecuencia
   //Puesto que estamos utilizando un utin16_t para mantener el periodo entre
-  //ticks, estamos limitando la frecuencia mínima que sería:
+  //ticks, estamos limitando la frecuencia mínima a:
   //  1000000/256/65535=0.0596055~0.06Hz
+  uint16_t period=0; //Inicialmente utilizamos la máxima frecuencia
+  //Listado de peticiones pendientes
+  //Aunque es un uint16_t guarda dos valores de tipo byte:
+  //- En el byte alto guarda el pin
+  //- En el byte bajo garda el valor PWM
+  list<uint16_t> pwmRequests;
+  //El thread está en marcha?
+  bool running=false;
 };
 
 //Creamos un objeto para mantener la gestión de PWM
@@ -727,33 +723,72 @@ void pwmThreadLoop()
   //Función para el bucle principal de ejecución
   //Debe ser llamada como thread
   //Utiliza el objeto myPWMs definido previamente
-  
-  //Tick actual
-  byte tick=0;
 
-  //Mientras haya algún nodo en el diccionario...
-  while(myPWMs.pwmDicc.size()>0)
+  //Mientras haya pines activos o peticiones pendientes...
+  while(myPWMs.pwmDicc.size()+myPWMs.pwmRequests.size()>0)
   {
-    //Si el tick es el primero (cero), todos los pines se deben encender
-    if(!tick)
-      //Recorremos todos los nodos del diccionario con un iterator
-      for(auto &itr : myPWMs.pwmDicc)
-        //Encendemos el pin
-        digitalWrite(itr.first,HIGH);
-    //El tick no es el primero...
-    else
+	//...lanzaremos un ciclo completo
+	//Al comenzar un ciclo incluimos las peticiones pendientes
+	//Mientras haya peticiones pendientes  
+    while(myPWMs.pwmRequests.size())
     {
-      //Recorremos todos los nodos del diccionario con un iterator
-      for(auto &itr : myPWMs.pwmDicc)
-        //Si el tick actual coincide con el valor PWM del pin...
-        //...el pin se debe apagar
-        if(tick==itr.second+1) digitalWrite(itr.first,LOW);      
+	  //Obtenemos la referencia al primer nodo con un iterator  
+	  list<uint16_t>::iterator itr = myPWMs.pwmRequests.begin();
+	  //Desglosamos su contenido
+	  byte pin=(*itr)>>8;
+	  byte value=(*itr)&0xFF;
+	  //Si ya existe el pin en el diccionario...
+	  if(myPWMs.pwmDicc.count(pin))
+      {
+	    //Si la petición tiene valor...simplemente lo actualizamos
+	    if(value) myPWMs.pwmDicc.at(pin)=value;
+	    //Si tiene un valor nulo...
+	    else
+	    {
+		  //Eliminamos el nodo del diccionario
+		  myPWMs.pwmDicc.erase(pin);
+		  //Ponemos el pin en estado LOW
+		  digitalWrite(pin,LOW);
+	    }
+	  }
+	  //Si el pin no existe en el diccionario...
+	  else
+      {
+	    //Configuramos el pin de salida
+	    pinMode(pin,OUTPUT);
+	    //Si el valor es mayor que cero...creamos un nuevo nodo en el diccionario
+	    if(value) myPWMs.pwmDicc.emplace(pin,value);
+	    //Si el valor en cero...simplemente apagamos el pin
+	    else digitalWrite(pin,LOW);
+	  }
+	  //Hemos terminado de procesar esta petición
+	  //La eliminamos de la lista de peticiones
+	  myPWMs.pwmRequests.erase(itr);
     }
-    //Dormiremos hasta el próximo tick
-    delayMicroseconds(myPWMs.period);
-    //Hemos terminado de procesar el tick actual. Pasamos al siguiente
-    tick++;
+    //Hemos terminado de procesar todas las peticiones pendientes
+    //Si hay pines activos...
+    if(myPWMs.pwmDicc.size()>0)
+    {
+	  //Al inicial un ciclo todos los pines se deben activar
+      for(auto &itr : myPWMs.pwmDicc) digitalWrite(itr.first,HIGH);
+      //Esperamos un periodo hasta el siguiente tick
+      delayMicroseconds(myPWMs.period);
+      //Haremos un ciclo completo (excepto el primer tick)
+      for(byte tick=1;tick>0;tick++)
+      {
+	    //Recorremos todos los nodos del diccionario con un iterator
+        for(auto &itr : myPWMs.pwmDicc)
+          //Si el tick actual coincide con el valor PWM del pin...
+          //...el pin se debe apagar
+          if(tick-1==itr.second) digitalWrite(itr.first,LOW); 
+        //Dormiremos hasta el próximo tick
+        delayMicroseconds(myPWMs.period);
+      }
+	}
   }
+  //No hay pines activos ni peticiones pendientes
+  //El thread dejará de estar en marcha
+  myPWMs.running=false;
 }
 
 void analogWrite(byte pin,byte value)
@@ -765,49 +800,21 @@ void analogWrite(byte pin,byte value)
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  //Si ya existe PWM para el pin solicitado...
-  if(myPWMs.pwmDicc.count(pin))
+  //Añadimos un nuevo nodo al final de la lista de peticiones
+  //La petición será procesada en el propio thread al inicio de un ciclo
+  myPWMs.pwmRequests.push_back((pin<<8)|value);
+  
+  //Si el thread no está en marcha...
+  if(!myPWMs.running)
   {
-    //...si tiene un valor mayor que cero...simplemente lo actualizamos
-    if(value) myPWMs.pwmDicc.at(pin)=value-1;
-    //Si el valor es cero es que no utilizaremos más este pin
-    else
-    {
-      //Eliminamos el nodo del diccionario
-      myPWMs.pwmDicc.erase(pin);
-      //Ponemos el pin en estado LOW
-      digitalWrite(pin,LOW);
-      //Si este era el último nodo del diccionario, ya se detendrá el thread
-    }
-  }
-  //El pin indicado no existe
-  else
-  {
-    //Si el valor es mayor que cero...
-    if(value)
-    {
-      //El pin indicado será de salida
-      pinMode(pin,OUTPUT);
-      //Comenzamos en encendido
-      digitalWrite(pin,HIGH);
-      //Creamos un nuevo nodo en el diccionario con los datos del pin PWM
-      myPWMs.pwmDicc.emplace(pin,value-1);
-      //Si el diccionario sólo tiene el nodo que acabamos de crear...
-      if(myPWMs.pwmDicc.size()==1)
-      {
-        //...es que ha sido el primero. Tendremos que lanzar el thread
-        //del loop ahora.
-
-        //Lanzamos el thread a la función principal de gestión de PWM
-        thread thread1(pwmThreadLoop);
-        //Desvinculamos el thread que controla el bucle principal para
-        //no tener que preocuparnos por el join. Sabemos que cuando el
-        //diccionario esté vacío, finalizará el thread
-        thread1.detach();
-      }
-    }
-    //El valor indicado es 0...simplemente apagamos el pin
-    else digitalWrite(pin,LOW);
+	//Lo ponemos en marcha nosotros
+	myPWMs.running=true;
+    //Lanzamos el thread a la función principal de gestión de PWM
+    thread thread1(pwmThreadLoop);
+    //Desvinculamos el thread que controla el bucle principal para
+    //no tener que preocuparnos por el join. Sabemos que cuando el
+    //diccionario esté vacío, finalizará el thread
+    thread1.detach();
   }
 }
 

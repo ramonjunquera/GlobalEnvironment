@@ -2,19 +2,22 @@
  * Autor: Ramón Junquera
  * Placa: Raspberry Pi 3
  * Descripción: Gestión de servomotores
- * Versión: 20180829
+ * Versión: 20180830
  * 
  * Métodos:
  *   void begin(byte pin,byte minValue,byte maxValue)
  *   void setAngle(byte angle)
+ * 
+ * Nota:
+ *   Teniendo en cuenta el poco rango de funcionamiento que tenemos
+ *   (entre 4 y 18), el ángulo de giro es muy poco preciso.
+ *   No se debería utilizar para gestión precisa de servomotores.
  */
 
 #ifndef RoJoServo_cpp
 #define RoJoServo_cpp
 
 #include <Arduino.h>
-
-//RoJoServo::begin(byte pin,byte minValue=5,byte maxValue);
 
 class RoJoServo
 {
@@ -30,7 +33,7 @@ class RoJoServo
 	//Declaración de métodos públicos:
 	public:
 	
-	void begin(byte pin,byte minValue=5,byte maxValue=18)
+	void begin(byte pin,byte minValue=4,byte maxValue=18)
 	{
 		//Inicialización de la clase
 		//Se indica el pin de control, el valor mínimo (0 grados) y el
