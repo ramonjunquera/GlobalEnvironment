@@ -1,0 +1,43 @@
+Selección de compilador por defecto
+
+Antes de crear nuestro primer proyecto hay que definir un
+parámetro del IDE.
+Por defecto no viene indicado cuál es el compilador que
+se debe utilizar.
+Si no lo definimos, cuando intentemos compilar una aplicación
+nos dará un error.
+
+Al abrir el IDE, seleccionamos:
+  Tools/Options.../Build & Run/Kits/Desktop (default)
+La línea de "Compiler" indicará "<No compiler>".
+Pulsamos el botón "Manage..." que se encuentra a su derecha.
+Esto hace que saltemos a la solapa "Compilers".
+Por defecto veremos que sólo hay dos opciones "Auto-detected" y
+"Manual".
+Pulsamos el botón desplegable "Add" y seleccionamos "GCC/C++".
+Cambiaremos su nombre por "GCC RPi" para diferenciarlo del anterior.
+En "Compiler path" seleccionamos /usr/bin/g++
+Es muy importante seleccionar el path. Si no lo hacemos, no se
+guardará la configuración y cada vez que reiniciemos el IDE se
+volverá a pedir el compilador.
+Pulsamos el botón "Apply"
+Pasamos a la solapa "Kits".
+Seleccionamos Manual/Desktop (default)
+En la sección de "Compiler/C++", seleccionamos en el desplegable "GCC RPi"
+Pulsamos el botón "OK".
+No es necesario repetir estos pasos en el futuro.
+
+Nota:
+Al arrancar Qt aparece el mensaje de error:
+  libEGL warning: DRI2: failed to authenticate
+No es un problema grave, porque funciona todo correctamente.
+Para mejorar un poco el rendimiento gráfico y evitar este error, podemos
+activar GL FULL en:
+  sudo raspi-config
+  7 Advanced Options
+  A7 GL Driver
+  G1 GL (Full KMS)
+Será necesario reiniciar.
+Debido a esto, el error muta a:
+  MESA-LOADER: failed to retrieve device information
+Que tampoco tiene consecuencias.

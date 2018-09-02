@@ -1,0 +1,72 @@
+button
+
+Novedades:
+- Primer desarrollo con librerías RoJoArduino
+- Cómo incluir un path de librerías para el compilador
+- Cómo compilar para c++11
+- Definición de constantes globales
+
+Tenemos una única ventana con:
+- Un botón checkable con una imagen para cada estado
+
+Tenemos un circuito con:
+- Un led
+
+Funcionalidad:
+- El led tiene el mismo estado que el botón
+
+Desarrollo:
+Eliminamos las barras de menú, herramientas y estado.
+Creamos una archivo de recursos con las imágenes del botón.
+Creamos un Push Button y activamos la propiedad checkable.
+En su sección de iconos asignamos en de Normal Off y Normal
+On del archivo de recursos.
+Quitamos el texto del botón.
+Asignamos el tamaño correcto al icono del botón (128x128).
+Redimensionamos el botón para que se vea bien el icono.
+Redimensionamos el canvas (área de la ventana), para que se
+ajuste al tamaño del botón.
+Creamos el slot toggle(bool) para el botón.
+
+Este es el primer desarrollo en el que utilizamos las
+librerías de gestión del chip BCM2835 con la misma
+nomenclatura que lo hacemos en el entorno de desarrollo
+de Arduino (Arduinoi.h).
+
+Las librerías RoJoArduino están preparadas para ser compiladas
+con la versión 2011 de C++. El entorno de QT no tiene activada
+esta opción por defecto. Para hacerlo debemos abrir (desde el
+mismo entorno de desarrollo), el archivo .pro.
+En este caso: button.pro.
+Añadiremos la siguiente línea:
+  CONFIG += c++11
+
+Suponemos que tenemos las librerías en un carpeta externa
+llamada /home/pi/prg. Para indicar al compilador que debe
+buscar es ese path cualquier librería que desconozca, volvemos
+al archivo .pro y añadimos la siguiente línea:
+  INCLUDEPATH += /home/pi/prg
+
+Ahora ya podríamos utilizar las librerías RoJoArduino si errores.
+
+En el archivo de fuentes de la ventana principal (mainwindow.cpp)
+añadimos en la sección de includes:
+  #include <Arduino.h>
+
+Lo primero que haremos será definir una constante global que 
+indique el pin en el que se encuentra el led en la placa.
+Lo hacemos al tras la sección de includes del archivo mainwindow.cpp.
+  const byte _pinLed=16; //Pin con el led
+
+Utilizaremos el constructor de la ventana (MainWindow::MainWindow)
+del archivo mainwindow.cpp para hacer las inicializaciones necesarias.
+En este caso tenemos que poner el pin del led en modo de salida y
+apagarlo:
+  pinMode(_pinLed,OUTPUT);
+  digitalWrite(_pinLed,LOW);
+
+Finalmente, en el método del slot toggle(), escribiremos en el pin
+del led el mismo estado que tiene el botón:
+  digitalWrite(_pinLed,checked);
+
+Compilamos y ejecutamos.

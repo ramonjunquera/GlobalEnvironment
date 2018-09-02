@@ -2,38 +2,15 @@ Cómo instalar Fritzing
 
 ARM
 ---
-La última versión de Fritzing que podemos encontrar para Raspbian (Debian ARM) es la
-0.9.0. En cambio para PC (x86) es la 0.9.3b.
-Aun así vale la pena para poder trabajar con diseños de circuitos directamente en
-nuestra Raspberry Pi.
-
 Se puede instalar directamente con:
-sudo apt-get install Fritzing
+  sudo apt-get install fritzing-parts
+  sudo apt-get install fritzing-data
+  sudo apt-get install fritzing
 O a través del buscador/instalador de paquetes integrado en:
 menú/Preferences/Add / Remove Software
 Si buscamos por fritzing. Aparecen dos paquetes. Yo he instalado ambos.
-Tras la instalación ya se asocia la extensión .fzz con la aplicación.
-
-Para ejecutar la aplicación deberíamos ejecutar la aplicación Fritzing (con F mayúscula).
-
-El primer problema que nos encontramos es que si queremos cargar algún circuito que
-hemos desarrollado con una versión superior puede que haya componentes que pertenezcan
-a la librería estándar de la superior y no de la nuestra y nos de errores de carga.
-
-Para evitar esta situación podemos sustituir toda la librería estándar de nuestra
-versión por la de la superior.
-
-Para ello necesitamos la versión de PC (0.9.3b) 32 bits.
-La copiamos en local. La descomprimimos y comprobamos que la carpeta que estamos buscando
-se llama fritzing-parts.
-Si miramos en la aplicación instalada comprobamos que corresponde con la carpeta:
-/usr/share/fritzing/parts
-
-Simplemente tenemos que borrar la actual y sustituirla por la nueva.
-
-Los comandos utilizados podrían ser:
-sudo rm -R /usr/share/fritzing/parts
-sudo cp -R /home/pi/fritzing.0.9.3b.32.pc/fritzing-parts /usr/share/fritzing/parts
+Tras la instalación ya se asocia la extensión .fzz con la aplicación y aparece a aplicación
+bajo la sección "Programming".
 
 La primera vez que se abra la aplicación Fritzing tardará un poco porque debe regenerar la
 base de datos de componentes.
