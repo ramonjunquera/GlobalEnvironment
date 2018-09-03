@@ -1,0 +1,24 @@
+loadImage
+
+Novedades:
+- Cargar un QPixmap con el contenido de un archivo
+
+Tenemos una única ventana con:
+- Un botón para seleccionar un archivo de imágen
+- Un label que representa la imágen cargada
+
+Funcionalidad:
+- Al pulsar el botón aparece un cuadro de diálogo que permite seleccionar el
+  archivo de imágen que se asignará al label
+
+Desarrollo:
+  Eliminamos barras :menu, tool y status
+  Añadimos #include <QFileDialog> en mainwindow.cpp
+  Utilizamos un layout horizontal y creamos el botón y el label
+  En el label quitamos el texto por defecto e indicamos que queremos la imágen 
+  alineada arriba a la izquierda.
+  Al pulsar el botón solicitamos la selección del archivo de imágen.
+  Si no se cancela el diálogo, creamos un nuevo QPixmap e intentamos cargar el
+  archivo seleccionado en él. Si lo conseguimos, directamente lo asignamos al 
+  label.
+  Si es necesario, la ventana se hace tan grande como el tamaño mínimo de la imágen.

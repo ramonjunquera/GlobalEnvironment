@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>436</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPushButton" name="pushButtonFile">
+      <property name="text">
+       <string>Selecciona un archivo...</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="plainTextEditFile"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButtonFiles">
+      <property name="text">
+       <string>Selecciona varios archivos...</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="plainTextEditFiles"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButtonFolder">
+      <property name="text">
+       <string>Selecciona una carpeta...</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="plainTextEditFolder"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButtonFileSave">
+      <property name="text">
+       <string>Selecciona una archivo para guardar...</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="plainTextEditFileSave"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
