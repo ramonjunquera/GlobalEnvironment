@@ -1,0 +1,35 @@
+class
+
+Novedades:
+- Creación de una clase simple
+
+Desarrollo:
+  Utilizamos las herramientas del entorno para crear una clase.
+  Click sobre el nombre del projecto con el botón derecho y Add New.../C++/C++ Class
+  En el siguiente formulario se solicita el nombre de la clase.
+  Escribimos en el campo "Class name": Multi
+  También se completan con datos por defecto los campos de los nombres de los archivos
+  de cabecera y código. También se sugiere su ruta.
+  Esta clase no está basada en ninguna otra, así que dejaremos el campo "Base class" en
+  blanco.
+  Se crear el archivo de cabecera (.h) con una estructura básica correcta.
+  También se crea el archivo de fuentes (métodos) con un constructor por defecto.
+  Sabemos que esto no es imprescindible, puesto que podríamos crear la clase directamente
+  en main.cpp sin archivo de cabecera, pero seguiremos el estándar habitual.
+  
+  Archivo de cabecera: multi.h
+    Creamos la sección privada (private:)
+    En la sección privada creamos una variable entera (_coef)
+    Modificamos el constructor por defecto para que tenga un parámetro entero
+  Archivo de fuentes: multi.cpp
+    Modificamos el constructor por defecto para que admita un parámetro entero.
+    Será el coeficiente. Se encargará de guardarlo.
+    Se crear el método multiplica cpn un parámetro entero.
+    Devolverá el producto del parámetro con el coeficiente.
+  Archivo principal: main.cpp
+    Como queremos utilizar el comando cout, incluimos la librería iostream y utilizamos el 
+    espacio de nombres estándar.
+    Añadimos en la sección de includes la referencia al archivo de cabecera de nuestra clase.
+    Dentro del la función principal:
+      Creamos una instancia de la clase con el constructor que guarda el coeficiente.
+      Mostramos el resultado de la llamada el método multiplica.
