@@ -1,0 +1,30 @@
+mouseEvents3
+
+Novedades:
+- Gestión de eventos de mouse de release
+Descripción:
+  Basado en el ejemplo anterior, añadiremos la gestión de los eventos del mouse de soltar
+  (release) el botón.
+  Como información tomaremos las coordenadas donde se ha producido.
+  Este evento genera un nuevo signal con las coordenadas.
+  El signal será gestionado en la ventana principal.
+  Será asociado a un nuevo slot que recibirá las coordenadas.
+  Cuando se detecte que se ha soltado el botón del mouse, simplemente se mostrará 0 en
+  el QLCDNumber del mouse.
+Desarrollo:
+  En qlabelmouse.h añadimos el método que se ejecuta cuando se detecta que se ha soltado el
+  botón:
+    void mouseReleaseEvent(QMouseEvent *ev); //Botón soltado
+  También añadimos la nueva signal:
+    void mouseReleaseSignal(QPoint&);
+  En qlabelmouse.cpp definimos el método del evento.
+  Sólo toma nota de las coordenadas en un QPoint y genera el signal.
+  En mainwindow.h definimos el nuevo slot:
+    void mouseReleaseSlot(QPoint& xy);
+  En mainwindow.cpp creamos el método que gestiona el nuevo slot.
+  No tenemos en cuenta las coordenadas. Simplemente escribimos 0 en el QLCDNumber que representa
+  el botón del mouse.
+  En el constructor creamos la conexión entre la signal y el slot:
+    connect(ui->label,SIGNAL(mouseReleaseSignal(QPoint&)),this,SLOT(mouseReleaseSlot(QPoint&)));
+Resultado:
+  Cuando se suelta el botón del mouse aparece 0 en la pantalla.

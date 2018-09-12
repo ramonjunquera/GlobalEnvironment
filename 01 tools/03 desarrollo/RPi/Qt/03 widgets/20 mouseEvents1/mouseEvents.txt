@@ -119,17 +119,3 @@ Desarrollo:
 Resultado:
   Al hacer click sobre el widget se detectan los click y se muestran las coordenadas en pantalla.
   Podemos comprobar que las coordenadas de los puntos van desde 0 a 99 como era de esperar.
-
-
-
-
-  
- 
-
-
-
-
-
-
-  
-
