@@ -41,6 +41,6 @@ Por lo tanto LVDS1 es el primario y VGA1 el secundario.
 También nos muestra las resoluciones soportadas.
 Se deberían sustituir nombres y resoluciones en la siguiente línea para activar ambos monitores
 para extender el escritorio:
-  sudo xrandr --output VGA1 --mode 1280x1024 --scale 1x1 --output LVDS1 --mode 1280x800 --scale 1x1 --left-of VGA1 
+  sudo xrandr --output VGA1 --mode 1280x1024 --scale 1x1 --output LVDS1 --mode 1280x800 --scale 1x1 --left-of VGA1
 Se adjunta script
 

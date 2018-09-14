@@ -8,8 +8,8 @@
  * un array de números enteros usamos un array de una estructura.
  */
 
-
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 

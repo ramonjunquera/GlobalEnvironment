@@ -10,19 +10,31 @@ Desarrollo:
   Shape
     La primera clase base será Shape que representa una forma geométrica.
     Mantiene en la sección protected un par de variables con las dimensiones.
-    Tiene un constructor que asigna los parámetros a las variabloes protegidas.
+    Tiene un constructor que asigna los parámetros a las variables protegidas.
   CostPaint
     Es una clase base sin constructor.
     No tiene variables.
     Sólo tiene un método que permite calcular el coste de pintar un área.
   Rect
-    Es una clase derivada de Shape y CostPaint.
+    Las clases derivadas múltiples hacen separan las referencias a sus clases bases por comas.
+    Es una clase derivada de Shape y CostPaint. Se declara como:
+      class Rect : public Shape , public CostPaint
     Tiene un constructor similar al de Shape para guardar las dimensiones.
+    Que se declara en rect.cpp para que pase el valor de los parámetros al constructor
+    de Shape:
+      Rect::Rect(int width,int height):Shape(width,height)
+    El archivo de cabecera debe incluir las referencias a las librerías de las clases base:
+      #include <shape.h>
+      #include <costpaint.h>
     Añade un método para calcular el área.
     Gracias a Shape, podemos guardar las dimensiones en el constructor.
-    Gracias a que las variables de Shape son protecter, podemos definir un método para calcular su área.
+    Gracias a que las variables de Shape son protected, podemos definir un método para calcular su área.
     Gracias a CostPaint se le añade un mátodo para calcular el coste de pintar.
-
-  La declaración de una clase con derivación múltiple es igual que la simple, pero las clases
-  base se separarán con comas. Ej:
-    class Rect : public Shape , public CostPaint
+  main
+    Incluimos la referencia a la clase Rect:
+      #include <rect.h>
+    Creamos un objeto Rect.
+    Calculamos su área.
+    Calculamos su coste.
+    Incluimos la libreria iostream y el namespace std para usar cout.
+    Mostramos los resultados

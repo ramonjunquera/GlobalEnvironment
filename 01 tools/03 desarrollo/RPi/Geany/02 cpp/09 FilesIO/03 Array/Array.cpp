@@ -19,8 +19,8 @@
  * Finalmente mostraremos su contenido en pantalla.
  */
 
-
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 

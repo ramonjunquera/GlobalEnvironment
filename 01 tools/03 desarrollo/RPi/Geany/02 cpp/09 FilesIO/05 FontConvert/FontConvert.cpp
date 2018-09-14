@@ -28,8 +28,10 @@
  */
 
 #include <iostream>
-using namespace std;
+#include <fstream>
 #include "RoJoABCtypedef.h" //Tipos necesarios para interpretar el .h
+
+using namespace std;
 
 //Líneas a personalizar para cada archivo .h
 #include "RoJoABCFreeMono24pt7b.h"
