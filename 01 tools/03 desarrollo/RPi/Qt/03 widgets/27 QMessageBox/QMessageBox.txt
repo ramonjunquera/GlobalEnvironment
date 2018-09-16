@@ -1,0 +1,40 @@
+QMessageBox
+
+Novedades:
+- Uso del objeto QMessageBox
+- Creación de ventanas de mensajes estándar
+- Creación de ventanas de mensajes personalizadas
+- Gestión de respuestas
+- Uso de barra de herramientas y menú simultáneamente.
+
+Funcionalidad:
+  La aplicación tiene una barra de menús y herramientas con las mismas opciones.
+  Cuando se pulsan aparece una ventana mostrando un mensaje.
+
+Desarrollo:
+  Eliminamos la barra de status.
+  Creamos un archivo de recursos con las imágenes de la carpeta icons.
+  Creamos una barra de menús que sólo tiene la entrada "opciones" como principal.
+  Y esta tendrá nuestras 7 opciones: 1, 2, 3, 4, 5, 6 y 7.
+  Una vez creadas las acciones les añadimos los iconos del archivo de recursos.
+  Añadimos las acciones a la barra de herramientas.
+  Redimensionamos sus iconos a su tamaño real.
+  Creamos los slots de las acciones.
+  Añadimos la librería QMessageBox a la sección de includes del archivo de cabecera
+  de la clase de la ventana principal (mainwindow.h):
+    #include <QMessageBox>
+  Para cada opción creamos distintos tipos de ventanas:
+  - information
+  - about
+  - critical
+  - warning
+  - question
+  Cada una de ellas muestra un icono distinto.
+
+  1: Ejemplo de ventana de mensaje simple tipo about
+  2: Ejemplo de ventana de mensaje simple tipo informativo
+  3: Ejemplo de ventana de mensaje simple tipo crítico
+  4: Ejemplo de ventana de mensaje simple tipo warning
+  5: Ejemplo de ventana de mensaje simple tipo pregunta. Se gestiona la respuesta.
+  6: Ejemplo de ventana de mensaje tipo pregunta con botones personalizados.
+  7: Ejemplo de ventana de mensaje customizada.

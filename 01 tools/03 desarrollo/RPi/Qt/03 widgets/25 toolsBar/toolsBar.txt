@@ -1,0 +1,81 @@
+toolsBar
+
+Novedades:
+- Creación de QToolBar con botones. Acciones.
+- Salir de una aplicación con entorno gráfico.
+
+Funcionalidad:
+  La aplicación tiene una barra de herramientas con varios botones.
+  Cuando se pulsan aparece el nombre del botón pulsado en el centro de la pantalla.
+  El último botón permite cerrar la aplicación.
+
+Desarrollo:
+  Eliminamos las barras de menú y status.
+  Dejamos la barra de herramientas que viene por defecto (mainToolBar).
+  Creamos un archivo de recursos con las 4 imágenes de la carpeta icons.
+  Qt tiene unificadas las acciones que tomas las opciones de la barra de herramientas y de
+  la barra de menú.
+  Simplemente les llama acciones.
+  Antes de crear algún botón en la barra de herramientas es necesario crear las acciones
+  con las que estarán vinculados.
+  Las acciones se gestionan en la ventana de diseño. En la parte inferior. En la solapa
+  contigua a las signal y slots.
+  Crearemos 4 acciones: 1, 2, 3 y Exit.
+  Al pulsar el botón de crear, aparece el formulario de la acción.
+    Text: Es el texto que se mostrará en la barra de menú
+    Object name: Nombre del objeto. El sistema crea uno automáticamente en base al texto.
+    ToolTip: Es el texto que se muestra cuando se deja el puntero sobre la opción durante
+      un momento. Se rellena por defecto en con el mismo contenido del texto.
+    Icon: Icono. Imágen que se muestra en los botones de la barra de herramientas y en la
+      de menú. No es obligatorio. Pueden ser seleccionados de un archivo de recursos o de
+      un archivo de imágen externo. Si se toma la opción de seleccionarlo de un archivo de
+      imágen externo, el archivo debe existir cuando se ejecuta la apliación en el mismo
+      path relativo. Si no es así, no se mostrará imágen. Por esta razón lo más común es
+      tomarlas de un archivo de recursos interno.
+    Checkable: Si se marca, al hacer click sobre el botón cambiará su estado (pulsado o
+      soltado) y se quedará así.
+  Una vez definidas las 4 acciones, las arrastraremos de una en una a la barra de herramientas.
+  Veremos que se van marcando los checks de Used.
+  Puesto que el último botón tendrá una funcionalidad especial (salir de la aplicación), lo
+  separaremos un poco. SI hacemos click con el botón derecho sobre la barra de herramientas,
+  podemos seleccionar la opción "Append Separator". Se añade un separador al final. Se puede
+  mover fácilmente a cualquier posición, arrastrando.
+  La barra de herramientas no se adapta automáticamente al tamaño de los iconos.
+  Por defecto tiene una altura de 40 pixels.
+  Puesto que los iconos utilizados tienen todos un tamaño de 64x64, cambiaremos las propiedades:
+    QToolBar : iconSize : Width = 64
+  Lo mismo hacemos con la altura.
+  Ahora mismo si compilamos y ejecutamos, la barra de herramientas ya aparece correctamente y
+  se pueden pulsar sus botones.
+  Añadimos un QLabel.
+  Aplicamos a la ventana un layout vertical y el QLabel pasa a ocupar todo el área disponible
+  porque no hay más widgets.
+  Centramos el texto del QLabel:
+    text : alignment : Horizontal = AlignHCenter
+  Borramos el texto por defecto del QLabel.
+  Crearemos las funciones que gestionan los slots de las acciones.
+  En la sección de acciones hacemos click con el botón derecho y seleccionamos: Go to slot...
+  La signal que utilizaremos será triggered() (botón pulsado).
+  Esto crea la estructura del método.
+  Lo repetimos para las 4 acciones.
+  Para las 3 primeras opciones simplemente cambiamos el texto del QLabel por la opción
+  seleccionada.
+  Para el último, salimos de la aplicación con:
+    QApplication::exit();
+
+
+
+  
+
+
+
+
+
+Notas:
+  La barra de herramientas puede colocarse en cualquiera de los límites de la ventana.
+  Si dejamos la propiedad QToolBar : movable a True, el usuario podrá moverla.
+
+
+
+
+

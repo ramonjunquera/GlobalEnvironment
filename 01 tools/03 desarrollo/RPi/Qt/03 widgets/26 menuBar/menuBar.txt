@@ -1,0 +1,36 @@
+menuBar
+
+Novedades:
+- Creación de barra de menús. Acciones.
+
+Funcionalidad:
+  La aplicación tiene una barra de menús con varias opciones.
+  Cuando se pulsan aparece el nombre de la opción en el centro de la pantalla.
+  El último botón permite cerrar la aplicación.
+
+Desarrollo:
+  Eliminamos las barras de herramientas y status.
+  Dejamos la barra de menú que viene por defecto (mainToolBar).
+  Puesto que puede ser difícil seleccionar el objeto gráfico, es más cómodo utilizar el panel
+  superior derecho en el que se muestran todos los objetos.
+  Allí seleccionamos el objeto que queremos eliminar y lo hacemos con el botón derecho.
+  Creamos un archivo de recursos con las 4 imágenes de la carpeta icons.
+  Siguiendo con las explicaciones del ejemplo anterior, una barra de menú representa las
+  acciones definidas (al igual que la barra de herramientas).
+  En este caso las acciones se crearán automáticamente al crear las opciones de menú.
+  Hacemos click sobre la opción "Type Here" de la bara de menú y escribimos: opciones.
+  Aparece la posibilidad de crear más entradas en el menú principal y bajo la entrada "opciones".
+  Nuestro menú no tendrá más entradas principales.
+  Pero la entrada "opciones" tendrá las 4 que nos interesan: 1, 2, 3 y Exit.
+  Añadiremos un separados entre la opción 3 y Exit.
+  En la sección "Action Editor" se han creado 4 acciones. Una por opción.
+  Podemos editarlas y añadirles los iconos de nuestro archivo de recursos. No es obligatorio.
+  Añadimos un QLabel.
+  Utilizamos un layout vertical.
+  Centramos el texto del QLabel.
+  Borramos el texto por defecto del QLabel.
+  Creamos los slots de las acciones con la signal triggered().
+
+Notas:
+  No hay ningún inconveniente en crear simultáneamente una barra de herramientas que muestre
+  botones con las mismas acciones.

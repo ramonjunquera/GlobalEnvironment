@@ -1,0 +1,61 @@
+QFile
+
+Novedades:
+- Uso de la librería QFile
+- Uso de la librería QTextStream
+- Mostrar el contenido de una variable QString
+
+Desarrollo:
+  Se ha dividido en distintos ejemplo, cada uno en una función.
+
+  saveText
+    Creamos un archivo de texto a través del objeto QFile.
+    El constructor puede ser simple o incluir como parámetro el nombre del archivo.
+    Necesita que se haya incluido la librería QFile.
+    Con este sistema los caracteres acentuados se guardan correctamente.
+    Si en vez de utilizar QFile usamos QTextStream lo caracteres acentuados se guardan mal.
+  readText
+    Creamos QFile con el nombre del archivo que nos interesa.
+    Lo abrimos como sólo lectura.
+    Creamos una variable QTextStream para gestionar la lectura del archivo.
+    Este objeto nos proporciona algunas ventajas. Hace de buffer intermedio y además nos
+    convierte el texto leido a QString.
+    Sólo tiene uso para lectura de archivo de texto. Para escritura de archivos de texto o
+    archivos de datos, no es útil.
+    El objeto QFile también tiene el método readLine(), pero su resultado es del tipo
+    QByteArray (bastante inmanejable). Y si no, deberíamos reservar nosotros mismos
+    memoria para un buffer que pueda cargar temporalmente el texto leido.
+    Mientras no alcancemos el final del archivo, leeremos todos las lineas de texto y las
+    iremos mostrando en pantalla.
+    Nos encontramos con otro problema. cout no permite mostrar variables de tipo QString.
+    Afortunadamente QString tiene un método para convertirlas en string estándar.
+  saveBin
+    Creamos 3 variables simples de distintos tipos y las guardamos en un QFile de sólo
+    escritura secuencialmente con el método write.
+    Este método siempre obliga a utilizar puntero char, por lo tanto nos vemos obligados a 
+    hacer un cast de nuestro tipo a char*.
+    También debemos indicar el tamaño en bytes de la memoria que se debe volcar.
+    En cada caso tomamos el tamaño del tipo.
+  readBin
+    Creamos las 3 variables simples que contendrán el resultado.
+    Las leemos secuencialmente con el método read.
+    De la misma manera que write, obliga a que los punteros sean char. También debemos hacer
+    cast. También indicamos el número de bytes a leer.
+  saveBinArray
+    Creamos un array de enteros de un tamaño determinado.
+    Guardamos el número de items del array.
+    Guardamos el array completo.
+    Importante que el tamaño del array será el tamaño del tipo por el número de items de array.
+    Una vez terminado de usar el array es importante liberar su memoria par evitar memory leaks.
+  readBinArray
+    Leemos el número de items del array.
+    Reservamos memoria para todos los items del array.
+    Lo leemos completamente desde el archivo.
+    Una vez terminado el uso del array liberamos su memoria.
+  saveBinArrayStruct
+    Creamos un array de una estructura definida previamente de un tamaño determinado.
+    La estructura sólo contiene dos variables enteras.
+    El funcionamiento es similar a saveBinArray
+  readBinArrayStruct
+    Similar a readBinArray pero con estructuras
+  

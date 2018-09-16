@@ -1,0 +1,53 @@
+statusBarWidget
+
+Novedades:
+- Incluir widgets dentro de la barra de estado
+- Uso del widget Line Edit
+
+Funcionalidad:
+  Se muestra en pantalla un dial y un cuadro de texto.
+  La barra de estado contiene una barra de progreso y un texto.
+  La barra de progreso está ligada al dial y el texto al cuadro de texto.
+
+Desarrollo:
+  Eliminamos las barras de herramientas y menú.
+  Añadimos los widgets que vamos a utilizar:
+  - Dial
+  - Progress Bar
+  - Line Edit
+  - Label
+  Aplicamos un layout horizontal
+  Configuramos el dial para que ocupe el máximo área posible del layout.
+  El line edit ya viene configurado para ocupar el máximo en horizontal.
+  Los otros dos widgets no nos importan porque irán a la barra de estado.
+  El dial por defecto tiene un valor de 0 (es correcto).
+  Fijamos el valor de la barra de progreso a 0 para que coincida con el dial.
+  Asignamos el texto "hola" al line edit.
+  Cambiamos el texto del label a "hola" para que coincida con el line edit.
+  Creamos un signal & slot que una el dial con la barra de progreso:
+    Sender: dial
+    Signal: valueChanged(int)
+    Receiver: progressBar
+    Slot: setValue(int)
+  Creamos otro signal & slot para una el line edit con el label:
+    Sender: lineEdit
+    Signal: textChanges(QString)
+    Receiver: label
+    Slot: setText(QString)
+  En este punto podemos compilar y comprobar que la funcionalidad es correcta.
+  Modificamos el constructor de la ventana principal.
+  Indicamos que la barra de progreso pertenece a la barra de estado:
+    ui->statusBar->addPermanentWidget(ui->progressBar);
+  Lo mismo con el label:
+    ui->statusBar->addPermanentWidget(ui->label);
+  Con esta configuración no estamos utilizando pesos de cada widget. Por lo tanto
+  todos tienen la misma anchura y quedan alineados a la derecha.
+  La parte izquierda queda para el texto normal.
+  Si utilizamos una configuración con pesos para cada widget, se tenderá a utilizar
+  la anchura total de la barra de estado.
+  La siguiente configuración es la que se encuentra en el programa de ejemplo.
+  La barra de estado pesa el doble (ocupará el doble) que el label.
+    ui->statusBar->addPermanentWidget(ui->progressBar,2);
+    ui->statusBar->addPermanentWidget(ui->label,1);
+  En estos casos no queda espacio para mostrar texto propio de la barra de estado.
+  No es un gran problema, porque se suele sustituir por un QLabel si es necesario.  
