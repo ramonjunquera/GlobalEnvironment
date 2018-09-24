@@ -1,0 +1,47 @@
+loginWindow
+
+Novedades:
+- Llamar a una secuencia de ventanas desde main
+- Line Edit utilizado para contraseña
+- Configurar un botón por defecto
+
+Funcionalidad:
+  Se muestra una pantalla de login.
+  Si introducimos usuario admin y password admin podemos entrar.
+  Se pasa a una ventana principal.
+
+Desarrollo:
+  Creamos un nuevo formulario con su correspondiente clase (Qt Designer Form Class)
+  del tipo "Dialog without Buttons", de nombre de clase: LoginWindow.
+  No utilizamos ventanas de diálogo con botones por defecto, porque aunque es más cómodo porque
+  no es necesario crear los botones, las botoneras añaden funcionalidad que no nos interesa.
+  Por ejemplo los botones tienen perfiles. Además cuando se pulsa uno, la ventana siempre
+  se cierra.
+  Añadimos los dos labels y los dos QLineEdit para el usuario y la contraseña.
+  Aplicamos un layout de rejilla.
+  Asignamos el texto correcto a los labels.
+  Cambiamos la justificación de los labels a derecha.
+  Añadimos el botón de Ok.
+  Este botón ya viene con la propiedad de autoDefault. Así que si en algún momento pulsamos
+  Enter, se pulsará este botón por defecto.
+  Ajustamos el tamaño de la ventana.
+  Para que el QLineEdit de la contraseña no muestre los caracteres, fijamos:
+    QLineEdit/echoMode/Password.
+  Cambiamos el título de la ventana a Login.
+  Fijamos el tamaño de la ventana.
+  Creamos la variable privada _ok que nos indicará si las credenciales se ha validado.
+  Añadiremos el método begin para que sea el que usemos para abrir la ventana.
+  También devolverá si se ha conseguido hacer el login correcto o no.
+  - Inicialmente no se han validado las credenciales
+  - Se abre la ventana como modal
+  - Se devuelve si se han validado las credenciales
+  Escribimos en el slot del botón OK.
+  Simplemente comprobamos si el usuario y contraseña coinciden con los esperados.
+  Si es así, activamos el flag _ok.
+  Ocultamos la ventana para devolver el control al método begin.
+  Modificamos main.cpp. Hacemos el include de loginwindow.h.
+  Creamos un puntero para la ventana de login y reservamos memoria.
+  La lanzamos/abrimos y obtenemos el resultado.
+  Liberamos la memoria reservada.
+  Si las credenciales no son correctas, terminamos.
+  Si son correctas, abrimos la ventana principal.
