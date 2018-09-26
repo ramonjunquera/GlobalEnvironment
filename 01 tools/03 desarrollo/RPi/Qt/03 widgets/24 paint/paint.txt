@@ -41,7 +41,7 @@ Desarrollo:
   La razón es que como no activamos la propiedad de QLabel de mouseTracking, sólo se generarán
   eventos de mouse cuando se pulse algún botón.
     Creamos una nueva clase llamada QLabelMouse basada en QLabel.
-    Añadimos a qlabelmouse.h la librería de eventor del mouse:
+    Añadimos a qlabelmouse.h la librería de eventos del mouse:
       #include <QMouseEvent>
     Declaramos métodos para gestionar los distintos eventos del mouse:
       void mousePressEvent(QMouseEvent *ev); //Botón pulsado

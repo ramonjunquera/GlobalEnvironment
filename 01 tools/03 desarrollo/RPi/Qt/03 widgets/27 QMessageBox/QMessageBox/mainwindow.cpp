@@ -28,7 +28,7 @@ void MainWindow::on_action2_triggered()
     //Ventana de mensaje del tipo informativo
 
     //Mostramos una ventana informativa
-    //QMessageBox::information(this,"Info","Se ha pulsado la opción 2");
+    QMessageBox::information(this,"Info","Se ha pulsado la opción 2");
 
 }
 
