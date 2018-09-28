@@ -1,0 +1,59 @@
+Configuraciones de memoria para ESP32 en Arduino IDE
+
+Habitualmente las placas ESP32 disponen de 4Mb de memoria total.
+Por defecto esta memoria tiene 7 particiones: base, nvs, otadata, app0, app1, eeprom spiffs.
+Tres de ellas tienen un tamaño relevante: app0, app1 y spiffs.
+Nos centraremos en ellas:
+  app0
+    También llamada memoria de programa. Alberga el programa que se ejecuta.
+    La memoria no ocupada por el programa es la que se utiliza para la gestión de variables.
+    Por lo tanto, un programa no podrá utilizar nunca más memoria para variables que el tamaño
+    de esta partición. Además esté viene definido para cada placa en la configuración del IDE
+    de Arduino. Por defecto está fijado a 327680 bytes = 320 Kb.
+  app1
+    También llamada memoria de programa OTA. Cuando utilizamos la funcionalidad OTA (actualización
+    Over The Air), los datos que se reciben por wifi del nuevo programa se van almacenando en esta
+    memoria. Si algo sale mal (se corta la conexión), no se afectará al programa principal de app0.
+    Si se completa la transferencia, se copiará el contenido de app1 a app0 sustituyendo el 
+    programa principal.
+    Debido a este funcionamiento, app0 y app1 deben tener el mismo tamaño.
+  spiffs
+    Memoria reservada para almacenamiento de archivos que pueden ser accedidos desde el programa.
+
+Vamos a suponer que tenemos aplicada una configuración típica:
+  Board: "ESP32 Dev Module"
+  Flash Mode: "QIO"
+  Flash Size: "4MB (32Mb)"
+  Partition Scheme: "Default"
+  Flash Frequency: "80MHz"
+  PSRAM: "Disabled"
+  Upload Speed: "921600"
+  Core Debug Level: "None"
+
+El parámetro de Partition Scheme permite seleccionar distintos tipos de particiones de memoria:
+  Default
+    La memoria se reparte por igual entre app0, app1 y spiffs.
+    Se puede utilizar la funcionalidad de OTA.
+    Configuración muy versátil para todo tipo de pruebas.
+  Minimal (2MB FLASH)
+    Es una configuración creada para placas con poca memoria (2Mb). No nos interesará nunca,
+    porque suponemos que utilizamos placas con 4Mb.
+    No tiene partición app1. Por lo tanto no permite OTA.
+    Configuración para placas con poca memoria
+  No OTA (Large APP)
+    Desaparece la partición app1 y la memoria se reparte por igual entre app0 y spiffs.
+    No podemos utilizar OTA, pero podemos cargar programas más grandes.
+    Configuración para programas grandes o programas que necesiten mucho espacio spiffs.
+  Minimal SPIFFS (Large APPS with OTA)
+    La partición de spiffs se reduce a su mínimo tamaño.
+    El resto se reparte entre app0 y app1. Permite utilizar OTA con aplicaciones grandes.
+    Configuración para aplicaciones grandes que necesiten OTA, pero no usen datos de spiffs.
+
+Tabla conlos tamaños en bytes de cada partición:
+
+Partition Scheme                     app0    app1    spiffs
+------------------------------------ ------- ------- -------
+Default                              1310720 1310720 1503232
+Minimal (2MB FLASH)                  1310720       0  716800
+No OTA (Large APP)                   2097152       0 2027520
+Minimal SPIFFS (Large APPS with OTA) 1966080 1966080   61440

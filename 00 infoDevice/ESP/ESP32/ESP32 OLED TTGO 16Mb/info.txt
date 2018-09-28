@@ -25,6 +25,10 @@ En el IDE de Arduino se debe seleccionar:
   Flash mode: QIO
   Flash size: 4MB (32Mb)
   Partition Scheme: Por defecto
+Nota:
+  Se puede definir un tipo de de placa nueva que reconozca los 16Mb. Incluso se pueden definir distintos
+  esquemas de particiones para poder seleccionar el más adecuado.
+  Esto está explicado un documento en la sección de ESP32.
 
 LED integrado.
 Esta placa tiene dos leds integrados en placa.
