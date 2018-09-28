@@ -1,4 +1,4 @@
-ESP32 con 16Mb.
+﻿ESP32 con 16Mb.
 
 Existen placas ESP32 con 16Mb de memoria en vez de los 4Mb habituales.
 Para estos casos no hay una configuración en el IDE de Arduino que permita
@@ -180,7 +180,7 @@ De todas las posibilidades existentes sólo tomaremos aquellas que nos resulten 
     Asignaremos 2Mb a la partición app0 para guardar el programa principal.
     El mismo tamaño para app0 para tener la posibilidad de utilizar OTA.
     El espacio restante irá para spiffs (más de 12Mb).
-    El archivo 16default.cvs debería contener el siguiente texto:
+    El archivo 16default.csv debería contener el siguiente texto:
 ----inicio de texto----
 # Name,   Type, SubType, Offset,  Size, Flags
 nvs,      data, nvs,     0x9000,  0x5000,
