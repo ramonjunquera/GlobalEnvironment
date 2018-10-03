@@ -1,4 +1,4 @@
-Cómo arrancar ejecutar un script al arrancar.
+Cómo ejecutar un script al arrancar.
 
 Pasos a seguir para crear un script que se ejecuta en el arranque de la sesión gráfica.
 Es un buen método para aplicar configuraciones de vídeo.
@@ -9,7 +9,7 @@ escritorio.
 Guardaremos el script en /etc/X11/Xsession.d, con el resto.
 
 Es importante tener en cuenta que los scripts (o links) de esta carpeta deben respetar
-algunos normas de sintaxis.
+algunas normas de sintaxis.
 - Sólo se ejecutarán los archivos cuyos dos primeros caracteres sean dígitos.
 - Se ejecutantan los archivos en orden ascendente.
 Por lo tanto, un script con prefijo 36 se ejecutará más tarde que otro que comience por 35.

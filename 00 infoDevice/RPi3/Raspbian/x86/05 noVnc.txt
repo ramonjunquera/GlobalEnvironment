@@ -1,0 +1,59 @@
+noVNC
+
+El objetivo es conseguir tomar el control remoto de la máquina a través de un interface web.
+Sin necesidad de instalar aplicaciones cliente.
+
+Como sistema de control remoto utilizaremos VNC. Pero necesita un cliente.
+El cliente lo sustituiremos por noVNC. Lo que hace es crear el servidor web que interactúa
+con el servicio VNC.
+
+La página oficial de noVNC es:
+  https://novnc.com/info.html
+
+Comenzamos instalando el servidor VNC.
+noVNC recomienda x11vnc.
+Abrimos una terminal y escribimos:
+  sudo apt-get install x11vnc
+Ya podemos ejecutar el servidor de VNC.
+La primera vez configuraremos el servidor VNC para que solicite una contraseña.
+Esto impedirá que cualquiera pueda tomar el control.
+Abrimos una sesión de terminal y escribimos:
+  x11vnc -storepasswd
+Esto crear el archivo ~/.vnc/passwd que contiene la contraseña encriptada.
+A partir de ahora ya podemos ejecutar el servidor VNC.
+Utilizaremos varios parámetros:
+  -forever para que tras la primera desconexión detectada, no se detenga el servidor.
+  -rfbauth con el path del archivo con la contraseña, para que la tenga en cuenta.
+  -repeat porque sino no se detectará la repetición de teclas.
+La línea de comandos es la siguiente:
+  x11vnc -forever -rfbauth ~/.vnc/passwd -repeat
+El ejecutar veremos en una de sus últimas líneas el puerto del servidor. Habitualmente el 5900.
+Para detener el servidor VNC es suficiente con pulsar CTRL+C.
+En este momento ya podríamos utilziar un cliente VNC y tomar el control remoto a través del 
+puerto 5900.
+
+Instalaremos ahora el interface web.
+Necesitaremos tener instalada la herramienta git para hacer clonar en local repositorios
+remotos. Si no la tenemos instalada, lo hacemos así:
+  sudo apt-get install git
+Clonamos el repositorio de noVNC de GitHub:
+  git clone git://github.com/kanaka/noVNC
+El repositorio se ha descargado en la carpeta noVNC que está en home.
+Siguiendo las instrucciones para un quick start publicadas en:
+  https://github.com/novnc/noVNC/blob/master/README.md#quick-start
+Abrimos una nueva sesión del terminal y lanzamos noVNC con su launcher.
+Suponemos que tenemos x11vnc escuchando en el puerto 5900.
+  ~/noVNC/utils/launch.sh --vnc localhost:5900
+La primera vez es posible que detecteque le falta algún componente (websockify) y lo 
+descargará e instalará automáticamente.
+Utiliza Python para abrirun socket.Por defecto utiliza el puerto 6080.
+Podemos probar que funciona correctamente accediendo desde otra máquina a través del 
+navegador. Una dirección de ejemplo sería:
+  http://192.168.1.103:6080/vnc.html
+Como en el caso anterior, detenemos el interface web con CTRL+C.
+El problema es que si usamos una URL sin archivo, nos devolverá el listado de archivos de la
+carpeta en la que reside el noVNC. Y no interesa.
+Para evitarlo, duplicaremos el archivo vnc.html con el nombre index.html.
+De esta manera, podemos utilizar la URL sin nombre de archivo:
+  http://192.168.1.103:6080
+Y el navegador cargará automáticamente el archivo por defecto: index.html.
