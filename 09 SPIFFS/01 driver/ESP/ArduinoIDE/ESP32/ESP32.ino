@@ -1,5 +1,6 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20181004
   Tema: Sistema de archivos de ESP32
   Objetivo: Descripción y lectura
   Material: placa ESP32
@@ -10,13 +11,10 @@
   En ESP8266 se gestiona a través del objeto SPIFFS que se crea al incluir la 
   librería FS.h.
   En ESP32 el objeto SPIFFS se crea al incluir la librería SPIFFS.h.
-  Esta librería no ha sido creada de manera oficial hasta hace muy poco tiempo.
   
   El desarrollo actual es una modificación del ejemplo original.
   En él se puede comprobar cómo se pueden utilizar la mayoría de funcionalidades para la
   gestión del sistema de archivos.
-
-  Actualmente esta librería NO es compatible con el plugin del IDE para la subida de archivos.
 
   Nota: Inicialmente o al pasar a utilizar la librería oficial es necesario formatearla.
   Sólo se debe hacer una vez.
