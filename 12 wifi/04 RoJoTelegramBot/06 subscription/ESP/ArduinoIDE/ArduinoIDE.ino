@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180314
+  Fecha: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Demo de suscripción a mensajes de un bot
   Material: placa ESP
@@ -31,7 +31,9 @@
  */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi
+  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
+#elif defined(ESP32)
+  #include <WiFi.h> //Librería para gestión de wifi para ESP32
 #endif
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
@@ -111,10 +113,10 @@ void broadcast(TelegramMessage *msg)
   //El mensaje será enviado a todos los suscriptores
 
   //Si el autor no está en la lista de suscriptores...
-  if(!subscribers.containsKey((*msg).chat_id))
+  if(!subscribers.containsKey(msg->chat_id))
   {
     //...informamos
-    bot.sendMessage((*msg).chat_id,"Solo los suscriptores pueden enviar mensajes");
+    bot.sendMessage(msg->chat_id,"Solo los suscriptores pueden enviar mensajes");
   }
   else //El autor es suscriptor
   {
@@ -122,7 +124,7 @@ void broadcast(TelegramMessage *msg)
     //Recorremos todos los suscriptores...
     for(uint16_t i=0;i<subscribers.count();i++)
       //...y les enviamos el mensaje
-      bot.sendMessage(subscribers.key(i),(*msg).from_name + " dijo: " + (*msg).text);
+      bot.sendMessage(subscribers.key(i),msg->from_name + " dijo: " + msg->text);
   }
 }
 
@@ -131,7 +133,8 @@ void handleNewMessages()
   //Procesa todos los mensajes pendientes
   
   //Creamos estructura de mensaje y obtenemos el siguiente mensaje
-  TelegramMessage msg=bot.getNextMessage();
+  TelegramMessage msg;
+  bot.getNextMessage(&msg);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -183,7 +186,7 @@ void handleNewMessages()
 
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
-    msg=bot.getNextMessage();
+    bot.getNextMessage(&msg);
   }
 }
 

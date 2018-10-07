@@ -1,12 +1,12 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180315
+  Fecha: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Demo de eco
   Material: placa ESP
 
   Descripción:
-  El bot responderá con el mismo mensaje que se le envía, precidido por el nombre del usuario.
+  El bot responderá con el mismo mensaje que se le envía, precedido por el nombre del usuario.
 
   Notas:
     Antes de utilizar un bot en Telegram es necesario crearlo:
@@ -24,7 +24,9 @@
  */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi
+  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
+#elif defined(ESP32)
+  #include <WiFi.h> //Librería para gestión de wifi para ESP32
 #endif
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 
@@ -46,7 +48,8 @@ void handleNewMessages()
   //Procesa todos los mensajes pendientes
   
   //Creamos estructura de mensaje y obtenemos el siguiente mensaje
-  TelegramMessage msg=bot.getNextMessage();
+  TelegramMessage msg;
+  bot.getNextMessage(&msg);
   while(msg.text.length())
   {
     //Si se envía el comando /start siempre debemos mostrar una mínima información
@@ -65,7 +68,7 @@ void handleNewMessages()
     }
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
-    msg=bot.getNextMessage();
+    bot.getNextMessage(&msg);
   }
 }
 

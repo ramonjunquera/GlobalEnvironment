@@ -47,3 +47,6 @@ Pinout
    12   Relé
    13   Led
    14   pin disponible en placa
+
+Este dispositivo sólo tiene 1Mb de memoria. Por lo tanto el espacio para SPIFFS
+se reduce al máximo (64kB) y no tendrá posibilidad de utilizar OTA.

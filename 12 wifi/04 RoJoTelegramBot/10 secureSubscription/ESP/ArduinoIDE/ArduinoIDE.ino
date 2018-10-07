@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180315
+  Fecha: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Sistema de suscripción por invitación
   Material: placa ESP
@@ -31,7 +31,9 @@
  */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi
+  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
+#elif defined(ESP32)
+  #include <WiFi.h> //Librería para gestión de wifi para ESP32
 #endif
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
@@ -76,21 +78,19 @@ void subscribe(TelegramMessage *msg)
   //Incluye al autor del mensaje del parámetro a la lista de suscriptores
 
   //Lo añadimos
-  subscribers.add((*msg).chat_id,(*msg).from_name))
+  subscribers.add(msg->chat_id,msg->from_name);
   //Informamos a todos
-  broadcast((*msg).from_name + " es un nuevo suscriptor invitado por " + subscriptionCodeGenerator);
+  broadcast(msg->from_name + " es un nuevo suscriptor invitado por " + subscriptionCodeGenerator);
 }
 
 void unsubscribe(TelegramMessage *msg)
 {
   //Elimina un usuario de la lista de destinatarios
 
-  //Mensaje de respuesta
-  String txt="No estás suscrito";
   //Eliminamos el item del diccionario
-  subscribers.remove((*msg).chat_id);
+  subscribers.remove(msg->chat_id);
   //Informamos a todos
-  broadcast((*msg).from_name + " se ha dado de baja");
+  broadcast(msg->from_name + " se ha dado de baja");
 }
 
 String list()
@@ -117,7 +117,8 @@ void handleNewMessages()
   //Procesa todos los mensajes pendientes
   
   //Creamos estructura de mensaje y obtenemos el siguiente mensaje
-  TelegramMessage msg=bot.getNextMessage();
+  TelegramMessage msg;
+  bot.getNextMessage(&msg);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -250,7 +251,7 @@ void handleNewMessages()
     }
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
-    msg=bot.getNextMessage();
+    bot.getNextMessage(&msg);
   }
 }
 

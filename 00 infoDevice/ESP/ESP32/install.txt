@@ -106,3 +106,6 @@ Para instalarlo:
 - Debería quedar así: C:\Program Files (x86)\Arduino\tools\ESP32FS\tool\esp32fs.jar
 - La próxima vez que se abra el IDE de Arduino podremos encontrar la opción:
     Herramientas/ESP32 Sketch Data upload
+Nota:
+  El plugin interfiere con el monitor serie.
+  El monitor serie se debe cerrar antes de utilizar el plugin.

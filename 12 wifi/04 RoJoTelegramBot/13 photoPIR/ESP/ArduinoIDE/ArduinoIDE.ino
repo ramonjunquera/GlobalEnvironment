@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Versión: 20180711
+  Versión: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -10,25 +10,36 @@
     Usamos el sistema de comprobación a intervalos variables.
     Cuando el sensor detecte movimiento, automáticamente se enviará una foto en la 
     resolución actual a todos los usuarios suscritos.
-    Se añade la posibilidad de desactivar manualmente el sensor de movimiento
-  Nota:
-    Es ESP8266 es posible que haya que desconectar el pin D4 para tranferir el programa. Después se 
+    Se añade la posibilidad de desactivar manualmente el sensor de movimiento.
+    Se añaden capacidades OTA para facilitar la actualización.
+  Notas:
+  - Es ESP8266 es posible que haya que desconectar el pin D4 para tranferir el programa. Después se 
     puede volver a conectar al PIR.
+  - Si utilizamos la transferencia OTA es importante seleccionar la opción
+      Herramientas/Erase Flash/Sketch + WiFi Settings
+    Esto es porque estamos utilizando contraseñas para OTA y podrían quedarse los parámetros de la
+    configuración previa.
+  - Puesto que el dispositivo tendrá alimentación garantizada, se puede utilizar la frecuencia más
+    alta de la CPU.
 */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi
+  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
+#elif defined(ESP32)
+  #include <WiFi.h> //Librería para gestión de wifi para ESP32
 #endif
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 #include "RoJoArduCAM.h" //Librería de gestión de la cámara
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
+#include <ArduinoOTA.h> //Para gestión de OTA
 
 //Definición de constantes globales
 const char ssid[]="xxx"; //Nombre del punto de acceso (SSID)
 const char password[]="xxx"; //Contraseña
-const String botToken="xxx"; //Token del bot
-const uint32_t checkingGap=1000; //Tiempo de espera en misisegundos para comprobación de nuevos mensajes
+const String botToken="xxx";
+const uint32_t checkingGap=1000; //Tiempo de espera en milisegundos para comprobación de nuevos mensajes
 const byte pinLed=LED_BUILTIN; //Pin del led integrado en placa
+const bool ledON=LOW; //Estado del pin del led cuando está encendido
 const uint32_t maxWait=30000; //Tiempo máximo de espera = 30 segundos
 const float factorWait=1.2; //Factor de la progresión geométrica para calcular el siguiente tiempo de espera
 bool enabled = true; //Por defecto, cuando arranca, se enciende
@@ -65,6 +76,40 @@ const String defaultKeyb="[[\"/on\",\"/off\",\"/status\"],[\"/photo\",\"/users\"
 //Nombre del archivo que guarda el estado
 const String statusFile="/status.txt"; 
 
+void try2connect()
+{
+  //Intenta conectar con el punto de acceso y contraseña definidas en constantes globales
+  //Si lo consigue, devuelve el control.
+  //Si no lo consigue en menos de 10 segundos, resetea y comienza de nuevo.
+
+  //Intentamos conectar a wifi
+  //Nos conectaremos a un punto de acceso
+  WiFi.mode(WIFI_STA);
+  //Inicializamos conexión wifi con las credenciales
+  WiFi.begin(ssid,password);
+  //Configuramos el pin del led integrado como salida
+  pinMode(pinLed,OUTPUT);
+  //Variable para contar las veces que repetimos el bucle
+  //Si el bucle dura 100ms -> 100*100=10000ms=10s
+  byte loops=100;
+  //Repetir mientras no se haya conectado ni haya superado el tiempo máximo
+  while (WiFi.waitForConnectResult() != WL_CONNECTED && loops>0)
+  {
+    //Cambiamos el estado del led integrado
+    digitalWrite(pinLed,!digitalRead(pinLed));
+    //Esperamos un momento
+    delay(100);
+    //Ya tenemos un ciclo menos
+    loops--;
+  }
+  //Si no hemos podido conectar...reseteamos
+  if(WiFi.waitForConnectResult() != WL_CONNECTED) ESP.restart();
+  //Hemos podido conectar!
+  //Apagamos el led integrado
+  digitalWrite(pinLed,!ledON);
+  //Devolvemos el control
+}
+
 void saveStatus()
 {
   //Guarda la configuración actual (resolución y estado)
@@ -89,11 +134,11 @@ void readStatus()
   //Si no se pudo abrir...
   if(!f)
   {
-    //Se guarda la confirguración actual
+    //Se guarda la configuración actual
     saveStatus();
     //Ahora seguro que sí existe el archivo de configuración
     //Se vuelve a abrir como sólo lectura
-    f=SPIFFS.open(statusFile,"w");
+    f=SPIFFS.open(statusFile,"r");
   }
   //Tenemos el archivo abierto
   
@@ -188,9 +233,11 @@ String list()
 void handleNewMessages()
 {
   //Procesa todos los mensajes pendientes
-  
-  //Creamos estructura de mensaje y obtenemos el siguiente mensaje
-  TelegramMessage msg=bot.getNextMessage();
+
+  //Creamos un nuevo mensaje
+  TelegramMessage msg;
+  //Obtenemos el siguiente mensaje
+  bot.getNextMessage(&msg);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -424,8 +471,8 @@ void handleNewMessages()
     //Refrescamos los procesos de fondo
     yield();
     //Hemos terminado de procesar el mensaje actual
-    //Leemos el siguiente
-    msg=bot.getNextMessage();
+    //Obtenemos el siguiente mensaje
+    bot.getNextMessage(&msg); 
   }
 }
 
@@ -447,12 +494,7 @@ void setup()
   //Configuramos el pin del led como salida
   pinMode(pinLed,OUTPUT);
   //Nos aseguramos que el led esté apagado
-  digitalWrite(pinLed,HIGH);
-  //Fijamos el modo de conexión a un punto de acceso
-  WiFi.mode(WIFI_STA);
-  //Forzamos a su desconexión (por si estaba conectado anteriormente)
-  WiFi.disconnect();
-
+  digitalWrite(pinLed,!ledON);
   //Inicializamos la cámara con el pin CS
   Serial.print("\nInicializando cámara...");
   byte errorCode=camera.begin(pinCS);
@@ -475,25 +517,10 @@ void setup()
   //Hemos inicializado la cámara correctamente
   //Por defecto arranca en modo jpg con la resolución 2 = 320x240
   Serial.println("Ok");
-  
+ 
   //Inicializamos WiFi
-  //Pedimos conexión al punto de acceso
-  WiFi.begin(ssid,password);
-  Serial.print("Conectando");
-  //Mientras no estemos conectados...
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    //Cambiaremos el estado del led
-    digitalWrite(pinLed,!digitalRead(pinLed));
-    Serial.print(".");
-    yield();
-    delay(100);
-  }
-  //Hemos conseguido conectar
-  Serial.println("Ok");
+  try2connect();
 
-  //Nos aseguramos que el led esté apagado
-  digitalWrite(pinLed,HIGH);
   //Configuramos el pin del PIR como entrada
   pinMode(pinPIR,INPUT);
   //Activamos las interrupciones para el pin del PIR
@@ -504,6 +531,81 @@ void setup()
   randomSeed(millis());
   //Leemos la última configuración guardada
   readStatus();
+
+  //Definimos las funciones de OTA
+  ArduinoOTA.onStart([]()
+  {
+    //Se ha detectado el inicio de una recepción OTA
+    //Configuramos el pin del led integrado como salida
+    pinMode(pinLed,OUTPUT);
+    //La petición OTA puede ser de dos tipos:
+    // - Para actualizar el programa (ArduinoOTA.getCommand()==U_FLASH)
+    // - Para actualizar SPIFFS (ArduinoOTA.getCommand()==U_SPIFFS)
+    //Tenemos de distinguirlo, porque si es para actualizar SPIFFS, debemos
+    //desmontar la partición SPIFFS para dejar que lo actualice sin problemas.
+    if(ArduinoOTA.getCommand()==U_SPIFFS) SPIFFS.end();
+  });
+  ArduinoOTA.onEnd([]()
+  {
+    //Ha finalizado la transferencia OTA
+    //Apagamos el led integrado
+    digitalWrite(pinLed,!ledON);
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
+  {
+    //Ha cambiado el porcentaje de progreso OTA
+    //Cambiamos el estado del led integrado
+    digitalWrite(pinLed,!digitalRead(pinLed));
+  });
+  ArduinoOTA.onError([](ota_error_t error)
+  {
+    //Se ha producido un error en la recepción OTA
+
+    //Led apagado
+    digitalWrite(pinLed,!ledON);
+    //Esperamos un segundo para comenzar con el código de error
+    delay(1000);
+
+    //Repetiremos 3 veces...
+    for(byte i=0;i<3;i++)
+    {
+      //Repetimos tantas el doble de veces de error+1
+      //Porque el primer error es el 0
+      //Y porque el bucle cambia el estado del led
+      //Suponemos que siempre comenzamos desde apagado
+      for(byte e=0;e<2*(error+1);e++)
+      {
+        //Cambiamos el estado del led integrado
+        digitalWrite(pinLed,!digitalRead(pinLed));
+        //Esperamos medio segundo
+        delay(500);
+      }
+      //Hemos mostrado el código de error
+      //Esperamos un segundo para indicar que hemos terminado de emitir el código
+      delay(1000);
+    }
+    //Hemos terminado
+
+    //Los códigos de error son los siguientes
+    // 1 : OTA_AUTH_ERROR
+    // 2 : OTA_BEGIN_ERROR
+    // 3 : OTA_CONNECT_ERROR
+    // 4 : OTA_RECEIVE_ERROR
+    // 5 : OTA_END_ERROR
+    
+    //Tras un error OTA, siempre se reinicia automáticamente
+  });
+
+  //Asignamos una contraseña para impedir que cualquiera pueda actualizarlo
+  //No es obligatorio
+  //Atención!. Es incompatible con el plugin de subida de archivos a SPIFFS
+  ArduinoOTA.setPassword("xxx");
+  //Asignamos un nombre al dispositivo para tenerlo identificado
+  //Si no lo hacemos tomará como nombre por defecto: "esp8266-[ChipID]"
+  ArduinoOTA.setHostname("PhotoPIR");
+  //Iniciamos el servicio de OTA
+  ArduinoOTA.begin();
+  
   //Informamos del reinicio
   broadcast("Dispositivo reiniciado");
   Serial.println("Inicio correcto");
@@ -513,6 +615,8 @@ void loop()
 {
   //Procesa todos los nuevos mensajes
   handleNewMessages();
+  //Comprobamos si hay alguna petición de actualización por OTA
+  ArduinoOTA.handle();
   //Calculamos el tiempo máximo de espera
   uint32_t maxTime=millis()+currentWait;
   //Mientras no lleguemos al máximo tiempo de espera...

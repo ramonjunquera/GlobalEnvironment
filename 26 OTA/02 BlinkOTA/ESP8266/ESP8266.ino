@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20181004
+  Fecha: 20181006
   Tema: ESP8266 OTA
   Objetivo: Ejemplo blink para OTA
   Material: ESP8266: ESP-12E, Wemos D1 Mini, Wemos D1 R2, Wemos D1 Mini Pro
@@ -35,9 +35,12 @@
   el tiempo de parpadeo y el valor correspondiente al led encendido, porque hay placas
   que el led integrado tiene un comportamiento inverso.
 
-  Nota:
-  El plugin de subida de archivos a SPIFFS no sabe gestionar contraseñas.
-  Si queremos utilizarlo, anten debemos desactivar la contraseña de actualización.
+  Notas:
+  - El plugin de subida de archivos a SPIFFS no sabe gestionar contraseñas.
+    Si queremos utilizarlo, anten debemos desactivar la contraseña de actualización.
+  - Si utilizamos contraseñas, para veitar utilizar configuraciones previas de wifi, se
+    debe seleccionar la opción:
+      Herramientas/Erase Flash/Sketch + WiFi Settings
 
   Resultado:
   Hacemos parpadear uno de los leds integrados, transfiriendo el programa por OTA
@@ -102,7 +105,6 @@ void setup()
     //Tenemos de distinguirlo, porque si es para actualizar SPIFFS, debemos
     //desmontar la partición SPIFFS para dejar que lo actualice sin problemas.
     //En este ejemplo no se utiliza SPIFFS, así que no tenemos que hacer nada.
-    //Si fuese el caso tendríamos el #include <FS.h> y deberíamos ejecutar:
     //Si la petición es para actualizar SPIFFS...desmontamos la partición SPIFFS
     //if(ArduinoOTA.getCommand()==U_SPIFFS) SPIFFS.end();
   });
@@ -165,7 +167,7 @@ uint32_t changeTime=0;
 
 void loop()
 {
-  //Camprobamos si hay alguna petición de actualización por OTA
+  //Comprobamos si hay alguna petición de actualización por OTA
   ArduinoOTA.handle();
   //Si ya hay que cambiar el estado del led...
   if(millis()>changeTime)

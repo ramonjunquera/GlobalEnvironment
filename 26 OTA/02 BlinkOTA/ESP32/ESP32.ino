@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20181004
+  Fecha: 20181006
   Tema: ESP32 OTA
   Objetivo: Ejemplo blink para OTA
   Material: Wemos Lolin 32 Lite (ESP32 Dev Module)
@@ -35,9 +35,12 @@
   el tiempo de parpadeo y el valor correspondiente al led encendido, porque hay placas
   que el led integrado tiene un comportamiento inverso.
 
-  Nota:
-  El plugin de subida de archivos a SPIFFS no sabe gestionar contraseñas.
-  Si queremos utilizarlo, anten debemos desactivar la contraseña de actualización.
+  Notas:
+  - El plugin de subida de archivos a SPIFFS no sabe gestionar contraseñas.
+    Si queremos utilizarlo, anten debemos desactivar la contraseña de actualización.
+  - Si utilizamos contraseñas, para veitar utilizar configuraciones previas de wifi, se
+    debe seleccionar la opción:
+      Herramientas/Erase Flash/Sketch + WiFi Settings
 
   Resultado:
   Hacemos parpadear uno de los leds integrados, transfiriendo el programa por OTA

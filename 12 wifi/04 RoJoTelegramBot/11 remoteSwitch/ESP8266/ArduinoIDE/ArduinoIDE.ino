@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180603
+  Fecha: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Control remoto a distancia
   Material: placa ESP-12E o Sonoff S20
@@ -15,7 +15,7 @@
 
 //Si se define la siguiente constante se compilará para Sonoff S20
 //Si no se define, se hará para un ESP12-E
-#define SONOFF
+//#define SONOFF
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h> //Librería para gestión de wifi
@@ -24,10 +24,10 @@
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
 
 //Definición de constantes globales
-const char ssid[]="xxxx"; //Nombre del punto de acceso (SSID)
-const char password[]="xxxx"; //Contraseña
-const String botToken="xxxx"; //Token del bot
-const uint32_t checkingGap=1000; //Tiempo de espera en misisegundos para comprobación de nuevos mensajes
+const char ssid[]="xxx"; //Nombre del punto de acceso (SSID)
+const char password[]="xxx"; //Contraseña
+const String botToken="xxx"; //Token del bot
+const uint32_t checkingGap=1000; //Tiempo de espera en milisegundos para comprobación de nuevos mensajes
 String defaultKeyb="[[\"/on\",\"/off\"],[\"/status\",\"/users\"]]"; //Teclado por defecto
 
 #ifdef SONOFF
@@ -115,7 +115,10 @@ void handleNewMessages()
 {
   //Procesa todos los mensajes pendientes
 
-  TelegramMessage msg=bot.getNextMessage();
+  //Creamos objeto de mensaje
+  TelegramMessage msg;
+  //Leemos el siguiente mensaje
+  bot.getNextMessage(&msg);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -289,7 +292,7 @@ void handleNewMessages()
     yield();
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
-    msg=bot.getNextMessage();
+    bot.getNextMessage(&msg);
   }
 }
 
@@ -303,7 +306,7 @@ void setStatus()
   #else
     digitalWrite(pinRelay,!statusRelay);
   #endif
-  //Abrimos el archivo del estado del relé como sólo lectura
+  //Abrimos el archivo del estado del relé para escritura
   File f=SPIFFS.open(statusRelayFile,"w");
   //Guardamos el estado del led en el archivo
   f.write(statusRelay);

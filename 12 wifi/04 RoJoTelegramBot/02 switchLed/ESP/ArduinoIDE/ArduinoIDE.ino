@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180315
+  Fecha: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Demo de control de un led por comandos
   Material: placa ESP
@@ -9,7 +9,9 @@
  */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi
+  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
+#elif defined(ESP32)
+  #include <WiFi.h> //Librería para gestión de wifi para ESP32
 #endif
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 
@@ -31,7 +33,8 @@ void handleNewMessages()
   //Procesa todos los mensajes pendientes
   
   //Creamos estructura de mensaje y obtenemos el siguiente mensaje
-  TelegramMessage msg=bot.getNextMessage();
+  TelegramMessage msg;
+  bot.getNextMessage(&msg);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -72,7 +75,7 @@ void handleNewMessages()
     }
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
-    msg=bot.getNextMessage();
+    bot.getNextMessage(&msg);
   }
 }
 

@@ -1,11 +1,11 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180315
+  Fecha: 20181007
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Sistema de reducción de consultas an Internet
   Material: placa ESP
   Descripción:
-    Utilizaramos como base el ejemplo de control remoto de un led
+    Utilizaremos como base el ejemplo de control remoto de un led
     Hasta ahora hacíamos comprobaciones de nuevos mensajes con un periodo fijo
     Habitualmente fijábamos el periodo en un segundo.
     Para reducir el número de comprobaciones creamos un nuevo sistema en el que definimos dos
@@ -19,7 +19,9 @@
  */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi
+  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
+#elif defined(ESP32)
+  #include <WiFi.h> //Librería para gestión de wifi para ESP32
 #endif
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 
@@ -45,7 +47,8 @@ void handleNewMessages()
   //Procesa todos los mensajes pendientes
   
   //Creamos estructura de mensaje y obtenemos el siguiente mensaje
-  TelegramMessage msg=bot.getNextMessage();
+  TelegramMessage msg;
+  bot.getNextMessage(&msg);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -88,7 +91,7 @@ void handleNewMessages()
     currentWait=startWait;
     //Hemos terminado de procesar el mensaje actual
     //Leemos el siguiente
-    msg=bot.getNextMessage();
+    bot.getNextMessage(&msg);
   }
 }
 

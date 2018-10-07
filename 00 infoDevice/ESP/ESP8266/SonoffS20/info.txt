@@ -54,3 +54,6 @@ Pinout
 El interruptor pulsado está en LOW
 El relé & led azul están encendidos en HIGH
 El led verde está encendido en LOW
+
+Este dispositivo sólo tiene 1Mb de memoria. Por lo tanto el espacio para SPIFFS
+se reduce al máximo (64kB) y no tendrá posibilidad de utilizar OTA.

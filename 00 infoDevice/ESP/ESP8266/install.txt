@@ -45,4 +45,6 @@ Para instalarlo:
 - Debería quedar así: C:\Program Files (x86)\Arduino\tools\ESP8266FS\tool\esp8266fs.jar
 - La próxima vez que se abra el IDE de Arduino podremos encontrar la opción:
     Herramientas/ESP8266 Sketch Data upload
-
+Nota:
+  El plugin interfiere con el monitor serie.
+  El monitor serie se debe cerrar antes de utilizar el plugin.
