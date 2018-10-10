@@ -1,6 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Gestión de interrupciones
+  Fecha: 20181010
   Objetivo: Aprender a utilizar la gestión de interrupciones de tiempo de Arduino
   Material: placa Arduino
 
