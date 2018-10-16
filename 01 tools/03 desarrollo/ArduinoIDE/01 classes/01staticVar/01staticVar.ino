@@ -9,7 +9,7 @@
   Una variable estática siempre pertenece a la clase y no a la instancia de ella que
   se pueda crear.
   Estas variables pueden ser escritas y leidas desde la clase como cualquier otra, pero
-  sus valores serán compartidas por todas las instancias que se creen.
+  sus valores serán compartidos por todas las instancias que se creen.
 */
 
 #include <Arduino.h>

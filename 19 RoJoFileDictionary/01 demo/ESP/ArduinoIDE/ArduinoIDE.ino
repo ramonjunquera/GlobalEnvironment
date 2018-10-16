@@ -27,7 +27,7 @@ void list()
 
 void setup()
 {
-  //Activamos la comunicación serir
+  //Activamos la comunicación serie
   Serial.begin(115200);
   //Inicializamos el diccionario
   myDicc.begin("/mydicc.txt");
@@ -35,7 +35,7 @@ void setup()
   myDicc.clear();
   //Mostramos el número de registros contenidos
   Serial.println("# registros="+String(myDicc.count()));
-  //Un registro dando los valores
+  //Añadimos un registro dando los valores
   myDicc.add("primero","el uno");
   //Añadimos otro registro dando el item
   RoJoFileDictionaryItem item;
