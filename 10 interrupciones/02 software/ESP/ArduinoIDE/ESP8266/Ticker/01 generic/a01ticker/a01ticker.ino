@@ -26,8 +26,8 @@
   El led integrado parpadea cada segundo
 */
 
-//Incluimos la librería de la clase Ticker
-#include <Ticker.h>
+#include <Arduino.h>
+#include <Ticker.h> //Gestión de timers
 
 //Creamos un objeto Ticker
 Ticker blinker;

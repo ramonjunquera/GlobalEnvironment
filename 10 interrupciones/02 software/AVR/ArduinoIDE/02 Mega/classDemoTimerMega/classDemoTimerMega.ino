@@ -19,10 +19,10 @@
 */
 
 #include <Arduino.h>
-#include "RoJoTimer.h" //Gestión de timers de Arduino
+#include "RoJoTimerAVR.h" //Gestión de timers de Arduino
 
 //Creamos objetos de timer
-RoJoTimer timer4,timer5;
+RoJoTimerAVR timer4,timer5;
 
 
 void f4()

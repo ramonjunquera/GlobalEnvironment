@@ -59,8 +59,8 @@
   Los dos leds integrados parpadean, cada uno a su propia frecuencia.
 */
 
-//Incluimos la librería de la clase Ticker
-#include <Ticker.h>
+#include <Arduino.h>
+#include <Ticker.h> //Gestión de timers
 
 //Creamos un objeto Ticker para cada pin
 //El pin D4 está asociado al led integrado de antena

@@ -1,0 +1,14 @@
+Interrupciones por software (timers) en ESP.
+
+Ticker
+  La familia ESP tiene una librería propia para gestionar timers: Ticker.h
+  La librería nos abstrae del hardware y podemos crear varios timers con independencia de cómo lo 
+  gestionar el hardware.
+  Como primer paso se crea un objeto Ticker.
+  Después se activa indicando el periodo y la función de llamada con el método attach.
+  Se puede desactivar con el método detach.
+  El periodo se puede definir tanto en segundos como en milisegundos.
+  La carencia de la librería Ticker es que no es muy precisa en los tiempos de llamada.
+
+
+
