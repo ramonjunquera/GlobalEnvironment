@@ -8,7 +8,11 @@ Ticker
   Después se activa indicando el periodo y la función de llamada con el método attach.
   Se puede desactivar con el método detach.
   El periodo se puede definir tanto en segundos como en milisegundos.
-  La carencia de la librería Ticker es que no es muy precisa en los tiempos de llamada.
+  La carencia de la librería Ticker es que no es muy precisa en los tiempos de llamada y que falla
+  al definir periodos muy pequeños.
+  Si se requere más precisión en la ejecución y periodos cortos, es preferible utilizar timers
+  basados en hardware.
+  
 
 
 
