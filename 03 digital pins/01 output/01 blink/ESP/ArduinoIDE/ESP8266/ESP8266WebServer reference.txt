@@ -1,0 +1,62 @@
+ESP8266WebServer
+  Gestión de un servidor web simple. Sólo permite un cliente simultáneo.
+  
+
+ESP8266WebServer(int port = 80);
+  Constructor. Crear un objeto que gestiona el servidor web.
+  El puerto es optativo y toma como valor por defecto 80
+
+void begin();
+
+void handleClient();
+
+typedef std::function<void(void)> THandlerFunction;
+
+void on(const char* uri, THandlerFunction handler);
+
+void on(const char* uri, HTTPMethod method, THandlerFunction fn);
+
+void onNotFound(THandlerFunction fn);
+  Se le llama cuando el handler no es asignado
+
+void onFileUpload(THandlerFunction fn);
+  Gestiona subidas de archivos
+
+String uri();
+
+HTTPMethod method();
+
+WiFiClient client();
+
+HTTPUpload& upload();
+
+String arg(const char* name);
+  Obtiene el valor del argumento por nombre
+
+String arg(int i);
+  Obtiene el valor del argumento por número
+
+String argName(int i);
+  Obtiene el nombre del argumento por nombre
+
+int args();
+  Obtiene el número de argumentos
+
+bool hasArg(const char* name);
+  Comprueba si existe un argumento
+
+void send(int code, const char* content_type = NULL, const String& content = String(""));
+void send(int code, char* content_type, const String& content);
+void send(int code, const String& content_type, const String& content);
+  Envía respuesta a un cliente.
+    code : código de respuesta . Puede ser 200 (ok) o 404 (file not found)
+    content_type : típo de contenido. Ej: "text/plain", "image/png"
+    content : cuerpo del mensaje
+
+void setContentLength(size_t contentLength) { _contentLength = contentLength; }
+
+void sendHeader(const String& name, const String& value, bool first = false);
+
+void sendContent(const String& content);
+
+template<typename T> size_t streamFile(T &file, const String& contentType);

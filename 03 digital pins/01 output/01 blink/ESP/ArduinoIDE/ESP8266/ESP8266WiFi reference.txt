@@ -1,0 +1,152 @@
+ESP8266WiFi
+  Crea el objeto WiFi con los siguientes métodos:
+
+
+void mode(WiFiMode);
+  Fija el modo de wifi. WiFiMode es un valore entero de los siguientes:
+    0=WIFI_OFF=wifi apagado
+    1=WIFI_STA=modo cliente
+    2=WIFI_AP=modo servidor (punto de acceso)
+    3=WIFI_AP_STA=modo mixto (ciente/servidor)
+
+int begin(char* ssid, char *passphrase = NULL, int32_t channel = 0, uint8_t bssid[6] = NULL);
+  Arranca el wifi
+    ssdi=nombre del punto de acceso a conectar
+    passphrase=contraseña (optativa)
+    channel=canal (por defecto=0)
+    bssid=mac address (optativa)
+
+uint8_t waitForConnectResult();
+  Espera hasta que el wifi obtenga un resultado y lo devuelve.
+
+void softAP(const char* ssid);
+  Crea un nuevo punto de acceso sin seguridad
+    ssid=nombre del punto de acceso
+
+void softAP(const char* ssid, const char* passphrase, int channel = 1, int ssid_hidden = 0);
+  Crea un nuevo punto de acceso con seguridad
+    ssid=nombre del punto de acceso
+    passphrase=contraseña
+    channel=canal (por defecto=1)
+    ssid_hidden=nombre oculto (por defecto no)
+
+void config(IPAddress local_ip, IPAddress gateway, IPAddress subnet);
+void config(IPAddress local_ip, IPAddress gateway, IPAddress subnet, IPAddress dns);
+  Fija la dirección ip sobreescribiendo los datos recibidos del dhcp
+
+void softAPConfig(IPAddress local_ip, IPAddress gateway, IPAddress subnet);
+  Configura la ip del punto de acceso
+
+int disconnect(bool wifioff = false);
+  Se desconecta de la red
+    wifioff=se debe desconectar? (por defecto no)
+
+uint8_t* macAddress(uint8_t* mac);
+String macAddress(void);
+  Obtiene la direccion mac del adaptador de red cliente
+
+uint8_t* softAPmacAddress(uint8_t* mac);
+String softAPmacAddress(void);
+  Obtiene la dirección mac del adaptador de red servidor (punto de acceso)
+
+IPAddress localIP();
+  Obtiene la dirección ip del adaptador de red cliente
+
+IPAddress softAPIP();
+  Obtiene la dirección ip del adaptador de red servidor (punto de acceso)
+
+IPAddress subnetMask();
+  Obtiene la máscara de subred
+
+IPAddress gatewayIP();
+  Obtiene la dirección ip del gateway
+
+char* SSID();
+  Obtiene el nombre del punto de acceso al que se está conectado
+
+uint8_t * BSSID(void);
+String BSSIDstr(void);
+  Obtiene la dirección mac del punto de acceso al que se está conectado
+
+int32_t channel(void);
+  Obtiene el canal de conexión utilizado como conexión a un punto de acceso
+
+int32_t RSSI();
+  Obtiene el RSSI que se está utilizando para conectar con un punto de acceso
+
+int8_t scanComplete();
+  Hace un escáner de puntos de acceso disponibles en modo asíncrono
+
+void scanDelete();
+  Borra los datos del último escáner de la memoria
+
+int8_t scanNetworks(bool async = false);
+  Escanea todas las redes wifi disponibles
+  Devuelve el número de redes encontradas
+
+const char* SSID(uint8_t networkItem);
+  Devuelve los nombres de las redes wifi disponibles
+
+uint8_t	encryptionType(uint8_t networkItem);
+  Devuelve el tipo de encriptación de las redes wifi descubiertas en el último escáner
+
+int32_t RSSI(uint8_t networkItem);
+  Devuelve la RSSI de las redes wifi descubiertas en el último escáner
+
+uint8_t * BSSID(uint8_t networkItem);
+String BSSIDstr(uint8_t networkItem);
+  Devuelve la dirección mac de las redes wifi descubiertas en el último escáner
+
+int32_t channel(uint8_t networkItem);
+  Devuelve el canal de las redes wifi descubiertas en el último escáner
+
+bool isHidden(uint8_t networkItem);
+  Devuelve si las redes wifi descubiertas en el último escáner están ocultas (no tienen nombre)
+
+bool getNetworkInfo(uint8_t networkItem, String &ssid, uint8_t &encryptionType, int32_t &RSSI, uint8_t* &BSSID, int32_t &channel, bool &isHidden);
+  Carga toda la información de las redes wifi obtenidas en el último escáner en un puntero de parámetros
+
+wl_status_t status();
+  Devuelve el actual estado de conexión
+
+int hostByName(const char* aHostname, IPAddress& aResult);
+  Resuelve el nombre de una dirección ip
+
+String hostname(void);
+  Obtiene la dirección del servidor DHCP cuando se conecta en modo cliente
+
+bool hostname(char* aHostname);
+bool hostname(const char* aHostname);
+bool hostname(String aHostname);
+  Fija el nombre del servidor DHCP cuando se conecta en modo cliente
+
+bool beginWPSConfig(void);
+  Configura el WPS
+
+void printDiag(Print& dest);
+  Imprime la configuración de wifi
+
+void beginSmartConfig();
+  Comienza la configuración inteligente
+
+bool smartConfigDone();
+  Consulta si ha terminado la configuración inteligente
+
+void stopSmartConfig();
+  Finaliza la configuración inteligente
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

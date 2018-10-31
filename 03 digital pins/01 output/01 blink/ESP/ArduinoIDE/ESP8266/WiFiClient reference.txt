@@ -1,0 +1,47 @@
+WiFiClient
+  Gestión de conexiones cliente a un servisor
+  
+
+WiFiClient();
+  Constructor
+
+uint8_t status();
+
+void handleClient();
+
+virtual int connect(IPAddress ip, uint16_t port);
+virtual int connect(const char *host, uint16_t port);
+
+virtual size_t write(uint8_t);
+virtual size_t write(const uint8_t *buf, size_t size);
+size_t write(T& source, size_t unitSize);
+
+virtual int available();
+  Número de conexiones disponibles
+
+virtual int read();
+virtual int read(uint8_t *buf, size_t size);
+
+virtual int peek();
+
+virtual void flush();
+  Vacía el buffer de entrada
+
+virtual void stop();
+  Detiene la conexión cliente
+
+virtual uint8_t connected();
+
+virtual operator bool();
+
+IPAddress remoteIP();
+
+uint16_t  remotePort();
+
+bool getNoDelay();
+
+void setNoDelay(bool nodelay);
+
+static void setLocalPortStart(uint16_t port) { _localPort = port; }
+
+static void stopAll();

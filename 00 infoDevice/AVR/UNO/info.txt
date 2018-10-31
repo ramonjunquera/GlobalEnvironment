@@ -73,3 +73,7 @@ Consumo en distintos modos de bajo consumo:
   SLEEP_MODE_PWR_SAVE  1.62mA
   SLEEP_MODE_STANDBY   0.84mA
   SLEEP_MODE_PWR_DOWN  0.36mA
+
+Alimentación.
+  Además de alimentar la placa por el puerto USB, también podríamos utilizar los pines Vin y GND.
+  En este caso debemos tener cuidado de que el voltaje esté regulado a 5V.

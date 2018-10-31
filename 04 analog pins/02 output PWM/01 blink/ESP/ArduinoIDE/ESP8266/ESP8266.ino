@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20181031
   Tema: Elementos analógicos
   Objetivo: Aprender cómo funcionan las escrituras analógicas
-  Material: breadboard, led, placa ESP8266
+  Material: breadboard, led, placa ESP8266 (ESP-01, ESP-12E, Wemos D1R2, Wemos D1 Mini)
 
   Descripción:
   Haremos variar la intensidad de un led integrado conectado a un pin con
