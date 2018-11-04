@@ -58,9 +58,9 @@ Configuración en Arduino IDE:
   Debug Level: "Ninguno"
   IwIP Variant: "v2 Lower Memory"
   Reset Method: "ck"
-  Crystal Frequency: "40MHz"
+  Crystal Frequency: "26MHz"
   VTables: "Flash"
-  Flash Frequency: "80MHz"
+  Flash Frequency: "40MHz"
   CPU Frequency: "160MHz"
   Builtin Led: "1"
   Upload Speed: "115200"
@@ -71,8 +71,10 @@ Configuración en Arduino IDE:
     internamente (si queremos o no SPIFFS).
 
 Leds integrados.
-  Tiene dos leds integrados. Uno rojo que se enciande siempre que tenga alimentación y otro azul asociado
-  al pin de recepción UTXD = GPIO 1
+  Tiene dos leds integrados. Uno rojo que se enciende siempre que tenga alimentación y otro azul asociado
+  al pin de recepción UTXD = GPIO 1. El estado del led es inverso a la del pin:
+    HIGH = apagado
+    LOW  = encendido
 
 Entradas analógicas.
   La familia ESP8266 soporta entradas analógicas en los pines 12, 13 y 15. Este modelo sólo tiene los 4 primeros
@@ -94,7 +96,8 @@ Potencia.
   Podemos hacerlo con un adaptador de tensión de breadboard.
   Son pequeñas placas que se adaptan a las breadboards, proporcionando un voltaje seleccionable (5 o 3.3V) y que admiten
   un voltaje de entrada entre 5 y 12V.
-  La alimentación puede hacerse tanto por USB como por pilas/baterías. Si son pilas, es mejor varias pilas AA que una sóla de 9V.
+  La alimentación puede hacerse tanto por USB como por pilas/baterías. Si son pilas, es mejor varias pilas AA que una sóla
+  de 9V.
   La razón es porque puede dar mayor intensidad.
   El número ideal de pilas es de 6 de 1.5V, que dan 9V. Valor perfecto para poder alimentar cualquier dispositivo.
   Las pilas recargables, aunque den un poco menos de voltaje e intensidad son la mejor opción porque pueden ser reutilizadas.
@@ -150,3 +153,10 @@ Transferencia de un programa.
   Errores.
     Si durante la transferencia del programa se produce un error, no será suficiente con resetear la placa uniendo el pin RST con GND.
     Será necesario soltar la alimentación y volver a conectarla.
+
+OTA.
+  Debido a la memoria tan reducida, NO se puede utilizar el sistema de actualización remota.
+  Ni siquiera con 1Mb de memoria partido en 512Kb de programa y 512Kb de SPIFFS.
+
+Entradas analógicas.
+  Esta placa NO tiene entradas analógicas.
