@@ -6,15 +6,15 @@
   Material: breadboard, acelerómetro GY-61, placa ESP32 OLED
 
   Descripción:
-  Mostraremos la imagen de una bola en el display y el posición del dispositivo se tendrá en cuenta en su
-  movimiento.
-  No ulizaremos el eje Z en este desarrollo.
-  El sistema se calibra solo. Supone que la posición inicial es la de reposo.
-  Se añade efecto rebote contra los límites del display para que sea más fácil controlar la bola y
-  para que el comportamiento de la bola sea más realista.
+    Mostraremos la imagen de una bola en el display y el posición del dispositivo se tendrá en cuenta en su
+    movimiento.
+    No ulizaremos el eje Z en este desarrollo.
+    El sistema se calibra solo. Supone que la posición inicial es la de reposo.
+    Se añade efecto rebote contra los límites del display para que sea más fácil controlar la bola y
+    para que el comportamiento de la bola sea más realista.
 
   Resultado:
-  Vemos que la bola del display responde a las inclinaciones del dispositivo
+    Vemos que la bola del display responde a las inclinaciones del dispositivo
 */
 
 #include <Arduino.h>
@@ -24,29 +24,23 @@
 //Definición de constantes globales
 const byte pins[]={36,37}; //Corresponden a los pinres A0 y A1
 const float displaySize[]={124,60}; //Tamaño de display (restando tamaño de sprite)
-const float elastic=0.5; //Coeficiente de elasticidad
+const float elastic=0.5; //Coeficiente de elasticidad. 0=no rebota. 1=siempre rebota
+const float accel=700000; //Coeficiente de aceleración. Cuanto más pequeño, más rápido
 
 //Definición de variables globales
 RoJoSSD1306 display;
 RoJoSprite ball;
 float analogMid[2]; //Cálculo del valor medio
-float analogMin[2]; //Mínimo valor admitido
-float analogMax[2]; //Máximo valor admitido
 float ballXY[2]; //Coordenadas del sprite
-float value; //Valor leido
 float ballSpeed[2]; //Velocidad de la bola
 
 void setup()
 {
-  //Recorremos las coordenadas
+  //Recorremos las coordenadas X e Y
   for(byte c=0;c<2;c++)
   {
-    //Obtenemos valor analógico medio
-    //Suponemos que está en horizontal
+    //Obtenemos valor analógico medio, suponiendo que está en horizontal
     analogMid[c]=analogRead(pins[c]);
-    //Calculamos loa valores mínimo y máximo
-    analogMin[c]=analogMid[c]-300;
-    analogMax[c]=analogMid[c]+300;
     //Coordenadas iniciales de la bola (centro de display)
     ballXY[c]=displaySize[c]/2;
     //Inicialmente la bola no tiene velocidad
@@ -67,15 +61,10 @@ void loop()
   //Recorremos las dos coordenadas
   for(byte c=0;c<2;c++)
   {
-    //Leemos la coordenada
-    value=analogRead(pins[c]);
-    //La normalizamos (no puede quedar fuera de los límites
-    if(value<analogMin[c]) value=analogMin[c];
-    if(value>analogMax[c]) value=analogMax[c];
+    //Leemos la coordenada del pin analógico
     //Calculamos la aceleración
-    value=(value-analogMid[c])/300*0.0005;
-    //Variamos la velocidad
-    ballSpeed[c]+=value;
+    //Se la sumamos a la velocidad actual
+    ballSpeed[c]+=(analogRead(pins[c])-analogMid[c])/accel;
     //Calculamos la nueva coordenada
     ballXY[c]+=ballSpeed[c];
     //Si la bola está fuera de pantalla, debe rebotar con los bordes
@@ -90,8 +79,9 @@ void loop()
       ballSpeed[c]*=-elastic;
     }
   }
-  //Dibujamos sprite en las coordenadas calculadas
+  //Borramos el display
   display.videoMem->clear();
+  //Dibujamos sprite en las coordenadas calculadas
   //El eje X está invertido
   display.videoMem->drawSprite(displaySize[0]-ballXY[0],ballXY[1],&ball,1);
   display.show();

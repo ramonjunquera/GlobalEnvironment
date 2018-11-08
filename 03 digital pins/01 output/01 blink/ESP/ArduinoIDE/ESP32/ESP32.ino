@@ -1,8 +1,8 @@
 /*
   Autor: Ramón Junquera
   Tema: Pines digitales de salida
+  Fecha: 20181105
   Objetivo: Configuración y escritura de pines digitales en ESP32
-  Fecha: 20180523
   Material adicional: placa ESP32
   Descripción:
 
@@ -23,6 +23,8 @@
  */
 
 #include <Arduino.h>
+
+//#define LED_BUILTIN 22 //Descomentar si no tiene la constante definida como en el LOLIN32 Lite
 
 //Definimos el pin del led
 const byte pinLed=LED_BUILTIN; //led integrado

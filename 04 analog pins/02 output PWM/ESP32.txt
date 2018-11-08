@@ -1,0 +1,75 @@
+PWM en ESP32
+
+ESP32 no tiene implementada la instrucción analogWrite de Arduino para poder otorgar
+funcionalidades PWM a un pin.
+Por el contrario, el juego de instrucciones nativas porvee de un par de soluciones
+que funcionan perfectamente.
+
+PWM por SigmaDelta
+  Es una colección de funciones contenidas en la librería esp32-hal-sigmadelta.h y esp32-hal-sigmadelta.c
+  Esta librería es nativa.
+  Tiene disponible 8 canales.
+  Cada canal es un timer 8 bits de resolución (256 valores)
+  En cada canal se puede configurar de manera independiente la frecuencia, el valor a partir del cual
+  debe cambiar el estado y el pin al cual se asocia.
+  Las funciones a través de las que se realizan estas acciones son:
+    uint32_t sigmaDeltaSetup(uint8_t channel,uint32_t freq)
+      Permite asignar una frecuencia a un canal. La frecuencia debe estar en el rango de 1120 a 312500Hz.
+      El canal debe estar en el rango de 0 a 7.
+    void sigmaDeltaWrite(uint8_t channel,uint8_t duty)
+      Permite indicar el valor a partir del cual el estado cambia.
+      Este valor sebe estar dentro del rango de la resolución: entre 0 y 255.
+    void sigmaDeltaAttachPin(uint8_t pin,uint8_t channel)
+      Permite asociar un pin a un canal
+  Una vez asociado el pin, se puede desasociar con:
+    void sigmaDeltaDetachPin(uint8_t pin)
+  Existe una función adicional para poder leer el valor actual del contador de un canal:
+    uint8_t sigmaDeltaRead(uint8_t channel)
+
+PWM por ledc
+  Colección de funciones contenidas en la librería esp32-hal-ledc.h y esp32-hal-ledc.c.
+  La librería es nativa.
+  Tiene disponibles 16 canales.
+  Cada canal es un timer de 15 bits de resolución máxima.
+  La resolución es seleccionable por número de bits, entre 1 y 15.
+  La frecuencia máxima depende de la resolución y se calcula con la siguiente fórmula:
+    frecuencia=80000000/2^resolución
+  Calculamos la frecuencia máxima para una resolución de 8 bits:
+    frecuencia=80000000/2^resolución=80000000/2^8=80000000/256=312500Hz
+    Es la misma frecuencia que ofrece el sistema SigmaDelta.
+  En cada canal se puede configurar de manera independiente la frecuencia, la resolución, el valor a partir
+  del cual debe cambiar el estado y el pin al cual se asocia.
+  Las funciones a través de las que se realizan estas acciones son:
+    double ledcSetup(uint8_t channel,double freq,uint8_t resolution_bits)
+      Asigna resolución y frecuencia a un canal.
+      El canal debe estar en el rango de 0 a 15.
+      La resolución es el número de bits de resolución del timer, entre 1 y 15.
+      La frecuencia está limitada por la frecuencia máxima que la define la resolución con la fórmula:
+        frecuencia=80000000/2^resolución
+    void ledcAttachPin(uint8_t pin,uint8_t channel)
+      Permite asociar un pin a un canal
+    void ledcWrite(uint8_t channel,uint32_t duty)
+      Permite indicar el valor a partir del cual el estado cambia.
+      Este valor sebe estar dentro de un rango definido por la resolución:
+        Mínimo = 0
+        Máximo = 2^resolución-1
+  Una vez asociado el pin, se puede desasociar con:
+    void ledcDetachPin(uint8_t pin)
+  Tenemos funciones de consulta para:
+    uint32_t ledcRead(uint8_t channel)
+      Permite leer el valor actual del contador de un canal
+    double ledcReadFreq(uint8_t channel)
+      Permite leer la frecuencia actual de una canal
+  Además la librería está concebida para poder utilizarse como generador de tonos con ondas cuadradas:
+    double ledcWriteTone(uint8_t channel,double freq)
+      Asigna una frecuencia a un canal
+    double ledcWriteNote(uint8_t channel,note_t note,uint8_t octave)
+      Calcula y asigna la frecuencia a un canal en base a la nota y octava indicadas.
+
+Comparaciones
+  El método ledc tiene más resolución y número de canales.
+  SigmaDelta es más exácto manteniendo frecuencias y tiempos.
+
+Librería
+  La librería RoJoAnalogWriteESP32 utiliza la técnica de SigmaDelta para implementar la
+  función analogWrite con los mismos parámetros que en Arduino.

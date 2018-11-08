@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Versión: 20181029
+  Versión: 20181105
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -37,6 +37,19 @@
     Por último se solicita la contraseña del dispositivo, definida en la constante global
     devicePassword.
     Si todo es correcto, se guarda la configuración y se reinicia el dispositivo.
+  Menús:
+    General
+      /on /off
+      /photo /resX
+      /info /users
+    /resX
+      /res0 /res1 /res2
+      /res3 /res4 /res5
+      /res6 /res7 /res8
+    /info
+      /status /res /subscribers
+    /users
+      /generate /unsubscribe
   Primer uso:
     En Telegram debemos buscar el nombre del bot.
     La primera vez no hay definidos usuarios.
@@ -62,27 +75,32 @@
   Tiempo de reacción a comandos:
     El tiempo de respuesta a un comando es variable. Se va alargando si no recibe nuevas 
     peticiones, hasta alcanzar un máximo de 30 segundos.
-  Solicitud de estado:
-    El botón /status informa del estado del sistema de detección de movimiento.
-  Solicitud de resolución:
-    El botón /res informa de la resolución con la que se están tomándo las imágenes.
-  Cambio de resolución:
-    El botón /resX abre un nuevo menú de 9 opciones para seleccionar la nueva resolución.
+  Menú resX:
+    Permite cambiar la resolución entre 9 opciones.
     La /res0 es la más baja y las /res9 la más alta.
-  Listado de suscriptores:
-    Se puede solicitar el listado de suscriptores a través de botón /users y botón /list
-  Desuscribirse:
-    Un suscriptor puede darse de baja él mismo a través de botón /users y botón /unsuscribe.
-    Si era el último, el sistema quedará abierto, puesto que el siguiente que acceda podrá darse
-    de alta a sí mismo sin la ayuda de nadie más.
-  Añadir un nuevo suscriptor:
-    Los nuevos suscriptores (invitado) siempre deben ser invitados por alguien suscrito (anfitrión).
-    El anfitrión debe generar un código a través del botón /users y botón /generate.
-    El código tiene una validez de 60 seundos. Antes de este tiempo el invitado debe enviar al bot
-    el comando /subscribe seguido del código.
+  Menú /info:
+    Permite:
+      - Consultar el estado actual del detector de movimiento
+      - Consultar la resolución actual
+      - Consultar el listado de suscriptores
+  Menú /users:
+    Permite:
+      - Generar un código para una invitación
+          Los nuevos suscriptores (invitado) siempre deben ser invitados por alguien suscrito (anfitrión).
+          El anfitrión debe generar un código a través del botón /users y botón /generate.
+          El código tiene una validez de 60 segundos. Antes de este tiempo el invitado debe enviar al bot
+          el comando /subscribe seguido del código.
+      - Darse de baja como suscriptor
   Chat:
     Si un suscriptor envía al bot mensajes que no son reconocidos como comandos, se supondrá que 
     es texto normal y se le enviará el mensaje a todos los suscriptores.
+  Reset:
+    Existe el comando /reset para resetear el dispositivo.
+    No se ha creado ningún botón asociado porque es "peligroso".
+    El reset formatea la memoria de archivo, intentando conservar lo mínimo para poder funcionar
+    correctamente: la configuración de comunicaciones y las secuencias de configuración de la cámara.
+    Se pierde la información de suscriptores.
+    El formateo tarda más cuanta más memoria de archivos tenga asignada.
 */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
@@ -115,16 +133,16 @@ byte currentRes=3; //Resolución por defecto
   const byte pinCS=4; //Pin CS de la cámara
 #endif
 //Teclado por defecto
-const String defaultKeyb="[[\"/on\",\"/off\",\"/status\"],[\"/photo\",\"/users\"],[\"/res\",\"/resX\"]]";
+const String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/resX\"],[\"/info\",\"/users\"]]";
 //Nombre del archivo que guarda el estado
 const String statusFile="/status.txt";
 //Definimos nombre del punto de acceso wifi y su contraseña (para cambiar la configuración)
 const String mySSID="RoJoPhotoPIR";
-const String mySSIDpassword="12345678";
+const String mySSIDpassword="***";
 //Contraseña del dispositivo. Utilizada para:
 //- Cambiar la configuración
 //- Actualizar por OTA
-const String devicePassword="xxx";
+const String devicePassword="***";
 
 //Definición de variables globales
 //Creamos el objeto de gestión del bot
@@ -165,7 +183,7 @@ String htmlConfig()
   //<p><label>Wifi client SSID:<input id="wifiSSID" type="text" name="SSID" value="var1"/></label></p>
   //<p><label>Wifi client password:<input id="wifiPassword" type="text" name="password" value="var2" /></label></p>
   //<p><label>Telegram bot token:<input id="botToken" type="text" name="botToken" value="var3" size="50"/></label></p>
-  //<p><label>device Id:<input id="devicePassword" type="text" name="devicePassword" /></label></p>
+  //<p><label>Device password:<input id="devicePassword" type="text" name="devicePassword" /></label></p>
   //<p><a href="?" onclick="location.href=this.href+'p0='+wifiSSID.value+'&p1='+wifiPassword.value+'&p2='+botToken.value+'&p3='+devicePassword.value;return false;"><button>set</button></a>
   //</html>
 
@@ -174,7 +192,7 @@ String htmlConfig()
   answer+="<p><label>Wifi client SSID:<input id=\"wifiSSID\" type=\"text\" name=\"SSID\" value=\"" + wifiClientSSID +"\"/></label></p>";
   answer+="<p><label>Wifi client password:<input id=\"wifiPassword\" type=\"text\" name=\"password\" value=\"" + wifiClientPassword +"\" /></label></p>";
   answer+="<p><label>Telegram bot token:<input id=\"botToken\" type=\"text\" name=\"botToken\" value=\"" + botToken + "\" size=\"50\"/></label></p>";
-  answer+="<p><label>device Id:<input id=\"devicePassword\" type=\"text\" name=\"devicePassword\" /></label></p>";
+  answer+="<p><label>Device password:<input id=\"devicePassword\" type=\"text\" name=\"devicePassword\" /></label></p>";
   answer+="<p><a href=\"?\" onclick=\"location.href=this.href+'p0='+wifiSSID.value+'&p1='+wifiPassword.value+'&p2='+botToken.value+'&p3='+devicePassword.value;return false;\"><button>set</button></a></html>";
   //Devolvemos la cadena HTML
   return answer;
@@ -184,49 +202,21 @@ void serverHandleRoot()
 {
   //Se ha solicitado la página web raíz
 
-  //Para que un cambio de configuración sea aceptado se debe cumplir que al menos tenga
-  //cuatro parámetros de nombres p0, p1, p2 y p3.
-  //Que el valor del parámetro p4 coincida con el identificador del dispositivo (deviceId)
-  //Variable para anotar si tiene todos los parámetros. Inicialmente no tienen ninguno
-  byte paramCounter=0;
-  //Array en el que guardaremos los parámetros ordenados
-  String params[4];
-  //Recorremos todos los argumentos recibidos...
-  for(byte i=0;i<server.args();i++)
+  //Para que un cambio de configuración sea aceptado se debe cumplir que tenga cuatro
+  //parámetros con los siguientes datos:
+  //  1. wifiClientSSID
+  //  2. wifiClientPassword
+  //  3. botToken
+  //  4. devicePassword
+
+  //Si tiene 4 parámetros y el último es la contraseña correcta...
+  if(server.args()==4 && server.arg(3)==devicePassword)
   {
-    //...si el parámetro es reconocido...
-    if(server.argName(i)=="p0")
-    {
-      paramCounter|=1; //Anotamos que tenemos el parámetro 0 (bit 0) 2^0
-      params[0]=server.arg(i); //Anotamos el parámetro
-    }
-    else if(server.argName(i)=="p1")
-    {
-      paramCounter|=2; //Anotamos que tenemos el parámetro 1 (bit 1) 2^1
-      params[1]=server.arg(i); //Anotamos el parámetro
-    }
-    else if(server.argName(i)=="p2")
-    {
-      paramCounter|=4; //Anotamos que tenemos el parámetro 2 (bit 2) 2^2
-      params[2]=server.arg(i); //Anotamos el parámetro
-    }
-    else if(server.argName(i)=="p3")
-    {
-      paramCounter|=8; //Anotamos que tenemos el parámetro 3 (bit 3) 2^3
-      params[3]=server.arg(i); //Anotamos el parámetro
-    }
-  }
-  //Hemos procesado todos los parámetros recibidos
-  //Si no se han recibido todos los parámetros necesarios...
-  //...o el parámetro 3 (devicePassword) no coincide...
-  //...devolvemos de nuevo la misma página de configuración
-  if(paramCounter<15 || params[3]!=devicePassword) server.send(200,"text/html",htmlConfig());
-  else //Si la configuración es correcta...
-  {
-    //...cambiamos los valores de las variables
-    wifiClientSSID=params[0]; //Parámetro 0 = SSID
-    wifiClientPassword=params[1]; //Parámetro 1 = password
-    botToken=params[2]; //Parámetro 2 = botToken;
+    //...los parámetros son correctos
+    //Cambiamos los valores de las variables
+    wifiClientSSID=server.arg(0); //Parámetro 0 = SSID
+    wifiClientPassword=server.arg(1); //Parámetro 1 = password
+    botToken=server.arg(2); //Parámetro 2 = botToken;
     //Guardaremos los valores actuales en el archivo de configuración
     saveStatus();
     //Devolvemos la página de cambio de configuración correcto
@@ -241,6 +231,8 @@ void serverHandleRoot()
     //Reiniciamos el dispositivo para que conecte con la nueva configuración
     ESP.restart();
   }
+  //Los parámetros no son correctos. Repetimos página de configuración
+  else server.send(200,"text/html",htmlConfig());
 }
 
 void try2connect()
@@ -267,8 +259,8 @@ void try2connect()
   //Configuramos el pin del led integrado como salida
   pinMode(pinLed,OUTPUT);
   //Variable para contar las veces que repetimos el bucle
-  //Si el bucle dura 100ms -> 100*100=10000ms=10s
-  byte loops=100;
+  //Si el bucle dura 100ms -> 1000*100=100000ms=100s=1m40s
+  uint16_t loops=1000;
   //Repetir mientras no se haya conectado ni haya superado el tiempo máximo
   while (WiFi.waitForConnectResult() != WL_CONNECTED && loops>0)
   {
@@ -324,6 +316,8 @@ void readStatus()
 {
   //Recupera la configuración guardada (resolución y estado) y la aplica
 
+  //Inicializamos el sistema de archivos (si es que no se había hecho antes)
+  SPIFFS.begin();
   //Abrimos el archivo del estado del relé como sólo lectura
   File f=SPIFFS.open(statusFile,"r");
   //Si no se pudo abrir...
@@ -491,15 +485,12 @@ void handleNewMessages()
           message += "Photo PIR\n\n";
           message += "/on : Activa el detector\n";
           message += "/off : Desactiva el detector\n";
-          message += "/status : Estado actual\n";
           message += "/photo : toma foto\n";
-          message += "/res : resolución actual\n";
-          message += "/resX : resolución [0,8]\n";
-          message += "/generate : Genera un código de suscripción\n";
+          message += "/resX : seleccionar resolución\n";
+          message += "/info : información\n";
+          message += "/users : gestión de usuarios\n";
+          message += "/reset : Reiniciar dispositivo\n";
           message += "/subscribe code : Añadirse a la lista\n";
-          message += "/unsubscribe : Borrarse de la lista\n";
-          message += "/list : Mostrar la lista de suscriptores\n";
-          String keyb="[[\"/on\",\"/off\"],[\"/photo\",\"/res\",\"/users\"]]";
           //Enviamos el mensaje con menú de selección de un sólo uso
           bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
         }
@@ -535,9 +526,21 @@ void handleNewMessages()
           String message = "RoJo Telegram Bot library\n";
           message += "Photo PIR\n\n";
           message += "/generate : Genera un código de suscripción\n";
-          message += "/list : Mostrar la lista de suscriptores\n";
           message += "/unsubscribe : Borrarse de la lista\n";
-          String keyb="[[\"/generate\",\"/list\",\"/unsubscribe\"]]";
+          String keyb="[[\"/generate\",\"/unsubscribe\"]]";
+          //Enviamos el mensaje con menú de selección
+          bot.sendMessage(msg.chat_id,message,keyb,true);
+        }
+        else if(msg.text=="/info")
+        {
+          Serial.println("Reconocido mensaje /info");
+          //Sólo presentaremos las opciones y el menú de selección
+          String message = "RoJo Telegram Bot library\n";
+          message += "Photo PIR\n\n";
+          message += "/status : Estado actual\n";
+          message += "/res : resolución actual\n";
+          message += "/subscribers : Mostrar la lista de suscriptores\n";
+          String keyb="[[\"/status\",\"/res\",\"/subscribers\"]]";
           //Enviamos el mensaje con menú de selección
           bot.sendMessage(msg.chat_id,message,keyb,true);
         }
@@ -561,11 +564,53 @@ void handleNewMessages()
           //Informamos al usuario
           bot.sendMessage(msg.chat_id,"Suscripción borrada");
         }
-        else if(msg.text=="/list")
+        else if(msg.text=="/subscribers")
         {
-          Serial.println("Reconocido mensaje /list");
+          Serial.println("Reconocido mensaje /subscribers");
           //Solicitan la lista de suscriptores
           bot.sendMessage(msg.chat_id,"Suscriptores:"+list(),defaultKeyb,true);
+        }
+        else if(msg.text=="/reset")
+        {
+          Serial.println("Reconocido mensaje /reset");
+          //Solicitan el reseteo del dispositivo. Informamos
+          broadcast(msg.from_name + " reinicia el dispositivo");
+          //Leemos el siguiente mensaje para que no quede pendiente de procesar 
+          //la petición de reset contínuamente
+          bot.getNextMessage(&msg);
+          //Si formateamos SPIFFS perderemos todo su contenido
+          //Hay dos archivos importantes que deberíamos salvar:
+          // - status.txt que guarda la configuración actual (conexión a wifi & botToken)
+          // - RoJoArduCAM.dat con las secuencias de configuración de la cámara
+          //El archivo de status.txt lo puede volver a generar automáticamente la función saveStatus()
+          //Pero el archivo RoJoArduCAM.dat no. Tiene un tamaño de casi 2000 bytes.
+          //No es demasiado. Intentaremos guardarlo en memoria para regenerarlo después
+          File datFile=SPIFFS.open(F("/RoJoArduCAM.dat"),"r"); //Abrimos el archivo como lectura
+          uint16_t datSize=datFile.size(); //Anotamos el tamaño del archivo
+          byte *datMem; //Puntero a array de bytes en memoria
+          datMem=new byte[datSize]; //Reservamos memoria suficiente para todo el archivo
+          datFile.readBytes((char *)datMem,datSize); //Leemos el archivo completo en memoria
+          datFile.close(); //Cerramos el archivo
+          //Formateamos SPIFFS
+          bot.sendMessage(msg.chat_id,"Formateando SPIFFS...");
+          Serial.print("Formateando SPIFFS...");
+          Serial.println(SPIFFS.format()?"OK":"KO");
+          //Guardamos de nuevo la configuración actual
+          Serial.println("Guardando archivo de configuración...");
+          saveStatus();
+          //Regeneramos el archivo RoJoArduCAM.dat
+          datFile=SPIFFS.open(F("/RoJoArduCAM.dat"),"w"); //Abrimos el archivo como escritura
+          datFile.write(datMem,datSize); //Escribimos el contenido del archivo
+          datFile.close(); //Cerramos el archivo
+          delete[] datMem; //Liberamos la memoria
+          //Hemos regenerado los archivo status.txt y RoJoArduCAM.dat
+          //Pero perderemos el archivo con de diccionario de usuarios, que tendrá que
+          //crearse de nuevo
+          //Reseteamos el dispositivo
+          bot.sendMessage(msg.chat_id,"Reseteando...");
+          Serial.println("Reseteando...");
+          delay(500);
+          ESP.restart();
         }
         else if(msg.text=="/photo")
         {
@@ -644,7 +689,7 @@ void handleNewMessages()
           broadcast(msg.from_name + " dijo: " + msg.text);
         }
       }
-      else //Al autor no es suscriptor
+      else //El autor no es suscriptor
       {
         Serial.println("Suscriptor no reconocido");
         if(msg.text.substring(0,11)=="/subscribe ")
@@ -678,7 +723,7 @@ void handleNewMessages()
     yield();
     //Hemos terminado de procesar el mensaje actual
     //Obtenemos el siguiente mensaje
-    bot.getNextMessage(&msg); 
+    bot.getNextMessage(&msg);
   }
 }
 
@@ -695,12 +740,8 @@ void setup()
 {
   //Activamos el puerto serie para mensajes de debug
   Serial.begin(115200);
-  //Inicializamos el sistema de archivos
-  SPIFFS.begin();
   //Leemos la última configuración guardada
   readStatus();
-  //Inicializamos el bot
-  bot.begin(botToken);
   //Configuramos el pin del led como salida
   pinMode(pinLed,OUTPUT);
   //Nos aseguramos que el led esté apagado
@@ -724,10 +765,11 @@ void setup()
     //transferir el programa. Para evitarlo se debe reiniciar manualmente una vez.
     ESP.restart();
   }
+  //Aplicamos la resolución que corresponde
+  camera.setResolution(currentRes);
   //Hemos inicializado la cámara correctamente
-  //Por defecto arranca en modo jpg con la resolución 2 = 320x240
   Serial.println("Ok");
- 
+
   //Inicializamos WiFi
   try2connect();
 
@@ -814,6 +856,9 @@ void setup()
   ArduinoOTA.setHostname("PhotoPIR");
   //Iniciamos el servicio de OTA
   ArduinoOTA.begin();
+
+  //Inicializamos el bot
+  bot.begin(botToken);
   
   //Informamos del reinicio
   broadcast("Dispositivo reiniciado");
