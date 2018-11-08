@@ -1,7 +1,8 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20181108
   Tema: Elementos analógicos
-  Objetivo: Aprender cómo funcionan las escrituras analógicas
+  Objetivo: Escrituras analógicas PWM. Método SigmaDelta
   Material: placa ESP32
 
   Descripción:
@@ -11,6 +12,7 @@
   Las placas ESP32 no tienen definida la función analogWrite a fecha 
   actual.
   Hacemos uso de una clase definida especialmente para ello.
+  El método de aplicación de PWM es SigmaDelta.
   Puesto que la funcionalidad PWM no está asociada con los pines, podemos
   aplicarla a cualquiera.
 
@@ -21,7 +23,7 @@
 */
 
 #include <Arduino.h>
-#include "RoJoAnalogWriteESP32.h"
+#include "RoJoAnalogWriteESP32S.h"
 
 //Declaración de variables globales
 const byte pinLed = LED_BUILTIN;

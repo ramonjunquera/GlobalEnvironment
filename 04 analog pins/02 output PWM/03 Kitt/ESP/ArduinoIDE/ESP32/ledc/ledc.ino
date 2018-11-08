@@ -1,5 +1,6 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20181108
   Tema: Elementos analógicos
   Objetivo: Aprender cómo funcionan las escrituras analógicas
   Material: placa ESP32, 8 leds
@@ -9,7 +10,7 @@
 */
 
 #include <Arduino.h>
-#include "RoJoAnalogWriteESP32.h"
+#include "RoJoAnalogWriteESP32L.h"
 
 //Array de pines de leds
 const byte pinLeds[]={23,22,21,19,18,5,4,2};
