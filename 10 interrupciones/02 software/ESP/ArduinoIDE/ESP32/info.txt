@@ -1,0 +1,111 @@
+Tema: Timers en ESP32
+Fecha: 20181109
+
+La gestión de timers se realiza gracias a la librería nativa esp32-hal-timer.h.
+Las placas ESP32 tienen 4 timers hardware numerados del 0 al 4.
+Un timer es un simple contador. Una variable que cambia su valor en una unidad cada cierto tiempo y cuando
+alcanza un valor concreto, llama a una función definida por el usuario.
+En ESP32 los contadores de los timers son variables enteras y sin signo de 64 bits (uint64_t).
+La frecuencia con la que van actualizando su valor viede definida por la frecuencia de reloj del microprocesador
+(o frecuencia base) y del prescaler.
+En un ESP32 el procesador funciona a 80MHz.
+El prescaler (o divisor) es el valor por el que se divide la frecuencia base para obtener la frecuencia de 
+actualización del contador.
+El prescaler en un valor entero de 16 bits (uint16_t).
+Es obligatorio el uso de un prescaler asociado a un timer.
+Ejemplo:
+  Si aplicamos un prescaler de 8 a un timer, sus frecuencia de actualización será de 80/8=10MHz
+Un prescaler de 16 bits admite valores entre 2 y 65535.
+  El valor 0 queda eliminado por inconsistente (no se puede dividir algo por cero).
+  El valor 1 queda eliminado porque no quedarían ciclos de reloj en el microprocesador para atender a la función
+    de timer.
+  El valor máximo de 65535 viene de 2^16-1.
+Por lo tanto la frecuencia de actualización del contador de un timer en ESP32 es:
+  máxima de 80MHz/2=40MHz, periodo=1/frecuencia=1/40000000=0.000000025s=0.000025ms=0.025us
+  mínima de 80000000Hz/65535=1220.72Hz=, periodo = 1/frecuencia=1/1220.72=0,000819s=0.819ms=819.1875us
+El contador de un timer siempre comienza a contar desde cero, pero se puede configurar si cuenta hacia adelante
+(ascendente) o hacia atrás (descendente).
+Finalmente un timer también puede tener asociada una alarma.
+Una alarma es un valor que se compara con el contador del timer en cada actualización y si son iguales, se llama
+a la función asociada al timer.
+Las alarmas se pueden definir de una sóla ejecución o de autorecarga (repetitivas).
+Una alarma de una sola ejecución, después de hacer la llamada a la función del timer, se desactiva.
+Una alarma de autorecarga, tras llamar a la función de timer, resetea el contador.
+
+Los pasos habituales para crear un timer son:
+  Creación de puntero a estructura de timer
+    La estructura de un timer tiene es del tipo hw_timer_t
+    Ejemplo:
+      hw_timer_t *myTimer;
+  Creación de la función de timer.
+    Debe ser una función que no tiene parámetros y no devuelve valor.
+    La teoría dice que debe ser tan corta y rápida como sea posible para no perder otras posibles interrupciones.
+    No es un buen lugar para hacer llamadas lentas como trabajar con el puerto serie.
+  Creación de timer y asignación a puntero:
+    Utilizamos la función
+      hw_timer_t * timerBegin(uint8_t timer, uint16_t divider, bool countUp);
+    Donde
+      timer = número de timer hardware [0,3]
+      divider = prescaler que define la frecuencia y periodo de actualización del contador del timer
+      countUp = tipo de contador: true = ascendente, false = descendente
+  Asignación de la función de timer
+    Utilizamos la función
+      void timerAttachInterrupt(hw_timer_t *timer, void (*fn)(void), bool edge);
+    Donde
+      *timer = puntero a timer hardware
+      *fn = puntero a función sin parámetros que no devuelve nada
+      edge = tipo de interrupción: true = edge, false = level
+    Habitualmente para un timer se utilizan el tipo de interrupción edge
+  Asignamos alarma al timer
+    Utilizamos la función
+      void timerAlarmWrite(hw_timer_t *timer, uint64_t interruptAt, bool autoreload);
+    Donde
+      *timer = puntero a timer hardware
+      interruptAt = valor de alarma que se comparará con el contador del timer y si coinciden se llamará a la función.
+      autoreload = recarga automática de la alarma (timer repetitivo)
+  Activamos el timer con la función
+    bool timerAlarmEnabled(hw_timer_t *timer);
+
+Otras funciones útiles contenidas en la misma librería son:
+  void timerEnd(hw_timer_t *timer);
+    Permite desactivar un timer.
+  void timerDetachInterrupt(hw_timer_t *timer);
+    Elimina la referencia de la función de timer.
+  void timerStart(hw_timer_t *timer);
+    Permite que el contador de un timer pueda cambiar su valor
+  void timerStop(hw_timer_t *timer);
+    Impide que el contador de un timer pueda cambiar su valor
+  void timerRestart(hw_timer_t *timer);
+    Asigna el valor 0 al contador de un timer
+  void timerWrite(hw_timer_t *timer, uint64_t val);
+    Asigna un valor concreto al contador de un timer
+  void timerSetDivider(hw_timer_t *timer, uint16_t divider);
+    Permite asignar el valor del prescaler de un timer
+  void timerSetCountUp(hw_timer_t *timer, bool countUp);
+    Permite asignar la dirección del contador de un timer
+  void timerSetAutoReload(hw_timer_t *timer, bool autoreload);
+    Permite asignar el tipo de timer (si es repetitivo o de una sóla ejecución)
+  bool timerStarted(hw_timer_t *timer);
+    Indica si el contador se puede actualizar (si el timer está corriendo)
+  uint64_t timerRead(hw_timer_t *timer);
+    Devuelve el valor del contador del timer
+  uint64_t timerReadMicros(hw_timer_t *timer);
+    Devuelve el tiempo en microsegundos desde que comenzó el ciclo (desde la última vez que el contador fue cero)
+  double timerReadSeconds(hw_timer_t *timer);
+    Devuelve el tiempo en segundos desde que comenzó el ciclo (desde la última vez que el contador fue cero)
+  uint16_t timerGetDivider(hw_timer_t *timer);
+    Devuele el prescaler actual asignado a un timer
+  bool timerGetCountUp(hw_timer_t *timer);
+    Devuelve si el contador de un timer es ascendente
+  bool timerGetAutoReload(hw_timer_t *timer);
+    Devuelve si el timer es repetitivo
+  void timerAlarmEnable(hw_timer_t *timer);
+    Activa la alarma (y llamadas a su función) de un timer
+  void timerAlarmDisable(hw_timer_t *timer);
+    Desactiva la alarma de un timer
+  uint64_t timerAlarmRead(hw_timer_t *timer);
+    Devuelve el valor de alarma
+  uint64_t timerAlarmReadMicros(hw_timer_t *timer);
+    Devuelve el tiempo en microsegundos que se tarda en alcanzar el valor de alarma
+  double timerAlarmReadSeconds(hw_timer_t *timer);
+    Devuelve el tiempo en segundos que se tarda en alcanzar el valor de alarma

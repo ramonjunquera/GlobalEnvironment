@@ -1,4 +1,5 @@
-PWM en ESP32
+Tema: PWM en ESP32
+Fecha: 20181110
 
 ESP32 no tiene implementada la instrucción analogWrite de Arduino para poder otorgar
 funcionalidades PWM a un pin.
@@ -31,12 +32,34 @@ PWM por ledc
   La librería es nativa.
   Tiene disponibles 16 canales.
   Cada canal es un timer de 15 bits de resolución máxima.
-  La resolución es seleccionable por número de bits, entre 1 y 15.
-  La frecuencia máxima depende de la resolución y se calcula con la siguiente fórmula:
-    frecuencia=80000000/2^resolución
-  Calculamos la frecuencia máxima para una resolución de 8 bits:
-    frecuencia=80000000/2^resolución=80000000/2^8=80000000/256=312500Hz
-    Es la misma frecuencia que ofrece el sistema SigmaDelta.
+  La resolución es seleccionable por número de bits, entre 1 y 15. Por lo tanto el valor
+  máximo del contador del timer dependerá de ello = 2^resolución-1
+  distintos valores para el máximo del contador
+  La frecuencia depende de la resolución y se calcula con la siguiente fórmula:
+    frecuencia máxima=80000000/2^resolución
+    frecuencia mínima=2^(10-resolución)
+  La tabla completa es:
+
+  res c.max f.min  f.max
+  --- ----- ----- --------
+   1      1  512  40000000
+   2      3  256  20000000
+   3      7  128  10000000
+   4     15   64   5000000
+   5     31   32   2500000
+   6     63   16   1250000
+   7    127    8    625000
+   8    255    4    312500
+   9    511    2    156250
+  10   1023    1     78125
+  11   2047    1     39062
+  12   4095    1     19531
+  13   8191    1      9765
+  14  16383    1      4882
+  15  32767    1      2441
+
+  Podemos comprobar que la frecuencia máxima para una resolución de 8 bits es de 312500Hz.
+  La misma que ofrece el sistema SigmaDelta.
   En cada canal se puede configurar de manera independiente la frecuencia, la resolución, el valor a partir
   del cual debe cambiar el estado y el pin al cual se asocia.
   Las funciones a través de las que se realizan estas acciones son:
@@ -44,15 +67,14 @@ PWM por ledc
       Asigna resolución y frecuencia a un canal.
       El canal debe estar en el rango de 0 a 15.
       La resolución es el número de bits de resolución del timer, entre 1 y 15.
-      La frecuencia está limitada por la frecuencia máxima que la define la resolución con la fórmula:
-        frecuencia=80000000/2^resolución
+      La frecuencia está limitada por la frecuencia máxima, definida por la resolución.
     void ledcAttachPin(uint8_t pin,uint8_t channel)
       Permite asociar un pin a un canal
     void ledcWrite(uint8_t channel,uint32_t duty)
       Permite indicar el valor a partir del cual el estado cambia.
-      Este valor sebe estar dentro de un rango definido por la resolución:
+      Este valor debe estar dentro de un rango definido por la resolución:
         Mínimo = 0
-        Máximo = 2^resolución-1
+        Máximo = máximo valor del contador del timer
   Una vez asociado el pin, se puede desasociar con:
     void ledcDetachPin(uint8_t pin)
   Tenemos funciones de consulta para:
