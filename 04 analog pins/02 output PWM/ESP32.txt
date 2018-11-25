@@ -1,5 +1,5 @@
 Tema: PWM en ESP32
-Fecha: 20181110
+Fecha: 20181125
 
 ESP32 no tiene implementada la instrucción analogWrite de Arduino para poder otorgar
 funcionalidades PWM a un pin.
@@ -92,6 +92,12 @@ Comparaciones
   El método ledc tiene más resolución y número de canales.
   SigmaDelta es más exácto manteniendo frecuencias y tiempos.
 
-Librería
-  La librería RoJoAnalogWriteESP32 utiliza la técnica de SigmaDelta para implementar la
-  función analogWrite con los mismos parámetros que en Arduino.
+Librerías
+  Se ha construido una librería para cada método:
+  - RoJoAnalogWriteESP32S para SigmaDelta
+  - RoJoAnalogWriteESP32L para ledc
+  En ambas se implementa la función analogWrite con los mismo parámetros que en Arduino:
+    bool analogWrite(byte pin,byte level);
+
+Nota
+  Aunque ambos métodos son totalmente distintos, son compatibles entre sí y no se interfieren mutuamente.
