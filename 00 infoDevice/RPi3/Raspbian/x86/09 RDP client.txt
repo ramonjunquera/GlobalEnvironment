@@ -1,0 +1,9 @@
+Cómo instalar un cliente de escritorio remoto
+
+Sólo he encontrado un paquete de cliente de escritorio remoto que sea compatible con Windows10
+y su nivel de seguridad: Remmina
+
+Comando para su instalación:
+sudo apt-get install remmina
+
+Aparecerá en el menú principal, en la sección Internet

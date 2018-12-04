@@ -1,7 +1,8 @@
-Autor: Ramón Junquera
+﻿Autor: Ramón Junquera
 Tema: ArduCAM
-Descripción:
+Fecha: 20181204
 
+Descripción:
 ArduCAM es un fabricante de cámaras de vídeo.
 Los desarrollos y drivers oficiales se publican en:
 https://github.com/ArduCAM
@@ -14,7 +15,7 @@ Demasiado alta para los dispositivos que estamos utilizando (Arduino/ESP).
 
 ArduCAM introduce una memoria incluida en la cámara que hace de buffer
 intermedio. Es capaz de tomar una imagen, guardarla en la memoria interna
-y transmitirla a petición del usuario a la velolidad que admita el
+y transmitirla a petición del usuario a la velocidad que admita el
 bus SPI.
 Esta es la razón por la que son las cámaras ideales para procesadores
 lentos.
@@ -44,7 +45,7 @@ He notado que después de un tiempo de uso la cámara se degrada.
 Comienza a fallar con una alimentación de 3.3V y es necesario conectarla a 5V.
 Más tarde comienza a fallar la conexión I2C. No responde a una conexión y desde
 el programa de I2Cscanner no se detecta el dispositivo algunas veces.
-Finalmente falla contínuamente I2C y no se puede utilizar la cámara.
+Finalmente falla continuamente I2C y no se puede utilizar la cámara.
 No es un problema de estabilidad de alimentación. Incluyendo condensadores no
 se soluciona el problema.
 

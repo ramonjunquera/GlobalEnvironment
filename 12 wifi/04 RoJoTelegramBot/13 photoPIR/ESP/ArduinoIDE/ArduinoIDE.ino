@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Versión: 20181105
+  Versión: 20181204
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -101,21 +101,38 @@
     correctamente: la configuración de comunicaciones y las secuencias de configuración de la cámara.
     Se pierde la información de suscriptores.
     El formateo tarda más cuanta más memoria de archivos tenga asignada.
+  Librerías:
+    Se ha utilizado la librería WiFiServer.h para gestionar el servidor web de configuración.
+    ESP8266 tiene una excelente librería para este propósito llamana ESP8266WebServer.h.
+    El problema es que el programa pretende ser compatible también con ESP32, y no existe una
+    librería equivalente oficial para este procesador.
+
+  Posibles errores en la inicialización de la cámara:
+      0: No hubo errores
+      1: Error al inicializar el sistema de archivos
+      2: Falta el archivo RoJoArduCAM.dat
+      3: Error de conexión SPI
+      4: La cámara no es el modelo esperado
+
+  Posibles errores en el envío de una imágen:
+      0: Imagen guardada con éxito
+      1: Cámara no inicializada
+      2: No se ha capturado ninguna imagen
+      3: La imagen aun no ha terminado de capturarse
+      4: No se puede crear el archivo
 */
 #include <Arduino.h>
 #ifdef ESP8266 //Si es una ESP8266...
-  #include <ESP8266WiFi.h> //Librería para gestión de wifi para ESP8266
-  #include <ESP8266WebServer.h> //Gestión de servidor web
   #include <FS.h> //Gestión de SPIFFS
 #elif defined(ESP32)
-  #include <WiFi.h> //Librería para gestión de wifi para ESP32
-  #include <WebServer.h> //Gestión de servidor web
   #include <SPIFFS.h> //Gestión de SPIFFS
 #endif
+#include <WiFiServer.h> //Gestión de servidor wifi
 #include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
 #include "RoJoArduCAM.h" //Librería de gestión de la cámara
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
 #include <ArduinoOTA.h> //Para gestión de OTA
+#include "RoJoList.h" //Librería de gestión de listas para los parámetros de una solicitud web
 
 //Definición de constantes globales
 const uint32_t checkingGap=1000; //Tiempo de espera en milisegundos para comprobación de nuevos mensajes
@@ -138,11 +155,11 @@ const String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/resX\"],[\"/info\",
 const String statusFile="/status.txt";
 //Definimos nombre del punto de acceso wifi y su contraseña (para cambiar la configuración)
 const String mySSID="RoJoPhotoPIR";
-const String mySSIDpassword="***";
+const String mySSIDpassword="xxx";
 //Contraseña del dispositivo. Utilizada para:
 //- Cambiar la configuración
 //- Actualizar por OTA
-const String devicePassword="***";
+const String devicePassword="xxx";
 
 //Definición de variables globales
 //Creamos el objeto de gestión del bot
@@ -166,19 +183,24 @@ RoJoFileDictionary subscribers;
 //Creamos un servidor web en el puerto 80 para cambiar la configuración
 //La ip del servidor es fija en el punto de acceso propio: 192.168.4.1
 //La URL para cambiar la dirección será: http://192.168.4.1
-#ifdef ESP8266 //Si es una ESP8266...
-  ESP8266WebServer server(80);
-#elif defined(ESP32)
-  WebServer server(80);
-#endif
+WiFiServer server(80);
 String wifiClientSSID; //Nombre del punto de acceso (SSID) al que nos conectamos como clientes
 String wifiClientPassword; //Contraseña de punto de acceso al que nos conectamos como clientes
 String botToken; //Token del bot de Telegram ToniCamera1
 
 String htmlConfig()
 {
-  //Compone un texto HTML con la página de configuración según la siguiente plantilla
-  //<html>
+  //Compone una respuesta correcta en HTML con la página de configuración
+  //La cabecera de una respuesta correcta de HTML es:
+  
+  //HTTP/1.1 200 OK
+  //Content-Type: text/html; charset=utf-8
+  //
+
+  //Es importante notar que tras la última línea de la cabecera siempre va una línea vacía
+  //Después utilizamos la siguiente plantilla para mostrar el contenido:
+  
+  //<!DOCTYPE html><html>
   //<h1>photoPIR configuration</h1>
   //<p><label>Wifi client SSID:<input id="wifiSSID" type="text" name="SSID" value="var1"/></label></p>
   //<p><label>Wifi client password:<input id="wifiPassword" type="text" name="password" value="var2" /></label></p>
@@ -188,7 +210,8 @@ String htmlConfig()
   //</html>
 
   //Se sustituyen los valores de los campos por los valores de la configuración actual
-  String answer="<html><h1>photoPIR configuration</h1>";
+  String answer="HTTP/1.1 200 OK\nContent-Type: text/html; charset=utf-8\n\n";
+  answer+="<!DOCTYPE html><html><h1>photoPIR configuration</h1>";
   answer+="<p><label>Wifi client SSID:<input id=\"wifiSSID\" type=\"text\" name=\"SSID\" value=\"" + wifiClientSSID +"\"/></label></p>";
   answer+="<p><label>Wifi client password:<input id=\"wifiPassword\" type=\"text\" name=\"password\" value=\"" + wifiClientPassword +"\" /></label></p>";
   answer+="<p><label>Telegram bot token:<input id=\"botToken\" type=\"text\" name=\"botToken\" value=\"" + botToken + "\" size=\"50\"/></label></p>";
@@ -198,41 +221,161 @@ String htmlConfig()
   return answer;
 }
 
-void serverHandleRoot()
+void getRequestParameters(WiFiClient *client,RoJoList<String> *requestParams)
 {
-  //Se ha solicitado la página web raíz
+  //Dato un cliente, obtenemos su solicitud y descomponemos los parámetros en una lista
 
+  //La primera línea de la petición de un cliente tiene la siguiente sintaxis:
+  //  GET / HTTP/1.1
+  //El path / puede ser más complejo que sólo el raíz:
+  //  GET /firstLevel HTTP/1.1
+  //O puede indicar algún archivo concreto:
+  //  GET /firstLevel/index.html HTTP/1.1
+  //También puede contener parámetros:
+  //  GET /?p0=miPuntoDeAcceso&p1=myPassword&p2=123456789:ABCDEFGHIJK HTTP/1.1
+  //La petición puede tener más líneas en las que se especifican detalles del servidor, tipo de browser
+  //utilizado, tipo de seguridad en la conexión, tipos de codificación, tipos de archivo admitidos,
+  //lenguaje, etc.
+
+  //Leemos la primera línea de la solicitud recibida
+  String requestHeader=""; //Variable en la que guardaremos la primera linea de la solicitud
+  bool lineEnd=false; //Inicialmente no hemos terminado de leer la primera línea
+  //Mientras haya información pendiente de recibir y no hayamos completado la primera línea...
+  while(client->available() && !lineEnd)
+  {
+    //Anotamos el siguiente carácter
+    char c=client->read();
+    //Si en un fin de línea...hemos terminado de leer la primera línea
+    if(c=='\n') lineEnd=true;
+    //Si no es un fin de línea...lo añadimos a los caracteres de la línea
+    else requestHeader+=c;
+  }
+  //Hacemos tiempo asegurándonos que la lista de parámetros está vacía
+  requestParams->clear();
+  //Despreciamos el resto de la solicitud
+  client->flush();
+  //Tenemos la primera línea de la solicitud
+  //Sólo nos interesan los parámetros
+  //Intentamos localizar el principio de la los parámetros
+  //Anotamos la posición del inicio de los parámetros '?'
+  int pos=requestHeader.indexOf('?');
+  //Si no se han encontrado parámetros...hemos terminado!
+  if(pos<0) return;
+  //Se han encontrado parámetros
+  //Recortamos el prefijo
+  requestHeader=requestHeader.substring(pos+1);
+  //Localizamos el final de los parámetros ' '
+  pos=requestHeader.indexOf(' ');
+  //Si no se ha encontrado el final...hemos terminado!
+  if(pos<0) return;
+  //Hemos encontrado el final de los parámetros
+  //Recortamos el sufijo
+  requestHeader=requestHeader.substring(0,pos);
+  //Formato actual de parámetros:
+  // p0=miPuntoDeAcceso&p1=myPassword&p2=123456789:ABCDEFGHIJK
+  //Procesamos la cadena mientras haya algo que procesar
+  while(requestHeader.length())
+  {
+    //Localizamos el separador del nombre del parámetro y su valor
+    pos=requestHeader.indexOf('=');
+    //Si no se ha encontrado el separador...hemos terminado!
+    if(pos<0) requestHeader="";
+    else //Separador localizado
+    {
+      //Recortamos prefijo
+      requestHeader=requestHeader.substring(pos+1);
+      //Localizamos inicio de siguiente parámetro
+      pos=requestHeader.indexOf('&');
+      //Puntero a valor a guardar
+      String *paramString;
+      //Si no se ha encontrado...
+      if(pos<0)
+      {
+        //...es porque este es el último parámetro
+        //El parámetro será el resto de la línea
+        paramString=new String(requestHeader);
+        //No tenemos nada más para procesar
+        requestHeader="";
+      }
+      else //Hemos encontrado más parámetros
+      {
+        //Anotamos el valor hasta antes del siguiente parámetro
+        paramString=new String(requestHeader.substring(0,pos));
+        //Dejaremos el siguiente parámetro
+        requestHeader=requestHeader.substring(pos+1);
+      }
+      //Guardamos el parámetro en la lista
+      requestParams->add2end(paramString);
+    }
+  }
+  //Hemos terminado de procesar la línea de parámetros
+}
+
+void serverHandleClient()
+{
+  //Comprueba si hay conexiones web en el servidor
+
+  //Si no hay clientes conectados...hemos terminado
+  if(!server.hasClient()) return;
+  //Hay algún cliente conectado
+
+  //Tomamos nota de quién es
+  WiFiClient client=server.available();
+  //Creamos una lista para guardar los parametros de la solicitud
+  RoJoList<String> requestParams;
+  //Leemos la solicitud y descomponemos sus parámetros en la lista
+  getRequestParameters(&client,&requestParams);
   //Para que un cambio de configuración sea aceptado se debe cumplir que tenga cuatro
   //parámetros con los siguientes datos:
   //  1. wifiClientSSID
   //  2. wifiClientPassword
   //  3. botToken
   //  4. devicePassword
-
-  //Si tiene 4 parámetros y el último es la contraseña correcta...
-  if(server.args()==4 && server.arg(3)==devicePassword)
+  //Si tiene 4 parámetros...
+  if(requestParams.count()==4)
   {
-    //...los parámetros son correctos
-    //Cambiamos los valores de las variables
-    wifiClientSSID=server.arg(0); //Parámetro 0 = SSID
-    wifiClientPassword=server.arg(1); //Parámetro 1 = password
-    botToken=server.arg(2); //Parámetro 2 = botToken;
-    //Guardaremos los valores actuales en el archivo de configuración
-    saveStatus();
-    //Devolvemos la página de cambio de configuración correcto
-    //La página se base en el HTML:
-    //<html>
-    //<h1>photoPIR configuration applied!</h1>
-    //<h2>restarting...</h2>
-    //</html>
-    server.send(200,"text/html","<html><h1>photoPIR configuration applied!</h1><h2>restarting...</h2></html>");
-    //Esperamos un momento
-    delay(1000);
-    //Reiniciamos el dispositivo para que conecte con la nueva configuración
-    ESP.restart();
+    //Creamos puntero para obtener los parámetros
+    String *param;
+    //Obtenemos el cuarto parámetro
+    requestParams.index(&param,3);
+    //Si es la contraseña correcta...
+    if(*param == devicePassword)
+    {
+      //...los parámetros son correctos
+      //Cambiamos los valores de las variables
+      requestParams.index(&param,0); //Parámetro 0 = SSID
+      wifiClientSSID=*param;
+      requestParams.index(&param,1); //Parámetro 1 = password
+      wifiClientPassword=*param;
+      requestParams.index(&param,2); //Parámetro 2 = botToken;
+      botToken=*param;
+      //Guardaremos los valores actuales en el archivo de configuración
+      saveStatus();
+      //Devolvemos la página de cambio de configuración correcto
+      //La respuesta es:
+
+      //HTTP/1.1 200 OK
+      //Content-Type: text/html; charset=utf-8
+      //
+      //<!DOCTYPE html><html>
+      //<html>
+      //<h1>photoPIR configuration applied!</h1>
+      //<h2>restarting...</h2>
+      //</html>
+      client.println("HTTP/1.1 200 OK\nContent-Type: text/html; charset=utf-8\n\n<!DOCTYPE html><html><h1>photoPIR configuration applied!</h1><h2>restarting...</h2></html>");
+      //Cerramos conexión con este cliente
+      client.stop();
+      //Esperamos un momento
+      delay(1000);
+      //Reiniciamos el dispositivo para que conecte con la nueva configuración
+      ESP.restart();
+    }
   }
-  //Los parámetros no son correctos. Repetimos página de configuración
-  else server.send(200,"text/html",htmlConfig());
+  //El número de parámetros no es correcto o la contraseña (parámetro 4) es incorrecta
+  //Repetimos página de configuración
+  client.println(htmlConfig());
+  //Cerramos conexión con este cliente
+  client.stop();
 }
 
 void try2connect()
@@ -249,8 +392,6 @@ void try2connect()
   //Configuramos el punto de acceso wifi propio
   //Necesitamos convertir los Strings en arrays de char
   WiFi.softAP(mySSID.c_str(),mySSIDpassword.c_str()); //Nombre y contraseña
-  //Indicamos la función a la que se debe llamar cuando se solicite la URL raíz
-  server.on("/",serverHandleRoot);
   //Arrancamos el servidor web para cambio de configuración
   server.begin();
   //Inicializamos conexión wifi con las credenciales
@@ -332,7 +473,7 @@ void readStatus()
   //Tenemos el archivo abierto
 
   //El archivo debe tener 5 líneas
-  Serial.println("Leyendo archivo de configuración:");
+  Serial.println("\nLeyendo archivo de configuración:");
   //  línea 1: resolución
   currentRes=readLine(f).toInt();
   Serial.println("currentRes="+String(currentRes));
@@ -391,12 +532,10 @@ void broadcastPhoto(String filename)
 
 void subscribe(TelegramMessage *msg)
 {
-  //Incluye al autor del mensaje del parámetro a la lista de suscriptores
+  //Incluye al autor del mensaje del parámetro en la lista de suscriptores
 
-  //Mensaje a responder
-  String txt="Suscripción completada";
-  //Lo añadimos. Y si ya existía...cambiamos el mensaje
-  if(subscribers.add((*msg).chat_id,(*msg).from_name)) txt="Ya estabas suscrito";
+  //Si ya existía se actualiza el nombre
+  subscribers.add((*msg).chat_id,(*msg).from_name);
   //Informamos a todos
   broadcast((*msg).from_name + " es un nuevo suscriptor invitado por " + subscriptionCodeGenerator);
 }
@@ -615,15 +754,13 @@ void handleNewMessages()
         else if(msg.text=="/photo")
         {
           Serial.println("Reconocido mensaje /photo");
-          //...solicitamos que se haga la foto...
+          uint32_t resX,resY; //Resolución de la imagen guardada
+          //Solicitamos que tome una foto
           camera.takePhoto();
-          //...enviamos un mensaje de acción de "escribiendo"
+          //Enviamos un mensaje de acción de "escribiendo"
           bot.sendChatAction(msg.chat_id,0);
-          //Resolución de la imagen guardada
-          uint32_t resX,resY;
-          //...descargamos la foto a local...
-          //Como nombre de archivo sólo el nombre. Sin barra inicial
-          //La extensión la pone él
+          //Pedimos que se guarde la imágen y tomamos nota del error
+          //Como nombre de archivo sólo el nombre. Sin barra inicial. La extensión la pone él
           byte errorCode=camera.savePhoto("photo",&resX,&resY);
           //Si hubo algún error...
           if(errorCode)
@@ -872,7 +1009,7 @@ void loop()
   //Comprobamos si hay alguna petición de actualización por OTA
   ArduinoOTA.handle();
   //Refresca las conexiones del servidor web
-  server.handleClient();
+  serverHandleClient();
   //Calculamos el tiempo máximo de espera
   uint32_t maxTime=millis()+currentWait;
   //Mientras no lleguemos al máximo tiempo de espera...

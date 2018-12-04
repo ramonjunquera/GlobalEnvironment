@@ -18,13 +18,13 @@ Los únicos pines necesarios son: GND, OUT y VIN.
 
 El voltaje de entrada debe estar en el rango de 4 a 28V.
 Por lo tanto NO se puede alimentar con 3.3V porque no tendrá suficiente
-como para ponerse en marcha e intentará inicializarse contínuamente.
-Lo normal ee que lo conectemos a 5V.
+como para ponerse en marcha e intentará inicializarse continuamente.
+Lo normal es que lo conectemos a 5V.
 
 El pin OUT tiene una señal limitada a 3.3V. Aun así, es suficiente como
 para conectarlo a un pin digital de entrada de 5V y obtener señal.
 
-Cuando arranca, se activa el pin OUT durante unos 3 segundo.
+Cuando arranca, se activa el pin OUT durante unos 3 segundos.
 Después se desactiva e inicializa.
 Tarda unos 10 segundos en estar operativo.
 
