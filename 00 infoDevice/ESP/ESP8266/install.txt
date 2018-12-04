@@ -1,4 +1,5 @@
 Instalación y configuración placas ESP8266 con Arduino IDE
+Fecha: 20181204
 
 Driver USB.
 Esta familia de dispositivos no tienen el chip FTDI de conexión USB que ya viene
@@ -18,7 +19,7 @@ Esta URL permite que tengamos más variedad de placas para seleccionar.
 Volvemos al menú Tools\Board:\Board Manager...
 En el filtro de la parte superior escribimos esp8266 y nos aparecerá la placa
   "esp8266 by ESP8266 Community".
-Lo seleccionamos. Seleccionamos la última versión disponible (a fecha actual es la v2.4.1)
+Lo seleccionamos. Seleccionamos la última versión disponible (a fecha actual es la v2.4.2)
 y pulsamos el botón install.
 Tarda un poco en descargar e instalar. Al finalizar pulsamos el botón cerrar.
 Si miramos de nuevo en Tools\Board:, podremos ver que al final de la lista hay una
