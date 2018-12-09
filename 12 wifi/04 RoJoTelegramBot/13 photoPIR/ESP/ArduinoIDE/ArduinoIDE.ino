@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Versión: 20181204
+  Versión: 20181206
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
@@ -759,9 +759,25 @@ void handleNewMessages()
           camera.takePhoto();
           //Enviamos un mensaje de acción de "escribiendo"
           bot.sendChatAction(msg.chat_id,0);
-          //Pedimos que se guarde la imágen y tomamos nota del error
-          //Como nombre de archivo sólo el nombre. Sin barra inicial. La extensión la pone él
+          //Pedimos que se guarde la foto y anotamos el posible error
           byte errorCode=camera.savePhoto("photo",&resX,&resY);
+          //Si no ha dado tiempo a sacar la foto...
+          if(errorCode==3)
+          {
+            //Añadiremos unos cuantos intentos más, para asegurarnos
+            //Número de ciclos de espera
+            byte tryCount=20;
+            //Mientras no haya tenido tiempo de tomar la foto y no hayamos alcanzado el máximo número de intentos...
+            while(errorCode==3 && tryCount-->0)
+            {
+              //Damos tiempo a que termine de capturar la foto
+              delay(100);
+              //Pedimos que se guarde la imágen y tomamos nota del error
+              //Como nombre de archivo sólo el nombre. Sin barra inicial. La extensión la pone él
+              errorCode=camera.savePhoto("photo",&resX,&resY);
+            }
+            Serial.println("DEBUG. tryCount="+String(tryCount));
+          }
           //Si hubo algún error...
           if(errorCode)
           {
