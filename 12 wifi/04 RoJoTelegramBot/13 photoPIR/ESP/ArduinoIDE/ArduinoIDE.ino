@@ -1,9 +1,13 @@
 /*
+ Pendiente:
+ - Se producen muchos errores al descargar las fotos de la cámara. Porqué?
+*/
+/*
   Autor: Ramón Junquera
-  Versión: 20181206
+  Versión: 20190107
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
-  Material: placa ESP, ArduCAM-Mini-2MP, PIR sensor
+  Material: placa ESP, serverHandleClientArduCAM-Mini-2MP, PIR sensor
   Descripción:
     Sistema de videovigilancia con control por Telegram
     El sistema consta de una placa ESP, una cámara y un sensor infrarrojo de movimiento.
@@ -47,7 +51,7 @@
       /res3 /res4 /res5
       /res6 /res7 /res8
     /info
-      /status /res /subscribers
+      /status /subscribers
     /users
       /generate /unsubscribe
   Primer uso:
@@ -146,20 +150,20 @@ byte currentRes=3; //Resolución por defecto
   const byte pinPIR=D3; //Pin del sensor PIR
   const byte pinCS=D0; //Pin CS de la cámara
 #elif defined(ESP32)
-  const byte pinPIR=2; //Pin del sensor PIR
+  const byte pinPIR=15; //Pin del sensor PIR
   const byte pinCS=4; //Pin CS de la cámara
 #endif
 //Teclado por defecto
 const String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/resX\"],[\"/info\",\"/users\"]]";
 //Nombre del archivo que guarda el estado
-const String statusFile="/status.txt";
+const String statusFile="/config.txt";
 //Definimos nombre del punto de acceso wifi y su contraseña (para cambiar la configuración)
 const String mySSID="RoJoPhotoPIR";
-const String mySSIDpassword="xxx";
+const String mySSIDpassword="12345678";
 //Contraseña del dispositivo. Utilizada para:
 //- Cambiar la configuración
 //- Actualizar por OTA
-const String devicePassword="xxx";
+const String devicePassword="12345678";
 
 //Definición de variables globales
 //Creamos el objeto de gestión del bot
@@ -311,6 +315,27 @@ void getRequestParameters(WiFiClient *client,RoJoList<String> *requestParams)
   //Hemos terminado de procesar la línea de parámetros
 }
 
+void saveStatus()
+{
+  //Guarda la configuración actual (resolución y estado)
+  //en un archivo en SPIFFS
+
+  //Abrimos el archivo del estado para escritura
+  File f=SPIFFS.open(statusFile,"w");
+  //Línea 1: resolución
+  f.println(currentRes);
+  //Línea 2: estado
+  f.println(enabled);
+  //Línea 3: SSID
+  f.println(wifiClientSSID);
+  //Línea 4: WiFi password
+  f.println(wifiClientPassword);
+  //Línea 5: botToken
+  f.println(botToken);
+  //Cerramos el archivo
+  f.close();
+}
+
 void serverHandleClient()
 {
   //Comprueba si hay conexiones web en el servidor
@@ -319,6 +344,7 @@ void serverHandleClient()
   if(!server.hasClient()) return;
   //Hay algún cliente conectado
 
+  Serial.println("DEBUG. serverHandleClient. Cliente detectado");
   //Tomamos nota de quién es
   WiFiClient client=server.available();
   //Creamos una lista para guardar los parametros de la solicitud
@@ -334,6 +360,7 @@ void serverHandleClient()
   //Si tiene 4 parámetros...
   if(requestParams.count()==4)
   {
+    Serial.println("DEBUG. serverHandleClient. Solicitud aplicación de parámetros");
     //Creamos puntero para obtener los parámetros
     String *param;
     //Obtenemos el cuarto parámetro
@@ -363,6 +390,8 @@ void serverHandleClient()
       //<h2>restarting...</h2>
       //</html>
       client.println("HTTP/1.1 200 OK\nContent-Type: text/html; charset=utf-8\n\n<!DOCTYPE html><html><h1>photoPIR configuration applied!</h1><h2>restarting...</h2></html>");
+      //Damos tiempo a que se envíe el texto HTML
+      delay(20);
       //Cerramos conexión con este cliente
       client.stop();
       //Esperamos un momento
@@ -372,8 +401,13 @@ void serverHandleClient()
     }
   }
   //El número de parámetros no es correcto o la contraseña (parámetro 4) es incorrecta
+  Serial.println("DEBUG. serverHandleClient. Solicitud de página estándar");
   //Repetimos página de configuración
   client.println(htmlConfig());
+  //Damos tiempo a que se envíe el texto HTML
+  //Si no lo hacemos, se cerrará la conexión sin enviarlo completamente y obtendremos un error en el navegador
+  //o simplemente el browser no sabrá interpretar el código incompleto y no mostrará nada
+  delay(20);
   //Cerramos conexión con este cliente
   client.stop();
 }
@@ -415,30 +449,10 @@ void try2connect()
   //Si no hemos podido conectar...reseteamos
   if(WiFi.waitForConnectResult() != WL_CONNECTED) ESP.restart();
   //Hemos podido conectar!
+  Serial.println("Wifi conectado a "+wifiClientSSID);
   //Apagamos el led integrado
   digitalWrite(pinLed,!ledON);
   //Devolvemos el control
-}
-
-void saveStatus()
-{
-  //Guarda la configuración actual (resolución y estado)
-  //en un archivo en SPIFFS
-
-  //Abrimos el archivo del estado para escritura
-  File f=SPIFFS.open(statusFile,"w");
-  //Línea 1: resolución
-  f.println(currentRes);
-  //Línea 2: estado
-  f.println(enabled);
-  //Línea 3: SSID
-  f.println(wifiClientSSID);
-  //Línea 4: WiFi password
-  f.println(wifiClientPassword);
-  //Línea 5: botToken
-  f.println(botToken);
-  //Cerramos el archivo
-  f.close();
 }
 
 String readLine(File f)
@@ -493,6 +507,8 @@ void readStatus()
   Serial.println("botToken="+botToken);
   //Cerramos el archivo
   f.close();
+  //Damos tiempo para que envíe todos los mensajes de debug por el puerto serie
+  delay(100);
 }
 
 void broadcast(String text)
@@ -520,6 +536,19 @@ void broadcastPhoto(String filename)
       //Enviamos el mensaje con la imagen y tomamos nota del identificador de la imagen
       //con más resolución
       file_id=bot.sendPhotoLocal(subscribers.key(i),filename);
+      //Si no tenemos un file_id...
+      if(!file_id.length())
+      {
+        //...es que no se ha enviado correctamente
+        //Finalizamos el bucle
+        i=subscribers.count();
+        //Informamos a todos
+        broadcast("Fallo al enviar foto");
+      }
+      else //Parece que la foto se ha enviar correctamente
+      {
+        Serial.println("DEBUG. broadcastPhoto. Primera foto enviada correctamente");
+      }
     }
     else //Ya hemos enviado la imagen...
     {
@@ -576,7 +605,9 @@ void handleNewMessages()
   //Creamos un nuevo mensaje
   TelegramMessage msg;
   //Obtenemos el siguiente mensaje
+  Serial.println("DEBUG. handleNewMessages. Comprobando mensaje");
   bot.getNextMessage(&msg);
+  Serial.println("DEBUG. handleNewMessages. Mensaje recibido: "+msg.text);
   //Mientras haya mensaje...
   while(msg.text.length())
   {
@@ -600,7 +631,7 @@ void handleNewMessages()
       {
         Serial.println("Reconocido mensaje /subscribe");
         //El primer usuario en suscribirse
-        subscriptionCodeGenerator=" él mismo";
+        subscriptionCodeGenerator="él mismo";
         subscribe(&msg);
       }
     }
@@ -633,19 +664,13 @@ void handleNewMessages()
           //Enviamos el mensaje con menú de selección de un sólo uso
           bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
         }
-        else if(msg.text=="/res")
-        {
-          Serial.println("Reconocido mensaje /res");
-          //Mostramos la resolución actual
-          String message = "Resolución actual: "+String(currentRes)+"\n";
-          //Enviamos el mensaje con menú de selección
-          bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
-        }
         else if(msg.text=="/status")
         {
           Serial.println("Reconocido mensaje /status");
           //Mostramos el estado actual
-          String message = enabled?"encendido\n":"apagado\n";
+          String message = "Sensor de movimiento: ";
+          message+=(enabled==true)?"encendido":"apagado";
+          message+="\nResolución actual: "+String(currentRes);
           //Enviamos el mensaje con menú de selección
           bot.sendMessage(msg.chat_id,message,defaultKeyb,true);
         }
@@ -677,9 +702,8 @@ void handleNewMessages()
           String message = "RoJo Telegram Bot library\n";
           message += "Photo PIR\n\n";
           message += "/status : Estado actual\n";
-          message += "/res : resolución actual\n";
           message += "/subscribers : Mostrar la lista de suscriptores\n";
-          String keyb="[[\"/status\",\"/res\",\"/subscribers\"]]";
+          String keyb="[[\"/status\",\"/subscribers\"]]";
           //Enviamos el mensaje con menú de selección
           bot.sendMessage(msg.chat_id,message,keyb,true);
         }
@@ -789,8 +813,15 @@ void handleNewMessages()
           {
             //...enviamos un mensaje de acción de "enviando foto"
             bot.sendChatAction(msg.chat_id,1);
-            //...enviamos la foto por Telegram
-            bot.sendPhotoLocal(msg.chat_id,"/photo.jpg");
+            //...enviamos la foto por Telegram. Si tiene un identificador...
+            if(bot.sendPhotoLocal(msg.chat_id,"/photo.jpg").length()>0)
+            {
+              Serial.println("DEBUG. Foto enviada correctamente.");
+            }
+            else //No tiene identificador
+            {
+              Serial.println("DEBUG. Fallo al enviar foto.");
+            }
           }
         }
         else if(msg.text=="/on")
