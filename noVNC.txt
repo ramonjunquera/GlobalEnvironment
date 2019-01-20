@@ -1,4 +1,0 @@
-Ruta estática en NAT Virtual Server del router:
-External port: 80
-Internal port: 6080
-Server IP: 192.168.1.194
