@@ -1,0 +1,69 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa ESP-12E / NodeMCU v1.0
+Descripción:
+
+Pertenece a la familia ESP8266.
+Incluye un conector microUSB para comunicación y alimentación.
+Tiene 10 pines digitales.
+Tiene un pin para lecturas analógicas.
+Admite protocolos SPI & I2C.
+Memoria EEPROM: 4Kb máximo
+
+Realmente la memoria EEPROM se almacena en una zona especial del SPIFFS
+
+Incluye dos leds integrados:
+  pin GPIO const
+  --- ---- -----------
+   D4   2
+   D0  16  LED_BUILTIN
+El funcionamiento de ambos led es inverso al estado del pin:
+  HIGH = apagado
+  LOW  = encendido
+
+Esta es la relación entre la nomenclatura y los pines
+  GPIO pin
+  ---- ----
+    0   D3
+    1   TX (D10)
+    2   D4
+    3   RX (D9)
+    4   D2
+    5   D1
+   10   SD3
+   12   D6
+   13   D7
+   14   D5
+   15   D8
+   16   D0
+
+Los pines para las conexiones I2C son:
+  pin I2C
+  --- ---
+  D1  SCK
+  D2  SDA
+
+Los pines de conexión SPI son:
+  GPIO pin SPI
+  ---- --- ---
+   12   D6 MISO
+   13   D7 MOSI
+   14   D5 SCLK
+   15   D8 CS
+
+El interruptor FLASH está asociado con el pin D3.
+
+Originalmente el dispositivo venía con LUA como sistema operativo, e
+incluía 3 archivos:
+  header.htm      : 2161 bytes
+  init.lua        : 731 bytes
+  webserver.lc    : 2644 bytes
+El webserver.lc está compilado porque init.lua compila y borra fuentes
+para ser ocupar menos.
+Los archivos corresponden al desarrollo para la gestión de unos coches
+de radiocontrol que fabrica la empresa doit.
+Dentro de la carpeta de proyecto se encuentra la carpeta doit con una
+copia de todos ello.
+Realmente no son necesarios.
+Siempre podemos utilizar la herramienta de NodeMCU para volver a ponerle
+el sistema operativo original y programar en LUA.

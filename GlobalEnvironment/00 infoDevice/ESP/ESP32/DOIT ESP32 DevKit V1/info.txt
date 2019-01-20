@@ -1,0 +1,64 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa DOIT ESP32 DevKit V1
+Descripción:
+
+La placa está basada en el microprocesador ESP-WROOM-32 de Espressif.
+Este procesador tiene 2 cores a 240MHz y 4Mb de RAM (flash memory).
+Uno de los cores se utiliza exclusívamente para comunicaciones. El otro para desarrollos de usuario.
+El procesador es un Tensilica Xtensa 32-bits LX6
+Tiene Wifi incluido y soporta los protocolos 802.11 b/g/n
+Tiene Bluetooth integrado y soporta el protocolo 4.2 LE.
+Se alimenta con 5V.
+Todos sus pines funcionan a 3.3V
+Tiene 26 pines digitales.
+Tiene 12 entradas analógicas.
+Tiene un puerto serie (UART).
+Soporta los protocolos I2C, SPI, VP/VN, DAC.
+Se puede pinchar en una breadboard.
+Tiene un puerto USB para programación y debugging.
+
+Todos los pines numerados tienen posibilidad de PWM.
+Tiene 4Mb de memoria total: 1280Kb para flash (programa), 288Kb para RAM (variables) y el resto para SPIFFS.
+  
+  Pinout
+  ------
+                         -----------
+                         |         |
+               RESET/EN -|EN    D23|- 23/VSPI-MOSI
+               A0/VP/36 -|VP    D22|- 22/I2C-SCL
+               A3/VN/39 -|VN    TX0|- 1/TX0
+                  A6/34 -|D34   RX0|- 3/RX0
+                  A7/35 -|D35   D21|- 21/I2C-SDA
+           TOUCH9/A4/32 -|D32   D19|- 19/VSPI-MISO
+           TOUCH8/A5/33 -|D33   D18|- 18/VSPI-SCK
+            A18/DAC1/25 -|D25    D5|- 5/VSPI-SS
+            A19/DAC2/26 -|D26   TX2|- 17/TX2
+          TOUCH7/A17/27 -|D27   RX2|- 16/RX2
+ HSPI-SCK/TOUCH6/A16/14 -|D14    D4|- 4/A10/TOUCH0
+HSPI-MISO/TOUCH5/A15/12 -|D12    D2|- 2/A12/TOUCH2/LED
+HSPI-MOSI/TOUCH4/A14/13 -|D13   D15|- 15/A13/TOUCH3/HSPI-SS
+                    GND -|GND   GND|- GND
+                     5V -|VIN   3V3|- 3V3
+                         |         |
+                         -----------
+
+Esta placa tiene las hileras de pines demasiado separadas. Esto impide que si lo pinchamos en una breadboard
+podamos utilizar una de sus hileras, porque no hay sitio.
+Si se pretenden utilizar pines de ambas hileras no hay más remedio que poner una extensión a la breadboard.
+   
+Esta placa tiene dos leds integrados en placa.
+El rojo no se puede controlar. Sólo indica cuando tiene alimentación.
+El azul corresponde al pin 2. También asignado a la constante LED_BUILTIN.
+
+Los estados del led son iguales a los del pin:
+  HIGH = encendido
+  LOW = apagado
+
+El interruptor FLASH está asociado con el GPIO 0, que no tiene pin físico.
+
+Consumo medio:
+  modo      consumo
+  --------- -------
+  Normal      67mA
+  DeepSleep   21mA

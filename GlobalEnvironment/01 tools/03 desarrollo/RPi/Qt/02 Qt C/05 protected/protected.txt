@@ -1,0 +1,28 @@
+protected
+
+Novedades:
+- Uso de etiqueta protected
+
+Descripci�n:
+  En el archivo de cabecera de define una clase: variables y m�todos.
+  Cada uno de ellos debe estar incluido en una secci�n.
+  
+  Acceso          public protected private
+  --------------- ------ --------- -------
+  Misma clase       SI       SI       SI
+  Clase derivada    SI       SI       NO
+  Llamada externa   SI       NO       NO
+
+Desarrollo:
+  Definimos una clase base con una variable en cada secci�n.
+  El constructor s�lo asigna valores a las variables.
+  Definimos una clase derivada de la base.
+  Definimos un constructor que llama al de la clase base.
+  Realmente no es necesario, porque lo hace autom�ticamente.
+  Desde main.cpp se crea una instancia de la clase derivada.
+  Se comprueba que se puede acceder directamente a la variable p�blica de la clase base.
+  No se puede acceder de ninguna manera a la variable privada de la clase base.
+  Ni desde la clase derivada ni desde una funci�n.
+  En la clase derivada hemos creado un m�todo que devuelve el valor de la variable protegida.
+  Es la �nica manera de alcanzarla. No se podria llegar a ella directamente desde la funci�n
+  externa.

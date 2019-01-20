@@ -1,0 +1,66 @@
+paint
+
+Novedades:
+- Incluir en una misma aplicaci�n la modificaci�n de la imagen de un QLabel y la gesti�n de
+  eventos del mouse
+Tenemos una �nica ventana con:
+- Un QLabel de 100x100
+- Un bot�n para borrar la imagen del QLabel
+
+Funcionalidad:
+- Al mantener presionado el bot�n izquierdo sobre el QLabel se pintan pixels
+- Con el bot�n derecho se borran
+- Al pulsar el bot�n clear, se borra la imagen del QLabel
+
+Desarrollo:
+  Eliminamos barras :menu, tool y status
+  Cremos un QLabel de 100x100 y le eliminamos el texto por defecto.
+  No necesitamos activar la propiedad mouseTracking porque no queremos conocer la posici�n del
+  puntero en todo momento. S�lo cuando se pulsa alg�n bot�n. Y en esos casos, ya lo hace.
+  Creamos un marco para tener identificados los l�mites del QLabel con la propiedad:
+    frameShape/Box
+  Creamos un bot�n (QPushButton) con el texto "clear".
+  Para editar la imagen del QLabel necesitamos crear un QPixmap y un QPainter que permita
+  modificarlo.
+  En el archivo de cabeceras de la clase MainWindow a�adimos la librer�a QPainter para que
+  reconozca el objeto:
+    #include <QPainter>
+  Declaramos punteros para ambos en la secci�n privada.
+  A�adimos al constructor de MainWindow la creaci�n del QPixmap con las mismas dimensiones
+  que el QLabel.
+  Creamos un nuevo QPainter basado en el QPixmap que nos permita modificarlo.
+  Estos objetos quedar�n disponibles e inicializados en todo momento.
+  Creamos el m�todo clear() para limpiar la im�gen.
+  Realmente s�lo dibuja un rect�ngulo blanco que ocupa todo el �rea y lo asigna al QLabel.
+  A�adimos a la inicializaci�n de la ventana la llamada al m�todo clear().
+  A�adimos al bot�n el slot del signal clicked(), que llama al m�todo clear.
+  Necesitaremos crear una nueva clase derivada de QLabel que gestione eventos del mouse.
+  Podemos utilizar la misma de ejemplos anteriores, o crearla desde cero.
+  Si la creamos desde cero, haremos un ligero cambio.
+  No utilizaremos el slot de soltado el bot�n del mouse.
+  La raz�n es que como no activamos la propiedad de QLabel de mouseTracking, s�lo se generar�n
+  eventos de mouse cuando se pulse alg�n bot�n.
+    Creamos una nueva clase llamada QLabelMouse basada en QLabel.
+    A�adimos a qlabelmouse.h la librer�a de eventos del mouse:
+      #include <QMouseEvent>
+    Declaramos m�todos para gestionar los distintos eventos del mouse:
+      void mousePressEvent(QMouseEvent *ev); //Bot�n pulsado
+      void mouseMoveEvent(QMouseEvent *ev); //Mouse en movimiento
+    Declaramos signals para cada evento:
+      void mousePressSignal(QPoint&,int&);
+      void mouseReleaseSignal(QPoint&);
+      void mouseMoveSignal(QPoint&);
+  Hacemos un promote del QLabel a la nueva clase QLabelMouse
+  En mainwindow.h delaramos los slots a los que conectaremos las signals.
+    void mousePressSlot(QPoint& xy,int& button);
+    void mouseReleaseSlot(QPoint& xy);
+    void mouseMoveSlot(QPoint& xy);
+  En la constructor de MainWindow conectamos las signals con los slots:
+    connect(ui->label,SIGNAL(mousePressSignal(QPoint&,int&)),this,SLOT(mousePressSlot(QPoint&,int&)));
+    connect(ui->label,SIGNAL(mouseReleaseSignal(QPoint&)),this,SLOT(mouseReleaseSlot(QPoint&)));
+    connect(ui->label,SIGNAL(mouseMoveSignal(QPoint&)),this,SLOT(mouseMoveSlot(QPoint&)));
+  Definimos el comportamiento del slot de click:
+    Dependiendo del bot�n pulsado asignaremos al l�piz un color y otro.
+  Definimos el slot de movimiento del puntero:
+    Dibujamos un punto en las coordenadas del puntero
+    Asignamos el QPixmap al QLabelMouse
