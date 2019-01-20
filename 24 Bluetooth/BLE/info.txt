@@ -1,0 +1,110 @@
+Tema: ﻿BLE (Bluetooth Low Energy) para Arduino.
+Fecha: 20180821
+
+Fuente: https://randomnerdtutorials.com/esp32-bluetooth-low-energy-ble-arduino-ide/
+
+BLE es un nuevo protocolo de conexión inalámbrica derivado del Bluetooth.
+Su objetivo es reducir el consumo de energía y garantizar compatibilidad entre dispositivos.
+Su gestión es bastante más compleja que la del antiguo Bluetooth.
+
+BLE tiene 3 sistemas de conexión:
+- Cliente/Servidor
+- Broadcast mode
+- Mesh mode
+
+El más común y el que desarrollaremos es el primero: cliente/servidor.
+El modo broadcast es un caso particular de cliente/servidor, en el que el servidor envía los mismos
+datos a todos los clientes de manera simultánea, pero los clientes no pueden enviar datos al servidor.
+En el modo mesh todos los nodos son clientes y servidores al mismo tiempo. Cada nodo puede tener
+varios clientes y al mismo tiempo puede ser cliente de otro nodo servidor.
+
+El servidor define la estructura de datos a compartir con la siguiente jerarquía:
+  Dispositivo (device)
+    Servidor (server)
+      Servicio1 (service)
+        Característica1 (characteristic)
+          Propiedad (property)
+          Valor (value)
+          Descriptor (descriptor)
+      Publicación (advertising)
+
+
+En lo más alto de la jerarquía tenemos el dispositivo con el hardware y software necesarios para
+que se pueda dar el servicio BLE.
+
+Un dispositivo puede utilizarse como cliente o servidor, o ambos a la vez.
+Si queremos usarlo como servidor BLE, sólo podemos crear un servidor.
+Este servidor puede correr uno o más servicios BLE.
+
+Un servicio es una colección de datos procedentes de las lecturas de uno o varios sensores.
+Existe una lista de servicios predefinidos llamados SIG (Bluetooth Special Interest Group).
+Los servicios predefinidos se pueden consultar en la siguiente URL:
+  https://www.bluetooth.com/specifications/gatt/services
+Podemos encontrar servicios que informan del nivel de batería, presión sanguínea, frecuencia cardíaca,
+potencia de pedalada, información genérica de un dispositivo, temperatura, nivel de glucosa,
+posicionamiento interno, etc.
+Cada uno de estos servicios predefinidos tiene su propio código de identificación único y su
+funcionamiento es siempre igual en todos los dispositivos BLE.
+Además de estos servicios predefinidos, siempre podemos crear nuestros propios servicios.
+
+Cada servicio tiene al menos una característica o dato.
+Una característica tiene al menos dos atributos: su valor y su propiedad.
+
+El valor es el dato que se comparte.
+La propiedad es la manera de interactuar con el dato. Indica si el dato será de sólo lectura, si se podrá actualizar
+(escritura), si tiene asociado un servicio de notificación, etc.
+
+Un descriptor es un procedimiento asociado a la característica.
+Por ejemplo, el descriptor "Client Characteristic Configuration" se encarga de gestionar las notificaciones
+(actualización del valor) desde el servidor al cliente.
+
+Además necesitamos que toda la información del servidor puede ser accesible por los clientes.
+Para ello, creamos una publicación a nivel de servidor.
+Un cliente no necesita ser publicado.
+
+Toda esta estructura jerárquica está definida en el GATT (Generic Attributes) y es el conjunto de reglas de
+funcionamiento de BLE.
+
+Para poder interacturar con un servidor BLE desde nuestro móvil, recomiendo la aplicación: nRF Connect.
+Desde la cual se podrá comprobar la jerarquía GATT explicada.
+
+Tanto el servicio, como sus características, sus descriptores o su publicación, tienen un identificador
+único en formato UUID. Un ejemplo de este formato es: 55072829-bc9e-4c53-938a-74a6d4c78776.
+
+Es importante que dos elementos del mismo tipo (servicios, publicaciones, etc) no tengan el mismo
+identificador. Si lo tienen no podremos distinguirlos.
+No hay problema en que elementos de distinto tipo coincidan en identificador.
+No hay vinculación entre los identificadores de distintos tipos de elementos.
+El identificador de una publicación no tiene que coincidir con ningún otro.
+Aunque es cierto que se tiene la costumbre de que si tenemos un servidor con un sólo servicio
+personalizado, coincidan los identificadores de publicación y del servicio. Pero no es obligatorio.
+
+No es obligatorio que una publicación tenga identificador.
+Pero si lo tiene, hay que tener en cuenta que debido a limitaciones en el sistema BLE, no podremos utilizar
+un nombre de dispositivo superior a los 5 caracteres. Si tiene más, no se verá nunca el identificador
+de la publicación desde un cliente.
+
+Los identificadores de los servicios genéricos (estandarizados) aparecen definidos como un valor hexadecimal
+de 4 dígitos (Ej: UUID: 0x1801), pero realmente tiene un identificador completo.
+Ejemplos:
+
+  Servicio           UUID corto  UUID largo
+  -----------------  ----------  ------------------------------------
+  Generic Access     0x1800      00001800-0000-1000-8000-00805f9b34fb
+  Generic Attribute  0x1801      00001801-0000-1000-8000-00805f9b34fb
+
+Con las características ocurre lo mismo.
+Ejemplos:
+
+  Característica              UUID corto  UUID largo
+  --------------------------  ----------  ------------------------------------
+  Device Name                 0x2A00      00002a00-0000-1000-8000-00805f9b34fb
+  Appearance                  0x2A01      00002a01-0000-1000-8000-00805f9b34fb
+  Service Changed             0x2A05      00002a05-0000-1000-8000-00805f9b34fb
+  Central Address Resolution  0x2AA6      00002aa6-0000-1000-8000-00805f9b34fb
+
+Podemos tomar como regla que los identificadores cuyos primeros 4 caracteres sean ceros, se
+considerarán genéricos.
+
+
+

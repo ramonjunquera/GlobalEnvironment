@@ -1,0 +1,66 @@
+paint
+
+Novedades:
+- Incluir en una misma aplicación la modificación de la imagen de un QLabel y la gestión de
+  eventos del mouse
+Tenemos una única ventana con:
+- Un QLabel de 100x100
+- Un botón para borrar la imagen del QLabel
+
+Funcionalidad:
+- Al mantener presionado el botón izquierdo sobre el QLabel se pintan pixels
+- Con el botón derecho se borran
+- Al pulsar el botón clear, se borra la imagen del QLabel
+
+Desarrollo:
+  Eliminamos barras :menu, tool y status
+  Cremos un QLabel de 100x100 y le eliminamos el texto por defecto.
+  No necesitamos activar la propiedad mouseTracking porque no queremos conocer la posición del
+  puntero en todo momento. Sólo cuando se pulsa algún botón. Y en esos casos, ya lo hace.
+  Creamos un marco para tener identificados los límites del QLabel con la propiedad:
+    frameShape/Box
+  Creamos un botón (QPushButton) con el texto "clear".
+  Para editar la imagen del QLabel necesitamos crear un QPixmap y un QPainter que permita
+  modificarlo.
+  En el archivo de cabeceras de la clase MainWindow añadimos la librería QPainter para que
+  reconozca el objeto:
+    #include <QPainter>
+  Declaramos punteros para ambos en la sección privada.
+  Añadimos al constructor de MainWindow la creación del QPixmap con las mismas dimensiones
+  que el QLabel.
+  Creamos un nuevo QPainter basado en el QPixmap que nos permita modificarlo.
+  Estos objetos quedarán disponibles e inicializados en todo momento.
+  Creamos el método clear() para limpiar la imágen.
+  Realmente sólo dibuja un rectángulo blanco que ocupa todo el área y lo asigna al QLabel.
+  Añadimos a la inicialización de la ventana la llamada al método clear().
+  Añadimos al botón el slot del signal clicked(), que llama al método clear.
+  Necesitaremos crear una nueva clase derivada de QLabel que gestione eventos del mouse.
+  Podemos utilizar la misma de ejemplos anteriores, o crearla desde cero.
+  Si la creamos desde cero, haremos un ligero cambio.
+  No utilizaremos el slot de soltado el botón del mouse.
+  La razón es que como no activamos la propiedad de QLabel de mouseTracking, sólo se generarán
+  eventos de mouse cuando se pulse algún botón.
+    Creamos una nueva clase llamada QLabelMouse basada en QLabel.
+    Añadimos a qlabelmouse.h la librería de eventor del mouse:
+      #include <QMouseEvent>
+    Declaramos métodos para gestionar los distintos eventos del mouse:
+      void mousePressEvent(QMouseEvent *ev); //Botón pulsado
+      void mouseMoveEvent(QMouseEvent *ev); //Mouse en movimiento
+    Declaramos signals para cada evento:
+      void mousePressSignal(QPoint&,int&);
+      void mouseReleaseSignal(QPoint&);
+      void mouseMoveSignal(QPoint&);
+  Hacemos un promote del QLabel a la nueva clase QLabelMouse
+  En mainwindow.h delaramos los slots a los que conectaremos las signals.
+    void mousePressSlot(QPoint& xy,int& button);
+    void mouseReleaseSlot(QPoint& xy);
+    void mouseMoveSlot(QPoint& xy);
+  En la constructor de MainWindow conectamos las signals con los slots:
+    connect(ui->label,SIGNAL(mousePressSignal(QPoint&,int&)),this,SLOT(mousePressSlot(QPoint&,int&)));
+    connect(ui->label,SIGNAL(mouseReleaseSignal(QPoint&)),this,SLOT(mouseReleaseSlot(QPoint&)));
+    connect(ui->label,SIGNAL(mouseMoveSignal(QPoint&)),this,SLOT(mouseMoveSlot(QPoint&)));
+  Definimos el comportamiento del slot de click:
+    Dependiendo del botón pulsado asignaremos al lápiz un color y otro.
+  Definimos el slot de movimiento del puntero:
+    Dibujamos un punto en las coordenadas del puntero
+    Asignamos el QPixmap al QLabelMouse

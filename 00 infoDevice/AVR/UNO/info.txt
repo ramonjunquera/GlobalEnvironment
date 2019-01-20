@@ -55,7 +55,8 @@ continuando con la numeración:
 Pines con capacidad PWM, con resolución 8 bits:
   3,5,6,9,10,11
 
-El pin 13 está asociado con el led integrado en placa.
+El pin 13 está asociado con el led integrado en placa y existe la 
+variable LED_BUILTIN con el valor 13.
 
 Timers:
   timer resolución usos
@@ -72,3 +73,7 @@ Consumo en distintos modos de bajo consumo:
   SLEEP_MODE_PWR_SAVE  1.62mA
   SLEEP_MODE_STANDBY   0.84mA
   SLEEP_MODE_PWR_DOWN  0.36mA
+
+Alimentación.
+  Además de alimentar la placa por el puerto USB, también podríamos utilizar los pines Vin y GND.
+  En este caso debemos tener cuidado de que el voltaje esté regulado a 5V.

@@ -1,0 +1,49 @@
+Estructura de solicitud y respuesta HTTP
+
+Habitualmente utilizamos librerías que encapsulan la información enviada o recibida
+en una comunicación HTTP.
+Cuando no disponemos de estas librerías tenemos que gestionarla directamente.
+
+Solicitud
+La mínima expresión de una solicitud HTTP es:
+---begin---
+GET / HTTP/1.1
+
+---end---
+Es importante el envío de una línea vacía tras la solicitud para indicar que
+hemos finalizado.
+
+Respuesta
+Esta es una típica respuesta correcta:
+---begin---
+HTTP/1.1 200 OK
+Date: Sat, 01 Dec 2018 18:05:29 GMT
+Expires: -1
+Cache-Control: private, max-age=0
+Content-Type: text/html; charset=ISO-8859-1
+P3P: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+Server: gws
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Set-Cookie: 1P_JAR=2018-12-01-18; expires=Mon, 31-Dec-2018 18:05:29 GMT; path=/; domain=.google.com
+Set-Cookie: NID=148=RRncVzQplCey8cKmdltdkzH2gGPZtlJUDft_5D8j08Oe_9AfCBuXr3fCMxpqbo24UsGwQ0l6kCwCMlM6zJX6uklw_SEhFpgBkqkpacNBI7rUfP4ODcKu_hHB0aA4L7R9cP4z7ShIGgr48uK_t87c0Zr9wbfaHqbZY8rxtnZV0uQ; expires=Sun, 02-Jun-2019 18:05:29 GMT; path=/; domain=.google.com; HttpOnly
+Accept-Ranges: none
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+
+<!doctype html><html>...
+---end---
+Es importante el envío de una línea vacía entre la cabecera y el código HTML.
+Las líneas imprescindibles para un mensaje son la del código de error y la de tipo de mensaje.
+Ejemplo:
+---begin---
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+
+---end---
+En HTTP, una vez enviada la respuesta se debe cortar la comunicación.
+
+Librerías
+En Arduino/ESP, la librería genérica para la gestión de wifi es WiFi.h.
+Para gestionar un cliente, ya sea para conectar con un servidor, o desde un servidor una conexión cliente, usamos WiFiClient.h
+Para crear un servidor genérico, utilizamos WiFiServer.h

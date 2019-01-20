@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Tema: Elementos analógicos
   Objetivo: Aprender cómo funcionan las escrituras analógicas
-  Material: breadboard, led, resistencia de 220 ohmios, placa Arduino UNO
+  Material: breadboard, led, resistencia de 220 ohmios, placa Arduino UNO o MakerUNO
 
   Descripción:
   Haremos variar la intensidad de un led conectado a un pin con capacidades PWM
@@ -11,6 +11,10 @@
   Aunque las placas Arduino tienen un led integrado que habitualmente está
   asociado con el pin 13, este pin no tiene capacidades PWM y no podemos usarlo.
   Por eso utilizamos un led externo.
+
+  Nota:
+  La placa MakerUno no necesita de componentes externos para este ejercicio.
+  El pin 3 ya tienen su correspondiente pin integrado en placa.
 
   Resultado:
   El led se enciende y apaga progresivamente

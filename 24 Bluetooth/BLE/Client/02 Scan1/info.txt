@@ -1,0 +1,27 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180812
+Objetivo: Scan de servidores BLE
+Material: 2 placas ESP32
+
+Descripción:
+Necesitamos dos placas para que una sea servidor y la otra cliente.
+Por eso hay dos desarrollos.
+
+El servidor será muy simple. Tendrá un servicio con una característica con un valor fijo
+de sólo lectura. Sin notificaciones.
+
+Basado en el ejercicio anterior.
+Esta vez buscaremos un servidor determinado.
+Lo localizaremos tanto por nombre como por identificador de publicación.
+No esperaremos a que termine el scan.
+En cuanto lo tengamos, forzamos la detención del scan.
+
+Siempre mostramos el tiempo que tarda en localizar el servidor.
+Como ejemplo, mostramos la intensidad de la señal (RSSI) del dispositivo.
+
+Hay que recordar que la intensidad de señal está influenciada incluso por la presencia
+próxima al servidor o cliente.
+
+Resultado:
+Se hace un scan en busca de un servidor concreto y en cuanto se identifica, se detiene.

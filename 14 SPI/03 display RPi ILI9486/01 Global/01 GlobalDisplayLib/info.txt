@@ -1,0 +1,16 @@
+Descripción de librería RoJoILI9486
+
+Librería compatible con placas ESP & RPi.
+Puesto que necesita acceso a sistema de archivos para la recuperación de fuentes
+y sprites, no es compatible con placas Arduino.
+En placas ESP está limitado al tamaño de SPIFFS.
+Debido a que la memoria de vídeo asciende a 300Kb, no es posible duplicarla en la
+memoria de la placa para porder acceder a ella.
+
+Mejoras futuras:
+Compatibilidad con sistema de archivos en tarjeta SD.
+Esto la haría compatible con placas Arduino.
+La dificultad radica en acceder simultáneamente a la tarjeta SD y al display, porque
+ambos se conectan por el bus SPI.
+Esto ocurre en las funciones para imprimir texto directamente desde archivo y dibujar
+sprite directamente desde archivo.

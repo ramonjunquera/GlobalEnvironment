@@ -1,0 +1,66 @@
+Display Nokia LCD 5110 SPI 84x48
+
+Pinout
+
+LCD5110  Descripción
+-------  -----------
+   RST    Reset
+   CE     Chip select (SPI_CS)
+   DC     Data/Command
+   DIN    Escritura (SPI_MOSI)
+   CLK    Reloj (SPI_CLK)
+   VCC    3V3
+   LIGHT  Luz de fondo
+   GND    GND
+
+Pin RST
+Debe mantenerse siempre en HIGH.
+Si lo cambiamos a LOW se resetea.
+
+Pin CE
+Se conecta al pin de chip control que se defina.
+ 
+Pin DC
+No pertenece al estándar SPI. Es un pin digital se salida. Sirve
+cualquiera. Permite indicarle al display si la información que le
+enviamos debe ser considerada un comando o un dato.
+Los comandos cambian la configuración del display. Los datos se
+escriben directamente en la memoria gráfica.
+Según el estado se considera:
+  LOW : comando
+  HIGH : datos gráficos
+ 
+Pin DIN
+Es el pin por el que se escribe en el display. Siempre debe ser
+conectado al pin SPI_MOSI
+   
+Pin CLK
+Pin de reloj. Indica cuándo se puede leer el bit enviado. Siempre
+debe ser conectado a SPI_CLK
+
+Pin VCC
+Alimentación. Siempre conectado a 3.3V. No soporta 5V. Puede dañarse.
+ 
+Pin LIGHT
+Permite encender la luz de fondo del display. Acepta distintos 
+niveles de intensidad (se puede conectar a un pin PWM).
+Los estados de la luz de fondo según el pin son:
+  encendida : LOW
+  apagada : HIGH
+ 
+Pin GND
+Siempre conectado a tierra.
+
+Display monocromo. 
+La resolución es de 84x48.
+Se conecta por bus SPI.
+La frecuencia máxima del SPI para no tener errores es de 25MHz en tarjetas
+ESP y menos de 4MHz en tarjetas Arduino.
+
+Al ser un display LCD, la velocidad de refresco es bastante baja.
+Cuando se mueve un objeto por pantalla deja "estela". No está
+preparada para imágenes en movimiento.
+
+No tiene pin MISO porque nunca se recibe información del display.
+Aun así, no se le debería dar uso al pin MISO de la placa. Al menos para
+este dispositivo.

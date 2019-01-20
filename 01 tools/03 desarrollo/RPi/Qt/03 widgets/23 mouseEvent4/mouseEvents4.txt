@@ -1,0 +1,31 @@
+mouseEvents4
+
+Novedades:
+- Gestión de eventos de movimiento de mouse
+- Parámetro mouseTracking de widgets
+Descripción:
+  Basado en el ejemplo anterior.
+  Añadimos a la interface de usuario dos QLCDNumber más para mostrar las coordenadas del
+  puntero en tiempo real.
+  También añadimos nuevas labels para que quede claro qué representa cada objeto.
+Desarrollo:
+  En qlabelmouse.h añadimos el método que se ejecuta cuando se detecta movimiento de mouse:
+    void mouseMoveEvent(QMouseEvent *ev); //Mouse en movimiento
+  También añadimos la nueva signal:
+    void mouseMoveSignal(QPoint&);
+  En qlabelmouse.cpp definimos el método del evento.
+  Sólo toma nota de las coordenadas en un QPoint y genera el signal.
+  En mainwindow.h definimos el nuevo slot:
+    void mouseMoveSlot(QPoint& xy);
+  En mainwindow.cpp creamos el método que gestiona el nuevo slot.
+  Mostramos las coordenadas que nos pasan por el parámetro en los nuevos QLCDNumber
+  En el constructor creamos la conexión entre la signal y el slot:
+    connect(ui->label,SIGNAL(mouseMoveSignal(QPoint&)),this,SLOT(mouseMoveSlot(QPoint&)));
+  Sólo con esto comprobaremos que hay algo que no funciona bien.
+  Sólo se actualizan los QLCDNumber de movimiento cuando se pulsa el botón. No cuando el 
+  puntero se desplaza por encima.
+  Esto ocurre porque por defecto la propiedad del objeto QLabel "mouseTracking" está
+  desactivada. Esto se hace para ahorrar consumos innecesarios.
+  Si la activamos, todo funcionará correctamente.
+Resultado:
+  Los nuevos QLCDNumber muestran las coordenadas del puntero en tiempo real

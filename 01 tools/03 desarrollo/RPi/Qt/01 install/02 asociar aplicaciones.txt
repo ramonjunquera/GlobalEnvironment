@@ -1,0 +1,55 @@
+Creando un script para lanzar el IDE.
+
+La mayoría de librerías de gestión de pines utilizadas en Raspberry requieren permisos
+de root, tanto para ser compiladas como ejecutadas.
+Esto significa que debemos abrir el entorno de desarrollo (qtcreator) como root.
+La manera más sencilla es crear un pequeño script.
+Lo crearemos en la misma carpeta de instalación de la aplicación.
+Abrimos una sesión de terminal:
+  cd /usr/share/qtcreator
+  sudo nano /usr/share/qtcreator/qt.sh
+Incluimos las siguientes líneas en el archivo:
+  sudo cp /home/pi/.Xauthority /root
+  sudo qtcreator "$1"
+Guardamos con CTRL+O y salimos con CTRL+X
+El script puede ser utilizado para lanzar qtcreator tanto en local como en remoto, con
+permisos de root.
+La primera línea copia las claves generadas dinámicamente en una conexión remota del
+usuario pi a las de root. Esto permitirá que sea reconocido.
+La segunda ejecuta la aplicación de desarrollo con permisos de root y pasando como
+parámetro el primero de los parámetros recibidos por el script, si es que lo tiene.
+Una vez guardado el script se le deben dar pemisos de ejecución con:
+  sudo chmod +x /usr/share/qtcreator/qt.sh
+
+Cómo asociar una extensión con una aplicación o script.
+Tenemos creado un script que nos facilita la apertura del entorno de desarrollo.
+También sabemos que los proyectos de qtcreator tiene la extensión .pro.
+Haremos que por defecto al hacer doble click sobre un archivo .pro se abra
+con el script creado.
+Desde Raspbian, localizamos una carpeta que contenga un archivo .pro.
+- Click con el botón derecho.
+- Seleccionamos la opción "Open With..."
+- Seleccionamos la solapa "Custom Command Line"
+- En el campo "Command line to execute:" escribimos el path de nuestro script y
+  le añadimos el parámetro %f para que le pase el nombre del archivo a abrir:
+    /usr/share/qtcreator/qt.sh %f
+- En el campo "Application name" ponemos un descriptivo de la aplicación:
+    Qt-sudo
+- Marcamos el check de abajo "Set selected application as default action for
+  this file type".
+- Pulsamos el botón OK
+A partir de ahora con un simple doble click sobre el archivo .pro se abrirá
+el entorno de desarrollo con nuestro script, cargando el proyecto seleccionado.
+Si nos fijamos, ahora cuando hacemos click con el botón derecho sobre un archivo
+.pro, podemos ver que nos da la posibilidad de abrirlo con Qt creator o con Qt-sudo.
+
+
+Cómo borrar aplicaciones customizadas del menú contextual.
+Si nos hemos confundido a la hora de crear una aplicación customizada para 
+un tipo de archivo, podemos eliminarla navegando hasta la carpeta:
+  /home/pi/.local/share/applications
+En ella encontraremos que cada referencia está representada por un archivo.
+Incluso podemos hacer click con el botón derecho sobre los archivos, seleccionar
+propiedades, seleccionar la solapa "Desktop entry", y ver el comando al que 
+corresponde.
+Para eliminar una referencia, simplemente borramos el archivo correspondiente.

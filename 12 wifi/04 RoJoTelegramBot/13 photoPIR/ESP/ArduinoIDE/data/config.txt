@@ -1,0 +1,5 @@
+5
+0
+mySSID
+mySSIDpassword
+123456789:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

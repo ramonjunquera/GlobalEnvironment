@@ -1,0 +1,74 @@
+timerControl
+
+Novedades:
+- Activar/Desactivar botones
+- Timer de ejecución única
+
+Tenemos una única ventana con:
+- Un botón Start
+- Un botón End
+- Un botón Once
+- Un QLabel con una imágen
+
+Funcionalidad:
+- Cuando se pulsa Start la imágen cambia cada segundo
+- Cuando se pulsa End la imágen deja de cambiar
+- Cuando se pulsa Once la imágen cambia después de un segundo
+- Los botones son intereactivos. Se activan/desactivan en función de lo que haga
+
+Desarrollo:
+Creamos el archivo de recursos incluyendo la imágenes que vamos a utilizar.
+Eliminamos las barras de menú y estado del diseño.
+Creamos los botones Start, End y Once.
+  El botón End debe estar desactivado.
+Creamos un QLabel y le asignamos una de las imágenes del archivo de recursos.
+Definimos la función a la que debe llamar el QTimer periódicamente que hace que la
+imágen cambie.
+  En mainwindow.h creamos la sección private slots:
+  Y en su interior definimos la función:
+    void BulbChangeStatus();
+  En mainwindow.cpp creamos la función:
+    void MainWindow::BulbChangeStatus()
+  Puesto que sólo cambia entre dos imágenes guardamos el estado en una variable bool.
+  La definimos como estática para que recuerde su valor en futuras ejecuciones.
+  Crea un QPixmap tomando la imágen correspondiente al estado del archivo de recursos.
+  Asigna el QPixmap al QLabel.
+Definimos la variable del QTimer
+  En mainwindow.h sección private: incluimos un puntero a un QTimer para que esté
+  disponible en toda la clase:
+    QTimer *myTimer;
+  En mainwindow.cpp añadimos en la sección de includes la librería de gestión de timer:
+    #include <QTimer>
+Inicializamos el QTimer
+  En el constructor del formulario incluimos la inicialización del QTimer.
+    Creamos una nueva instancia del objeto y guardamos su puntero:
+      myTimer = new QTimer(this);
+    Definimos los parámetros de funcionamiento del QTimer:
+      connect(myTimer,SIGNAL(timeout()),this,SLOT(BulbChangeStatus()));
+Escribimos código del botón Start
+  Indicamos en el botón Start que vamos a escribir el código del slot clicked()
+    Desactivamos los botones de Start y Once.
+    Activamos el timer para se que salte el evento cada segundo
+      myTimer->start(1000);
+    Activamos el botón End
+Escribimos el código del botón End
+  Indicamos en el botón End que vamos a escribir el código del slot clicked()
+    Desactivamos el botón End
+    Paramos el timer
+    Activamos los botones Start y Once
+Ya tenemos completada la funcionalidad de los botones Start y End.
+Vamos ahora con la de Once.
+Definimos la función a la que se llamará cuando se lance el timer de una sóla ejecución.
+  En mainwindow.h, sección private slots: incluimos la declaración de la función:
+    void TimerLauncherOnce();
+  En mainwindow.cpp creamos la función:
+    void MainWindow::TimerLauncherOnce()
+  Cuando se ejecute tendrá que cambiar la imagen del QLabel. Puesto que ya tenemos una
+  función para ello, simplemente la llamamos.
+  Después activamos el botón Start y Once.
+Escribimos el código del botón Once.
+  Indicamos en el botón Once que vamos a escribir el código del slot clicked()
+    Desactivamos los botones Start y Once
+    Configuramos el objeto del QTimer para que se lance una sóla vez dentro de un segundo
+      myTimer->singleShot(1000,this,SLOT(TimerLauncherOnce()));
+Hemos finalizado la funcionalidad del botón Once.

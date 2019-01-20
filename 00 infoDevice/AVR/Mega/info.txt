@@ -56,7 +56,8 @@ Los pines de entrada digitales tienen una resolución de 10 bits.
 Pines con capacidad PWM, con resolución 8 bits:
   2,3,4,5,6,7,8,9,10,11,12,13,44,45,46
 
-El pin 13 está asociado con el led integrado en placa.
+El pin 13 está asociado con el led integrado en placa y existe la 
+variable LED_BUILTIN con el valor 13.
 
 Timers:
   timer resolución usos

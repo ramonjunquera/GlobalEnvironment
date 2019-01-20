@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>images/config.png</file>
+        <file>images/no.png</file>
+        <file>images/open.png</file>
+        <file>images/save.png</file>
+        <file>images/T.ico</file>
+        <file>images/yes.png</file>
+        <file>images/zoom-in.png</file>
+        <file>images/zoom-out.png</file>
+    </qresource>
+</RCC>

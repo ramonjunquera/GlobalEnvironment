@@ -1,0 +1,21 @@
+slider
+
+Novedades:
+- Uso del objeto QSlider
+
+Tenemos una única ventana con:
+- Un objeto QSlider horizontal
+- Un objeto QSlider vertical
+- Dos objetos QLCDNumber
+
+Funcionalidad:
+- Cuando se interactua con los sliders se muestran sus valores en los displays
+
+Desarrollo:
+Eliminamos las barras de menú y estado del diseño.
+Creamos los dos sliders y displays
+No utilizaremos código para gestionarlo. Lo haremos con signals en el interface
+de usuario.
+Conectaremos el evento (signal) de cambio de valor (valueChanged(int)) de un
+QSlider, con el método (slot) que muestra un valor (display(int)) en un display
+LCD (QLCDNumber).

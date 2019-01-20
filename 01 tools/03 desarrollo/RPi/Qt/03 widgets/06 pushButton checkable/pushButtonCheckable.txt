@@ -1,0 +1,24 @@
+Objeto pushButtonCheckable
+
+Novedades:
+- Propiedad checkable del objeto pushButton
+- Método toggle() del objeto pushButton
+- Evento toggle() del objeto pushButton
+
+Tenemos una única ventana con:
+- Un botón llamado Change
+- Un botón checkable llamado Checkable
+- Un checkBox llamado Status
+
+Funcionalidad:
+- Al pulsar el botón Change, cambia el estado del botón Checkable
+- El pulsar el botón Checkable, se copia su estado a Status
+
+Desarrollo:
+  Un botón checkable permite que lo dejemos pulsado. Tiene dos estados, como
+  un checkBox.
+  Al pulsar el botón Change llamamos al método toggle del botón checkable para 
+  que lo cambie de estado.
+  Cuando se detecta un cambio de estado en el botón checkable a través del
+  evento toggled(), copiamos su estado al checkBox.
+  Para que el usuario no pueda interactuar con el checkBox, lo desactivamos.

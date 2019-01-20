@@ -1,0 +1,32 @@
+Descripción de chip MAX7219
+
+Pinout:
+           
+   DOUT C5  C1  C6  C4  V+ ISET C8  C3  C7  C2  CLK
+    ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+    ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦ MAX7219 ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+    ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦
+   DIN  F1  F5 GND  F7  F3  F4  F8 GND  F6  F2 LOAD      
+        
+  DIN = Primero de los tres pines conectados a la placa
+  LOAD = Segundo de los tres pines conectados a la placa
+  CLK = Tercero de los tres pines conectados a la placa
+  DOUT = Salida a conectar con la pata DIN del siguiente chip de la cadena
+  GND = Tierra
+  V+ = Alimentación. Funciona a 3.3V. Sugeridos 5V
+  ISET = Siempre estará conectado a V+ a través de una resistencia
+  Fx = Filas
+  Cx = Columnas
+
+Nota:
+El chip funciona correctamente tanto con 3.3 como con 5V.
+Pero si encadenamos varios chips (por ejemplo 4), con 3.3V no tiene
+suficiente tensión para todos. Esto provoca que en el mejor de los
+casos cuanto más alejado esté el led del primer chip, su luminosidad
+será menor. En el peor de los casos no llegará suficiente alimentación
+al chip y tendrá un comportamiente errático encendiendo los leds de
+manera aleatoria.

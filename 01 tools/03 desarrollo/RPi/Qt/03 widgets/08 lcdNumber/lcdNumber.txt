@@ -1,0 +1,20 @@
+lcdNumber
+
+Novedades:
+- Objeto lcdNumber
+- Propiedad intValue() de objeto lcdNumber
+- Propiedad display() de objeto lcdNumber
+
+Tenemos una única ventana con:
+- Un display numérico con aspecto de LCD
+- Un botón DEC
+- Un botón INC
+
+Funcionalidad:
+- Al pulsar el botón DEC se decrementa en una unidad el valor del display numérico
+- Al pulsar el botón INC se incrementa en una unidad el valor del display numérico
+
+Desarrollo:
+  El valor numérico que muestra el objeto lcdNumber se puede obtener con
+  el método intValue() que devuelve una valor de tipo int.
+  Se puede asignar a través del método display(int).

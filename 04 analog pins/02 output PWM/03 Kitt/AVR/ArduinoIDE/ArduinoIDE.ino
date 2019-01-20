@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
   Tema: Elementos analógicos
+  Fecha: 20180803
   Objetivo: Aprender cómo funcionan las escrituras analógicas
-  Material: Arduni UNO, 6 leds, 6 resistencias de 220 ohmios
+  Material: Arduno UNO, 6 leds, 6 resistencias de 220 ohmios
   Descripción:
   La placa Arduino UNO sólo tine 6 pines con posibilidad de PWM.
   Los utilizaremos todos.

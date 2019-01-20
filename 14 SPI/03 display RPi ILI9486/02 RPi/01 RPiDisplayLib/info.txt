@@ -1,0 +1,23 @@
+Descripción de librería RoJoRPiILI9486
+
+Librería sólo compatible con RPi.
+Es una variante de la librería RoJoILI9486.
+La diferencia es que Raspberry Pi, con 1Gb de RAM, permite albergar una copia
+de la memoria de vídeo (300Kb) para poder trabajar con ella.
+Se puede leer y escribir mucho más rápido que enviando los datos al display.
+Se ha creado una seguna memoria de vídeo, que contiene exáctamente lo mismo
+que la memoria de vídeo del display.
+Gracias a esta doble memoria de vídeo (de trabajo e interna), se pueden comparar
+y enviar al display sólo las diferencias.
+
+Conclusión.
+Tal y como se muestra en la demo, se puede mover un sprite sobre una imagen de
+fon que ocupa toda la pantalla, y además el sprite en movimiento se puede hacer
+trasparente en uno de sus colores.
+El movimiento es bastante fluido, teniendo en cuenta la cantidad de memoria que
+ocupa.
+Este ejercicio es imposible con el driver original sin la doble memoria de vídeo.
+
+Nota.
+No se considera para otro tipo de placas, porque sólo para las memorias de vídeo
+necesitaríamos 2*300=600Kb de RAM.

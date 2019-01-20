@@ -1,0 +1,59 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa Sonoff S20
+Descripción:
+
+Sonoff es un dispositivo de la familia ESP8266 muy específico
+para ser utilizado como interruptor a distancia.
+Consta de dos leds, un interruptor de pulsador y un relé.
+Se alimenta gracias a un pequeño transformador de corriente
+alterna a continua que baja el voltaje de 220V a 3.3V.
+Todo ello es una simple placa que se incluye en una carcasa
+de plástico.
+Tiene un enchufe de corriente de 220V que lo alimenta y otro de salida que controla el relé.
+Es necesario un FTDI a 3.3V (importantísimo!), para poder conectar con el PC.
+
+La conexión entre el FTDI y Sonoff S20 es la siguiente:
+  S20     FTDI
+  ------  ----
+  VCC     3.3V
+  RX      TX
+  TX      RX
+  GND     GND
+
+Debemos configurar el dispositivo con estos parámetros:
+    Placa: "generic ESP8266 Module"
+    Flash Mode: "DOUT"
+    Flash Size: "1M (64K SPIFFS)"
+    Debug port: "Disabled"
+    Debug Level: "Ninguno"
+    IwIP Varian: "v2 Lower Memory"
+    Reset Method: "ck"
+    Crystal Frequency: "26 MHz"
+    Flash Frequency: "40MHz"
+    CPU Frequency: "80 MHz"
+    Bultin Led: "13"
+    Upload Speed: "115200"
+    Erase Flash: "Only Sketch"
+
+Es muy importante recordar que para que Sonoff S20 se encuentre en
+modo de recepción de datos, se debe arrancar manteniendo el 
+interruptor pulsado. Si no se hace, el IDE no podrá conectar
+con el dispositivo.
+
+Pinout
+  
+  GPIO  Función
+  ----  --------
+    0   Interruptor (pulsador)
+    1   TX
+    3   RX
+   12   Relé y led azul
+   13   Led verde
+
+El interruptor pulsado está en LOW
+El relé & led azul están encendidos en HIGH
+El led verde está encendido en LOW
+
+Este dispositivo sólo tiene 1Mb de memoria. Por lo tanto el espacio para SPIFFS
+se reduce al máximo (64kB) y no tendrá posibilidad de utilizar OTA.

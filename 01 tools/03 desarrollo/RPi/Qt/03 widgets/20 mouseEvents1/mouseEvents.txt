@@ -1,0 +1,121 @@
+mouseEvents
+
+Novedades:
+- Definir por programa un evento
+- Definir por programa una signal
+- Definir por programa un slot
+- Conectar por programa una signal a un slot.
+- Derivar un objeto existente (widget)
+- Asignar una clase derivada a un widget (promote)
+- Uso del objeto QPoint
+- Gestionar los eventos originados por el mouse
+Descripción:
+  Los widget u objetos visibles en el interface de usuario no contemplan la gestión de
+  los eventos del mouse.
+  Crearemos una clase derivada de QLabel y le añadiremos la gestión de eventos del mouse.
+  Los eventos generarán signals.
+  En la ventana principal, asociaremos las signals a slots que procesarán la información.
+  Concretamente crearemos un QPanel que detectaré los clicks (eventos de pulsación del
+  botón del ratón) y mostrará sus coordenadas en dos widgets de QLCDNumber.
+  Para que el área del QLabel quede bien definida, la resaltaremos con un marco.
+Desarrollo:
+  Creamos una aplicación de escritorio con Qt (Qt Widgets Application).
+  Diseño
+    Eliminamos del diseño las barras de menú, tools y status.
+    QLabel
+      Añadimos al diseño un label de 100x100.
+      Le quitamos el texto.
+      Le añadimos un marco QFrame/frameShape/Box).
+    QLCDNumber
+      Añadimos dos objetos QLCDNumber (lcdNumberX y lcdNumberY) que mostrarán las coordenadas
+      del click en el QPanel.
+  Creación de nueva clase.
+    Haciendo click con el botón derecho sobre el nombre del proyecto: Add New.../C++/C++ Class/Choose
+    Nombre de la clase: QLabelMouse
+    Su clase base es: QLabel
+    Indicar que hereda las propiedades de QWidget.
+    El constructor se crea por defecto. Lo dejaremos así, aunque no lo utilizaremos para nada.
+    En algunos entornos (por ejemplo Windows) hay que añadir manualmente algún detalle:
+    - En qlabelmouse.h se debe añadir en la sección include la librería de QLabel porque sino, no
+      reconocerá la clase base.
+    - En qlabelmouse.h se debe añadir la macro Q_OBJECT al inicio de la clase
+  Promote
+    En el editor, seleccionamos el QLabel. Podemos ver en la cabecera de la sección de propiedades
+    del objeto (abajo a la derecha) que el objeto se llama label y es del tipo QLabel.
+    Click con el botón derecho encima de QLabel: Promote to ...
+    Con esto estamos cambiando la clase base de este widget.
+    Como clase base será: QLabel
+    Lo promocionamos (cambiamos) a la clase que acabamos de crear: QLabelMouse
+    Automáticamente se completa el campo del archivo de cabecera a utilizar.
+    Marcamos el check de "Global include" para que se tenga en cuenta en cualquier punto del
+    programa.
+    Pulsamos el botón Add y veremos que se añaden los parámetros definidos a la lista de clases
+    promocionadas.
+    Ya podemos pulsar el botón Promote y la ventana se cerrará.
+    Ahora podemos comprobar como el widget se llama igual, pero ahora está basado en el objeto
+    QLabelMouse.
+    Al igual que antes, en Windows no se completan todas las acciones. Se debe añadir:
+    - En qlabelmouse.h el constructor no es correcto. Aparece definido como:
+        QLabelMouse();
+      Pero debería ser:
+        explicit QLabelMouse(QWidget *parent = nullptr);
+    - En qlabelmouse.cpp también se debe corregir la declaración del constructor, de:
+        QLabelMouse::QLabelMouse()
+      A:
+        QLabelMouse::QLabelMouse(QWidget *parent):QLabel(parent)
+  Añadiendo eventos de mouse
+    Abrimos el archivo de cabeceras de la clase creada (qlabelmouse.h).
+    Podemos comprobar como se ha definido la clase como derivada de QLabel:
+      class QLabelMouse : public QLabel
+    Para que podamos gestional los eventos del mouse necesitamos añadir la librería correspondiente
+    en la sección de includes:
+      #include <QMouseEvent>
+    El evento que nos interesa detectar es el de click (pulsación del botón del mouse).
+    Para ello añadimos en la sección pública el método que corresponde:
+      void mousePressEvent(QMouseEvent *ev);
+    Todos los eventos de ratón comienzan por mouse y la ayuda del IDE permite seleccionar fácilmente
+    el método que trata el evento que queremos. Incluso ayuda a añadir los parámetros.
+    Estas ayudas no aparecen en Windows :-(
+    Cuando se pulsa el botón del mouse, se produce un evento que llama al método que acabamos de
+    declarar.
+    En qlabelmouse.cpp creamos el método para que no de errores:
+      void QLabelMouse::mousePressEvent(QMouseEvent *ev)
+    Si en el archivo de cabecera hacemos click con el botón derecho sobre la declaración del método
+    y seleccionamos Refactor/Add definition in qlabelmouse.cpp, el IDE crear el método por nosotros.
+  Signal
+    Queremos que el evento del click genere una signal.
+    Por lo tanto crearemos en el archivo de cabecera, en la sección signals: una nueva:
+      void mousePressSignal(QPoint&);
+    La señal que genera tiene un parámetro del tipo QPoint.
+    Este tipo es capaz de guardar unas coordenadas de dos dimensiones.
+    En ellas enviaremos las coordenadas en las que se ha detectado la pulsación.
+    Nos vamos al .cpp al código del metodo.
+    Puesto que pretendemos generar/enviar un signal que tiene un parámetro que es un QPoint,
+    necesitaremos comenzar creando una variable QPoint a la que le asignamos las coordenadas que
+    nos pasa el evento (lugar del click).
+      QPoint xy = ev->pos();
+    Ahora ya podemos enviar/emitir la signal:
+      emit mousePressSignal(xy);
+  Porqué crear una signal?
+    Si ya tenemos una función que es llamada en nuestra clase cuando se detecta un click, porqué tenemos
+    que crear un evento/signal?
+    Porque no vamos a incluir en la misma clase la modificación de widgets de la ventana principal.
+    No podemos alcanzarlos.
+    Lo correcto es que el evento genere una signal, y en la ventana principal la tendremos en cuenta,
+    y los asociaremos con funciones propias o directamente con slots para cambiar widgets.
+  Gestión de signals
+    En el archivo de cabecera de la ventana principal (mainwindow.h), creamos la sección private slots:
+    Aquí añadiremos una nueva función a la que llamar (slot) cuando se produzca la signal del click.
+      void mousePressSlot(QPoint& xy);
+    El slot también tendrá un parámetro QPoint para poder recibir las coordenadas del click.
+    En mainwindow.cpp. En el constructor de la clase, tras inicializar el interfase de usuario, añadiremos
+    la regla que une el evento de click con el slot que acabamos de definir:
+      connect(ui->label,SIGNAL(mousePressSignal(QPoint&)),this,SLOT(mousePressSlot(QPoint&)));
+    Sólo queda escribir el método del slot en mainwindow.cpp. Lo más sencillo en hacer un Refactor
+    desde mainwindow.h
+    En este método asignamos las distintas coordenadas a los distintos QLCDNumber:
+      ui->lcdNumberX->display(xy.x());
+      ui->lcdNumberY->display(xy.y());
+Resultado:
+  Al hacer click sobre el widget se detectan los click y se muestran las coordenadas en pantalla.
+  Podemos comprobar que las coordenadas de los puntos van desde 0 a 99 como era de esperar.

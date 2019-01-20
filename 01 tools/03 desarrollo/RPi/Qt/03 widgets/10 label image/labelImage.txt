@@ -1,0 +1,107 @@
+label image
+
+Novedades:
+- Archivo de recursos
+- Variables de tipo QPixmap
+- Propiedad setPixmap de label
+
+Tenemos una única ventana con:
+- Cinco botones
+- Un label
+
+Funcionalidad:
+- Al pulsar cada uno de los botones cambia el contenido del label
+
+Desarrollo:
+  Un objeto QLabel, además de contener texto, también puede contener
+  una imagen.
+  Las imágenes utilizadas en un programa deben ser almacenadas en un
+  archivo de recursos.
+
+Cómo crear un archivo de recursos.
+  Para crearlo debemos estar en la pantalla de edición de código.
+  En la parte superior izquierda vemos la estructura de archivos de
+  nuestro proyecto.
+  Seleccionamos el primer item con el nombre del proyecto.
+  Hacemos click con el botón derecho y seleccionamos "Add New...".
+  En la sección izquierda seleccionamos "Qt".
+  En la sección central seleccionamos "Qt Resource file".
+  Pulsamos el botón "Choose...".
+  Asignamos un nombre al archivo de recursos. En nuestro ejemplo es:
+  "myResources".
+  El path suele ser correcto. Coincide con el del proyecto.
+  Pulsamos el botón "Next>".
+  No modificamos nada de la siguiente pantalla y pulsamos "Finish".
+  Se ha creado una nueva carpeta llamada "Resources" a nivel de
+  proyecto. Dentro está el archivo de recursos que hemos solicitado
+  crear: myResources.
+  Todos los archivos de recursos tienen extensión .qrc.
+
+Cómo incluir archivos.
+  Un archivo de recursos organiza la información que contiene en carpetas
+  igual que el almacenamiento en un disco duro.
+  Estas carpetas son llamadas prefijos.
+  Las carpetas de prefijos no son recursivas. Sólo se pueden crear a un
+  sólo nivel.
+  Un archivo de recursos puede tener más de un prefijo.
+  Cuando se crea un nuevo archivo de recursos siempre está vacío, no tiene
+  prefijos.
+  Los archivos que contiene siempre deben estar en alguna carpeta prefijo,
+  por lo tanto, es obligatorio crear al menos una.
+  En nuestro ejemplo hemos creado un prefijo llamado MyImages.
+  Para crearlo seleccionamos el archivo de recursos (myResources.qrc).
+  Hacemos click con el botón derecho.
+  Seleccionamos "Add Prefix...".
+  En el campo "Prefix" escribimos MyImages.
+  El campo "Language" lo dejamos vacío. Por ahora no haremos programas multiidioma.
+  Pulsamos el botón OK.
+  Podemos comprobar como se ha creado la carpeta MyImages dentro del archivo
+  de recursos.
+  A nosotros nos interesa guardar las imágenes que utilizaremos para mostrar en
+  el programa. Para tenerlas mejor identificadas las hemos guardado en una carpeta
+  llamada icons bajo la carpeta del proyecto.
+  Ahora falta incluir los archivos en su interior.
+  Seleccionamos la carpeta de prefijo que hemos creado (MyImages).
+  Hacemos click con el botón derecho.
+  Seleccionamos "Add Existing Files...".
+  Localizamos la carpeta icons con las imágenes.
+  En nuestro caso tenemos 3 archivos. Seleccionamos los 3.
+  Pulsamos el botón "Open".
+  Aparece una ventana que pregunta si los archivos seleccionados se deben incluir en
+  en control de versiones. Por defecto responderemos que sí.
+  Podemos comprobar como se han añadido los archivos al interior de la carpeta prefijo.
+  Los archivos mantiene el path relativo a la carpeta de proyecto. Podemos ver como
+  todos comienzan por icons/
+  Haciendo doble click sobre los archivos podremos visualizarlos.
+  Un programa puede tener más de un archivo de recursos, siempre que tengan distintos
+  nombres. Cada uno de ellos con sus prefijos. Pero es muy conveniente que los prefijos
+  sean únicos. No deberían repetirse, ni siquiera en archivos de recursos distintos.
+  Cuando se cargan varios archivos de recursos, se pone a disposición del programa
+  todo su contenido sin importar de qué archivo de recursos procede cada archivo.
+
+QPixmap y referencias a archivos de recursos
+  QPixmax es el objeto que almacena una imagen.
+  La manera más sencilla de crear y cargar una imagen es indicando como primer parámetro
+  el path de la imagen original dentro de los archivos de recursos.
+  Los archivos de recursos se referencian como : seguido del path y combre de archivo.
+  Ejemplo de creación y carga de una imagen:
+    QPixmap image(":/MyImages/icons/Button-Turn-On-icon.png");
+  Para asignar una imagen a un QLabel utilizaremos el método setPixmap(QPixmap).
+
+    
+
+  
+ 
+
+  
+
+
+
+
+
+
+
+
+
+
+

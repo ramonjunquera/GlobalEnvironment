@@ -1,0 +1,28 @@
+modPixmap
+
+Novedades:
+- Modificación del QPixmap de un QLabel por programa
+- Objeto QPainter
+- Dibujo de rectas, rectángulo y rectángulos rellenos
+- Objeto QColor
+- Objeto QBrush
+
+Tenemos una única ventana con:
+- Dos botones
+- Un label con una imágen obtenida de un archivo de recursos
+
+Funcionalidad:
+- Al pulsar al primer botón se recupera la imágen original y se dibuja un rectángulo
+  sobre ella.
+- Al pulsar el segundo botón se crea una imagen en forma de rejilla en blanco y negro
+
+Desarrollo:
+  Eliminamos barras :menu, tool y status
+  Definimos layout horizontal
+  Creamos el archivo de recursos con la imágen
+  Creamos los botones y el label con la imágen
+  Definimos las funcionalidades de los botones
+
+  El objeto QPixmap de un QLabel no es modificable porque se guarda como constante.
+  Por lo tanto, se debe crear un QPixmap nuevo. Aplicarle un objeto QPainter para
+  poder editarlo. Y una vez terminadas las modificaciones, asignarlo al QLabel.

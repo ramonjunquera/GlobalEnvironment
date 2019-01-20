@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>icons/bulb-on-128.png</file>
+    </qresource>
+</RCC>

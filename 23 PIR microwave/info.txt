@@ -1,0 +1,61 @@
+Descripción de RCWL-0516
+
+Se trata de un módulo de detección de movimiento basado en microondas.
+Es más preciso que los basados en infrarrojos.
+
+Tiene un rango de acción máximo de unos 5m.
+
+No se puede regular la sensibilidad.
+
+Pinout:
+3V3: Salida de regulada a 3.3 V
+GND: Tierra
+OUT: Señal. 0V = normal. 3.3V = movimiento detectado
+VIN: Entrada de potencia
+CDS: Anulador de detección
+
+Los únicos pines necesarios son: GND, OUT y VIN.
+
+El voltaje de entrada debe estar en el rango de 4 a 28V.
+Por lo tanto NO se puede alimentar con 3.3V porque no tendrá suficiente
+como para ponerse en marcha e intentará inicializarse continuamente.
+Lo normal es que lo conectemos a 5V.
+
+El pin OUT tiene una señal limitada a 3.3V. Aun así, es suficiente como
+para conectarlo a un pin digital de entrada de 5V y obtener señal.
+
+Cuando arranca, se activa el pin OUT durante unos 3 segundos.
+Después se desactiva e inicializa.
+Tarda unos 10 segundos en estar operativo.
+
+Cuando detecta movimiento, cambia la señal de OUT a HIGH durante unos
+3 segundos.
+Si el movimiento es contínuo, no vuelve a LOW en ningún momento.
+
+Al contrario que los sensores infrarrojos, los microondas sólo detectan
+movimiento de materia orgánica.
+
+El pin 3V3 es de salida. Siempre está alimentado con este voltaje con
+independencia del voltaje de entrada (VIN), gracias a un regulador.
+Serviría para alimentar otros componentes.
+Tiene una intensidad de 100mA.
+No se suele poner pin en él porque si hay otros componentes, lo más 
+normal es que se conecten a la placa.
+
+El pin CDS permite anular temporalmente la detección de movimiento
+cuando se fuerza a estado LOW.
+Además en la placa del sensor se incluye un espacio para incluir un
+interruptor para este pin. Así se podría desconectar manualmente su
+funcionamiento.
+Tampoco tiene mucho uso. Es mucho más cómodo no tener en cuenta las
+señales del sensor desde programación en caso de querer desactivarlo
+temporalmente.
+
+Si se utilizan más de un sensor de este tipo, es conveniente colocarlos
+a más de un metro de distancia, puesto que se interfieren entre ellos.
+
+Consumo: 20mA
+
+Frecuencia: 3.181 GHz
+
+

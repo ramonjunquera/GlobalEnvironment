@@ -1,0 +1,27 @@
+statusBar
+
+Novedades:
+- Uso de la barra de estado para mostrar un mensaje simple
+- Hacer que un botón se ajuste al máximo tamaño posible
+
+Funcionalidad:
+  La aplicación tiene un layout vertical, con tres botones que se adaptan al máximo
+  espacio posible.
+  En la parte inferior tenemos una barra de estado.
+  Cuando se pulsa el primer botón se muestra un mensaje permanente en la barra de estado.
+  El segundo botón borra cualquier texto que haya en la barra de estado.
+  El tercer botón mustra un mensaje en la barra de estado que tras dos segundos se
+  borrará automáticamente.
+
+Desarrollo:
+  Eliminamos las barras de herramientas y menú.
+  Añadimos un QPushButton.
+  Aplicamos un layout vertical.
+  Añadimos dos botones más.
+  En las propiedades de cada botón: QWidget/sizePolicy/Horizontal Policy y Vertical Policy
+  asignamos el valor Expanding. Esto hará que el botón intente ocupar el máximo área posible
+  dentro del layout aplicado.
+  Asignamos el texto que muestran los botones.
+  Les damos nombre al los botones.
+  Creamos los slots de cada uno de ellos.
+  Escribimos el código de cada opción: métodos showMessage y clearMessage.

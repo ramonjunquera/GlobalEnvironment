@@ -1,0 +1,26 @@
+Cómo saber la memoria real de una placa ESP?
+  La manera más sencilla es mediante la aplicación oficial de Espressif "flash download tool".
+  Se puede descargar desde: https://espressif.com/en/support/download/other-tools
+  - Si la placa lo requiere, se pone en modo de transmisión
+  - Se ejecuta "flash download tool"
+  - Pulsar el botón del tipo de placa
+  - En la primera de las solapas (SPIDownload), en la pare inferior, seleccionamos el puerto COM
+    en la que tenemos conectada la placa.
+  - Pulsamos el botón START
+  - A los pocos segundos aparece en la seccción DETECTED INFO las características. Uno de los parámetros
+    es la memoria, que bien seguida del sufijo Mbit.
+
+Pasar de Mbits a Mb
+  La fórmula es: Mb = Mbit / 8
+  Por lo tanto:
+    4Mbit = 512Kb
+    8Mbit = 1Mb
+    32Mbit = 4Mb
+
+Ejemplo.
+  DETECTED INFO
+    flash vendor: E0h : N/A
+    flash devID: 4014h QUAD;8Mbit
+    crystal: 26 Mhz
+  
+

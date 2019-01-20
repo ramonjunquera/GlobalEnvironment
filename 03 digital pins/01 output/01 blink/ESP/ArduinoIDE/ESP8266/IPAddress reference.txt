@@ -1,0 +1,25 @@
+IPAddress.h
+  Clase base para gestionar fácilmente direcciones IP
+
+IPAddress();
+IPAddress(uint8_t first_octet, uint8_t second_octet, uint8_t third_octet, uint8_t fourth_octet);
+IPAddress(uint32_t address);
+IPAddress(const uint8_t *address);
+  Constructores
+
+uint8_t operator[](int index) const;
+  Se pueda obtener un octeto directamente por índice   
+
+Incluye operadores para
+  que sea una constante
+  se pueda comparar con ==
+  se pueda copiar y asignar a otro objeto del mismo tipo
+
+
+
+
+
+
+
+
+

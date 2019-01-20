@@ -1,0 +1,8 @@
+Servomotores en RPi
+
+No existen librerías especiales para la gestión de servomotores en Raspberry Pi.
+La librería RoJoServo utiliza las posibilidades de PWM de la librería Arduino.h 
+para Raspberry Pi para controlar servomotores.
+
+Esta librería cambia la frecuencia de PMW ajustándola a la utilizada por los servomotores.
+Hay que recordar que la frecuencia de PWM afecta a todos los pines.

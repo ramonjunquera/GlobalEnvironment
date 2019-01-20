@@ -1,0 +1,36 @@
+dial
+
+Novedades:
+- Objeto QDial
+- Propiedad valueChanged() de objeto QDial
+- Objeto QLineEdit
+
+Tenemos una única ventana con:
+- Tres ruletas (dial)
+- Un display numérico LCD
+- Un cuadro de texto plano
+- Un cuadro de línea de texto
+
+Funcionalidad:
+- Al mover la primera ruleta se cambia el valor del display numérico
+- Al mover la segunda ruleta se cambia el valor del cuadro de texto plano
+- Al mover la tercera ruleta se cambia el valor del cuadro de línea de texto
+
+Desarrollo:
+  QDial es un objeto que permite alterar el valor entero que contiene.
+  Tiene aspecto de ruleta.
+  Se pueden fijar los límites del rango permitido.
+  El valor numérico del dial que muestra su valor en el display LCD se hace
+  a través de un signal que une el evento valueChanged(int) del dial con
+  el método display(int) del lcdNumber.
+  El segundo dial muestra su valor en un cuadro de texto plano.
+  Este objeto no permite la asignación de un valor numérico. Sólo QString.
+  Por lo tanto tendremos que transformarlo primero. Por eso no podemos
+  utilizar un signal.
+  Este objeto no incluye en sus propiedades la alineación del texto, por
+  eso está alienado a la izquerda.
+  El tercer caso es idéntico al segundo, pero utilizamos un objeto QLineEdit
+  que es una versión mejorada de la caja de texto plano.
+  Este objeto permite seleccionar la alineación.
+  Para que el usuario no pueda modificar el texto de las cajas de texto se han
+  fijado como read only.

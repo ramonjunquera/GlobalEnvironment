@@ -1,0 +1,22 @@
+constructorVar
+
+Novedades:
+- Definición de constructor con almacenamiento de variables
+
+Desarrollo:
+  Creamos una clase base simple que tiene un par de variables en su sección privada.
+  Modificaremos el constructor para que admita dos parámetros.
+  Aunque normalmente crearíamos un constructor del tipo:
+    Point::Point(int x,int y)
+    {
+      _x=x;
+      _y=y;
+    }
+  Podemos asignar el valor de los parámetros a variables directamente en la definición.
+  Así que el constructor pasa a ser:
+    Point::Point(int x,int y):_x(x),_y(y) {}
+  Esta definición sigue estando en el archivo .cpp.
+  La declaración de cabecera sigue siendo la habitual:
+    Point(int x,int y);
+  Para comprobar que se han asignado los valores correctos, se crea un método que 
+  muestra en pantalla el valor de las variables privadas.

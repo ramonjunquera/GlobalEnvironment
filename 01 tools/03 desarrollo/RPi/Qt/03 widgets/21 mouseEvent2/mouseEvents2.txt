@@ -1,0 +1,29 @@
+mouseEvents2
+
+Novedades:
+- Definición de signal con más de un parámetro
+- Definición de slots con más de un parámetro
+Descripción:
+  Basado en el ejemplo anterior, añadiremos el parámetro del botón con el que se ha
+  hecho el click en la signal y en el slot.
+  Mostraremos siempre en pantalla el botón utilizado.
+Desarrollo:
+  Añadimos un nuevo objeto QLCDNumber para que muestre el código del botón pulsado.
+  Comenzamos modificando la rutina de gestión de eventos de click del mouse en la clase derivada
+  El evento del mouse incluye la información del botón pulsado
+  El botón es un entero.
+  Qt ya tiene constantes definidas para los principales botones del mouse:
+    Qt::LeftButton = 1
+    Qt::RightButton = 2
+    Qt::MidButton = 4
+  Indicamos que mousePressSignal ahora tendrá un segundo parámetro.
+  También debemos cambiarlo en el archivo de cabecera.
+  Saltamos a la ventama principal.
+  La conexión entre signal y slot que hacemos en el constructor debe ser modificada, tanto para
+  la signal como para el slot.
+  Después modificamos la declaración del método del slot (mousePressSlot) tanto en el .cpp
+  como en el .h.
+  Añadimos el código que gestiona la nueva información recibida en el slot.
+Resultado:
+  Al hacer un click sobre el widget (QLabel), además de mostrar las coordenadas, se puede ver
+  el código del botón utilizado.

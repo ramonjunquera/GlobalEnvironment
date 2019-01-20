@@ -1,0 +1,38 @@
+pushButtonImageChange
+
+Novedades:
+- Método setIcon de objeto QPushButton
+- Barra de estado
+- Barra de menú
+- Variables estáticas
+
+Tenemos una única ventana con:
+- Tres botones. Uno de texto y dos con icono
+
+Funcionalidad:
+- Al pulsar el botón de texto cambia la imagen del primer botón con icono
+- El segundo botón de icono permite que se quede pulsado. El icono para 
+  cada estado es distinto
+
+Desarrollo:
+  Se trata de cambiar el icono estándar de un botón por programa.
+  Las imágenes las tenemos guardadas en un archivo de recursos.
+  Utilizamos una variable estática en la que guardamos el icono que
+  muestra el botón. Puesto que sólo tenemos dos iconos, la variable es
+  de tipo bool.
+  Lo primero que hacemos cuando se pulsa el botón toggle es crear un objeto
+  QPixmap con la imagen que queremos asignar como icono al botón.
+  Para convertir la imagen a icono utilizamos una variante del constructor
+  a la que le pasamos el QPixmap. Ejemplo:
+    QIcon myIcon=QIcon(myImage);
+  Después, simplemente asignamos el icono al botón con setIcon(QIcon)
+
+  Para el segundo botón con icono, asignamos una imagen distinta para cada
+  uno de los estados del botón (los que vamos a utilizar). El entorno
+  gráfico se encargará de gestionarlo en base al estado del botón.
+
+  Hemos eliminado tanto la barra de menú como la barra de estado que aparecen
+  por defecto cuando se crea una aplicación desde cero.
+  Esto nos permite aprovechar mejor el área de la ventana.
+  Para ello sólo tenemos que hacer click con el botón derecho sobre la barra
+  que queremos eliminar y seleccionar la correspondiente opción.

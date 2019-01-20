@@ -64,7 +64,8 @@ continuando con la numeración:
 Pines con capacidad PWM, con resolución 8 bits:
   3,5,6,9,10,11
 
-El pin 13 está asociado con el led integrado en placa.
+El pin 13 está asociado con el led integrado en placa y existe la 
+variable LED_BUILTIN con el valor 13.
 
 Timers:
   timer resolución usos
@@ -72,3 +73,7 @@ Timers:
     1    16 bits   Librería Servo y PWM de pines 9 y 10
     2     8 bits   Función tone() y PWM de pines 3 y 11
 
+Atención!
+Si la placa es antigua, al intentar subir el programa dará un error de sincronización.
+Si esto ocurre, se debe indicar en:
+  Herramientas/Procesador/ATmega328P (Old Bootloader)

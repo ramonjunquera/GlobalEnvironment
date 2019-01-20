@@ -1,0 +1,17 @@
+﻿ESP8266 info
+
+Memoria
+  La familia ESP8266 no puede utilizar más de 1Mb de memoria.
+  El máximo es de 1044464 bytes para programas. De los cuales 81920 se reservan para 
+  variables.
+  El resto de memoria sólo puede ser configurada como SPIFFS.
+  Las placas tienen distinta capacidad de memoria. Desde los 512Kb de los ESP-01 más
+  básicos, los 4Mb de la mayoría, hasta los 16Mb de la Wemos D1 Mini Pro son 16Mb.
+  Las particiones de memoria no son reconfigurables.
+  La única variación es poder seleccionar en el IDE de Arduino la cantidad de memoria
+  asignada a SPIFFS.
+
+Documentación
+  La documentación de las librerías que compatibilizan esta familia de dispositivos con
+  el IDE de Arduino se puede consultar en:
+    http://arduino.esp8266.com/versions/1.6.5-947-g39819f0/doc/reference.html

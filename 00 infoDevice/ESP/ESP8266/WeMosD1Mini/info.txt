@@ -8,9 +8,17 @@ Tiene un pin para lecturas analógicas.
 Tiene 11 pines con PWM.
 Admite protocolos SPI & I2C.
 Voltaje de operación: 3.3V
-Memoria total: 4Mb
+Memoria total: 4Mb. 1Mb para programas y 3Mb para SPIFFS
+Memoria para variables: 80Kb
 Velocidad de reloj: 80MHz/160MHz
 Memoria EEPROM: 4Kb máximo
+Chip de comunicaciones: CH340G
+
+Wemos D1 Mini corresponde a la siguiente configuración en Arduino IDE:
+  Placa: "WeMos D1 R2 & mini"
+  CPU Frequency: "80 MHz"
+  Flash Size: "4M (3M SPIFFS)"
+  Upload Speed: "921600"
 
 Realmente la memoria EEPROM se almacena en una zona especial del SPIFFS
 
@@ -50,5 +58,10 @@ Los pines de conexión SPI son:
 
 Pines con capacidad PWM, con resolución 10 bits:
   TX(1),RX(3),D0(16),D1(5),D2(4),D3(0),D4(2),D5(14),D6(12),D7(13),D8(15)
+
+Pin analógico A0.
+Permite digitalizar la tensión de entrada con una resolución de 10 bits.
+Rango [0,1023].
+No aplicar tensiones superiores a 3.3V!
 
 Excepto por el número de leds integrados y el formato, es idéntica a WeMos D1 R2

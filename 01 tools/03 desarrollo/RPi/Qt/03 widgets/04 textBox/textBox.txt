@@ -1,0 +1,48 @@
+Objeto textBox
+
+Novedades:
+- Objeto plainTextEdit
+- Propiedad textChanged() del objeto plainTextEdit
+- Propiedad readOnly del objeto plainTextEdit
+- Objeto QString
+
+Tenemos una única ventana con:
+- Un plainTextEdit llamado Source
+- Un plainTextEdit llamado Clone
+- Un pushButton llamado Copy
+- Un plainTextEdit llamado Destination
+
+Funcionalidad:
+- Cuando escribimos texto en Source, automáticamente se actualiza Clone
+  gracias al evento textChanged.
+- Cuando pulsamos el botón Copy, se copia el contenido de Source en
+  Destination.
+
+Desarrollo:
+  El objeto plainTextEdit (Plain Text Edit) se encuentra en la sección
+  Input Widgets.
+  plainTextEdit sólo contiene texto plano.
+  Si queremos utilizar texto rico (Rich Text) deberíamos usar el objeto
+  textEdit (Text Edit) de la misma sección.
+
+  Puesto que sólo queremos que Source sea editable, hemos activado la 
+  propiedad readOnly de Clone y Destination.
+
+  En QT se ha creado una variante del objeto String llamado QString.
+  Evitaremos utilizar std::String.
+
+  No existe el método getText para obtener el texto de un plainTextEdit.
+  En su lugar utilizaremos el método toPlainText() que nos devuelve una
+  variable de tipo QString.
+
+  plainTextEdit no tiene el método setText para asignar el texto que contiene, como
+  lo tiene el objeto label.
+  En su lugar debemos obtener el objeto document para acceder a su contenido y
+  en él aplicar el método setPlainText(QString text) para asignarlo como texto
+  plano. La referencia final es:
+  ui->plainTextEditObject->document()->setPlainText(text);
+
+  A partir de este ejemplo, el propio código incluirá comentarios
+  explicativos.
+
+

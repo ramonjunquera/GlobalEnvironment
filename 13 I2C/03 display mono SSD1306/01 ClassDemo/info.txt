@@ -1,0 +1,5 @@
+Demostración de las capacidades de la librería RoJoSSD1306.h
+Se muestran distintos tests en pantalla para mostrar puntos, lineas, sprites, textos, etc.
+Esta librería trabaja con SPIFFS como sistema de archivos.
+Puesto que las placas Arduino no tienen este tipo de memoria interna es incompatible con ellas.
+Raspberry Pi sí es compatible gracias a la emulación de SPIFFS.

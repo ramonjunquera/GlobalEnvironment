@@ -1,0 +1,15 @@
+Autor: Ramón Junquera
+Tema: Fotorresistencia infrarroja AX-1838HS
+Fecha: 20180627
+Objetivo: Funcionamiento de una fotorresistencia infrarroja AX-1838HS con librería IRremote.h
+Material adicional: breadboard, receptor de infrarrojos modelo AX-1838HS, led emisor infrarrojo, 2 leds, 3 resistencias de 220 ohmios,
+  keypad 4x4, Display LCD 16x2, Arduino Nano, Arduino UNO
+
+Descripción:
+Basándonos en el ejercicio anterior, añadiremos un display LCD al receptor. De esta manera, podremos visualizar en la pantalla el
+carácter recibido.
+Se ha configurado la tecla de * para que borre la pantalla.
+El programa de emisión no ha cambiado.
+  
+Resultado:
+Comprobamos que el display LCD del receptor muestra los caracteres pulsados en el teclado del emisor.

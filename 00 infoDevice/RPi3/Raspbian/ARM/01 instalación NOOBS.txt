@@ -22,6 +22,10 @@ Una vez descargado el .zip, lo descomprimimos y encontraremos un archivo de text
 pasos a seguir para la instalación.
 
 Se sugiere utilizar una herramienta externa para formatear la SD a FAT32.
+De todas maneras podemos hacerlo perfectamente desde Windows con un formato rápido (mucho
+más cómodo), siempre y cuando nos aseguremos que no sólo tiene una partición y un único
+volumen en ella.
+
 Después se debe copiar todo lo que ha generado el archivo comprimido.
 
 Ya se puede introducir en la Raspberry, configurar y esperar a que finalice la instalación.

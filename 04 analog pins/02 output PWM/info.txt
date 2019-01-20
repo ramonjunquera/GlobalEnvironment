@@ -8,9 +8,14 @@ Habitualmente la frecuencia suele ser constante. Lo que cambiamos es el
 tiempo que mantenemos la onda en estado HIGH.
 Por lo tanto no se trata de una verdadera escritura analógica.
 
-Las placas Arduino tienen alguno pines con estas capacidades, no todos.
+Las placas Arduino tienen algunos pines con estas capacidades, no todos.
 Se identifican por que la nomenclatura va precedida por el símbolo ~.
 En las placas ESP suelen ser casi todos.
 
-Las placas se encargan autométicamente ce variar la anchura del pulso.
+Las placas se encargan automáticamente de variar la anchura del pulso.
 La resolución suele ser de 8bits, 256 niveles.
+
+Raspberry Pi no tiene capacidades PWM nativas. Para sustituirlas es normal
+utilizar circuitos externos como el PCA9685.
+De todas maneras la última versión de la librería Arduino.h es capaz de
+emular PWM por software para cualquier pin.

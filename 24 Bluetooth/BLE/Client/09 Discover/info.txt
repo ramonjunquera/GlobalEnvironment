@@ -1,0 +1,32 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180818
+Objetivo: Detección de servicios/características
+Material: 2 placas ESP32
+
+Descripción:
+El servidor tiene una característica con un valor (byte) que se puede escribir.
+El valor se aplica al estado del led integrado: 0=apagado, 1=encendido
+
+El dispositivo utilizado para el cliente tiene un interruptor integrado en placa
+que permite cambiar el estado del led integrado.
+El cliente se conecta el servidor y cada vez que detecta un cambio de estado local
+lo escribe en el servidor.
+
+El cliente sólo tiene el nombre del dispositivo al cuál se tiene que conectar.
+Hace un scan buscando un servidor con ese nombre.
+Si lo encuentra, muestra el identificador de publicación.
+A continuación recorre todos los servicios detectados en el servidor y de cada
+uno de ellos, todas las características.
+Envía todos los detalles a través del puerto serie.
+
+Una vez finalizado el análisis del servidor, comienza de nuevo a recorrer los servicios
+pero esta vez busca por servicios no genéricos (customizados) y dentro de ellos
+por características no genéricas.
+Cuando encuentra una, toma nota de ella (informando).
+Por lo tanto, se trabajará con la última cracterística no genérica de un servicio no
+genérico.
+En nuestro ejemplo sólo hay una característica que cumple estas condiciones.
+
+Resultado:
+El led del servidor copia el estado del led del cliente

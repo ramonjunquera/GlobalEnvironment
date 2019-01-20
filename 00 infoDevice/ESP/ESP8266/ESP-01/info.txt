@@ -1,0 +1,162 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa
+Objetivo: Descripción de placa ESP-01
+Descripción:
+
+Es la placa más simple de la familia ESP8266.
+No incluye un adaptador USB para conexión directa con el ordenador.
+Ni siquiera tiene una disposición de pines adecuada para poder pincharlo en una breadboard.
+Los pines se distribuyen en dos hileras de 4.
+
+Vista de la placa con los pines hacia abajo y los chips a la vista:
+-------------------------------------
+|   UTXD  o o  GND       ----====== |
+|  CH_PD  o o  GPIO2       | ====== |
+|    RST  o o  GPIO0              | |
+|    VCC  o o  URXD               | |
+-------------------------------------
+
+Pinout:
+  GND - Tierra
+  VCC - Alimentación
+  CH_PD - Conectado siempre a alimentación
+  UTXD - Transmitir
+  URXD - Recibir
+  RST - Reset
+  GPIO0 - Pin programable
+  GPIO2 - Pin programable
+
+GPIOs:
+  pin   #
+  ----- -
+  GPIO0 0
+  UTXD  1
+  GPIO2 2
+  URXD  3
+
+  Nota:
+    Si se utilizan los pines RX & TX no se podrá utilzia el puerto serie para comunicar con el PC.
+
+Memoria.
+  Existen varios ESP-01 con distintas memorias que se distinguen por el color:
+
+  color memoria
+  ----- -------
+  azul  512Kb
+  negro 1Mb
+
+  La memoria se distribuye en:
+    - Memoria de programa
+    - Memoria de variables. Constante: 81920 bytes.
+    - Memoria SPIFFS. Opcional.
+
+Configuración en Arduino IDE:
+  Placa: "Generic ESP8266 Module"
+  Flash Mode: "QIO"
+  Flash Size: "512K (no SPIFFS)"
+  Debug port: "Disabled"
+  Debug Level: "Ninguno"
+  IwIP Variant: "v2 Lower Memory"
+  Reset Method: "ck"
+  Crystal Frequency: "26MHz"
+  VTables: "Flash"
+  Flash Frequency: "40MHz"
+  CPU Frequency: "160MHz"
+  Builtin Led: "1"
+  Upload Speed: "115200"
+  Erase Flash: "Sketch + WiFi Settings"
+
+  Nota:
+    El parámetro Flash Size dependerá de la memoria de la placa y de la distribución que queramos darle
+    internamente (si queremos o no SPIFFS).
+
+Leds integrados.
+  Tiene dos leds integrados. Uno rojo que se enciende siempre que tenga alimentación y otro azul asociado
+  al pin de recepción UTXD = GPIO 1. El estado del led es inverso a la del pin:
+    HIGH = apagado
+    LOW  = encendido
+
+Entradas analógicas.
+  La familia ESP8266 soporta entradas analógicas en los pines 12, 13 y 15. Este modelo sólo tiene los 4 primeros
+  por lo tanto, NO tiene ninguna entrada analógica.
+
+Alimentación.
+  La placa sólamente funciona con 3.3V, incluidos los pines de datos.
+  Si lo alimentamos con 5V corremos el riesgo de quemarlo.
+  Si tenemos 5V y necesitamos reducirlos a 3.3 podemos utilizar un divisor de tensión que consta de 2 resistencias
+  conectadas una en serie y otra en paralelo con resistencias una el doble que la otra. 
+  Otra solución es usar algun regulador de tensión o algún adaptador que lo incluya.
+  En último extremo, podríamos alimentarla con 3.3V y dejar los pines de datos a 5V. Funciona perfectamente.
+
+Potencia.
+  Una placa Arduino UNO proporciona 50mA por el pin de 3.3V.
+  Esta intensidad es insuficiente en la mayoría de los casos para el momento del arranque del ESP-01.
+  El resultado es probablemente tendremos que reiniciarlo varias veces hasta que arranque correctamente.
+  Para evitar esto, tendríamos que conectarlo a una fuente de alimentacón externa que le pueda proporcionar más intensidad.
+  Podemos hacerlo con un adaptador de tensión de breadboard.
+  Son pequeñas placas que se adaptan a las breadboards, proporcionando un voltaje seleccionable (5 o 3.3V) y que admiten
+  un voltaje de entrada entre 5 y 12V.
+  La alimentación puede hacerse tanto por USB como por pilas/baterías. Si son pilas, es mejor varias pilas AA que una sóla
+  de 9V.
+  La razón es porque puede dar mayor intensidad.
+  El número ideal de pilas es de 6 de 1.5V, que dan 9V. Valor perfecto para poder alimentar cualquier dispositivo.
+  Las pilas recargables, aunque den un poco menos de voltaje e intensidad son la mejor opción porque pueden ser reutilizadas.
+
+Pin RST.
+  El pin de RST (reset) funciona perfectamente.
+  No es obligatorio cablearlo, pero si se hace debe estar en modo HIGH (alimentado con 3.3V) para que funcione con normalidad.
+  Cuando queramos hacer un reset similar al corte de alimentación, debemos conectarlo a GND por un instante.
+  Esto podría automatizar el proceso de reseteo manual. Podríamos conectarlo a un pin digital.
+
+Fritzing.
+  Fritzing no incluye por defecto este adaptador. Se facilita el archivo .fzpz.
+
+Programa inicial.
+  ESP-01 suele venir con un programa instalado que permite la gestión de su wifi a través de comandos AT.
+  No es una aplicación demasiado útil puesto que podemos desarrollar un programa que gestione directamente el wifi
+  y transferirlo al ESP-01.
+
+Transferencia de un programa.
+  FTDI.
+    Puesto que ESP-01 no tiene interface USB, necesitamos un dispositivo que podamos conectar al PC por USB y nos proporcione
+    un puerto serie (pines RX y TX) para conectar con ESP-01.
+    Este dispositivo es un FTDI. Lo necesitaremos siempre que queramos actualizar el programa.
+    Habitualmente un FTDI tiene regulación del voltaje de salida: 3.3V y 5V
+    La velocidad máxima sin errores de transmisión que se puede conseguir con FTDI conectado a un ESP-01 es de 115200.
+  Conexión.
+    Los pines de comunicación se deben conectar invertidos:
+    - El pin de transmisión (TX) de FTDI entrega sus datos al de recepción (RX) de ESP-01
+    - El pin de recepción (RX) de FTDI recibe sus datos del de transmisión (TX) de ESP-01
+    - Los pines de GND deben estar unidos
+    - Los pines de VCC deben estar unidos
+    - El pin CH_PD siempre debe estar conectado a VCC
+    - El pin GPIO0 siempre debe estar conectado a GND para que al arrancar entre en modo de recepción de programas.
+    Una vez que se haya hecho la transferencia, se debe desconectar GPIO0 de GND para que en el siguiente reinicio no
+    entre de nuevo en modo de programación.
+  Zócalos.
+    Si cada vez que queremos transferir un nuevo programa a nuestro ESP-01 tenemos que utilizar el circuito de transferencia,
+    significa que debemos extraer el ESP-01 del circuito final y recablearlo en el de transferencia.
+    Puesto que esto no es una tarea cómoda ni rápida, existen varios modelos de zócalos que permiten conectar directamente
+    el ESP-01. Estos zócalos se pueden pinchar en una breadboard. Así sólo tenemos que cambiar de circuito la placa, sin
+    recablear nada.
+    Se adjuntan los circuitos de transferencia en Fritzing para los dos zócalos que descibiremos y para la conexión directa.
+    - Zócalo Adapter v1.0
+      Simplemente adapta la disposición de pines del ESP-01 a una compatible para pinchar en una breadboard.
+      Sólo añade un condensador para estabilizar la alimentación.
+      Cuando se utilice este zócalo es importante que el FTDI esté en 3.3V.
+    - Zócalo ADP-01
+      Es igual que el anterior, excepto que añade un regulador de tensión para asegurarno de que alimentamos el ESP-01 con 3.3V.
+      El FTDI debe configurarse con 5V. Si lo hacemos con 3.3V el regulador de tensión se llevará parte del voltaje y no será
+      suficiente para alimentar el ESP-01.
+    - Sin zócalo
+      Debemos asegurarnos que el FTSI está configurado a 3.3V
+  Errores.
+    Si durante la transferencia del programa se produce un error, no será suficiente con resetear la placa uniendo el pin RST con GND.
+    Será necesario soltar la alimentación y volver a conectarla.
+
+OTA.
+  Debido a la memoria tan reducida, NO se puede utilizar el sistema de actualización remota.
+  Ni siquiera con 1Mb de memoria partido en 512Kb de programa y 512Kb de SPIFFS.
+
+Entradas analógicas.
+  Esta placa NO tiene entradas analógicas.

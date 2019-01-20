@@ -1,0 +1,35 @@
+labelRedim
+
+Novedades:
+- Un elemento gráfico adquire el tamaño de la ventana dinámicamente
+
+Tenemos una única ventana con:
+- Un label con una imágen
+
+Funcionalidad:
+- Al resimensionar la ventana, se redimensiona el label
+
+Desarrollo:
+  Se trata de un label simple con imágen tomada de un archivo de recursos.
+  - Eliminar barras :menu, tool y status
+  - Creado un archivo de recursos con la imágen
+  - Creado un label con la imágen del archivo
+  Hasta ahora no hemos necesitado cambiar la referencia de organización de la ventana.
+  Eso significa que los objetos gráficos mantenían su posición de diseño y su tamaño
+  con independencia del tamaño de la ventana.
+  Para este ejemplo incluiremos una distribución (layout) horizontal.
+  Los elementos aparecerán uno encima de otro ocupando la anchura total de la ventana.
+  En cuestro caso, como sólo hay un elemento, ocupará toda la ventana.
+  Por defecto la imágen no se redimensiona.
+  Cambiaremos la alineación de su contenido para que también quede centrado en horizontal.
+  La propiedad sizePolicy es la responsable de que ocupe todo el espacio posible.
+  Concretamente el valor "Prefered" .
+
+  Podemos hacer la prueba de introducir un segundo label.
+  Aparecerá bajo el primero.
+  También tomará la anchura de la ventana.
+  Como altura tomará la misma que el label anterior, puesto que ambos tienen el mismo peso
+  y se reparten la altura equitatívamente.
+  Si queremos que un label tenga una altura fija, cambiaremos la propiedad "Vertical Policy"
+  a "Fixed". Esto hará que el label tenga la altura mínima para ser visible.
+  Cambiando la propiedad minimumSize/Height conseguimos asignarle la altura deseada.

@@ -1,0 +1,450 @@
+﻿Autor: Ramón Junquera
+Tema: Bluetooth
+Fecha: 20180829
+Objetivo: Descripción de adaptador bluetooth HC-05
+
+El adaptador HC-05 permite a Arduino la conexión bluetooth. Puede trabajar tanto en modo máster como en slave.
+Existe otro adaptado llamado HC-06 que sólo permite conexión como slave.
+HC-05 permite más versatilidad.
+
+Tiene 6 pines. Incluye una antena integrada. El rango de voltaje de trabajo es de 3.6V a 6V y su consumo es
+muy reducido.
+Teniendo en cuenta que trabajamos con placas con voltajes de 3.3V y 5V, debemos alimentarlo obligatoriamente
+con 5V. Al resto de pines (pines de señal) pueder funcionar perfectamente con 3.3V.
+
+Hay gran variedad de adaptadores HC-05 en el mercado. Eso quiere decir que no siempre los pines se
+encuentran en la misma posición, ni tienen la misma versión de firmware, ni aceptan los mismos
+comandos AT.
+
+Por lo tanto, comentaré las características y conexiones que tiene el adaptador que tengo.
+Concretamente es un modelo CZ-HC-05 del fabricante Gomcu. Enfundado en un plástico para protegerlo de humedades.
+La distribución de pines es la siguiente:
+    
+      --------------------------------
+  ----|o VCC                         |
+  ----|o GND                         |
+  ----|o TXD                         |
+  ----|o RXD                         |
+  ----|o KEY                         |
+  ----|o LED                         |
+      --------------------------------
+  
+  VCC es la alimentación a 5V
+  GND es tierra
+  TXD es el pin de transamisión de datos del puerto serie
+  RXS es el pin de recepción de datos del puerto serie
+  KEY permite arrancar en modo comandos
+  LED indica el estado del adaptador
+  
+El HC-05 se conecta a Arduino a través de un puerto serie que se compone por los pines TXD y RXD.
+  
+El adaptador tiene dos modos de trabajo: modo comandos y modo datos. Los modos son incompatibles entre sí.
+El modo comandos permite gestionar la configuración utilizando comandos AT.
+El modo datos sólo recibe y envía datos a los dispositivos conectados.
+    
+Cuando el adaptador arranca, por defecto lo hace en modo datos.
+Cuando se conecta a otro dispositivo bluetooth u otro se conecta a él (cuando es máster) transmite la información a
+Arduino a través del puerto serie.
+  
+Para entrar en modo de comandos debemos mantener en HIGH el pin KEY mientras arrancamos el adaptador.
+Así que primero alimentamos el pin KEY y después el pin VCC.
+Cuando el dispositivo está en modo de comandos no es visible para otros dispositivos. Se debe reiniciar de nuevo
+en modo de datos. Para ello podemos apagarlo (cortar la alimentación de VCC), poner el pin KEY a LOW y volver a
+alimentar VCC para que arranque con normalidad.
+  
+Lo normal es configurar manualmente el dispositivo a nuestro gusto y no tocarlo más. Por esa razón, no se suele
+gestionar el modo de comandos.
+  
+Si una vez transferido el programa no obtenemos conexión porque ni siquiera responde OK al comando AT debemos revisar:
+- Que la velocidad de la ventana del terminal serie sea la correcta
+- Que la ventana del terminal tenga los caracteres NL & CR como indicadores de fin de línea
+Si con esto no se consigue es posible que sea porque el adaptador está configurado a una velocidad distinta
+de la indicada.
+Por defecto el adaptador viene configurado a 38400 baudios. Si no fuese tu caso, prueba con otras velocidades.
+
+Recordamos que un puerto serie por software tiene muchos problemas para conectarse a 115200 baudios. Introduce
+muchos errores. Tantos que los comandos quedan irreconocibles. Esto no ocurre con un puerto serie hardware.
+
+Cuando el adaptador entra en modo de comandos el led azul parpadea muy despacio (frecuencia de 5 segundos).
+Cuando el adaptador se encuentra en modo datos, parpadea más rápido (frecuencia de 1 segundo).
+Cuando conectamos con el adaptador en modo de datos, la luz azul pasa a parpadear dos veces rápidas cada dos segundos.
+  
+Para comprobar el correcto funcionamiento de los desarrollos es cómodo utilizar el móvil como cliente.
+Una aplicación básica para hacer pruebas es "Serial Bluetooth Terminal" que se puede encontrar en la Play Store.
+Permite enviar y recibir texto. Además incluye una botonera programable para envío.
+
+Las últimas versiones de Fritzing ya incluyen este dispositivo, aunque no coincide la descripción de
+los pines. De todas maneras lo utilizaremos teniendo en cuenta su etiquetado y no su posición.
+
+A continuación se muestra un listado (incompleto) de los comandos AT más importantes.
+El listado completo se encuentra en el documento HC-0305_serial_module_AT_commamd_set_201104_revised.pdf.
+  
+  AT
+  Comando para comprobación del estado.
+  Respuesta:
+    OK
+  
+  AT+NAME
+  Solicita el nombre asignado al adaptador.
+  Respuesta:
+    +NAME:HC-05
+    OK
+  
+  AT+NAME=XXXX
+  Asigna un nuevo nombre al adaptador. XXXX es el nombre.
+  Ejemplo: AT+NAME=MyBT
+  Respuesta:
+    OK
+    
+  AT+VERSION
+  Muestra la versión del firmware
+  Respuesta:
+    +VERSION:2.0-20100601 
+  
+  AT+RESET
+  Resetea el adaptador
+  Respuesta:
+    OK
+    
+  AT+ORGL
+  Configura los parámetros del adaptador con los valores por defecto.
+  Nombre del adaptador: H-C-2010-06-01
+  Contraseña: 1234
+  Velocidad de conexión: 38400 baudios, stop bit: 1 bit, parity bit: none
+  Modo: 0 (master)
+  Respuesta:
+    OK
+    
+  AT+ADDR  
+  Muestra la dirección única del adaptador
+  Respuesta:
+    +ADDR:98d3:31:203092
+    OK
+    
+  AT+ROLE
+  Muestra el role en el que se encuentra configurado el adaptador.
+  Lo más habitual es configurar el dispositivo como máster para poder conectarnos a él desde cualquier móvil.
+    0 = Master role (default)
+    1 = Slave role
+    2 = Slave-Loop role
+  Nota: El modo Slave-Loop recibe datos del dispositivo remoto (slave) y los envía de vuelta al máster
+  Respuesta:
+    +ROLE:0
+    OK
+
+  AT+ROLE=X
+  Cambia de role
+  Respuesta:
+    OK
+    
+  AT+CLASS
+  Muestra el tipo de dispositivo
+  Respuesta:
+    +CLASS:0
+    OK
+  
+  AT+CLASS=X
+  Cambia el tipo de dispositivo
+  Respuesta:
+    OK
+    
+  AT+IAC
+  Muestra el GIAC (General Inquire Access Code).
+  Por defecto es 0x9e8b33
+  Se utiliza para buscar o ser visto por el resto de dispositivos bluetooth
+  Respuesta:
+    +IAC:9e8b33
+    OK
+  
+  AT+IAC=X
+  Cambia el GIAC
+  Ejemplo: AT+IAC=9e8b33
+  Respuesta:
+    OK
+  
+  AT+INQM
+  Muestra el modo de acceso. Devuelve 3 parámetros separados por comas.
+  Parámetro 1:
+    0 = inquiry_mode_standard
+    1 = inquiry_mode_rssi
+  Parámetro 2:
+    Número máximo de dispositivos a responder
+  Parámetro 3:
+    Tiempo límite se solicitud. Valores entre 1 y 48. El valor multiplicado por 1,28 da el tiempo en segundos de espera.
+    Por lo tanto el rango está entre 1,28s y 61,44s
+  Respuesta:
+    +INQM:1,1,48
+    OK
+    
+  AT+INQM=X,Y,Z
+  Cambia el modo de acceso
+  Ejemplo: AT+INQM=1,1,48
+  Respuesta:
+    OK
+  
+  AT+PSWD
+  Muestra la contraseña de conexión
+  Respuesta:
+    +PSWD:1234
+    OK
+  
+  AT+PSWD=X
+  Cambia la contraseña de conexión
+  Ejemplo: AT+PSWD=0000
+  Respuesta:
+    OK
+  
+  AT+UART
+  Muestra los parámetros de conexión del puerto serie. Devuelve 3 parámetros separados por comas.
+  Parámetro 1:
+    Velocidad en baudios. Los posibles valores son: 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800,
+    921600, 1382400
+  Parámetro 2:
+    bit de parada (stop bit). Posibles valores:
+      0 = 1 bit
+      1 = 2 bits
+  Parámetro 3:
+    bit de paridad (parity bit). Posibles valores:
+      0 = no tiene
+      1 = paridad impar (odd parity)
+      2 = paridad par (even parity)
+  Respuesta:
+    +UART:38400,0,0
+    OK
+    
+  AT+UART=X,Y,Z
+  Cambia los parámetros de conexión del puesto serie.
+  Ejemplo: AT+UART=38400,0,0
+  Respuesta:
+    OK
+    
+  AT+CMODE  
+  Muestra el modo de conexión. Posibles valores:
+    0 = Conecta el adaptador a una dirección concreta
+    1 = Conecta el adaptador a cualquier dirección de las que tiene memorizadas
+    3 = Slave-Loop
+  Respuesta:
+    +CMOD:0
+    OK
+  
+  AT+CMODE=X
+  Cambia de modo de conexión
+  Ejemplo: AT+CMODE=0
+  Respuesta:
+    OK
+
+  AT+BIND
+  Muestra la dirección con la que conectará
+  Respuesta:
+    +BIND:0:0:0
+    OK
+
+  AT+BIND=XXXX,XX,XXXXXX
+  Cambia la dirección con la que conectará.
+  Los 3 valores están escritos en hexadecimal
+  Ejemplo: AT+BIND=98D3,31,203092
+  Respuesta:
+    OK
+  
+  AT+POLAR
+  Muestra el comportamiento que tienen los leds de conexión y estado.
+  Tiene dos parámetros. El primero controla el led de estado (azul) y el segundo el de conexión (rojo)
+  Parámetro 1:
+    0 = Led outputs low level and turn on
+    1 = Led high level and turn on 
+  Parámetro 2:
+    0 = Led ouput low level, indicate successful connection
+    1 = Led output high level, and indicate successful connection
+  Respuesta:
+    +POLAR:1,1
+    OK
+
+  AT+POLAR=X,Y
+  Cambia el comportamiento de los leds de conexión y estado
+  Ejemplo: AT+POLAR=1,1
+  Respuesta:
+    OK
+
+  AT+MPIO
+  Muestra el estado de los puertos de salida.
+  El adaptador HC-05 tiene varios puertos (PI00 a PI11) que puede utilizar para conectarse.
+  Los puertos corresponderían a pines digitales.
+  Cada puerto tiene el peso específico en binario de su posición.
+  PI00 = 1<<0 = 1 = 0x001
+  PI01 = 1<<1 = 2 = 0x002
+  PI02 = 1<<2 = 4 = 0x004
+  PI03 = 1<<3 = 8 = 0x008
+  PI04 = 1<<4 = 16 = 0x010
+  PI05 = 1<<5 = 32 = 0x020
+  PI06 = 1<<6 = 64 = 0x040
+  PI07 = 1<<7 = 128 = 0x080
+  PI08 = 1<<8 = 256 = 0x100
+  PI09 = 1<<9 = 512 = 0x200
+  PI10 = 1<<10 = 1024 = 0x400
+  PI11 = 1<<11 = 2048 = 0x800
+  El valor por defecto es 0x900 = 0x800 + 0x100 = PI11 + PI08 activados
+  Respuesta:
+    +MPIO:900
+    OK
+
+  AT+IPSCAN
+  Muestra la página de scan y sus parámetros.
+  La respuesta tiene 4 parámetros.
+  Parámetro 1: intervalo de tiempo de solicitud
+  Parámetro 2: duración de la solicitud
+  Parámetro 3: intervalo de tiempo de paginación
+  Parámetro 4: dureción de paginación
+  Respuesta:
+    +IPSCAN:1024,512,1024,512
+    OK
+  
+  AT+SNIFF
+  Muestra parámetro de energía SNIFF
+  la respuesta tiene 4 parámetros.
+  Parámetro 1: tiempo máximo
+  Parámetro 2: tiempo mínimo
+  Parámetro 3: tiempo de test
+  Parámetro 4: tiempo límite
+  Respuesta:
+    +SNIFF:0,0,0,0
+    OK
+
+  AT+SENM
+  Muestra el modo de encriptación y la solicitud segura.
+  La respuesta tiene 2 parámetros.
+  Parámetro 1: valor del modo seguro
+    0 = sec_mode0+off
+    1 = sec_mode1+non_secure
+    2 = sec_mode2_service
+    3 = sec_mode3_link
+    4 = sec_mode_unknown
+  Parámetro 2: valor del modo de encriptación
+    0 = hci_enc_mode_off
+    1 = hci_enc_mode_pt_to_pt
+    2 = hci_enc_mode_pt_to_pt_and_bcast
+  Respuesta:
+    +SENM:0,0
+    OK
+    
+  AT+RMAAD
+  Borra totos los dispositivos autentificados y memorizados en la lista de emparejados
+  Respuesta:
+    OK
+
+  AT+PMSAD
+    Elimina un dispositivo autenticado
+    Parámetro 1 = dirección del dispositivo autenticado
+    Ejemplo: AT+PMSAD=1234,56,abcdef
+    Respuesta:
+      OK
+  
+  AT+ADCN
+  Muestra el número de dispositivos autentificados y memorizados en la lista de emparejados
+  Respuesta:
+    +ADCN:0
+    OK
+    
+  AT+MRAD
+  Muestra la dirección del último dispositivo autentificado
+  Respuesta:
+    +MRAD:0:0:0
+    OK
+    
+  AT+STATE
+  Muestra el modo de trabajo actual
+  Las posibles respuestas son:
+    INITIALIZED
+    READY
+    PAIRABLE
+    PAIRED
+    INQUIRING
+    CONNECTING
+    CONNECTED
+    DISCONNECTED
+    NUKNOW
+  Respuesta:
+    +STATE:INITIALIZED
+    OK
+  
+  AT+INIT
+  Inicializa el dispositivo (activa SPP profile library).
+  Posibles respuestas:
+    OK
+    FAIL
+    ERROR:(17)   Este error aparece cuando ya se había lanzado este comando anteriormente
+
+  AT+INQ
+    Solicita la lista de dispositivos disponibles. Si no hay disposivos alcanzables, el comando no devuelve nada.
+    Ni siquiera un OK.
+    La sintaxis de los elementos encontrados es: +INQ:<address>,<device class>,<RSSI signal strength>
+      <adress> es la dirección asignada al dispositivo (Ej: 1:6C:E38AEA)
+      <device class> es el tipo de dispositivo (Ej: 2508)
+      <RSSI signal strength> es la fuerza de recepción de la señal (Ej: 7FFF)
+  Ejemplo de respuesta:
+    +INQ:1:6C:E38AEA,2508,7FFF
+    OK
+
+  AT+INQC
+    Cancela la solicitud de dispositivos disponibles (AT+INQ).
+  Posibles respuestas:
+    OK
+
+  AT+PAIR=XXXX,XX,XXXXXX,T
+    Empareja un dispositivo
+    Los 3 primeros parámetros corresponden con la dirección del dispositivo, que se puede obtener del comando AT+INQ
+    El último parámetro (T) corresponde con el tiempo máximo que debe esperar para completar el emparejado
+    Ejemplo: Si una de las respuestas de AT+INQ es +INQ:98D3:31:203092,0,7FFF y no queremos esperar más de 9 segundos
+    para emparejar, componemos el siguiente comando:
+      AT+PAIR=98D3,31,203092,9
+  Posibles respuestas:
+    OK
+    FAIL
+
+  AT+LINK
+    Empareja un dispositivo
+    Parámetro 1 = device address
+    Ejemplo de uso:
+      AT+LINK=98D3,31,203092
+    Ejemplo de respuestas:
+      OK
+      FAIL
+      
+  AT+DISC
+    Desconecta un dispositivo
+    Parámetro 1 = device address
+    Ejemplo de respuestas:
+      +DISC:SUCCESS
+      +DISC:LINK_LOSS
+      +DISC:NO_SLC
+      +DISC:TIMEOUT
+      +DISC:ERROR
+
+   AT+ENSNIFF
+     Activa el modo de ahorro de energía
+     Parámetro 1 = device address
+     Ejemplo de respuestas:
+       OK
+
+   AT+EXSNIFF
+     Desactiva el modo de ahorro de energía
+     Parámetro 1 = device address
+     Ejemplo de respuestas:
+       OK 
+    
+  AT+RNAME?XXXX,XX,XXXXXX
+    Solicita el nombre de un dispositivo remoto si le damos su dirección.
+    La dirección es la misma que puede proporcionar el comando AT+INQ en su primer parámetro, pero el carácter : se debe
+    sustituir por , para usarlo ahora.
+    Si no encuentra el dispositivo con la dirección indicada, devuelve FAIL
+    Ejemplo: Si una de las respuestas de AT+INQ es +INQ:98D3:31:203092,0,7FFF creamos el comando:
+      AT+RNAME?98D3,31,203092
+  Ejemplo de respuesta:
+    +RNAME:HC05server
+    OK
+
+  AT+FSAD
+    Buscar dispositivos autenticados
+    Parámetro 1 = device address
+    Ejemplo de respuestas:
+      OK
+      FAIL

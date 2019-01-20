@@ -50,17 +50,17 @@ const byte pinLed=13;
 void setup()
 {
   //Inicializamos el pin del led integrado como salida
-  pinMode(pinLed,OUTPUT);
+  pinMode(pinLed, OUTPUT);
 }
 
 void loop()
 {
   //Encendemos el led
-  digitalWrite(pinLed,HIGH);
-  //Esperamos un momento
+  digitalWrite(pinLed, HIGH);
+  //Esperamos un segundo
   delay(1000);
   //Apagamos el led
-  digitalWrite(pinLed,LOW);
-  //Esperamos un momento
+  digitalWrite(pinLed, LOW);
+  //Esperamos un segundo
   delay(1000);
 }

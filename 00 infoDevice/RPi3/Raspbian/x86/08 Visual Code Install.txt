@@ -1,0 +1,13 @@
+Cómo instalar Microsoft Visual Code
+
+Desde la URL https://code.visualstudio.com/Download
+Descargar la versión que corresponda.
+Teniendo en cuenta que Raspbian es un sistema Debian 8 de 32 bits, corrspondería el archivo:
+  code_1.29.1-1542309226_i386.deb
+
+Abrir una sesión de terminal.
+Pasamos a la carpeta de descargas: cd ~/Downloads
+Lanzamos la ejecución: sudo dpkg -i code_1.29.1-1542309226_i386.deb
+
+Ya está instalado.
+A través del menú principal, en la sección Programming tenemos Visual Studio Code

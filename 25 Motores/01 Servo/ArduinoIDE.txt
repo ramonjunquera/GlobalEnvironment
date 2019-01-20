@@ -1,0 +1,29 @@
+Servomotores en Arduino
+
+Arduino tiene una librería por defecto llamada Servo.h que facilita las tareas de
+control de un servomotor.
+Esta librería se encarga de enviar los pulsos con duración y frecuencia adecuados.
+Para ello utiliza interrupciones (timers).
+En un Arduino UNO, utiliza el timer 1.
+Por lo tanto, si utilizamos la librería, no podremos usar el timer 1 para nada más.
+Y como van relacionados, tampoco podremos utilizar la función de PWM en los pines
+9 y 10. Se puede utilizar cualquier pin para enviar los pulsos al servomotor. Incluidos
+los propios pines 9 y 10.
+En un Arduino Mega, al tener más timers, no ocurre esto.
+
+En la inicialización del objeto Servo utilizamos el método attach. Tenemos dos sintaxis:
+  servoObj.attach(pinServo)
+  servoObj.attach(pinServo,minPulse,maxPulse)
+pinServo es el pin donde conectamos la señal del servomotor.
+minPulse es la duración mínima del pulso en microsegundos cuando giramos 0º. Su valor por defecto es 544.
+maxPulse es la sureción máxima del pulso en microsegundos cuando giramos 180º. Su valor por defecto es 2400.
+
+Cómo sabemos si los valores por defecto son correctos para el servomotor que vamos a utilizar?
+Si pedimos al servomotor que gire 0º y notamos que no termina de llegar nunca porque pega con el topo de giro
+es porque el valor mínimo por defecto es demasiado bajo. Debemos aumentarlo.
+Si pedimos que gire 0º y no llega a la posición mínima, es que el valor mínimo es demasiado alto.
+Si pedimos que gire 180º y se queda corto es que debemos aumentar el valor máximo.
+Si giramos 180º y gira algo más, es que el valor máximo es demasiado alto.
+
+Normalmente, aunque el servomotor tenga topes, siempre tiene un márgen de giro mayor al indicado.
+No son exáctamente 180º, podrían se entre 10 y 20º más.

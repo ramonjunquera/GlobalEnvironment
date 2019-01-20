@@ -1,0 +1,40 @@
+pwm
+
+Novedades:
+- Control de PWM a un led
+
+Tenemos una única ventana con:
+- Una barra de desplazamiento horizontal con un display LCD
+
+Tenemos un circuito con:
+- Un led
+
+Funcionalidad:
+- La barra de desplazamiento control la intensidad del led
+
+Desarrollo:
+Eliminamos las barras de menú, herramientas y estado.
+Creamos una barra de desplazamiento horizontal (Horizontal
+Slider).
+Modificamos el parámetro maximum a 255.
+Esto lo hacemos porque la librería de RoJoArduino permite
+una resolución de 8 bits para los valores PWM.
+Así asignaremos al led el mismo valor que la barra de
+desplazamiento.
+Creamos un display LCD (LCD Number).
+Creamos una relación entre estos elementos a nivel de
+interface de usuario (signal) que una el valueChanged(int)
+con el display(int).
+Así no tendremos que usar código para que se actualice el
+valor del display al mover la barra.
+
+Añadimos al archivo .pro el path y la compatibilidad c++11:
+  CONFIG += c++11
+  INCLUDEPATH += /home/pi/prg
+
+Añadimos el include de Arduino.h en mainwindow.cpp
+  #include <Arduino.h>
+
+Añadimos a la barra de desplazamiento el slot valueChanged(int).
+Y en ese método incluimos el código para la gestión de PWM:
+  analogWrite(16,value);

@@ -1,0 +1,80 @@
+moreWindows
+
+Novedades:
+- Aplicación con varias ventanas
+- Crear nuevas ventanas
+- Asignar título a una ventana
+- Cambiar el orden de tabulación. Definir el widget que tendrá el foco inicial
+- Ocultar una ventana
+- Fijar el tamaño de una ventana
+
+Funcionalidad:
+  Tenemos una ventana principal con un botón y un label.
+  Cuando pulsamos el botón se abre una nueva ventana modal que nos pide un texto.
+  Si aceptamos la ventana, el texto se asignará al label de la ventana principal.
+
+Concepto:
+  Habitualmente tenemos una aplicación con entorno gráfico que tiene una ventana
+  principal. Si no podemos gestionar todas sus funcionalidades en una sóla ventana, es
+  normal hacer llamadas a nuevas ventanas que adquirirán/calcularán nueva información.
+  A la hora de crear una nueva ventana podemos elegir entre tres tipos:
+  - Widget
+  - Dialog
+  - MainWindow
+  Nos centraremos en las del tipo Dialog porque son la únicas que tienen una característica
+  muy interesante: somos capaces de abrirlas como modales. Y además, mientras están abiertas
+  no devuelven el control.
+  Como lo habitual es que la ventana devuelva algún tipo de información, crearemos un
+  método nuevo en la subventana que se encargará de:
+  - Mostrar la ventana en modal
+  - Esperar a que se cierre
+  - Comprobar si se aceptado el contenido de la ventana
+  - Si se ha aceptado, devolverlo en un parámetro
+  - Informar si la ventana se ha aceptado
+  Este método debe devolver un bool = se ha aceptado la ventana?
+  Y uno de sus parámetros será un puntero a una variable/estructura/objeto que contendrá
+  la respuesta.
+  Desde la ventana principal simplemente llamaremos a esta función y recogeremos su resultado.
+
+Desarrollo:
+  Eliminamos todas las barras (menú, herramientas y estado).
+  Creamos los widgets de la ventana principal:
+  - Un botón
+  - Un label
+  Aplicamos un layout horizontal.
+  Ajustamos el tamaño.
+  Creamos un nuevo formulario con su correspondiente clase (Qt Designer Form Class)
+  del tipo "Dialog without Buttons", de nombre de clase: DialogWindow.
+  En DialogWindow incluimos un QLineEdit y un botón de Ok, y aplicamos un layout horizontal.
+  Cambiamos el nombre de la ventana (windowsTitle) a Nombre.
+  Comprobamos que el orden de tabulación de los widgets es correcto. Para ello pulsamos el
+  botón de "Edit Tab Order" en modo diseño.
+  Cuando lo pulsamos aparencen unos cuadros en cada widget tabulable que indican el
+  orden de la secuencia. Pulsando en éstos cuadros podemos reordenarlos.
+  Dejaremos el siguiente orden:
+    1. Cuadro de texto
+    2. Botón Ok
+  El foco inicial siempre se quedará en el primero de los widgets.
+  Para evitar que el usuario pueda cambiar el tamaño de la ventana, fijamos como tamaño
+  máximo y mínimo el actual.
+  Una vez que se cierre la ventana necesitamos saber si se ha aceptado (se ha pulsado el
+  botón Ok). Por ello necesitamos crear una variable privada de tipo bool.
+  La llamaremos _ok. Lo hacemos en el archivo de cabecera (dialogwindow.h).
+  Aunque podríamos asignar directamente valor en este punto, hasta la versión 11 (C++11)
+  no se acepta. Así que para guardar compatibilidad, sólo la declaramos. Y en el constructor
+  le damos el valor por defecto:
+    _ok=false;
+  Creamos un nuevo método llamado open que se encargue de abrir la ventana y devolver la 
+  información recogida además de si se ha aceptado.
+    bool open(QString *answer);
+  En el código en el archivo .cpp abrimos la ventana en modal.
+  Si se aceptó actualizamos el texto de respuesta.
+  Devolvemos si la ventana se ha aceptado.
+  Abrimos el slot del botón en el que se activa el flag de que la ventana se ha aceptado.
+  Además ocultamos la ventana para que se devuelva el control.
+  En la ventana principal escribimos el código del slot del botón.
+  - Creamos un puntero para guarda el objeto de la subventana
+  - Creamos una nueva instancia tomando como padre la ventana principal.
+  - Creamos una variable para recogere la respuesta
+  - Llamamos al método open
+  - Si la ventana se aceptó, aplicamos el texto de respuesta al label.

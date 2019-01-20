@@ -1,0 +1,28 @@
+closeEvent
+
+Novedades:
+- Interceptar el evento de cerrado de una ventana
+
+Funcionalidad:
+  Ventana principal con un cuadro de texto multilinea.
+  En el menú principal se simular el botón guardar.
+  Si se cierra la ventana sin haber guardado las modificaciones se informa.
+
+Desarrollo:
+  Quitamos las barras de herramientas y de estado.
+  Creamos en el archivo de cabecera de la ventana una variable booleana privada
+  que nos indique si el contenido ha sido modificado.
+  Incluimos en el menú el grupo File y debajo la opción Save.
+  Vamos al slot de la acción del menú por la señal triggered.
+  Simplemente quitamos el flag de modificado. Sólo simula el guardado.
+  Incluimos un objet Plaint Text Edit y le aplicamos un layout vertical para que
+  ocupe todo el área visible.
+  Abrimos el slot del cuadro de texto para cuando se cambia el texto.
+  Simplemente activará el flag de modificado.
+  Para interceptar el evento de cerrado de ventana debemos incluir en el archivo
+  de cabecera de la ventana un nuevo slot privado llamado:
+    void closeEvent(QCloseEvent *event);
+  Añadimos en la sección include la librería QMessageBox
+  Con la opción refactor nos pasamos al .cpp para escribirla.
+  Si se ha modificado mostramos una ventana que pregunta si se quiere seguir.
+  Si no se acepta continuar ignoramos el evento.

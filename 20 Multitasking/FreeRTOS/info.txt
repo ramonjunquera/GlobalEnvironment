@@ -1,0 +1,22 @@
+FreeRTOS - Free Real Time Operative System
+
+Es un sistema operativo especialmente diseñado para microprocesadores
+(CPUs con velocidad y memoria limitadas), que permite la multitarea.
+
+Las librerías que permiten compilar código de Arduino para los ESP32, ya
+lo incluyen y sus comandos pueden ser utilizados.
+
+La versión para ESP32 no es completa. Está recortada y customizada para
+estos procesadores.
+
+La multitarea de FreeRTOS es preemtiva: el sistema oerativo entrega un
+tiempo de proceso a una tarea, pero cuando llega su límite se lo quita,
+anota sus parámetros y guarda su estado para cuando vuelva a disponer
+tiempo para ella.
+
+En los sistemas operativos de cooperativos, el sistema operativo le entrega
+el control a una tarea y espera que ella misma lo devuelva cuando pueda.
+En estos casos se corre el riesgo de que por un fallo de programación la
+tarea nunca devuelva el control y cuelgue el sistema o impida que otras
+tareas puedan ser ejecutadas.
+

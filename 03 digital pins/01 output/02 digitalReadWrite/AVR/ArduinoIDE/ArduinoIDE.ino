@@ -1,7 +1,8 @@
 /*
   Autor: Ramón Junquera
   Tema: Lectura y escritura de señales digitales
-  Objetivo: Averigüar qué ocurre si ocurre si lees un pin configurado como salida y que además no tiene nada conectado?
+  Objetivo: Averiguar qué ocurre si ocurre si lees un pin configurado como salida y que además no tiene nada conectado?
+  Fecha: 20180523
   Material adicional: placa Arduino
   Descripción:
   Configuraremos el pin 5 como salida.

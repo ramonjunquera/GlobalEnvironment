@@ -1,4 +1,5 @@
 Instalación y configuración placas ESP8266 con Arduino IDE
+Fecha: 20181204
 
 Driver USB.
 Esta familia de dispositivos no tienen el chip FTDI de conexión USB que ya viene
@@ -18,7 +19,7 @@ Esta URL permite que tengamos más variedad de placas para seleccionar.
 Volvemos al menú Tools\Board:\Board Manager...
 En el filtro de la parte superior escribimos esp8266 y nos aparecerá la placa
   "esp8266 by ESP8266 Community".
-Lo seleccionamos. Seleccionamos la última versión disponible (a fecha actual es la v2.3.0)
+Lo seleccionamos. Seleccionamos la última versión disponible (a fecha actual es la v2.4.2)
 y pulsamos el botón install.
 Tarda un poco en descargar e instalar. Al finalizar pulsamos el botón cerrar.
 Si miramos de nuevo en Tools\Board:, podremos ver que al final de la lista hay una
@@ -31,3 +32,20 @@ La transferencia es bastante pesada. Es como cambiar el sistema operativo cada v
 y transfiramos. Por lo tanto es muy conveniente subir la velocidad al máximo.
 Para las placas que tienen conexión USB se puede utilizar 921600 baudios.
 Para las placas que necesitan un FTDI, no podremos poner más de 115200 baudios.
+
+Instalación de plugin data
+El plugin data permite subir el contenido de la carpeta "data" que cuelga de la carpeta de
+programa a SPIFFS, desde Arduino IDE.
+La última versión a fecha actual es la 0.3.0.
+Podemos descargar la última versión desde:
+https://github.com/esp8266/arduino-esp8266fs-plugin
+Tenemos el archivo ESP8266FS-0.3.0.zip en la carpeta actual
+Para instalarlo:
+- Localizamos la carpeta: C:\Program Files (x86)\Arduino\tools
+- Descomprimimos el archivo ESP8266FS-0.3.0.zip en ella
+- Debería quedar así: C:\Program Files (x86)\Arduino\tools\ESP8266FS\tool\esp8266fs.jar
+- La próxima vez que se abra el IDE de Arduino podremos encontrar la opción:
+    Herramientas/ESP8266 Sketch Data upload
+Nota:
+  El plugin interfiere con el monitor serie.
+  El monitor serie se debe cerrar antes de utilizar el plugin.

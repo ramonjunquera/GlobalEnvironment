@@ -1,0 +1,73 @@
+Primera compilación de una aplicación desarrollada en QT
+
+Seleccionamos File/New File or Project...
+Nos aparecerá una ventana que muestra las distintas opciones
+de desarrollos.
+En este ejemplo desarrollaremos una aplicación de escritorio
+seleccionando Projects/Applications
+Además será una aplicación en C++ con interface gráfico.
+Para ello seleccionamos "Qt Widgets Application".
+Pulsamos el botón "Choose..."
+
+En la siguiente ventana se nos solicita el nombre del proyecto
+y la ubicación en la que se guardará.
+
+Para este ejemplo usaremos el nombre de "FirstCompile"
+
+En la carpeta elegida se crearán dos nuevas carpetas, una con
+la versión debug y otra con la release.
+Pulsamos el botón "Next>".
+
+La siguiente ventana muestra el listado de kits disponibles.
+Nosotros utilizaremos el kit "Desktop".
+Si pulsamos el desplegable "Details", podremos ver (y elegir)
+las carpetas en las que se guardarán las versiones debug y
+release.
+Pulsamos el botón "Next>".
+
+Aparece una ventana mostrando los nombres por defecto de los archivos
+y clases. Inicialmente los dejamos tal y como están.
+
+Pulsamos el botón "Next>".
+
+En esta ventana se nos pregunta si queremos controlar las versiones.
+No lo haremos. Directamente pulsamos el botón "Finish".
+
+Hemos terminado de definir el proyecto.
+El proyecto consta de una aplicación que tiene un un formulario.
+
+Podemos ver el formulario (vacío), haciendo doble click sobre
+"mainwindow.ui".
+
+Sin modificar nada, directamente lo ejecutamos pulsando el botón
+"Run" de abajo a la izquiera (primera flecha de play verde).
+Esto compila y ejecuta la aplicación.
+Mientras lo hace aparece una barra de progreso en la parte inferior
+derecha.
+Finalmente vemos el formulario de la aplicación, que al no tener
+controles, sólo podemos minimizar, maximizar, cerrar o cambiar de 
+tamaño.
+
+Al compilar el proyecto, se crea una nueva carpeta a la misma altura que la
+del proyecto con el pregijo "build-".
+En ella se guardan los archivos precompilados y el compilado final con el
+nombre del proyecto.
+No es necesario guardar esta carpeta porque puede ser regenerada de nuevo en
+la siguiente compilación.
+
+QT guarda tanto el usuario que ha generado los fuentes como el path original.
+Esto lo hace en un archivo con extensión .user en la carpeta de proyecto.
+Cuando intentamos utilizar los fuentes en otro equipo y el usuario no coincide,
+QT nos pregunta si queremos abrir el proyecto. La respuesta es Yes.
+En ese momento QT hace un parseo rápido de los fuentes, habitualmente sin incidentes.
+A continuación pregunta si se quiere cancelar la carga o queremos continuar
+configurando el proyecto. Pulsaremos el botón "Configure Project".
+Es entonces cuando se abre el entorno habitual de desarrollo y se hace una parseo en
+profundidad.
+La configuración se actualiza y guarda.
+La próxima vez que se abra el proyecto ya no preguntará nada sobre importación.
+Esta actualización crea en la carpeta de proyecto una copia del antiguo archivo .user
+con una extensión de 8 dígitos hexadecimales.
+Este archivo puede ser eliminado sin problema.
+Es conveniente eliminemos el archivo .user de los fuentes, para que no intente generar la
+carpeta "build-" en la ubicación original.

@@ -1,0 +1,23 @@
+fileDialogs
+
+Novedades:
+- Uso de librería QFileDialog
+
+Tenemos una única ventana con:
+- Un botón para seleccionar un archivo y su cuadro de texto
+- Un botón para seleccionar varios archivos y su cuadro de texto
+- Un botón para seleccionar una carpeta y su cuadro de texto
+- Un botón para seleccionar un archivo para guardar y su cuadro de texto
+
+Funcionalidad:
+- Al pulsar los botones aparece un cuadro de diálogo que permite seleccionar
+  el elemento correspondiente. Después se muestra el resultado en el cuadro de texto
+
+Desarrollo:
+  Eliminamos barras :menu, tool y status
+  Utilizamos un layout horizontal y creamos todos los elementos (botones y cuadros de texto).
+  Es importante añadir en mainwindow.cpp el include de la nueva librería:
+    #include <QFileDialog>
+  En la selección de varios archivos se muestra como incluir dos grupos de filtro de archivos.
+  Uno para archivos gráficos y otro para todos los archivos. 
+  

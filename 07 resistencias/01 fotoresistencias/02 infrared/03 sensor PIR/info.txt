@@ -1,0 +1,47 @@
+Sensor PIR.
+
+Un sensor PIR (infrarrojo pasivo) es un detector de movimiento basado en la diferencia de luz infrarroja.
+No sólo los seres vivos emiten y alteran la radiación IR. Cualquier objeto con mayor temperatura que 0ºK
+lo hace. Por lo tanto, los objetos inertes también harán que se active el sensor.
+Cuando el sensor se pone en funcionamiento, toma nota de la intensidad intfrarroja recibida y a partir
+de ese instante está atento a posibles variaciones que lo hagan activarse.
+  
+Es pasivo porque no emite. Sólo lee.
+Se suele utilizar en recintos cerrados.
+El nombre correcto del módulo es HC-SR501.
+
+Solamente tiene 3 pines: VCC, OUT y GND.
+Se alimenta por VCC y GND y tenemos la señal por OUT.
+
+Dependiendo del modelo de PIR la alimentación mínima será de 3.3V o 5V.
+El máximo siempre es 12V.
+Para saber cuál es la alimentación mínima de nuestro PIR lo conectaremos a 3.3V.
+Si su comportamiento es errático (detecta movimiento contínuamente) tendremos que pensar que
+no tiene suficiente voltaje para funcionar correctamente.
+Los PIR que yo tengo son del modelo D-SUN y necesitan 5V para funcionar correctamente.
+Por eso todos los circuitos de ejemplo van conectado a 5V.
+
+La sensibilidad aumenta con el voltaje. A 9V se aumenta el rango de detección automáticamente.
+Es posible que se tenga que ajustar manualmente.
+
+No es necesario utilizar resistencias de pull para mantener el pin de entrada de la señal
+PIR a un estado determinado. La razón es que ya le estamos dando señal de GND y VCC.
+De todas formas, si se hace, también funciona correctamente.
+  
+La señal es digital:
+  LOW = no se detecta movimiento
+  HIGH = se ha detectado movimiento
+
+Los dos potenciómetros que tiene el sensor están etiquetados de la siguiente manera:
+  SX = regula la distancia de detección (sensibilidad), entre 3 y 7 metros.
+  TX = regula el tiempo que mantiene la señal activa tras una detección (mínimo 3 segundos)
+
+Nota: habitualmente el potenciómetro TX siempre se encuentra al mínimo, porque 3 segundos son más
+que suficientes para tener en cuenta una alerta y porque el tiempo aumenta exponencialmente.
+Un pequeño giro en el potenciómetro supone una espera de minutos.
+  
+El funcionamiento es muy sencillo. Prácticamente es un interruptor.
+
+La semiesfera de plástico que cubre el sensor realmente es una lente de Fresnel cuyo objetivo es concentrar en el
+punto central (donde se encuentra el sensor) toda la luz periférica. Con ello se consigue que el ángulo de
+detección cubra 110º.

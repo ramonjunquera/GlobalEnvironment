@@ -1,0 +1,6 @@
+Cómo implementar las funciones de zip & unzip en el XArchiver:
+
+Las últimas versiones de Raspbian ya lo inluyen.
+Para las antiguas se añade con:
+  sudo apt-get install zip unzip
+

@@ -6,7 +6,7 @@ Descripción:
 Sonoff es un dispositivo de la familia ESP8266 muy específico
 para ser utilizado como interruptor a distancia.
 Consta de un led, un interruptor de pulsador y un relé.
-Se alimenta gracias a un pequeño trnasformador de corriente
+Se alimenta gracias a un pequeño transformador de corriente
 alterna a continua que baja el voltaje de 220V a 5V.
 Todo ello es una simple placa que se incluye en una carcasa
 de plástico.
@@ -47,3 +47,6 @@ Pinout
    12   Relé
    13   Led
    14   pin disponible en placa
+
+Este dispositivo sólo tiene 1Mb de memoria. Por lo tanto el espacio para SPIFFS
+se reduce al máximo (64kB) y no tendrá posibilidad de utilizar OTA.

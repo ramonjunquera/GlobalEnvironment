@@ -1,0 +1,1 @@
+sudo xrandr --output VGA1 --mode 1280x1024 --scale 1x1 --output LVDS1 --mode 1280x800 --scale 1x1 --left-of VGA1 

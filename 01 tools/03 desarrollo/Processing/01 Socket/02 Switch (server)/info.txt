@@ -1,0 +1,19 @@
+Autor: Ramón Junquera
+Tema: Processing. Comunicación web socket
+Fecha: 20180804
+Objetivo: Servidor socket en Processing que muestra el estado del cliente
+Material adicional: placa ESP
+
+Descripción:
+Ejemplo de conexión web socket para transmitir el estado de un led.
+En este caso Processing hará de servidor y Arduino de cliente.
+La placa Arduino tiene un interruptor que sirve para cambiar el estado del led integrado en
+placa.
+Cuando esto ocurre se establece una conexión con el servidor y se le envía el estado actual.
+La información es un sólo byte.
+El valor 0 significa apagar el led. Cualquier otro valor sirve para encenderlo.
+  
+El servidor mostrará con una imagen el estado actual.
+
+Resultado:
+Desde la placa Arduino se puede cambiar el estado representado en el servidor.

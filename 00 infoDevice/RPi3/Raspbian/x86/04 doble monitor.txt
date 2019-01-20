@@ -1,0 +1,46 @@
+En Raspberry Pi sólo hay posibilidad de utilizar un monitor adicional porque sólo tiene
+una salida de vídeo por HDMI.
+Si instalamos el sistema operativo x86 en una máquina con tarjeta de vídeo con más de una
+salida, por defecto no reconocerá el monitor conectado a la salida secundaria.
+el comando xrandr muestra los detalles de todos los monitores detectados.
+
+Primero debermos lanzar el comando con el monitor principal.
+Después con el secundario conectado. Así podremos distinguir uno de otro.
+
+Ejemplo de respuesta con el monitor principal:
+pi@raspberry:~ $ xrandr
+Screen 0: minimum 320 x 200, current 1280 x 800, maximum 8192 x 8192
+LVDS1 connected 1280x800+0+0 (normal left inverted right x axis y axis) 331mm x 207mm
+   1280x800      59.98*+
+   1024x768      60.00  
+   800x600       60.32    56.25  
+   640x480       59.94  
+VGA1 disconnected (normal left inverted right x axis y axis)
+TV1 disconnected (normal left inverted right x axis y axis)
+
+Ejemplo con el secundario:
+pi@raspberry:~ $ xrandr
+Screen 0: minimum 320 x 200, current 1280 x 800, maximum 8192 x 8192
+LVDS1 connected 1280x800+0+0 (normal left inverted right x axis y axis) 331mm x 207mm
+   1280x800      59.98*+
+   1024x768      60.00  
+   800x600       60.32    56.25  
+   640x480       59.94  
+VGA1 connected (normal left inverted right x axis y axis)
+   1280x1024     60.02 +  75.02  
+   1152x864      75.00  
+   1024x768      75.08    75.03    60.00  
+   832x624       74.55  
+   800x600       75.00    60.32  
+   640x480       75.00    60.00  
+   720x400       70.08  
+TV1 disconnected (normal left inverted right x axis y axis)
+
+Por lo tanto LVDS1 es el primario y VGA1 el secundario.
+
+También nos muestra las resoluciones soportadas.
+Se deberían sustituir nombres y resoluciones en la siguiente línea para activar ambos monitores
+para extender el escritorio:
+  sudo xrandr --output VGA1 --mode 1280x1024 --scale 1x1 --output LVDS1 --mode 1280x800 --scale 1x1 --left-of VGA1 
+Se adjunta script
+

@@ -29,29 +29,29 @@ Tiene 4Mb de memoria total: 1280Kb para flash (programa), 288Kb para RAM (variab
                -----------
                |         |
           3V3 -|         |- GND
-           EN -|         |- TX/1
-     A0/36/VP -|         |- RX/3
-     A3/39/VN -|         |- 3V3
-        A4/22 -|         |- SCL/22
-        A5/33 -|         |- SDA/21
+           EN -|         |- 1/TX
+     A0/VP/36 -|         |- 3/RX
+     A3/VN/39 -|         |- 3V3
+ Touch8/A4/32 -|         |- 22/SCL
+ Touch9/A5/33 -|         |- 21/SDA
         A6/34 -|         |- GND
         A7/35 -|         |- GND
-  A18/DAC1/25 -|         |- MISO/19
-  A19/DAC2/26 -|         |- MOSI/23
-       A17/27 -|         |- SCK/18
-       A16/14 -|         |- SS/5/LED
-       A15/12 -|         |- 3V3
-       A14/13 -|         |- 17
+  DAC1/A18/25 -|         |- 19/MISO
+  DAC2/A19/26 -|         |- 23/MOSI
+Touch7/A17/27 -|         |- 18/SCK
+Touch6/A16/14 -|         |- 5/SS/LED
+Touch5/A15/12 -|         |- 3V3
+Touch4/A14/13 -|         |- 17
            5V -|         |- 16
-          GND -|         |- 4
-               |         |- 0
+          GND -|         |- 4/Touch0
+               |         |- 0/Touch1
                |         |- GND
-               |         |- 2
-               |         |- 15
-               |         |
+               |||       |- 2/Touch2
+               |||       |- 15/Touch3
+               |     ||| |
                -----------
 
-Esta placa tiene un leds integrados en placa asociado al pin 5 y a la constante LED_BUILTIN.
+Esta placa tiene un led integrado en placa asociado al pin 5 y a la constante LED_BUILTIN.
 
 Los estados del led son inversos a los del pin:
   HIGH = apagado
@@ -64,3 +64,20 @@ Consumo medio:
   --------- -------
   Normal      64mA
   DeepSleep   16mA
+
+Los pines de conexión SPI son:
+  pin SPI
+  --- ---
+   19 MISO
+   23 MOSI
+   18 SCLK
+    5 CS
+
+Los pines de conexión I2C son:
+  pin I2C
+  --- ---
+   22 SCL
+   21 SDA
+
+Pines digitales:
+Pueden utilizarse todos ellos excepto el 34 y 35

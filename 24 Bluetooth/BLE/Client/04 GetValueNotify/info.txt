@@ -1,0 +1,23 @@
+Autor: Ramón Junquera
+Tema: BLE
+Fecha: 20180813
+Objetivo: Lectura de valor
+Material: 2 placas ESP32
+
+Descripción:
+Basado en el ejemplo anterior.
+
+El servidor tiene un servicio, con una característica y un valor de un byte, de sólo
+lectura.
+El valor será 0 o 1 y corresponde con el estado del led integrado.
+El estado se puede cambiar con el interruptor integrado.
+Además se incluye una notificación que permite informar a los cliente del cambio de
+estado al instante.
+
+El cliente incluye el descriptor remoto 2902 y activa la recepción de notificaciones.
+Al añadir las notificaciones indicamos la función que las procesará.
+Además de mostrar la notificación recibida por el puerto serie, se le aplica el estado
+al led integrado.
+
+Resultado:
+El led del cliente copia el estado del led del servidor

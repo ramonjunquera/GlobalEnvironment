@@ -1,0 +1,31 @@
+inputDialog
+
+Novedades:
+- Uso del objeto QInputDialog
+- Cómo convertir un entero en QString
+- Crear y gestionar una lista de QString (QStringList)
+
+Funcionalidad:
+  Ventana principal con varios ejemplos de llamadas a QInputDialog.
+
+Desarrollo:
+  Quitamos las barras de menú, herramientas y estado.
+  Añadimos el botón texto y el label de su resultado.
+  Aplicamos un layout de grid.
+  Abrimos el slot del botón.
+  Incluimos en mainwindow.h la librería QInputDialog.
+  Cuando se pulse el botón text se llamará a un QInputDialog de texto y si
+  se valida el resultado se mostrará en el label.
+  Añadimos el botón int y su label.
+  Vamos al slot del botón int.
+  Llamamos a un QInputDialog de números enteros y mostramos el resultado en el label.
+  Añadimos el botón double y su label.
+  Vamos al slot del botón double.
+  Llamamos a un QInputDialog de números double y mostramos el resultado en el label.
+  Añadimos el botón multi line y su label.
+  Vamos al slot del botón multi
+  Llamamos a un QInputDialog de texto multi línea y mostramos el resultado en el label.
+  Añadimos el botón item y su label.
+  Vamos al slot del botón item
+  Creamos una lista de textos
+  Llamamos a un QInputDialog de item y mostramos el resultado en el label
