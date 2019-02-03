@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190120
+  Fecha: 20190203
   Objetivo: Simplificación y análisis de gestión original de 4dof SNARM500
   Material: 4dof SNARM500 (brazo robot de 4 servomotores)
   URL original: http://cdn.sinoning.com/code/snarm.zip
@@ -12,7 +12,7 @@
   - Se define como constante el valor de la dirección de la EEPROM donde se guarda el modo
   - Se simplifica la lectura y proceso de comandos por el puerto serie
   - Se simplifica la lectura de potenciómetros, conversión y aplicación de valores al los servos
-  - Se aumenta la velocidad del puerto serie a 115200 baudios
+  - La velocidad del puerto serie a 38400 baudios para guardar compatibilidad con el módulo Bluetooth
   - Se añaden comentarios explicativos
 
   El brazo robot consta de 4 servomotores. Cada uno de ellos es tiene asociado un
@@ -27,13 +27,31 @@
   - Caracteres a,b,c,d. Corresponden a cada uno de los servos. Se aplicará el valor actual a un servo
     si estamos en modo automático.
 
+  Bluetooth:
+    La placa que contiene los potenciómetros contiene las pistas para el uso de dos pines.
+    El problema es que no es fácil añadir elementos (led o pulsador) para hacer un mejor control manual
+    o incluso programarlo con algo de feedback.
+    Para solventar este problema podemos utilizar un módulo que nos permita la conectividad Bluetooth.
+    La placa de los potenciómetros tiene un peine hembra preparado para ello con los siguientes pines:
+      VCC, GND, RX y TX.
+    Podemos utiliza un módulo HC-05 y conectarlo aquí.
+    Los pines de VCC y GND coinciden sin problema. Los pines RX y TX están intercambiados (es correcto),
+    para que el puerto serie del HC-05 se conecte directamente con el puerto serie hardware de UNO.
+    Lo que no encaja con los pines del HC-05 en el peine hembra. En mi caso debo desplazarlo una posición
+    para que me coincidan todos los pines.
+    Recordamos que habitualmente los módulo HC-05 se configuran y despúes se mantiene esta configuración
+    constante. La velocidad habitual suele ser de 38400 baudios. La razón es que es la máxima velocidad
+    fiable cuando usamos un puerto serie software (utilizado para la configuración).
+    Esta es la razón por la que utilizamos esta misma velocidad en el puerto serie hardware de UNO.
+    Como cliente Bluetooth hemos creado una aplicación simple con el App Inventor 2.
+
   Definición de pines
-   #  pinPot pinServo
-  --- ------ --------
-   0    A0      11
-   1    A1      10
-   2    A2       9
-   3    A3       6
+   #  pinPot pinServo descrption
+  --- ------ -------- ----------
+   0    A0      11    claw
+   1    A1      10    big arm
+   2    A2       9    small arm
+   3    A3       6    base
 */
 
 #include <Arduino.h>
@@ -53,7 +71,7 @@ byte mode=0; //Modo: 0=manual (potenciómetro), 1=automático (puerto serie)
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(38400);
   //Asignamos los pines que controlan a cada servo
   for(byte i=0;i<4;i++) servos[i].attach(pinServos[i]);
   //Leemos el último modo utilizado

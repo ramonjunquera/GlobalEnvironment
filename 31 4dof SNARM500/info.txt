@@ -1,0 +1,12 @@
+4dof SNARM500 pinout
+
+PIN Description
+--- -----------
+A0  Control 1 = claw
+A1  Control 2 = big arm
+A2  Control 3 = small arm
+A3  Control 4 = base
+D11 Servo 1 = claw
+D10 Servo 2 = big arm
+D9  Servo 3 = small arm
+D6  Servo 4 = base

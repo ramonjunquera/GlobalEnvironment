@@ -1,0 +1,12 @@
+RoJoSNARM500
+
+Aplicación de control de 4dof SNARM500 para Android.
+Desarrollada con App Invertor 2 (http://ai2.appinventor.mit.edu/).
+
+Se trata de una aplicación simple para el control del brazo a mediante un
+dispositivo Android mediante una conexión Bluetooth.
+Se adjunta el desarrollo completo en el archivo .aia para que pueda ser
+importado, analizado y modificado en la aplicación web.
+
+Sólo se ha creado un cliente a medida para el protocolo defindo en el ejemplo original.
+No tiene funciones de programación.

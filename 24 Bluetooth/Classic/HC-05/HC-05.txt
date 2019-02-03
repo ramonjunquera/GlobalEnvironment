@@ -4,7 +4,7 @@ Fecha: 20180829
 Objetivo: Descripción de adaptador bluetooth HC-05
 
 El adaptador HC-05 permite a Arduino la conexión bluetooth. Puede trabajar tanto en modo máster como en slave.
-Existe otro adaptado llamado HC-06 que sólo permite conexión como slave.
+Existe otro adaptador llamado HC-06 que sólo permite conexión como slave.
 HC-05 permite más versatilidad.
 
 Tiene 6 pines. Incluye una antena integrada. El rango de voltaje de trabajo es de 3.6V a 6V y su consumo es
