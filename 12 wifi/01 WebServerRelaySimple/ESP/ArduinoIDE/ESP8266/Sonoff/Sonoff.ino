@@ -8,7 +8,7 @@
   Material adicional: Sonoff, cables, FTDI
 
   Utilizaremos la librería ESP8266WebServer.h especialmente creada para el ESP8266, que tiene
-  ciertas mejoras respecto a la sibrería de gestión de wifi normal.
+  ciertas mejoras respecto a la librería de gestión de wifi normal.
 
   Crearemos un servidor web simple que muestra un par de botones para enceder o apagar el relé.
 
@@ -63,7 +63,7 @@ void setup(void)
   //Inicialmente estará encendido
   digitalWrite(pinLed, LOW);
 
-  //Inicializamos el puerto seria para mensahes de debug 
+  //Inicializamos el puerto serie para mensahes de debug 
   Serial.begin(115200);
   //Esperamos 5 segundos para que le de tiempo al puerto serie a inicializar
   delay(5000);

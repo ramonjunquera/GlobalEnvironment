@@ -1,0 +1,24 @@
+Autor: Ramón Junquera
+Fecha: 20190324
+Tema: Google Home
+Objetivo: Generación de eventos desde dispositivos
+
+En el ejercicio anterior hemos aprendido a generar eventos personalizados en
+Google Assistant que provocan una llamada a una URL concreta a través del 
+servicio de Web Request.
+
+Comentar que este servicio también permite ser generador de eventos.
+Podemos crear un Applet con "Maker Event". Lo único que nos solicita es el
+nombre del evento. Una simple palabra.
+Este evento puede provocar, por ejemplo, el envío de un mensaje de Telegram.
+
+Cómo gestiono mis eventos en "Maker Event"?.
+A través de la URL:
+  https://ifttt.com/services/maker_webhooks/settings
+Ahí se genera un código único (que puede ser cambiado en cualquier momento) y
+que se utilliza con la siguiente sintaxis:
+  https://maker.ifttt.com/trigger/<mi_evento>/with/key/<mi_clave_de _webhooks>
+Ejemplo:
+  https://maker.ifttt.com/trigger/mi_evento/with/key/kw0QbwkD4zfwWq_7iEXCOgHi8PbMTVTnOU2Rsg8b6UZ
+  Esta es la URL a la que se debe llamar para que genere el evento "mi_evento"
+  Para probar si funciona correctamente se puede llamar directamente desde el browser

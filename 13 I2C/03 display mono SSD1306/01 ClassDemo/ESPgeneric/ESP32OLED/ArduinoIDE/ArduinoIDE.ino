@@ -3,7 +3,7 @@
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
   Fecha: 20180524
-  Material: breadboard, cables, placa ESP32+OLED
+  Material: breadboard, placa ESP32+OLED
 
   Descripción:
   Esta placa ya tiene insertado un display SSD1306.

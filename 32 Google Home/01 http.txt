@@ -1,0 +1,60 @@
+Autor: Ramón Junquera
+Fecha: 20190324
+Tema: Google Home
+Objetivo: Control por voz de un dispositivo
+
+El asistente de Google permite ser programado para reconocer frases concretas
+y tomar acciones específicas.
+En el siguiente ejemplo explicaremos paso a paso qué debemos hacer para conseguir
+controlar el led integrado de un ESP con la voz.
+
+La herramienta que permite programar el asistente de Google es IFTTT.
+Su URL oficial es: https://ifttt.com
+A través de ella y de manera visual podemos crear nuestros propios Applets.
+
+Antes de comenzar utilizaremos ejemplos creados anteriormente.
+En la sección wifi tenemos algún ejemplo de servidor web sencillo para controlar
+un pin digital, ya sea conectado a un relé o al led integrado.
+El control se realiza teniendo en cuenta el path solicitado.
+El path /on enciende y el path /off apaga.
+No se tienen encuenta más opciones en el path ni tampoco su contenido.
+
+Una vez preparado el microprocesador con el programa podemos probarlo con un
+navegador.
+
+En nuestro caso indicaremos al asistente de google que cuando reconozca cierta frase
+llame a una URL y path concretos.
+
+Por lo tanto, desde la página de Google, se debe tener acceso hasta nuestro
+dispositivo a través de Internet.
+
+Puesto que nuestro dispositivo se encuentra habitualmente dentro de la red local,
+necesitaremos indicar al router que redireccione el puerto utilizado hasta la
+dirección asignada al dispositivo.
+Así podremos utilizar el hostame público de nuestro router para redirigir las
+peticiones hasta el dispositivo en red interna.
+
+Podremos comprobar que funciona desde nuestro browser, usando el hostname público
+de nuestro router.
+
+Continuemos ahora con IFTTT.
+Creamos un nuevo Applet.
+El programa que generará el eventor es "Google Assistant".
+Cuando detecte el mensaje "enciende la luz" debe responder "Encendida".
+Todo esto en "Spanish".
+Cuando detecte la frase clave, llamaremos el servicio "Make a web request" que
+permite llamar a una URL definida por el usuario.
+La URL podría ser:
+  http://myhostname.domain.com:8266/on
+Utilizaremos el método GET (aunque como no lo tenemos en cuenta da lo mismo).
+El contenido podría ser "text/plain", aunque tampoco nos importa.
+Y no incluiremos nada en el Body, porque nuestro dispositivo sólo tiene en
+cuenta el path, no el contenido del cuerpo.
+
+Resultado: cada vez que Google Assistant reconozca la frase, llamará a la URL
+definida.
+
+Podemos definir otro Aplet para la frase "apaga la luz" que llame a nuestra
+URL con el path /off para que la apague.
+
+

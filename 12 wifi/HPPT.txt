@@ -38,7 +38,7 @@ Las líneas imprescindibles para un mensaje son la del código de error y la de ti
 Ejemplo:
 ---begin---
 HTTP/1.1 200 OK
-Content-Type: text/html; charset=utf-8
+Content-Type: text/html
 
 ---end---
 En HTTP, una vez enviada la respuesta se debe cortar la comunicación.
