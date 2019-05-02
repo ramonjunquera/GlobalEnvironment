@@ -109,7 +109,7 @@ String _clientReadString(WiFiClient *client,uint16_t timeOut,String endText)
 
 void setup()
 {
-  //Activamos el puerto serie para mensajes de debub
+  //Activamos el puerto serie para mensajes de debug
   Serial.begin(115200);
 
   WiFi.mode(WIFI_STA); //Modo conexión a punto de acceso

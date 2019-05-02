@@ -1,0 +1,17 @@
+Tema: Servidor Web Seguro para ESP32
+Autor: Ramón Junquera
+Fecha: 20190502
+
+Mostraremos dos ejemplos de un servidor web seguro.
+La diferencia entre ambos es el sistema de gestión de la información recibida.
+  byByte : gestiona los datos recibidos byte a byte
+    Ocupa muy poca memoria porque procesa la información según se recibe
+  byString : gestiona los datos recibidos por String
+    Almacena todos los datos recibidos en un String y después los procesa.
+    Consume mucha más memoria que el sistema anterior.
+
+El ejemplo byByte se divide en dos: uno mostrando una gestión síncrona de las
+conexiones cliente y otro con gestión asíncrona (multitarea).
+
+Requisitos previos:
+- Archivos de certificado y clave privada en SPIFFS

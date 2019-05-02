@@ -1,4 +1,5 @@
 Instalación y configuración placas ESP32 con Arduino IDE
+Fecha: 20190427
 
 Nota.
 Antes de comenzar la instalación del entorno de desarrollo de ESP32 es
@@ -70,28 +71,20 @@ http://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-mac-and
   6.Si volvemos a abrir Arduino IDE comprobaremos que tenemos una nueva
     sección de placas de la familia ESP32
 
-Nota 1:
-  Habitualmente no se instalan las librerías de gestión de BLE (Bluetooth Low Energy).
-  La razón es porque no están desarrolladas por el equipo de Espressif, sino por Neil Kolban.
+Nota:
+  Habitualmente no se instalan las librerías de AzureIOT.
+  La razón es porque no están desarrolladas por el equipo de Espressif.
   Si comprobamos en GitHub la sección de librerías:
     https://github.com/espressif/arduino-esp32/tree/master/libraries
-  Comprobamos que las librerías de BLE referencian a un link de otro proyecto GitHub.
-  Hacemos click en el enlace (por ejemplo BLE @ 7951347) que nos lleva a la librería correcta en:
-    https://github.com/nkolban/ESP32_BLE_Arduino
+  Comprobamos que las librerías de AzureIOT referencian a un link de otro proyecto GitHub.
+  Hacemos click en el enlace (por ejemplo AzureIoT @ 67dfa4f) que nos lleva a la librería correcta en:
+    https://github.com/VSChina/ESP32_AzureIoT_Arduino
   Aquí la descargamos pulsando el botón de "Clone or download".
   La descomprimimos y copiamos su contenido a la carpeta correspondiente
-    (/usr/share/arduino-1.8.5/hardware/espressif/esp32/libraries/BLE)
+    (/usr/share/arduino-1.8.5/hardware/espressif/esp32/libraries/AzureIOT)
   El path completo debería quedar como:
-    /usr/share/arduino-1.8.5/hardware/espressif/esp32/libraries/BLE/src
+    /usr/share/arduino-1.8.5/hardware/espressif/esp32/libraries/AzureIOT/src
   Además de las librerías, también se incluyes varios ejemplos de uso.
-
-Nota 2:
-  Ocurre lo mismo con las librerías de AzureIOT.
-  Se resuelve igual.
-  Vamos a la dirección: 
-    https://github.com/VSChina/ESP32_AzureIoT_Arduino
-  Descargamos los fuentes, los descomprimimos y los copiamos en la carpeta:
-    /usr/share/arduino-1.8.5/hardware/espressif/esp32/libraries/AzureIoT
 
 Instalación de plugin data
 El plugin data permite subir el contenido de la carpeta "data" que cuelga de la carpeta de

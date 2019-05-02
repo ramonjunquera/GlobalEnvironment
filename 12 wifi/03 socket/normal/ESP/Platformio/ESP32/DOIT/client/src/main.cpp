@@ -4,7 +4,7 @@
 //Definimos los detalles del punto de acceso
 const char* wifiSSID = "displayHost";
 const char* wifiPassword = "displayHost";
-//Definimos el nombre (o ip) de servidor al que enviaremos las imágenes
+//Definimos el nombre (o ip) de servidor con el que conectaremos
 const char* host = "192.168.4.1";
 
 //Objeto de gestión de la conexión wifi
