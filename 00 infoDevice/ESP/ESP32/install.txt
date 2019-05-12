@@ -1,5 +1,5 @@
 Instalación y configuración placas ESP32 con Arduino IDE
-Fecha: 20190427
+Fecha: 20190507
 
 Nota.
 Antes de comenzar la instalación del entorno de desarrollo de ESP32 es
@@ -85,6 +85,22 @@ Nota:
   El path completo debería quedar como:
     /usr/share/arduino-1.8.5/hardware/espressif/esp32/libraries/AzureIOT/src
   Además de las librerías, también se incluyes varios ejemplos de uso.
+
+Nota:
+  07/05/2019. Error en Linux.
+  He notado que desde el IDE de Arduino, no funciona la transferencia del compilado al microprocesador,
+  dando un error de: "AttributeError: 'Serial' object has no attribute 'dtr'".
+  Esto es debido a que las nuevas versiones del compilador de ESP32 utilizan la última versión de
+  las herramientas de python.
+  Deberíamos altualizar o instalar (si es que no está), python-serial con:
+    apt-cache policy python-serial
+  Debemos actualizar pyserial con:
+    sudo pip install --upgrade pyserial
+  Si tenemos alguna versión antigua como la 2.6 se informará que queda obsoleta.
+  Se actualiza a la versión 3.4
+  Es posible que también informe que estamos utilizando un pip antiguo (versión 9.0.1) y que existe
+  uno más moderno (versión 19.1.1). Si es así, lo actualizamos con:
+    sudo pip install --upgrade pip
 
 Instalación de plugin data
 El plugin data permite subir el contenido de la carpeta "data" que cuelga de la carpeta de

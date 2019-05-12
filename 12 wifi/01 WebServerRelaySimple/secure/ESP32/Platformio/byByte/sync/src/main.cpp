@@ -137,7 +137,7 @@ void loop(void)
     //Este es un ejemplo del formato de la información que podemos recibir:
       //GET /mypath HTTP/1.1
       //Content-type: text/plain
-      //host: myserver.domain.com:8266
+      //host: myserver.domain.com
       //content-length: 49
       //x-newrelic-id: VwAOU1RRGGAFUFZUAwQE
       //x-newrelic-transaction: PxRVBVYCY1VTV1ZTAgJSVkYdUFIOFQZOEloMAVtcAwFWAwhSVFRQVFIUG0MEWwkGCVEFABVs

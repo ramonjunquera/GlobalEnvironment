@@ -1,0 +1,41 @@
+Tema: Ejemplo de socket seguro para ESP32
+Autor: Ramón Junquera
+Material adicional: 2x placas ESP32
+Fecha: 20190511
+
+Utilizaremos dos placas ESP32 iguales. Una hará de cliente y otra de servidor.
+El dispositivo servidor creará su propio punto de acceso y en él un servidor.
+No será un servidor web, porque no atiende comandos html.
+Simplemente estará preparado para recibir información de texto que enviará
+automáticamente al puerto serie.
+El dispositivo cliente una vez conectado al punto de acceso y al servidor
+se encargará de transferir el texto recibido por el puerto serie al servidor.
+
+Para el correcto funcionamiento, es importante que primero se inicie el 
+servidor y a continuación el cliente.
+
+Cliente
+  No necesita las librerías customizadas de servidor seguro. Es suficiente con la librería
+  estándar de WiFiClientSecure.h.
+  Por su sencillez se ha desarrollado en entorno Arduino (.ino).
+  Se espera a tener algo que enviar.
+  En ese momento se establece una conexión segura con el servidor.
+  Se calcula el tiempo máximo de espera antes de cerrar la conexión.
+  Este tiempo se refresca cada vez que se envía un nuevo carácter.
+  Mientras la conexión está abierta, el tiempo de envío es instantáneo,
+  puesto que establecer comunicación que es lo que más cuesta.
+  Si alcanzamos el tiempo máximo, cortamos la conexión.
+
+Servidor
+  Es necesario tener los archivos de certificado y clave privada en SPIFFS, como cualquier otro
+  servidor seguro.
+  Acepta conexiones segura, pero no las trata como web, sino como socket.
+  Toda la información recibida la enviará al puerto serie.
+  Al crear el servidor se define un timeout con el mismo valor que tiene el cliente.
+  Cuando el servidor detecte que no se reciben caracteres, es porque ha alcanzado
+  el valor máximo de timeout.
+  En ese momento corta la conexión.
+  El servidor crea un punto de acceso propio para no depender de otras redes.
+  Nota (11/05/2019):
+  El desarrollo se encuentra en entorno Platformio. Si se pasa a entorno Arduino, deja de
+  funcionar. El cliente siempre mostrará error al conectar con el servidor.

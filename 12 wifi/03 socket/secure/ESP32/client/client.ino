@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190429
+  Fecha: 20190511
   Descripción:
     Ejemplo de gestión de socket seguro. Cliente
 */
@@ -11,11 +11,13 @@
 //Definimos los detalles del punto de acceso
 const char* wifiClientSSID = "SecureServer";
 const char* wifiClientPassword = "SecureServer";
-//Definimos el nombre (o ip) de servidor con el que conectaremos
-const char* host = "192.168.4.1";
+const char* serverHost = "192.168.4.1"; //Dirección del servidor
+const uint16_t port=443; //Puerto
+const uint32_t timeout=10000; //Tiempo de espera de nuevos caracteres para enviar
  
-//Objeto de conexión de cliente seguro
-WiFiClientSecure client; 
+WiFiClientSecure client; //Objeto de conexión de cliente seguro
+char c; //Carácter leido
+uint32_t timeOutMax;
 
 void setup()
 {
@@ -24,32 +26,47 @@ void setup()
   //Conexión wifi
   WiFi.mode(WIFI_STA); //Conectado como cliente a un punto de acceso
   WiFi.begin(wifiClientSSID,wifiClientPassword);
-  Serial.print(F("Conectando a punto de acceso."));
+  Serial.print("Conectando a punto de acceso.");
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(300);
-    Serial.print(F("."));
+    Serial.print(".");
   }
-  Serial.println(F("ok"));
-
-  Serial.println("setup end");
+  Serial.println("ok");
 }
 
 void loop()
 {
-  //Conexión con el servidor
-  if(client.connect(host,443))
+  //Si hay caracteres pendientes de enviar...
+  if(Serial.available())
   {
-    Serial.println("Conectado!");
-    while(client.connected())
+    //Si conectamos con el servidor...
+    if(client.connect(serverHost,port))
     {
-      if(Serial.available())
+      Serial.println("Conexión establecida");
+      //Calculamos el tiempo máximo de espera de nuevos caracteres
+      timeOutMax=millis()+timeout;
+      //Mientras no hayamos alcanzado el tiempo máximo de timeout...
+      while(timeOutMax>millis())
       {
-        char c=Serial.read();
-        Serial.println("Enviado: "+String(c));
-        client.write(c);
+        //Si hay caracteres pendientes de ser enviados...
+        if(Serial.available())
+        {
+          //Leemos el carácter del puerto serie
+          c=Serial.read();
+          //Lo enviamos al servidor
+          client.write(c);
+          //Y lo mostramos
+          Serial.print(c);
+          //Refrescamos el timeout
+          timeOutMax=millis()+timeout;
+        }
       }
+      //Hemos llegado al tiempo máximo de timeout sin recibir nuevos caracteres
+      //Cortamos conexión
+      client.stop();
+      Serial.println("\nConexión detenida");
     }
-    Serial.println("Desconectado!");
+    else Serial.println("Error al conectar con el servidor");
   }
 }
