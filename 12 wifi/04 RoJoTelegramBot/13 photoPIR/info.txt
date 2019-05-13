@@ -1,0 +1,16 @@
+Proyecto photoPIR
+
+Las versiones para ESP y ESP32 no son iguales.
+
+ESP
+  Versión compatible con ESP8266 y ESP32.
+  Utiliza las librerías RoJoTelegramBot.
+  No utiliza multitarea.
+  Utiliza polling para recuperar nuevos mensajes.
+  Utiliza un servidor web local en un punto de acceso wifi propio para su configuración.
+ESP32
+  Versión exclusiva para ESP32.
+  Utiliza las librerías RoJoTelegramBot32.
+  Utiliza multitarea.
+  Utiliza webhook para recuperar nuevos mensajes.
+  Utiliza una colección de constantes definidas al principio del código para su configuración.

@@ -1,12 +1,12 @@
 /*
   Autor: Ramón Junquera
-  Versión: 20190112
+  Versión: 20190513
   Tema: Librería para gestión de bots en Telegram
   Objetivo: Enviar una imagen al detectar movimiento
   Material: placa ESP32, ArduCAM-Mini-2MP, PIR sensor
   Descripción:
     Sistema de videovigilancia con control por Telegram.
-    El sistema consta de una placa ESP, una cámara y un sensor de movimiento (ya sea infrarrojo
+    El sistema consta de una placa ESP32, una cámara y un sensor de movimiento (ya sea infrarrojo
     o por microondas).
   Multitarea:  
     Aprovecharemos que el ESP32 tiene 2 cores para intentar trabajar en paralelo.
@@ -14,31 +14,36 @@
     Distribuiremos los procesos de la siguiente manera:
       Core 0:
         Gestión de cámara
-        Gestión de comunicaciones de salida (Telegram)
+        Gestión de comunicaciones de salida
       Core 1:
-        Gestión de comunicaciones de entrada (Telegram)
+        Gestión de comunicaciones de entrada
         Interrupción PIR
         loop principal : microservicios
           Conexión wifi
           Inicialización de la cámara
-          WebServer refresh
-    Los módulos de gestión (de cámara y de envíos de Telegram) se hacen en base a una lista de tareas pública.
-    La lista contiene como valores una estructura con todos los datos necesarios para trabajar.
+    Los módulos de gestión (de cámara y de envíos de Telegram) se hacen en base a una
+    lista de tareas pública.
+    Cada elemento de la lista contiene una estructura con todos los datos necesarios para trabajar.
     Las nuevas peticiones se añaden siempre al final y se procesan desde el principio (FIFO).
   Configuración del programa:
-    El dispositivo crea un punto de acceso wifi con el nombre definido en la constante global
-    mySSID y contraseña en mySSIDpassword. Por defecto RoJoPhotoPIR32
-    Nos conectamos y accedemos a la URL http://192.168.4.1
-    Se mostrará la configuración actual (inicialmente vacía), que consta de:
-    - Nombre del punto de acceso wifi que dara conexión a Internet
-    - Contraseña del punto de acceso wifi a Internet
-    - Token del bot
-    También se muestran algunos valores globales del estado actual.
+    La primera sección del programa es la definición de constantes globales utilizadas
+    para la configuración.
+  Sistema de obtención de nuevos mensajes:
+    La librería de gestión de Telegram nos permite trabajar con webhook.
+    Tenemos dos métodos para conseguir nuevos mensajes:
+    - Polling
+      La aplicación hace comprobaciones periodicas al servidor de Telegram, preguntando por
+      nuevos mensajes. La mayoría de las veces la respuesta será que no hay mensajes nuevos,
+      pero aún así, es imprescindible seguir comprobando y gastando tiempo y datos.
+    - webhook
+      Se puede le puede pedir al servidor de Telegram que cuando tenga un nuevo mensaje para
+      nuestro bot, se conecte a cierta dirección en la cuál encontrará un servidor web
+      seguro que atenderá su llamada y que contendrá los detalles del mensaje.
   Menús:
     General
       /on /off
       /photo /resX
-      /info /users /config
+      /info /users /reboot
     /resX
       /res0 /res1 /res2
       /res3 /res4 /res5
@@ -47,10 +52,7 @@
       /status /subscribers
     /users
       /generate /unsubscribe
-    /config
-      /reboot /format
   Primer uso:
-  - Definir configuración a través del servidor web local.
   - La primera vez no hay definidos usuarios.
   - El primer usuario puede suscribirse a sí mismo. A partir de entonces, el resto tendrán que 
     ser invitados por alguno de los suscriptores.
@@ -71,35 +73,43 @@
     Si el dispositivo sufre un corte de alimentación, la próxima vez que reinicie enviará un
     mensaje a todos los suscriptores informando y recuperará la última configuración utilizada.  
   Tiempo de reacción a comandos:
-    El tiempo de respuesta a un comando es variable. Se va alargando si no recibe nuevas peticiones,
-    hasta alcanzar un máximo de 30 segundos.
+    Depende del sistema de obtención de nuevos mensajes.
+    Si es por webhook, tarda un par de segundos. Siempre lo mismo, porque sólo dependemos
+    de recibir el mensaje del servidor de Telegram.
+    Si se utiliza el sistema de polling, el tiempo de respuesta variable, puesto que el tiempo
+    entre dos comprobaciones se va alargando si no recibe nuevas peticiones, hasta alcanzar
+    un máximo de 30 segundos (definido en la constante maxWait)
   Menú resX:
+
     Permite cambiar la resolución entre 9 opciones.
+
     La /res0 es la más baja y las /res8 la más alta.
+
   Menú /users:
+
     Permite:
       - Generar un código para una invitación
-          Los nuevos suscriptores (invitado) siempre deben ser invitados por alguien suscrito (anfitrión).
+          Los nuevos suscriptores (invitado) siempre deben ser invitados por alguien suscrito
+          (anfitrión).
           El anfitrión debe generar un código a través del botón /users y botón /generate.
-          El código tiene una validez de 60 segundos. Antes de este tiempo el invitado debe enviar al bot
-          el comando /subscribe seguido del código.
+          El código tiene una validez de 60 segundos. Antes de este tiempo el invitado debe
+          enviar al bot el comando /subscribe seguido del código.
           Si se escribe mal el código se tendrá que generar uno nuevo.
       - Darse de baja como suscriptor
-  Menú /config:
-    Permite:
-      - Reiniciar el dispositivo con el comando /reboot
-      - Formatea la memoria de archivos con el comando /format. Intenta conservar los archivos
-        necesarios para poder seguir funcionando correctamente: la configuración de comunicaciones y
-        las secuencias de configuración de la cámara.
-        Se pierde la información de suscriptores.
-        El formateo tarda más cuanta más memoria de archivos tenga asignada.
   Chat:
     Si un suscriptor envía al bot mensajes que no son reconocidos como comandos, se supondrá que 
     es texto normal y se le enviará el mensaje a todos los suscriptores.
-  Librerías:
-    Se ha utilizado la librería WiFiServer.h para gestionar el servidor web de configuración.
-    Para ESP32 no existen dibrerías específicas para la gestión de servidores web como tiene
-    ESP8266 (ESP8266WebServer.h).
+  webhook:
+    Aunque la librería de Telegram permita trabajar con webhook, la activación y desactivación
+    es manual.
+    Ejemplo de activación de webhook:
+      curl -F "url=https://myserver.mydomain:8443/" -F "certificate=@autocert.crt" -F "max_connections=4" https://api.telegram.org/bot<botId>/setWebhook
+      Donde <botId> se debe sustituir por el identificador de nuestro bot
+      El comando debe ejecutarse desde la carpeta que contiene el archivo del certificado
+      Fijamos el 4 el número de conexiones simultáneas porque se pueden procesar simultáneamente
+    Ejemplo de desactivación de webhook:
+      https://api.telegram.org/bot<botId>/setWebhook
+      Se puede lanzar desde un browser
 
   Listado de errores
     De inicialización de la cámara
@@ -118,10 +128,9 @@
 
 #include <Arduino.h>
 #include <SPIFFS.h> //Gestión de SPIFFS
-#include <WiFiServer.h> //Gestión de servidor web
 #include "RoJoArduCAM.h" //Librería de gestión de la cámara
 #include "RoJoList.h" //Librería de gestión de listas para los parámetros de una solicitud web
-#include "RoJoTelegramBot.h" //Librería para gestión de bots de Telegram
+#include "RoJoTelegramBot32.h" //Librería para gestión de bots de Telegram
 #include "RoJoFileDictionary.h" //Librería de gestión de diccionarios en archivo
 #include "soc/rtc_cntl_reg.h" //Para eliminar los mensajes de error de brownout (WRITE_PERI_REG) (alimentación insuficiente?)
 
@@ -171,44 +180,47 @@ struct cameraQueueStruct
   String keybString;
 };
 
-//Constantes globales
-const byte pinLed=LED_BUILTIN; //Pin del led integrado en placa
-const bool ledON=LOW; //Estado del pin del led cuando está encendido
+//Configuración general
 const String configFile="/config.txt";
-const String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/resX\"],[\"/info\",\"/users\",\"/config\"]]"; //Teclado por defecto
 const byte pinPIR=15; //Pin del sensor PIR
 const byte pinCS=4; //Pin CS de la cámara
+//Configuración Telegram
+const String botToken="xxx";
+//Configuración wifi
+const String wifiClientSSID="xxx";
+const String wifiClientPassword="xxx";
+//Configuración para polling
 const uint32_t maxWait=30000; //Tiempo máximo de espera para consultar nuevos mensajes = 30 segundos
 const float factorWait=1.2; //Factor de la progresión geométrica para calcular el siguiente tiempo de espera
 const uint32_t startWait=1+1/(factorWait-1); //Valor inicial (mínimo) para el tiempo de espera
-const String mySSID="RoJoPhotoPIR32"; //Definimos nombre del punto de acceso wifi (para cambiar la configuración)
-const String mySSIDpassword="12345678"; //Contraseña de punto de acceso wifi local
+//Configuración para webhook
+const String secureServerCertificateFile="/autocert.crt";
+const String secureServerPrivateKeyFile="/private.key";
+const uint16_t webhookPort=8443;
+//Configuración de método de obtención de mensajes
+const bool useWebhook=true; //Utiliza webhook o pulling?
+//Constantes de aplicación
+const String defaultKeyb="[[\"/on\",\"/off\"],[\"/photo\",\"/resX\"],[\"/info\",\"/users\",\"/reboot\"]]"; //Teclado por defecto
 const String yesno[2]={"no","sí"};
 
 //Objetos globales
-RoJoTelegramBot bot; //Gestión del bot de Telegram
+RoJoTelegramBot32 bot; //Gestión del bot de Telegram
 RoJoFileDictionary subscribers;
 RoJoList<outCommQueueStruct> outCommQueue; //Lista de tareas pendientes de mensajes de salida
 RoJoList<cameraQueueStruct> cameraQueue; //Lista de tareas pendiente de la cámara
 RoJoArduCAM camera;
-WiFiServer server(80); //Servidor web local http://192.168.4.1
 
 //Parámetros de configuración
 byte currentRes=3; //Código de resolución actual
 bool PIRenabled = false; //PIR activado?
-String wifiClientSSID=""; //Nombre del punto de acceso (SSID) al que nos conectamos como clientes
-String wifiClientPassword=""; //Contraseña de punto de acceso al que nos conectamos como clientes
-String botToken=""; //Token del bot de Telegram
 
 //Variables globales
-bool wifiConnected=false; //Tenemos conexión wifi?
-byte errorCodeCamera=255; //Código de error de la inicialización de la cámara. Inicialmente no inicializada
-uint32_t wifiLastTry=0; //Última vez que se intentó reconectar wifi
-bool outCommQueueStopRequest=false;
-bool outCommQueueRunning=true;
-bool cameraQueueStopRequest=false;
-bool cameraQueueRunning=true;
-bool inCommQueueRunning=true;
+bool outCommQueueStopRequest=false; //Solicitada parada de comunicaciones de salida?
+bool outCommQueueRunning=true; //Están funcionando las comunicaciones de salida?
+bool cameraQueueStopRequest=false; //Solicitada parada de gestión de cámara?
+bool cameraQueueRunning=true; //Está funcionando la gestión de la cámara?
+bool inCommQueueStopRequest=false; //Solicitada parada de comunicaciones de entrada?
+bool inCommQueueRunning=true; //Están funcionando las comunicaciones de entrada?
 String subscriptionCodeGenerator=""; //Nombre del generador del código de suscripción
 uint16_t subscriptionCode=0; //Código de suscripción
 uint32_t subscriptionCodeTimeout=0; //millis de caducidad del código de suscripción
@@ -220,18 +232,12 @@ void saveConfig()
 
   //Abrimos el archivo del estado para escritura
   File f=SPIFFS.open(configFile,"w");
-  //Si no se ha posido abrir el archivo...hemos terminado
+  //Si no se ha podido abrir el archivo...hemos terminado
   if(!f) return;
   //Línea 1: resolución
   f.println(currentRes);
   //Línea 2: estado
   f.println(PIRenabled);
-  //Línea 3: SSID
-  f.println(wifiClientSSID);
-  //Línea 4: WiFi password
-  f.println(wifiClientPassword);
-  //Línea 5: botToken
-  f.println(botToken);
   //Cerramos el archivo
   f.close();
 }
@@ -281,31 +287,13 @@ void readConfig()
   }
   //Tenemos el archivo abierto
 
-  //El archivo debe tener 5 líneas
+  //El archivo debe tener 3 líneas
   //  línea 1: resolución
-  byte res=readLine(f).toInt();
+  currentRes=readLine(f).toInt();
   //  línea 2: estado
   PIRenabled=readLine(f).toInt();
-  //  línea 3: SSID
-  wifiClientSSID=readLine(f);
-  //  línea 4: password
-  wifiClientPassword=readLine(f);
-  //  línea 5: botToken
-  botToken=readLine(f);
   //Cerramos el archivo
   f.close();
-
-  //Creamos una nueva tarea para cambiar la resolución de la cámara
-  //No es necesario que devuelva respuesta a nadie
-  cameraAddTask(res,"","","");
-
-  //Inicializamos el bot con el token
-  bot.begin(botToken);
-
-  //Indicamos que nunca hemos intentado conectar y que no tenemos conexión wifi
-  //Así se intentará la conexión automáticamente
-  wifiLastTry=0;
-  wifiConnected=false;
 }
 
 void outCommManager(void *parameter)
@@ -319,8 +307,8 @@ void outCommManager(void *parameter)
   //Comprueba continuamente la lista de tareas
   while(true)
   {
-    //Si tenemos conexión wifi y el gestor de tareas está funcionando...
-    if(wifiConnected && outCommQueueRunning)
+    //Si la gestión de mensages de salida está funcionando...
+    if(outCommQueueRunning)
     {
       //Si tenemos alguna tarea...
       if(outCommQueue.count()>0)
@@ -457,8 +445,8 @@ void cameraManager(void *parameter)
   //Comprueba continuamente la lista de tareas
   while(true)
   {
-    //Si tenemos alguna tarea y la cola de tareas está activa y la cámara no tiene errores...
-    if(cameraQueue.count()>0 && cameraQueueRunning==true && errorCodeCamera==0)
+    //Si tenemos alguna tarea y la cola de tareas está activa...
+    if(cameraQueue.count()>0 && cameraQueueRunning==true)
     {
       //Recuperamos los datos de la primera tarea
       cameraQueue.index(&pCameraTask,0);
@@ -479,7 +467,7 @@ void cameraManager(void *parameter)
         if(pCameraTask->chat_id.length()>0)
         {
           //Cambiamos el mensaje dependiendo de si la cámara está inicializada
-          String message=(errorCodeCamera==0)?pCameraTask->from_name+" cambia a resolución "+String(currentRes):pCameraTask->from_name+" solicita un cambio de resolución, pero la cámara no ha sido inicializada correctamente. Error="+String(errorCodeCamera);
+          String message=pCameraTask->from_name+" cambia a resolución "+String(currentRes);
           //Creamos una tarea para enviar el mensaje
           outCommAddTask(0,pCameraTask->chat_id,message,pCameraTask->keybString);
         }
@@ -565,7 +553,7 @@ void cameraManager(void *parameter)
 
 void systemsDown()
 {
-  //Desactiva todos los sistemas
+  //Desactiva todos los sistemas en el siguiente orden
   //1- interrupción de PIR
   //2- gestión de mensajes de entrada
   //3- gestión de cámara
@@ -576,21 +564,259 @@ void systemsDown()
   
   //Desactivamos las interrupciones del sensor PIR
   detachInterrupt(pinPIR);
-  //Leemos el siguiente mensaje para que al reiniciar no recibamos de nuevo el comando de restartç
-  bot.getNextMessage(&msg);
+  //Solicitamos desactivar la gestión de los mensajes de entrada
+  inCommQueueStopRequest=true;
+  //Esperamos a que se complete
+  while(inCommQueueRunning) {delay(1);};
+  //Si no estamos utilizando webhook...
+  if(!useWebhook)
+  {
+    //Leemos el siguiente mensaje para que al reiniciar no recibamos de nuevo el comando de restart
+    bot.getNextMessage(&msg);
+  }
   //Solicitamos desactivar la gestión de la cámara
   cameraQueueStopRequest=true;
   //Esperamos a que se complete
-  while(!cameraQueueRunning) {delay(1);};
+  while(cameraQueueRunning) {delay(1);};
   //Solicitamos desactivar la gestión de los mensajes de salida
   outCommQueueStopRequest=true;
   //Esperamos a que se complete
-  while(!outCommQueueRunning) {delay(1);};
+  while(outCommQueueRunning) {delay(1);};
+}
+
+void receivedMsgManager(TelegramMessage *msg)
+{
+  //Procesa el mensaje recibido
+
+  //Si no hay suscriptores...
+  if(subscribers.count()==0)
+  {
+    //Si se trata del comando /start...
+    if(msg->text=="/start")
+    {
+      //Componemos el mensaje a enviar en una sola cadena (es más rápido)
+      String message = "RoJo Telegram Bot library\n";
+      message += "photoPIR32\n\n";
+      message += "/subscribe : Añadirse a la lista\n";
+      //Creamos una tarea para que se envíe el mensaje
+      outCommAddTask(0,msg->chat_id,message,defaultKeyb);
+    }
+    else if(msg->text=="/subscribe")
+    {
+      //El primer usuario en suscribirse
+      subscriptionCodeGenerator="él mismo";
+      subscribe(msg);
+    }
+  }
+  else //Hay algún suscriptor
+  {
+    //Si el autor es suscriptor...
+    if(subscribers.containsKey(msg->chat_id))
+    {
+      //Podemos hacerle caso
+      //Si se trata del comando /start...
+      if(msg->text=="/start")
+      {
+        String message = "RoJo Telegram Bot library\n";
+        message += "photoPIR32\n\n";
+        message += "/on : Activa el detector\n";
+        message += "/off : Desactiva el detector\n";
+        message += "/photo : toma foto\n";
+        message += "/resX : seleccionar resolución\n";
+        message += "/info : información\n";
+        message += "/users : gestión de usuarios\n";
+        message += "/reboot : reinicio\n";
+        message += "/subscribe code : Añadirse a la lista\n";
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,message,defaultKeyb);
+      }
+      else if(msg->text=="/status")
+      {
+        //Mostramos el estado actual
+        String message = "Sensor de movimiento activo: "+yesno[PIRenabled];
+        message+="\nResolución actual: "+String(currentRes);
+        message+="\nTareas de cámara pendientes: "+String(cameraQueue.count());
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,message,defaultKeyb);
+      }
+      else if(msg->text=="/resX")
+      {
+        //Sólo presentaremos las opciones y el menú de selección
+        String message = "Selecciona resolución\n";
+        String keyb="[[\"/res0\",\"/res1\",\"/res2\"],[\"/res3\",\"/res4\",\"/res5\"],[\"/res6\",\"/res7\",\"/res8\"]]";
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,message,keyb);
+      }
+      else if(msg->text=="/users")
+      {
+        //Sólo presentaremos las opciones y el menú de selección
+        String message = "RoJo Telegram Bot library\n";
+        message += "photoPIR32\n\n";
+        message += "/generate : Genera un código de suscripción\n";
+        message += "/unsubscribe : Borrarse de la lista\n";
+        String keyb="[[\"/generate\",\"/unsubscribe\"]]";
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,message,keyb);
+      }
+      else if(msg->text=="/info")
+      {
+        //Sólo presentaremos las opciones y el menú de selección
+        String message = "RoJo Telegram Bot library\n";
+        message += "photoPIR32\n\n";
+        message += "/status : Estado actual\n";
+        message += "/subscribers : Mostrar la lista de suscriptores\n";
+        String keyb="[[\"/status\",\"/subscribers\"]]";
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,message,keyb);
+      }
+      else if(msg->text=="/generate")
+      {
+        //Genera un código de suscripción que será válido durante el próximo minuto
+        subscriptionCode=random(65535)+1; //Entre 1 y 65535
+        //Anotamos el nombre del generador
+        subscriptionCodeGenerator=msg->from_name;
+        //Anotamos la hora en la que caduca. Dentro de 60 segundos
+        subscriptionCodeTimeout=millis()+60000;
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,"Código: " + String(subscriptionCode),defaultKeyb);
+      }
+      else if(msg->text=="/unsubscribe")
+      {
+        //El usuario actual quiere eliminar la suscripción
+        subscribers.remove(msg->chat_id);
+        //Creamos una tarea para que se envíe el mensaje al antiguo suscriptor
+        outCommAddTask(0,msg->chat_id,"Suscripción borrada","");
+        //Creamos una tarea para que se envíe el mensaje informando a todos
+        outCommAddTask(0,"0",msg->from_name + " se ha dado de baja",defaultKeyb);
+      }
+      else if(msg->text=="/subscribers")
+      {
+        //Solicitan la lista de suscriptores
+        String message="";
+        //Recorremos todos los suscriptores...
+        for(uint16_t i=0;i<subscribers.count();i++)
+        {
+          //Si no es el primero...añadimos una coma
+          if(message.length()) message+=",";
+          //Añadimos el nombre
+          message+=subscribers.value(i);
+        }
+        //Creamos una tarea para que se envíe el mensaje
+        outCommAddTask(0,msg->chat_id,"Suscriptores: "+message,defaultKeyb);
+      }
+      else if(msg->text=="/reboot")
+      {
+        //Solicitan el reinicio del dispositivo
+
+        //Informamos a todos
+        outCommAddTask(0,"0",msg->from_name+" solicita reiniciar",defaultKeyb);
+        //Desactivamos todos los sistemas
+        systemsDown();
+        //Ya podemos resetear el dispositivo
+        ESP.restart();
+      }
+      else if(msg->text=="/photo")
+      {
+        //Solicitan sacar una foto
+
+        //Creamos una tarea para que la cámara saque una foto
+        cameraAddTask(9,msg->chat_id,"","");
+      }
+      else if(msg->text=="/on")
+      {
+        //Se activa el detector de movimento
+        PIRenabled=true;
+        //Guardamos configuración actual
+        saveConfig();
+        //Creamos una tarea para que se envíe el mensaje informando a todos
+        outCommAddTask(0,"0",msg->from_name + " ha activado el detector",defaultKeyb);
+      }
+      else if(msg->text=="/off")
+      {
+        //Se desactiva el detector de movimento
+        PIRenabled=false;
+        //Guardamos configuración actual
+        saveConfig();
+        //Creamos una tarea para que se envíe el mensaje informando a todos
+        outCommAddTask(0,"0",msg->from_name + " ha desactivado el detector",defaultKeyb);
+      }
+      else //No reconocemos el comando
+      {
+        //Intentaremos reconocer si es un cabio de resolución
+        //Variable para anotar si el comando es de cambio de resolución. Inicialmente no
+        bool changeResCommand=false;
+        //Si el comando tiene una longitud de 5...
+        if(msg->text.length()==5)
+        {
+          //...si el comando comienza por /res...
+          if(msg->text.substring(0,4)=="/res")
+          {
+            //...si el último carácter es numérico...
+            String n=msg->text.substring(4);
+            if(n>="0" && n<="8")
+            {
+              //Creamos tarea para el cambio de resolución y que informe a todos
+              cameraAddTask(n[0]-48,"0",msg->from_name,defaultKeyb);
+              //Es un comando de cambio de resolución
+              changeResCommand=true;
+            }
+          }
+        }
+        //Si no se trataba de un comando de cambio de resolución...
+        if(!changeResCommand)
+        {
+          //...entonces si que no reconocemos el comando
+          //Enviamos el mensaje a todos los suscriptores
+          outCommAddTask(0,"0",msg->from_name + " dijo: " + msg->text,defaultKeyb);
+        }
+      }
+    }
+    else //El autor no es suscriptor
+    {
+      //Si quiere suscribirse...
+      if(msg->text.substring(0,11)=="/subscribe ")
+      {
+        //Si tenemos algún código válido...
+        if(subscriptionCode)
+        {
+          //Si el código no ha caducado
+          if(millis()<subscriptionCodeTimeout)
+          {
+            //Si el código indicado es correcto...incluimos el nuevo usuario como suscriptor
+            if(msg->text.substring(11)==String(subscriptionCode)) subscribe(msg);
+            //Si el código indicado no es el correcto...le informamos
+            else outCommAddTask(0,msg->chat_id,"Código incorrecto","");
+          }
+          //Desactivamos el código por alguna de las siguientes razones:
+          //- Ha caducado
+          //- Ha sido utilizado
+          //- Se ha introducido un código incorrecto
+          subscriptionCode=0;
+        }
+      }
+    }
+  }
+  //Temos terminado de procesar el mensaje
+}
+
+void webhookReceivedMsg(void *parameter)
+{
+  //Función a la que se llamará como thread cuando se reciba un mensaje de Telegram
+  //El parámetro corresponde a un mensaje de Telegram
+
+  //Recuperamos su tipo correcto
+  TelegramMessage *msg=(TelegramMessage*)parameter;
+  //Llamamos a la función que procesa los mensajes
+  receivedMsgManager(msg);
+  //Borramos el mensaje
+  delete msg;
+  //Borramos la tarea actual
+  vTaskDelete(NULL);
 }
 
 void inCommManager(void *parameter)
 {
-  //Gestión de comunicaciones de entrada (Telegram)
+  //Gestión de comunicaciones de entrada por consulta
 
   //Variable para guardar un mensaje entrante de Telegram
   TelegramMessage msg;
@@ -600,8 +826,8 @@ void inCommManager(void *parameter)
   //Bucle infinito
   while(true)
   {
-    //Si tenemos conexión a Internet y la gestión de mensajes de entrada está activa...
-    if(wifiConnected && inCommQueueRunning)
+    //Si la gestión de mensajes de entrada está activa...
+    if(inCommQueueRunning)
     {
       //Obtenemos el siguiente mensaje
       bot.getNextMessage(&msg);
@@ -610,264 +836,8 @@ void inCommManager(void *parameter)
       {
         //Reseteamos el tiempo de espera
         currentWait=startWait;
-        //Si no hay suscriptores...
-        if(subscribers.count()==0)
-        {
-          //Si se trata del comando /start...
-          if(msg.text=="/start")
-          {
-            //Componemos el mensaje a enviar en una sola cadena (es más rápido)
-            String message = "RoJo Telegram Bot library\n";
-            message += "photoPIR32\n\n";
-            message += "/subscribe : Añadirse a la lista\n";
-            //Creamos una tarea para que se envíe el mensaje
-            outCommAddTask(0,msg.chat_id,message,defaultKeyb);
-          }
-          else if(msg.text=="/subscribe")
-          {
-            //El primer usuario en suscribirse
-            subscriptionCodeGenerator="él mismo";
-            subscribe(&msg);
-          }
-        }
-        else //Hay algún suscriptor
-        {
-          //Si el autor es suscriptor...
-          if(subscribers.containsKey(msg.chat_id))
-          {
-            //Podemos hacerle caso
-            //Si se trata del comando /start...
-            if(msg.text=="/start")
-            {
-              String message = "RoJo Telegram Bot library\n";
-              message += "photoPIR32\n\n";
-              message += "/on : Activa el detector\n";
-              message += "/off : Desactiva el detector\n";
-              message += "/photo : toma foto\n";
-              message += "/resX : seleccionar resolución\n";
-              message += "/info : información\n";
-              message += "/users : gestión de usuarios\n";
-              message += "/config : configuración\n";
-              message += "/subscribe code : Añadirse a la lista\n";
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,message,defaultKeyb);
-            }
-            else if(msg.text=="/status")
-            {
-              //Mostramos el estado actual
-              String message = "Sensor de movimiento activo: "+yesno[PIRenabled];
-              message+="\nError de cámara: "+String(errorCodeCamera);
-              message+="\nResolución actual: "+String(currentRes);
-              message+="\nTareas de cámara pendientes: "+String(cameraQueue.count());
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,message,defaultKeyb);
-            }
-            else if(msg.text=="/resX")
-            {
-              //Sólo presentaremos las opciones y el menú de selección
-              String message = "Selecciona resolución\n";
-              String keyb="[[\"/res0\",\"/res1\",\"/res2\"],[\"/res3\",\"/res4\",\"/res5\"],[\"/res6\",\"/res7\",\"/res8\"]]";
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,message,keyb);
-            }
-            else if(msg.text=="/config")
-            {
-              //Sólo presentaremos las opciones y el menú de selección
-              String message = "Configuración\n";
-              message += "/reboot : Reinicia el dispositivo\n";
-              message += "/format : Formatea el sistema de archivos\n";
-              String keyb="[[\"/reboot\",\"/format\"]]";
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,message,keyb);
-            }
-            else if(msg.text=="/users")
-            {
-              //Sólo presentaremos las opciones y el menú de selección
-              String message = "RoJo Telegram Bot library\n";
-              message += "photoPIR32\n\n";
-              message += "/generate : Genera un código de suscripción\n";
-              message += "/unsubscribe : Borrarse de la lista\n";
-              String keyb="[[\"/generate\",\"/unsubscribe\"]]";
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,message,keyb);
-            }
-            else if(msg.text=="/info")
-            {
-              //Sólo presentaremos las opciones y el menú de selección
-              String message = "RoJo Telegram Bot library\n";
-              message += "photoPIR32\n\n";
-              message += "/status : Estado actual\n";
-              message += "/subscribers : Mostrar la lista de suscriptores\n";
-              String keyb="[[\"/status\",\"/subscribers\"]]";
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,message,keyb);
-            }
-            else if(msg.text=="/generate")
-            {
-              //Genera un código de suscripción que será válido durante el próximo minuto
-              subscriptionCode=random(65535)+1; //Entre 1 y 65535
-              //Anotamos el nombre del generador
-              subscriptionCodeGenerator=msg.from_name;
-              //Anotamos la hora en la que caduca. Dentro de 60 segundos
-              subscriptionCodeTimeout=millis()+60000;
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,"Código: " + String(subscriptionCode),defaultKeyb);
-            }
-            else if(msg.text=="/unsubscribe")
-            {
-              //El usuario actual quiere eliminar la suscripción
-              subscribers.remove(msg.chat_id);
-              //Creamos una tarea para que se envíe el mensaje al antiguo suscriptor
-              outCommAddTask(0,msg.chat_id,"Suscripción borrada","");
-              //Creamos una tarea para que se envíe el mensaje informando a todos
-              outCommAddTask(0,"0",msg.from_name + " se ha dado de baja",defaultKeyb);
-            }
-            else if(msg.text=="/subscribers")
-            {
-              //Solicitan la lista de suscriptores
-              String message="";
-              //Recorremos todos los suscriptores...
-              for(uint16_t i=0;i<subscribers.count();i++)
-              {
-                //Si no es el primero...añadimos una coma
-                if(message.length()) message+=",";
-                //Añadimos el nombre
-                message+=subscribers.value(i);
-              }
-              //Creamos una tarea para que se envíe el mensaje
-              outCommAddTask(0,msg.chat_id,"Suscriptores: "+message,defaultKeyb);
-            }
-            else if(msg.text=="/reboot")
-            {
-              //Solicitan el reinicio del dispositivo
-
-              //Informamos a todos
-              outCommAddTask(0,"0",msg.from_name+" solicita reiniciar",defaultKeyb);
-              //Desactivamos todos los sistemas
-              systemsDown();
-              //Ya podemos resetear el dispositivo
-              ESP.restart();
-            }
-              else if(msg.text=="/format")
-            {
-              //Solicitan el formateo de SPIFFS
-
-              //Informamos a todos
-              outCommAddTask(0,"0",msg.from_name+" solicita formatear",defaultKeyb);
-              //Desactivamos todos los sistemas
-              systemsDown();
-
-              //Si formateamos SPIFFS perderemos todo su contenido
-              //Hay tres archivos importantes que deberíamos salvar:
-              // - config.txt que guarda la configuración actual (estado, conexión a wifi & botToken)
-              // - RoJoArduCAM.dat con las secuencias de configuración de la cámara
-              // - subscribers.txt con el listado de suscriptores
-              //El archivo config.txt lo puede volver a generar automáticamente la función saveStatus()
-              //El archivo subscribers.txt se perderá (a propósito)
-              //El archivo RoJoArduCAM.dat es imprescindible para que la cámara funcione.
-              //Tiene un tamaño de casi 2000 bytes.
-              //No es demasiado. Intentaremos guardarlo en memoria para regenerarlo después
-              File datFile=SPIFFS.open(F("/RoJoArduCAM.dat"),"r"); //Abrimos el archivo como lectura
-              uint16_t datSize=datFile.size(); //Anotamos el tamaño del archivo
-              byte *datMem; //Puntero a array de bytes en memoria
-              datMem=new byte[datSize]; //Reservamos memoria suficiente para todo el archivo
-              datFile.readBytes((char *)datMem,datSize); //Leemos el archivo completo en memoria
-              datFile.close(); //Cerramos el archivo
-              //Formateamos SPIFFS. Dependiendo del tamaño de SPIFFS tarda más o menos.
-              SPIFFS.format();
-              //Guardamos de nuevo la configuración actual
-              saveConfig();
-              //Regeneramos el archivo RoJoArduCAM.dat
-              datFile=SPIFFS.open(F("/RoJoArduCAM.dat"),"w"); //Abrimos el archivo como escritura
-              datFile.write(datMem,datSize); //Escribimos el contenido del archivo
-              datFile.close(); //Cerramos el archivo
-              delete[] datMem; //Liberamos la memoria
-              //Hemos regenerado los archivo status.txt y RoJoArduCAM.dat
-              //Reseteamos el dispositivo
-              delay(100);
-              ESP.restart();
-            }
-            else if(msg.text=="/photo")
-            {
-              //Solicitan sacar una foto
-
-              //Creamos una tarea para que la cámara saque una foto
-              cameraAddTask(9,msg.chat_id,"","");
-            }
-            else if(msg.text=="/on")
-            {
-              //Se activa el detector de movimento
-              PIRenabled=true;
-              //Guardamos configuración actual
-              saveConfig();
-              //Creamos una tarea para que se envíe el mensaje informando a todos
-              outCommAddTask(0,"0",msg.from_name + " ha activado el detector",defaultKeyb);
-            }
-            else if(msg.text=="/off")
-            {
-              //Se desactiva el detector de movimento
-              PIRenabled=false;
-              //Guardamos configuración actual
-              saveConfig();
-              //Creamos una tarea para que se envíe el mensaje informando a todos
-              outCommAddTask(0,"0",msg.from_name + " ha desactivado el detector",defaultKeyb);
-            }
-            else //No reconocemos el comando
-            {
-              //Intentaremos reconocer si es un cabio de resolución
-              //Variable para anotar si el comando es de cambio de resolución. Inicialmente no
-              bool changeResCommand=false;
-              //Si el comando tiene una longitud de 5...
-              if(msg.text.length()==5)
-              {
-                //...si el comando comienza por /res...
-                if(msg.text.substring(0,4)=="/res")
-                {
-                  //...si el último carácter es numérico...
-                  String n=msg.text.substring(4);
-                  if(n>="0" && n<="8")
-                  {
-                    //Creamos tarea para el cambio de resolución y que informe a todos
-                    cameraAddTask(n[0]-48,"0",msg.from_name,defaultKeyb);
-                    //Es un comando de cambio de resolución
-                    changeResCommand=true;
-                  }
-                }
-              }
-              //Si no se trataba de un comando de cambio de resolución...
-              if(!changeResCommand)
-              {
-                //...entonces si que no reconocemos el comando
-                //Enviamos el mensaje a todos los suscriptores
-                outCommAddTask(0,"0",msg.from_name + " dijo: " + msg.text,defaultKeyb);
-              }
-            }
-          }
-          else //El autor no es suscriptor
-          {
-            //Si quiere suscribirse...
-            if(msg.text.substring(0,11)=="/subscribe ")
-            {
-              //Si tenemos algún código válido...
-              if(subscriptionCode)
-              {
-                //Si el código no ha caducado
-                if(millis()<subscriptionCodeTimeout)
-                {
-                  //Si el código indicado es correcto...incluimos el nuevo usuario como suscriptor
-                  if(msg.text.substring(11)==String(subscriptionCode)) subscribe(&msg);
-                  //Si el código indicado no es el correcto...le informamos
-                  else outCommAddTask(0,msg.chat_id,"Código incorrecto","");
-                }
-                //Desactivamos el código por alguna de las siguientes razones:
-                //- Ha caducado
-                //- Ha sido utilizado
-                //- Se ha introducido un código incorrecto
-                subscriptionCode=0;
-              }
-            }
-          }
-        }
+        //Procesamos el mensaje
+        receivedMsgManager(&msg);
       }
       //Aumentamos el tiempo de espera para el siguiente ciclo
       currentWait*=factorWait;
@@ -876,8 +846,41 @@ void inCommManager(void *parameter)
       //Esperamos el tiempo calculado
       delay(currentWait);
     }
-    //Evita el error de watchdog cuando no se hace nada en un ciclo
-    delay(1);
+    //Si hos han pedido que paremos...
+    if(inCommQueueStopRequest)
+    {
+      inCommQueueRunning=false; //Ya no procesaremos más tareas
+      inCommQueueStopRequest=false; //Hemos procesado la petición de stop
+    }
+    delay(1); //Para evitar errores por WatchDog
+  }
+}
+
+void webhookManager(void *parameter)
+{
+  //Gestión de comunicaciones de entrada por webhook
+
+  //Bucle infinito para que continuamente llama al
+  //refresco de webhook. Este método comprueba y 
+  //gestiona nuevas conexiones cliente.
+  //- Comprueba nuevas conexiónes cliente
+  //- Envía cada una de ella a un thread, dentro de la misma clase
+  //- Comprueba si contiene un mensaje válido
+  //- Confirma recepción
+  //- Envía el mensaje estructurado a la función de usuario
+
+  //Bucle infinito
+  while(true)
+  {
+    //Si la gestión de mensajes de entrada está activa...refrescamos webhook
+    if(inCommQueueRunning) bot.webhookRefresh();
+    //Si hos han pedido que paremos...
+    if(inCommQueueStopRequest)
+    {
+      inCommQueueRunning=false; //Ya no procesaremos más tareas
+      inCommQueueStopRequest=false; //Hemos procesado la petición de stop
+    }
+    delay(1); //Para evitar errores por WatchDog
   }
 }
 
@@ -889,230 +892,51 @@ void interruptPIR()
   if(PIRenabled) cameraAddTask(9,"0","","");
 }
 
-void try2connect()
-{
-  //Intenta conectar al punto de acceso wifi que nos permite usar Internet
-
-  //Si no tenemos nombre de punto de acceso...hemos terminado
-  if(wifiClientSSID.length()==0) return;
-  //Si nunca hemos intentado conectar o
-  //hace más de 20 segundos que lo estamos intentando...
-  if(wifiLastTry==0 || millis()-wifiLastTry>20000)
-  {
-    //...lo intentamos de nuevo
-    //Inicializamos conexión wifi con las credenciales actuales
-    //Necesitamos convertir los Strings en arrays de char
-    WiFi.begin(wifiClientSSID.c_str(),wifiClientPassword.c_str());
-    //Acabamos de intentar conectar ahora mismo
-    wifiLastTry=millis();
-  }
-  //Si ya tenemos conexión...lo anotamos
-  wifiConnected=(WiFi.waitForConnectResult()==WL_CONNECTED);
-}
-
-void getRequestParameters(WiFiClient *client,RoJoList<String> *requestParams)
-{
-  //Dato un cliente, obtenemos su solicitud y descomponemos los parámetros en una lista
-
-  //La primera línea de la petición de un cliente tiene la siguiente sintaxis:
-  //  GET / HTTP/1.1
-  //El path / puede ser más complejo que sólo el raíz:
-  //  GET /firstLevel HTTP/1.1
-  //O puede indicar algún archivo concreto:
-  //  GET /firstLevel/index.html HTTP/1.1
-  //También puede contener parámetros:
-  //  GET /?p0=miPuntoDeAcceso&p1=myPassword&p2=123456789:ABCDEFGHIJK HTTP/1.1
-  //La petición puede tener más líneas en las que se especifican detalles del servidor, tipo de browser
-  //utilizado, tipo de seguridad en la conexión, tipos de codificación, tipos de archivo admitidos,
-  //lenguaje, etc.
-
-  //Leemos la primera línea de la solicitud recibida
-  String requestHeader=""; //Variable en la que guardaremos la primera linea de la solicitud
-  bool lineEnd=false; //Inicialmente no hemos terminado de leer la primera línea
-  //Mientras haya información pendiente de recibir y no hayamos completado la primera línea...
-  while(client->available() && !lineEnd)
-  {
-    //Anotamos el siguiente carácter
-    char c=client->read();
-    //Si en un fin de línea...hemos terminado de leer la primera línea
-    if(c=='\n') lineEnd=true;
-    //Si no es un fin de línea...lo añadimos a los caracteres de la línea
-    else requestHeader+=c;
-  }
-  //Hacemos tiempo asegurándonos que la lista de parámetros está vacía
-  requestParams->clear();
-  //Despreciamos el resto de la solicitud
-  //No utilizamos client->flush() porque después de descargar el buffer, detiene la comexión
-  while(client->available()) client->read();
-  //Tenemos la primera línea de la solicitud
-  //Sólo nos interesan los parámetros
-  //Intentamos localizar el principio de la los parámetros
-  //Anotamos la posición del inicio de los parámetros '?'
-  int pos=requestHeader.indexOf('?');
-  //Si no se han encontrado parámetros...hemos terminado!
-  if(pos<0) return;
-  //Se han encontrado parámetros
-  //Recortamos el prefijo
-  requestHeader=requestHeader.substring(pos+1);
-  //Localizamos el final de los parámetros ' '
-  pos=requestHeader.indexOf(' ');
-  //Si no se ha encontrado el final...hemos terminado!
-  if(pos<0) return;
-  //Hemos encontrado el final de los parámetros
-  //Recortamos el sufijo
-  requestHeader=requestHeader.substring(0,pos);
-  //Formato actual de parámetros:
-  // p0=miPuntoDeAcceso&p1=myPassword&p2=123456789:ABCDEFGHIJK
-  //Procesamos la cadena mientras haya algo que procesar
-  while(requestHeader.length())
-  {
-    //Localizamos el separador del nombre del parámetro y su valor
-    pos=requestHeader.indexOf('=');
-    //Si no se ha encontrado el separador...hemos terminado!
-    if(pos<0) requestHeader="";
-    else //Separador localizado
-    {
-      //Recortamos prefijo
-      requestHeader=requestHeader.substring(pos+1);
-      //Localizamos inicio de siguiente parámetro
-      pos=requestHeader.indexOf('&');
-      //Puntero a valor a guardar
-      String *paramString;
-      //Si no se ha encontrado...
-      if(pos<0)
-      {
-        //...es porque este es el último parámetro
-        //El parámetro será el resto de la línea
-        paramString=new String(requestHeader);
-        //No tenemos nada más para procesar
-        requestHeader="";
-      }
-      else //Hemos encontrado más parámetros
-      {
-        //Anotamos el valor hasta antes del siguiente parámetro
-        paramString=new String(requestHeader.substring(0,pos));
-        //Dejaremos el siguiente parámetro
-        requestHeader=requestHeader.substring(pos+1);
-      }
-      //Guardamos el parámetro en la lista
-      requestParams->add2end(paramString);
-    }
-  }
-  //Hemos terminado de procesar la línea de parámetros
-}
-
-String htmlConfig()
-{
-  //Compone una respuesta correcta en HTML con la página de configuración
-  //La cabecera de una respuesta correcta de HTML es:
-  
-  //HTTP/1.1 200 OK
-  //Content-Type: text/html; charset=utf-8
-  //
-
-  //Es importante notar que tras la última línea de la cabecera siempre va una línea vacía
-  //Después utilizamos la siguiente plantilla para mostrar el contenido:
-  
-  //<!DOCTYPE html><html>
-  //<h1>Configuración photoPIR32</h1>
-  //<p><label>Wifi client SSID:<input id="wifiSSID" type="text" name="SSID" value="var1"/></label></p>
-  //<p><label>Wifi client password:<input id="wifiPassword" type="text" name="password" value="var2" /></label></p>
-  //<p><label>Telegram bot token:<input id="botToken" type="text" name="botToken" value="var3" size="50"/></label></p>
-  //<p><a href="?" onclick="location.href=this.href+'p0='+wifiSSID.value+'&p1='+wifiPassword.value+'&p2='+botToken.value;return false;"><button>Ok</button></a>
-  //<br><br><h1>Estado actual</h1>
-  //<p>Sensor de movimiento activo: no
-  //<br>Error de la cámara: 0
-  //<br>Resolución: 3
-  //<br>Conectado a wifi: sí
-  //<br>Tareas de cámara pendientes: 0
-  //<br>Tareas de salida pendientes: 1</p>
-  //<p><a href=\"/\"><button>Refrescar</button></a></p>
-  //</html>
-
-  //Se sustituyen los valores de los campos por los valores de la configuración actual
-  String answer="HTTP/1.1 200 OK\nContent-Type: text/html; charset=utf-8\n\n";
-  answer+="<!DOCTYPE html><html><h1>Configuración photoPIR32</h1>";
-  answer+="<p><label>Wifi client SSID:<input id=\"wifiSSID\" type=\"text\" name=\"SSID\" value=\"" + wifiClientSSID +"\"/></label></p>";
-  answer+="<p><label>Wifi client password:<input id=\"wifiPassword\" type=\"text\" name=\"password\" value=\"" + wifiClientPassword +"\" /></label></p>";
-  answer+="<p><label>Telegram bot token:<input id=\"botToken\" type=\"text\" name=\"botToken\" value=\"" + botToken + "\" size=\"50\"/></label></p>";
-  answer+="<p><a href=\"?\" onclick=\"location.href=this.href+'p0='+wifiSSID.value+'&p1='+wifiPassword.value+'&p2='+botToken.value;return false;\"><button>Ok</button></a></p>";
-  
-  answer+="<br><br><h1>Estado actual</h1>";
-  answer+="<p>Sensor de movimiento activo: "+yesno[PIRenabled];
-  answer+="<br>Error de la cámara: " + String(errorCodeCamera);
-  answer+="<br>Resolución: " + String(currentRes);
-  answer+="<br>Conectado a wifi: " + yesno[wifiConnected];
-  answer+="<br>Tareas de cámara pendientes: " +  String(cameraQueue.count());
-  answer+="<br>Tareas de salida pendientes: " +  String(outCommQueue.count()) + "</p>";
-  answer+="<p><a href=\"/\"><button>Refrescar</button></a></p>";
-  answer+="</html>";
-
-  //Devolvemos la cadena HTML
-  return answer;
-}
-
-void serverHandleClient()
-{
-  //Comprueba si hay conexiones pendientes de atender en el servidor web local
-
-  //Si no hay clientes conectados...hemos terminado
-  if(!server.hasClient()) return;
-  //Hay algún cliente conectado
-  //Tomamos nota de quién es
-  WiFiClient client=server.available();
-  //Creamos una lista para guardar los parametros de la solicitud
-  RoJoList<String> requestParams;
-  //Leemos la solicitud y descomponemos sus parámetros en la lista
-  getRequestParameters(&client,&requestParams);
-  //Para que un cambio de configuración sea aceptado debe tener tres
-  //parámetros con los siguientes datos:
-  //  1. wifiClientSSID
-  //  2. wifiClientPassword
-  //  3. botToken
-  //Si tiene 3 parámetros...
-  if(requestParams.count()==3)
-  {
-    //Informamos a todos
-    outCommAddTask(0,"0","Aplicando nueva configuración",defaultKeyb);
-    //Creamos puntero para obtener los parámetros
-    String *param;
-    //Cambiamos los valores de las variables
-    requestParams.index(&param,0); //Parámetro 0 = SSID
-    wifiClientSSID=*param;
-    requestParams.index(&param,1); //Parámetro 1 = password
-    wifiClientPassword=*param;
-    requestParams.index(&param,2); //Parámetro 2 = botToken;
-    botToken=*param;
-    //Guardaremos los valores actuales en el archivo de configuración
-    saveConfig();
-    //En vez de actualizar el botToken con: bot.begin(botToken);
-    //Y resetear las comunicaciones con:
-    //  wifiLastTry=0; //Nunca antes lo habíamos intentado
-    //  wifiConnected=false; //Actualmente no estamos conectados
-    //Simplemente llamaremos a la función de lectura que hace el proceso completo
-    readConfig();
-  }
-  //Se haya modificado la configuración o no, respondemos con la misma página
-  client.println(htmlConfig());
-  //Esperamos a que se termine de enviar el texto HTML
-  delay(100);
-  //Cerramos conexión con este cliente
-  client.stop();
-}
-
 void setup()
 {
+  Serial.begin(115200);
+  delay(1000); //Damos tiempo a que se inicialice el puerto serie
+
   //Desactivamos los mensajes de error de "Brownout detector was triggered"
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
-  //Apagamos el led integrado
-  pinMode(pinLed,OUTPUT);
-  digitalWrite(pinLed,!ledON);
+
+  //Conectamos al punto de acceso wifi
+  //Configuramos el wifi en modo de conexión a un punto de acceso para salir a Internet
+  WiFi.mode(WIFI_STA);
+  //Inicializamos conexión wifi con las credenciales actuales
+  //Necesitamos convertir los Strings en arrays de char
+  WiFi.begin(wifiClientSSID.c_str(),wifiClientPassword.c_str());
+  Serial.print("Connecting.");
+  //Esperamos a estar conectados
+  while(WiFi.waitForConnectResult()!=WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.print("Ok : ");
+  Serial.println(WiFi.localIP());
+
   //Inicializamos el sistema de archivos
   SPIFFS.begin();
+
+  //Inicializamos la cámara
+  Serial.print("Init camera ");
+  byte errorCode=255;
+  while(errorCode>0)
+  {
+    errorCode=camera.begin(pinCS);
+    Serial.print(errorCode);
+    delay(300);
+  }
+  Serial.println(" ok");
+
   //Recuperamos la última configuración
   readConfig();
   //Inicializamos el diccionario de suscriptores
   subscribers.begin("/subscribers.txt");
+  //Inicializamos el bot con el token
+  bot.begin(botToken);
+
   //Activamos el gestor de comunicaciones de salida
   //- outCommManager: nombre de la función
   //- "": nombre de la tarea (no importa)
@@ -1122,6 +946,7 @@ void setup()
   //- NULL: puntero del objeto de tarea (no importa porque se borra sola)
   //- 0: core en el que se ejecuta
   xTaskCreatePinnedToCore(outCommManager,"",6000,NULL,1,NULL,0);
+
   //Activamos el gestor de la cámara
   //- cameraManager: nombre de la función
   //- "": nombre de la tarea (no importa)
@@ -1131,29 +956,43 @@ void setup()
   //- NULL: puntero del objeto de tarea (no importa porque se borra sola)
   //- 0: core en el que se ejecuta
   xTaskCreatePinnedToCore(cameraManager,"",5000,NULL,1,NULL,0);
-  //Activamos el gestor de comunicaciones de entrada
-  //- inCommManager: nombre de la función
-  //- "": nombre de la tarea (no importa)
-  //- 7000: tamaño de pila (5000 es insuficiente y 5500 es ok)
-  //- NULL: puntero a parámetros
-  //- 1: prioridad baja
-  //- NULL: puntero del objeto de tarea (no importa porque se borra sola)
-  //- 1: core en el que se ejecuta
-  xTaskCreatePinnedToCore(inCommManager,"",7000,NULL,1,NULL,1);
+
+  //Si utilizamos webhook como método para obtener nuevos mensajes...
+  if(useWebhook)
+  {
+    //Activamos el gestor de comunicaciones de entrada por webhook
+    //- webhookManager: nombre de la función
+    //- "": nombre de la tarea (no importa)
+    //- 7000: tamaño de pila
+    //- NULL: puntero a parámetros
+    //- 1: prioridad baja
+    //- NULL: puntero del objeto de tarea (no importa porque se borra sola)
+    //- 1: core en el que se ejecuta
+    xTaskCreatePinnedToCore(webhookManager,"",7000,NULL,1,NULL,1);
+    //Activamos el servidor seguro para atender webhook
+    byte errorCode=bot.webhookEnable((char*)secureServerCertificateFile.c_str(),(char*)secureServerPrivateKeyFile.c_str(),webhookReceivedMsg,webhookPort,4,3000);
+    Serial.println("webhook server started with error code "+String(errorCode));
+  }
+  else //Si utilizamos polling como metodo para obtener nuevos mensajes...
+  {
+    //Activamos el gestor de comunicaciones de entrada por polling
+    //- inCommManager: nombre de la función
+    //- "": nombre de la tarea (no importa)
+    //- 7000: tamaño de pila (5000 es insuficiente y 5500 es ok)
+    //- NULL: puntero a parámetros
+    //- 1: prioridad baja
+    //- NULL: puntero del objeto de tarea (no importa porque se borra sola)
+    //- 1: core en el que se ejecuta
+    xTaskCreatePinnedToCore(inCommManager,"",7000,NULL,1,NULL,1);
+  }
+
   //Configuramos el pin del sensor de movimiento como entrada
   pinMode(pinPIR,INPUT);
   //Activamos las interrupciones para el pin del sensor de movimiento
   attachInterrupt(pinPIR,interruptPIR,RISING);
-  //Configuramos el wifi en modo mixto
-  //Se conectará a un punto de acceso y al mismo tiempo creará su propio punto de acceso
-  //La conexión cliente servirá para salir a Internet
-  //La conexión servidor servirá para cambiar la configuración
-  WiFi.mode(WIFI_AP_STA);
-  //Configuramos el punto de acceso wifi propio
-  //Necesitamos convertir los Strings en arrays de char
-  WiFi.softAP(mySSID.c_str(),mySSIDpassword.c_str()); //Nombre y contraseña
-  //Arrancamos el servidor web local para cambio de configuración
-  server.begin();
+  //Creamos una nueva tarea para cambiar la resolución de la cámara
+  //No es necesario que devuelva respuesta a nadie
+  cameraAddTask(currentRes,"","","");
   //Informamos a todos los suscriptores que se ha reiniciado
   outCommAddTask(0,"0","Dispositivo reiniciado",defaultKeyb);
   //Inicializamos la semilla de números aleatorios
@@ -1162,10 +1001,6 @@ void setup()
 
 void loop()
 {
-  //Gestión de microservicios
-
-  if(!wifiConnected) try2connect(); //Conexión wifi
-  if(errorCodeCamera) errorCodeCamera=camera.begin(pinCS); //Inicio de cámara
-  serverHandleClient(); //Refresca conexiones del servidor web local
-  delay(1000);
+  //Nada especial que hacer aquí
+  delay(1);
 }

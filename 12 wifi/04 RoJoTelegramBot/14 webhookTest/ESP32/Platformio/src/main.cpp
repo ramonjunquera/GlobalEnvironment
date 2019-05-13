@@ -3,7 +3,7 @@
   - Asigna IP fija y mostrarla
 
   Tema: webhook en Telegram
-  Versión: 20190511
+  Versión: 20190512
   Autor: Ramón Junquera
   Material: ESP32
   Descripción:
@@ -46,7 +46,7 @@ const char* wifiClientPassword = "xxx";
 //Archivo de certificado
 const char* secureServerCertificateFile="/autocert.crt";
 //Archivo de clave privada
-const char* secureServerPriveteKeyFile="/private.key";
+const char* secureServerPrivateKeyFile="/private.key";
 //Puerto de escucha del servidor
 const uint16_t port=8443;
 //Cadena de confirmación de recepción
@@ -165,7 +165,7 @@ void setup()
   Serial.println(WiFi.localIP()); //Mostramos dirección IP asignada
 
   //Arrancamos el servidor
-  byte errorCode=server.begin(secureServerCertificateFile,secureServerPriveteKeyFile);
+  byte errorCode=server.begin(secureServerCertificateFile,secureServerPrivateKeyFile);
   Serial.println("Server started with error: "+String(errorCode));
 }
 
