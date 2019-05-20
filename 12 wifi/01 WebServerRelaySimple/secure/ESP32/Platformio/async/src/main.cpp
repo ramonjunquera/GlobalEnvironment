@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190502
+  Fecha: 20190515
   Descripción:
     Ejemplo de gestión de servidor web seguro (SSL)
     La información de entrada la procesaremos según se vaya recibiendo (byte a byte).
@@ -19,7 +19,7 @@
 */
 
 #include <Arduino.h>
-#include "RoJoWiFiServerSecure32.h"
+#include <RoJoWiFiServerSecure32.h>
 
 //Definimos los detalles del punto de acceso
 const char* wifiClientSSID = "xxx";
@@ -49,67 +49,6 @@ String html()
   return answer;
 }
 
-bool _clientFindString(RoJoWiFiClientSecure32 *client,String findText,String endText="")
-{
-  //Lee caracteres del cliente hasta encontrar una cadena, detectar la cadena endText
-  //El parámetro endText es optativo
-  //La longitud de los parámetros findText y endText puede ser distinta
-  //Devuelve true si ha encontrado la cadena
-
-  //Buffer de texto recibido
-  String buffer="";
-  //Carácter leido
-  byte b;
-  //Calculamos el tamaño del buffer
-  byte bufferLen=findText.length();
-  if(endText.length()>bufferLen) bufferLen=endText.length();
-
-  //Inicializamos el buffer a su tamaño correcto
-  for(byte c=0;c<bufferLen;c++) buffer+="@";
-  //Mientras hayamos podido leer un carácter...
-  while((*client).read(&b))
-  {
-    //Añadimos el carácter leido al buffer
-    buffer=buffer.substring(1)+(char)b;
-    //Si el final del buffer coincide con la cadena que estamos buscando...lo hemos encontrado!
-    if(buffer.substring(bufferLen-findText.length())==findText) return true;
-    //Si tenemos cadena de fin...
-    if(endText.length())
-    {
-      //Si el final del buffer coincide con la cadena de fin...no lo hemos encontrado
-      if(buffer.substring(bufferLen-endText.length())==endText) return false;
-    }
-  }
-  //Hemos procesado todo el texto disponible y no lo hemos encontrado
-  return false;
-}
-
-String _clientReadString(RoJoWiFiClientSecure32 *client,String endText)
-{
-  //Devuelve el texto recibido hasta encontrar la cadena de marca de fin
-  //Si no encuentra la marca de fin devuelve una cadena vacía
-  
-  //Variable en la que guardaremos la respuesta
-  String answer="";
-  //Carácter leido
-  byte b;
-
-  //Mientras hayamos podido leer un carácter...
-  while((*client).read(&b))
-  {
-    //Añadimos el carácter leido a la respuesta
-    answer+=(char)b;
-    //Si el final de la cadena coincide con la marca de fin...
-    if(answer.substring(answer.length()-endText.length())==endText)
-    {
-       //...devolvemos la respuesta sin incluir la marca de fin
-      return answer.substring(0,answer.length()-endText.length());
-    }
-  }
-  //Hemos procesado todo el texto disponible sin encontrar la marca de fin
-  return "";
-}
-
 void manageConn(void *parameter)
 {
   //Función llamada por un proceso que gestiona una conexión cliente
@@ -134,10 +73,10 @@ void manageConn(void *parameter)
   //incluimos el sufijo del path para no perder tiempo en leer el mensaje completo cuando hay errores
 
   //Si encontramos el prefijo del path...
-  if(_clientFindString(client,"GET /","HTTP/"))
+  if(client->readFindString("GET /","HTTP/"))
   {
     //...leemos el path
-    String path=_clientReadString(client," HTTP/");
+    String path=client->readString(" HTTP/");
     //Mostramos el path detectado
     Serial.println("Path="+path);
     //Dependiendo del path tomaremos acciones

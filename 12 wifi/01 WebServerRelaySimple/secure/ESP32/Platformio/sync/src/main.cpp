@@ -1,9 +1,11 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190506
+  Fecha: 20190515
   Descripción:
     Ejemplo de gestión de servidor web seguro (SSL)
-    La información de entrada la recibiremos completa en un String que analizaremos.
+    La información de entrada la procesaremos según se vaya recibiendo (byte a byte).
+    El proceso de la información será síncrono: se procesa cada una de las nuevas conexiones
+    según se detectan. Y hasta no finalizar con una, no se comienza con la siguiente.
 */
 
 #include <Arduino.h>
@@ -71,7 +73,6 @@ void loop(void)
   //Si tenemos algún cliente...
   if(client)
   {
-    Serial.println("Cliente conectado");
     //Este es un ejemplo del formato de la información que podemos recibir:
       //GET /mypath HTTP/1.1
       //Content-type: text/plain
@@ -87,26 +88,27 @@ void loop(void)
     //Leeremos el mensaje hasta encontrar el prefijo al path y como medida de seguridad
     //incluimos el sufijo del path para no perder tiempo en leer el mensaje completo cuando hay errores
 
-    //Leemos la solicitud del cliente
-    String clientString=client->readString();
-    //Mostramos el texto recibido
-    Serial.println("------start------");
-    Serial.println(clientString);
-    Serial.println("------end------");
-
-    //Dependiendo del path tomaremos acciones
-    //Si tenemos que encender...lo encendemos
-    if(clientString.indexOf("GET /on HTTP/1.1")>=0) digitalWrite(pinLed,ledON);
-    //Si tenemos que apagar...lo apagamos
-    else if(clientString.indexOf("GET /off HTTP/1.1")>=0) digitalWrite(pinLed,!ledON);
-
+    //Si encontramos el prefijo del path...
+    if(client->readFindString("GET /","HTTP/"))
+    {
+      //...leemos el path
+      String path=client->readString(" HTTP/");
+      //Mostramos el path detectado
+      Serial.println("Path="+path);
+      //Dependiendo del path tomaremos acciones
+      //Si tenemos que encender...lo encendemos
+      if(path=="on") digitalWrite(pinLed,ledON);
+      //Si tenemos que apagar...lo apagamos
+      else if(path=="off") digitalWrite(pinLed,!ledON);
+      //No tenemos en cuenta ninguna otra opción de path
+      //No tenemos en cuenta el resto del mensaje
+    }
+    
     //Respondemos con la misma web
     client->write(html());
     //Cortamos la conexión
     client->stop();
     //Borramos el objeto cliente
     delete client;
-
-    Serial.println("Cliente desconectado");
   }
 }
