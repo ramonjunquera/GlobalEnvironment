@@ -6,10 +6,16 @@ Memoria
   variables.
   El resto de memoria sólo puede ser configurada como SPIFFS.
   Las placas tienen distinta capacidad de memoria. Desde los 512Kb de los ESP-01 más
-  básicos, los 4Mb de la mayoría, hasta los 16Mb de la Wemos D1 Mini Pro son 16Mb.
+  básicos, los 4Mb de la mayoría, hasta los 16Mb de la Wemos D1 Mini Pro.
   Las particiones de memoria no son reconfigurables.
   La única variación es poder seleccionar en el IDE de Arduino la cantidad de memoria
   asignada a SPIFFS.
+
+Nota
+  El pin D8 debe estar desconectado o en LOW para poder arrancar.
+  Si conectamos un dispositivo que lo mantiene en HIGH, como por ejemplo el pin CS
+  de un lector de SD, tendremos que incluir una resistencia entre D8 y GND para
+  forzar el estado LOW.
 
 Documentación
   La documentación de las librerías que compatibilizan esta familia de dispositivos con

@@ -1,0 +1,19 @@
+Tema: Instalación de Platformio en Debian ARM (Raspberry Pi)
+Fecha: 20190602
+
+Platformio puede correr sobre dos plataformas: Atom y Microsoft Visual Studio Code.
+Atom no tiene versión de 32 bits. Descartado.
+Microsoft Visual Studio Code no tiene soporte oficial para plataforma ARM, pero
+publicó el código fuente y se ha podido recompilar la aplicación para ARM.
+
+Platformio en ARM funciona igual que con procesadores x86 o x64, pero con ciertas
+limitaciones:
+- El plugin C/C++ se instala por defecto con Platformio. No está desarrollado
+  para este procesador. Por lo tanto, aunque se instala, no funciona por no tener
+  la versión correcta. Perderemos las facilidades de escritura en C++, aunque no
+  es totalmente imprescindible para la compilación.
+- Las librerías para Arduino suelen incluir el archivo keywords.txt con la información
+  de los nombres de la clase y sus métodos. Este archivo debe ser eliminado al
+  cuando se selecciona como dispositivo la propia Raspberry. Si no lo hacemos,
+  aparecerá el error de que no encuentra la librería, aunque realmente exista.
+

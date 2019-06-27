@@ -1,4 +1,5 @@
-Configuración de Geany
+Tema: Configuración de Geany
+Fecha: 20190602
 
 Habitualmente guardamos las librerías compartidas en la carpeta /home/pi/prg
 Es necesario indicar al compilador que busque en esa carpeta las librerías que no encuentre.
@@ -8,9 +9,16 @@ Para ello añadimos la directiva -I con el path, quedando la línea de llamada a
 Los parámetros -l podrían ser eliminados si no se utilizan. Por ejemplo:
   g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"/home/pi/prg/"
 
+También se debe incluir el parámetro del path en la sección Compile. Por ejemplo:
+  g++ -Wall -std=c++11 -c "%f" -pthread -I"/home/pi/prg/"
+
 Para que la ejecución se haga con permisos de root, la línea del run quedaría:
   sudo "./%e"
 
 Para hacer uso de las comunicaciones I2C y SPI es necesario activarlos desde el panel de control
 de la Raspberry:
   menu/Preferences/Raspberry Pi Configuration/Interfaces/
+
+Nota:
+  Las librerías se encontrarán todas en la misma carpeta. No se debe crear una subcarpeta por cada
+  grupo de librerías.

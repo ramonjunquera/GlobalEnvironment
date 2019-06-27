@@ -1,4 +1,0 @@
-Test con uso reducido de memoria, compatibles con ESP & Arduino Mega
-
-No se pueden utilizar las librerí­as SD con Raspberry Pi porque no se ha creado la librerí­a <SD.h> para esta plataforma.
-Pero la librerías SPIFFS tiene su emulador en RPi.

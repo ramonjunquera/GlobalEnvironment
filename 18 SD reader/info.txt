@@ -5,9 +5,10 @@ Existen distintos modelos en el mercado.
 Los que se venden actualmente utilizan el formato microSD, pero
 aun podemos encontrar alguno con formato SD (grande).
 
-También encontramos diferencias con el voltaje.
-Los actuales funcionan a 3.3V y los antiguos con 5V.
-Es importante tener esto en cuenta para no estropearlo.
+Dependiendo del modelo, podemos encontrar que se sugiere alimentarlo
+con 3.3V o con 5V.
+Mi recomendación es que siempre se alimente con 5V.
+Con 3.3V suelen fallar cuando se hace un uso intensivo.
 
 Existen dos tipos de conexiones: SDIO y SPI.
 SDIO es un estándar para conexión de estos dispositivos de gestión
@@ -36,14 +37,14 @@ En teoría cualquier lector SD es capaz de leer cualquier tipo de tarjeta.
 En la práctica nos encontramos que algunas tarjetas SD antiguas dan problemas.
 
 Recordemos los pines por defecto para SPI en distintas placas:
-  SDreader UNO  MEGA ESP8266
-  -------- ---- ---- -------
-  3.3V     3.3V 3.3V   3.3V
-  GND      GND  GND    GND
-  MISO(DO) 12   50     D6
-  MOSI(DI) 11   51     D7
-  SCLK     13   52     D5
-  CS       10   53     D8
+  SDreader UNO  MEGA ESP8266 ESP32
+  -------- ---- ---- ------- -----
+  3.3V     3.3V 3.3V   3.3V  3.3V
+  GND      GND  GND    GND   GND
+  MISO(DO) 12   50     D6    19
+  MOSI(DI) 11   51     D7    23
+  SCLK     13   52     D5    18
+  CS       10   53     D8     5
 
 Nota:
 El pin CS es el único que puede ser seleccionado por software.
@@ -56,11 +57,7 @@ Interface: SPI, SDIO
 Voltaje: 3.3V
 Comentarios:
 Según sus especificaciones debemos utilizar 3.3V en todos los pines.
-Esto nos hace más difícil su uso en plácas Arduino, en las que trabajamos
-por defecto con 5V.
-Con este modelo podemos simplificarlo aplicando los 3.3V sólo a la
-alimentación principal. Para el resto de pines de comunicación podemos
-usar 5V sin que sufra ningún daño.
+Recomendación: alimentarlo con 5V.
 Puesto que este modelo tiene ambas interfases de conexión, usaremos siempre
 SPI por ser más rápida.
 Anunque los pines son los mismos, se han etiquetado con una interfase por

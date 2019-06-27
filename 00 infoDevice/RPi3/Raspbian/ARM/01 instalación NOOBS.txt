@@ -1,4 +1,5 @@
-Preparación de una SD para instalar sistema operativo en Raspberry Pi
+Tema: Preparación de una SD para instalar sistema operativo en Raspberry Pi
+Fecha: 20190602
 
 Necesitaremos una SD de al menos 4Gb.
 
@@ -16,10 +17,10 @@ Si estamos interesados en otro sistema, podríamos utilizar cualquiera de las dos
 Pero si podemos elegir, tomaremos la lite, sólo porque es más pequeña y tardará menos en
 descargar.
 
-La versión normal ocupa algo más de 1.1Gb.
+La versión actual es la 3.0.1 y ocupa unos 1.7Gb.
 
 Una vez descargado el .zip, lo descomprimimos y encontraremos un archivo de texto con los 
-pasos a seguir para la instalación.
+pasos a seguir para la instalación (INSTRUCTIONS-README.txt).
 
 Se sugiere utilizar una herramienta externa para formatear la SD a FAT32.
 De todas maneras podemos hacerlo perfectamente desde Windows con un formato rápido (mucho

@@ -1,4 +1,0 @@
-Test que requiren bastante memoria -> sólo familia ESP
-
-No se pueden utilizar las librerías SD con Raspberry Pi porque no se ha creado la librería <SD.h> para esta plataforma.
-Pero la librerías SPIFFS tiene su emulador en RPi.

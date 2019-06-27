@@ -74,6 +74,7 @@ Alimentación.
 La placa trabaja a 3.3V.
 Se puede alimentar con un voltaje entre 2.4 y 6V.
 No necesita más de 500mA.
+No tiene pin para alimentar a 5V.
 
   Pinout
   ------

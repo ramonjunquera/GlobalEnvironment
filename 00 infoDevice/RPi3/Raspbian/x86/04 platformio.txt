@@ -1,0 +1,6 @@
+Instalación de Platformio en Debian i386
+
+Actualmente no existe una versión estable de Atom 32bits para Linux, por lo tanto
+tenemos que seleccionar como editor de texto a VSCode que sí la tiene.
+Una vez instalado se puede añadir el paquete de Platformio sin problemas.
+

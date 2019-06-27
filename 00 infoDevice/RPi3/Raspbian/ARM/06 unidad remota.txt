@@ -1,4 +1,5 @@
-Cómo mapear una unidad de red en Raspbian
+Tema: Cómo mapear una unidad de red en Raspbian
+Fecha: 20190602
 
 Raspbian incluye por defecto las librerías necesarias para conectar.
 Originalmente eran las de Samba (smbclient), pero fueron sustituidas por wheezy.
@@ -15,7 +16,7 @@ Lo editamos con nano:
   sudo nano /etc/fstab
 
 Añadimos el final del archivo la siguiente línea:
-  //192.168.1.197/public /home/pi/synology cifs username=usuario,password=contraseña,vers=1.0,rw 0 0
+  //192.168.1.197/public /home/pi/synology/ cifs username=usuario,password=contraseña,vers=1.0,rw 0 0
 En ella se define:
 - La dirección y nombre del recurso compartido
 - La carpeta local sobre la que se montará
@@ -34,7 +35,7 @@ hemos creado.
 
 Si no estamos seguros de la línea escrita en fstab, siempre podemos montar la unidad
 manualmente con el siguiente comando:
-sudo mount -t cifs -o username=user,password=pass,vers=1.0 //192.168.1.197/public /home/pi/synology
+sudo mount.cifs //192.168.1.197/public /home/pi/synology/ -o username=Ra,password=Amama5,vers=1.0
 
 En el proceso de arranque, si al procesar el archivo fstab no se ha inicializado la red,
 las unidades remotas no se montarán.
@@ -46,8 +47,15 @@ Y marcar el check de: Wait for network
 
 Es muy conveniente añadir una dirección al apartado Bookmarks para agilizar el salto
 a una carpeta concreta.
-
-En el caso de que queramos eliminar un Bookmark, en el administrador de archivos, en el
-panel izquierdo, desplegaremos la cabecera "Directrory Tree", y seleccionamos "Places".
-Sólo tenemos que seleccionar la referencia a eliminar, hacer click con el botón derecho
-y borrar.
+En las últimas versiones de Raspbian, añadir un bookmark se considera una opción avanzada de
+usuario.
+Por defecto el sistema viene con el interface simple. Por lo tanto, no aparece la opción.
+Para activar las opciones avanzadas de usuario debemos abrir File Manager/Edit/Preferences/Layout
+y desmarcar la opción de "Display simplified user interface and menus".
+La configuración no tedrá efecto en las sesiones de "File Manager" que estén abiertas.
+Sólo en las nuevas.
+Ahora al abrir el menú contextual (con el botón derecho) en el panel de carpetas (izquierdo), nos
+aparecerá la opción "Add to bookmarks".
+El menú principal tendrá la opción "Bookmarks".
+Y sobre el panel izquierdo aparecerá el desplegable "Directory Tree" con la posibilidad de seleccionar
+"Places" para gestionar los bookmarks.

@@ -1,0 +1,38 @@
+Convertidor lógico
+Es la solución a la conexión bidireccional de dispositivos de distintos voltajes.
+
+Un logic converter o conversor lógico de voltaje sirve para poder enviar señales digitales
+entre dos circuitos que operan a distinto voltaje.
+Las placas Arduino trabajan con una tensión de 5V.
+Si alguna vez tenemos componentes que trabajan a un voltaje inferior, como puede ser un led, añadimos
+una resistencia que se encargue de reducirla. Este problema es fácilmente salvable.
+En el caso contrario ya no es tan sencillo.
+Si tenemos un componente que trabaja a 3.3V y debe enviar una señal digital a un circuito de 5V, y con
+3.3V no es suficiente como para que reconozca que está activado, necesitamos algo que no permita
+aumentar el voltaje. Este es el principal uso de los conversores lógicos.
+
+La distribución de pines de un conversor lógico de cuatro canales es la siguiente:
+
+     o   o     o   o     o   o
+    HV1 HV2 |  HV GND | HV3 HV4
+            |         |
+            |         |
+    LV1 LV2 |  LV GND | LV3 LV4
+     o   o     o   o     o   o
+
+La parte superior sólo trabajará con alto voltaje (High Voltage = HV) y la inferior con bajo (Low Voltage = LV).
+Consideraremos voltaje alto a 5V y bajo a 3.3V.
+
+La sección central proporciona la alimentación al dispositivo.
+Los dos pines de GND están unidos entre sí. Por lo tanto con conectar cualquiera de ellos a tierra es suficiente.
+No es necesario conectar ambos.
+El pin HV debe ser conectado a 5V y el LV a 3.3V.
+Los cuatro canales corresponden a las columnas dos primeras y últimas columnas.
+Cada canal es independiente de los demás.
+  
+El funcionamiento es muy sencillo.
+Se aplica una señal a un canal por uno de sus extremos (HV o LV) y la reproduce instantáneamente en el otro
+extremo con el voltaje correspondiente.
+Es bidireccional porque funciona en ambos sentidos.
+  
+Existen conversoresl lógicos de más de 4 canales.

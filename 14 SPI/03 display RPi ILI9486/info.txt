@@ -58,11 +58,42 @@ SPI_CLK : Señal de reloj SPI para LCD/touch panel
 LCD_SPI_CS : Pin SPI/CS para LCD. LOW = active
 TP_SPI_CS : Pin SPI/CS para touch panel. LOW (selected) / HIGH (unselected)
 
+Configuración Raspberry Pi
+Puesto que el display está preparado para conectar directamente a Raspberry Pi, los pines en este
+dispositivo son fijo:
+  TP_IRQ     : 17
+  LCD_DC     : 24
+  SPI_MOSI   : 10
+  SPI_MISO   :  9
+  RST        : 25
+  SPI_CLK    : 11
+  LCD_SPI_CS :  8
+  TP_SPI_CS  :  7
+
 Notas:
 - Aunque el procesador gráfico permite tanto la escritura como la lectura de la memoria de vídeo, en este
   modelo se ha eliminado la posibilidad de lectura. Por lo tanto no necesitaremos la conexión MISO para
   el vídeo.
 - El touch panel SI necesita de la conexión MISO porque envía las coordenadas de la pulsación a la placa.
+- Aunque la alimentación se de 5V para poder soportar el consumo del display, las conexiones de datos
+  están preparadas para 3.3V. Si utilizamos 5V, no responderá. Esto es un problema en placas que sólo
+  funcionan a 5V. Se debe utilizar un conversor lógico (como en el ejemplo) o un divisor de voltaje.
+
+Touch Panel.
+El panel táctil contiene dos resistencias en perpendicular (dos potenciómetros lineales).
+Cuando se realiza una pulsación, se conectan las resistencias en ese punto y se puede leer el valor
+de cada una de ellas.
+Estos valores corresponden a las resistencias del panel. Después hay que hacer una conversión para obtener
+las coordenadas de pantalla a las que corresponde.
+El mayor problema de un panel táctil es que cuando se realiza una pulsación, no se obtiene el valor de
+la resistencia instantáneamente, sino que tarda un tiempo en alcanzarlo.
+El valor de la resistencia comienza desde cero, rápidamente y va decelerando hasta alcancar el valor
+real y se estabiliza.
+Cuando se suelta la pulsación ocurre lo contrario.
+Para evitar este efecto se utiliza en el driver el valor de la dispersión.
+Si tomamos dos medidas en un corto espacio de tiempo, y su dispersión (diferencia absoluta) es mayor
+que cierto límite, sabremos que hay una pulsación, pero no daremos por válidas las coordenadas obtenidas.
+
 
 
 Links:
