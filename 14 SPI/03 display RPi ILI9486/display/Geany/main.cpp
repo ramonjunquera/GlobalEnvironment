@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180625
+  Fecha: 20180628
   Tema: Librería para display RPI_ILI9486 SPI 3.5" 480*320
   Objetivo: Demo de librería RoJoILI9486
   Material: breadboard, cables, display ILI9486, lector SD
@@ -73,7 +73,7 @@ RoJoILI9486 display;
 //    clear
 //    block
 //Dibujamos bloques (rectángulos rellenos) de distintos colores y los mostramos
-//en pantalla, formando una matriz de 10x15
+//en pantalla, formando una matriz de 7x15
 void Test1()
 {
   display.clear(); //Limpiamos pantalla
@@ -89,7 +89,7 @@ void Test1()
     ,{255,0,255}   //col 5 = magenta
     ,{0,255,255}   //col 6 = cyan
   };
-  //Recorremos las 10 filas
+  //Recorremos las 15 filas
   for(uint16_t y=0;y<15;y++)
   {
     //Recorremos las 7 columnas
@@ -302,7 +302,7 @@ void Test10()
     ,{255,0,255}   //col 5 = magenta
     ,{0,255,255}   //col 6 = cyan
   };
-  //Recorremos las 10 filas
+  //Recorremos las 15 filas
   for(uint16_t y=0;y<15;y++)
   {
     //Recorremos las 7 columnas

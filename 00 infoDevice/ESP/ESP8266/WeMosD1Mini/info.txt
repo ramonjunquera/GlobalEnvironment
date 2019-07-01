@@ -56,6 +56,11 @@ Los pines de conexión SPI son:
    14   D5 SCLK
    15   D8 CS
 
+El pin D8 debe estar desconectado o en estado HIGH para que el 
+dispositivo pueda arrancar. Si conectamos un sensor a este pin
+debemos asegurarnos que no fijará su estado permanentemente
+a HIGH.
+
 Pines con capacidad PWM, con resolución 10 bits:
   TX(1),RX(3),D0(16),D1(5),D2(4),D3(0),D4(2),D5(14),D6(12),D7(13),D8(15)
 

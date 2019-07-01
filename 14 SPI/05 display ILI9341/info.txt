@@ -1,0 +1,70 @@
+Detalles técnicos de display LCD TFT ILI9341 240x320 2.4" y 2.8"
+Touch screen resistive
+
+Resolution: 240x320
+LCD type: TFT
+LCD interface: SPI
+SPI video driver speed: <80MHz
+LCD controller: 9486 (ILI9341)
+Touch screen type: resistive
+Touch screen controller: XPT2046
+Backlight: LED
+Colors: 65536
+Video Memory: 150Kb
+
+Pinout: 
+  T_IRQ : Touch screen IRQ. Sólo lectura. LOW si se está pulsando el touch panel
+  T_DO : Touch screen Data Out (SPI MISO)
+  T_DIN : Touch screen Data In (SPI MOSI)
+  T_CS : Touch screen CS (SPI CS). LOW = active
+  T_CLS : Touch screen CLK (SPI CLK)
+  SDO(MISO) : Display SPI MISO
+  LED : Iluminación de fondo
+  SCK : Display SPI SCK
+  SDI(MOSI) : Display SPI MOSI
+  DC : Display DC (Data/Command). Selector de envío de comando o datos. HIGH (data) / LOW (command)
+  RESET : Display reset. HIGH (normal) / LOW (reset)
+  CS : Display SPI CS. LOW = active
+  GND :  Tierra
+  VCC : Alimentación
+  SD_CS : Lector SD SPI CS. LOW = active
+  SD_MOSI : Lector SD SPI MOSI
+  SD_MISO : Lector SD SPI MISO
+  SD_SCK : Lector SD SPI SCK
+
+Alimentación.
+  Se pueden aplicar 3.3V o 5V tanto a la alimentación principal como a la iluminación posterior.
+  Aunque se alimente con 5V para poder soportar el consumo del display, las conexiones de datos
+  están preparadas para 3.3V. Si utilizamos 5V, no responderá. Esto es un problema en placas que sólo
+  funcionan a 5V. Se debe utilizar un conversor lógico (como en el ejemplo) o un divisor de voltaje.
+
+Lector de tarjetas SD.
+  El lector de la parte inferior toma a alimentación del display.
+  Con una alimentación de 3.3V, el lector sólo puede leer datos.
+  Con 5V, además podrá escribirlos.
+
+Touch Panel.
+  El panel táctil contiene dos resistencias en perpendicular (dos potenciómetros lineales).
+  Cuando se realiza una pulsación, se conectan las resistencias en ese punto y se puede leer el valor
+  de cada una de ellas.
+  Estos valores corresponden a las resistencias del panel. Después hay que hacer una conversión para obtener
+  las coordenadas de pantalla a las que corresponde.
+  El mayor problema de un panel táctil es que cuando se realiza una pulsación, no se obtiene el valor de
+  la resistencia instantáneamente, sino que tarda un tiempo en alcanzarlo.
+  El valor de la resistencia comienza desde cero, rápidamente y va decelerando hasta alcancar el valor
+  real y se estabiliza.
+  Cuando se suelta la pulsación ocurre lo contrario.
+  Para evitar este efecto se utiliza en el driver el valor de la dispersión.
+  Si tomamos dos medidas en un corto espacio de tiempo, y su dispersión (diferencia absoluta) es mayor
+  que cierto límite, sabremos que hay una pulsación, pero no daremos por válidas las coordenadas obtenidas.
+  Dependiendo del modelo, las coordenadas del eje X pueden tener sentidos opuestos. Este detalle no
+  afecta a su uso, porque el driver es capaz de adaptarse.
+
+Notas
+  Display de 2.4"
+    En placas Arduino (UNO/Nano/Mega) no se pueden conectar los pines MISO del touch panel y SD
+    porque anulan el lector SD.
+    En cambio el MISO del SD y del display no tienen incompatibilidades.
+  Display de 2.8"
+    Cuando se utilizan colores muy claros pueden aparecer aberraciones en forma de líneas rectas o zonas
+    con colores parpadeantes.

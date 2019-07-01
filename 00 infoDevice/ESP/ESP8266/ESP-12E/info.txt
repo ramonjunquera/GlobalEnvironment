@@ -53,6 +53,11 @@ Los pines de conexión SPI son:
 
 El interruptor FLASH está asociado con el pin D3.
 
+El pin D8 debe estar desconectado o en estado HIGH para que el 
+dispositivo pueda arrancar. Si conectamos un sensor a este pin
+debemos asegurarnos que no fijará su estado permanentemente
+a HIGH.
+
 Originalmente el dispositivo venía con LUA como sistema operativo, e
 incluía 3 archivos:
   header.htm      : 2161 bytes

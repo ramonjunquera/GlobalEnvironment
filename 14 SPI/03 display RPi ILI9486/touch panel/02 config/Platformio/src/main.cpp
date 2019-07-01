@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190625
+  Fecha: 20190630
   Tema: Librería de touch screen para display RPI_ILI9486 SPI 3.5" 480*320
   Objetivo: Calibración del touch screen
   Material: breadboard, cables, display ILI9486, lector SD (obligatorio en
@@ -40,24 +40,28 @@
 //Definición de pines
 #ifdef ESP8266 //Si es un ESP8266...
   const byte pinDC_display=D2;
-  const byte pinRES_display=D0;
+  const byte pinRES_display=D8;
   const byte pinCS_display=D3;
   const byte pinCS_touchscreen=D1;
+  const byte pinIRQ_touchscreen=D0;
 #elif defined(ESP32) //Si es un ESP32...
   const byte pinDC_display=22;
   const byte pinRES_display=2;
   const byte pinCS_display=5;
   const byte pinCS_touchscreen=16;
+  const byte pinIRQ_touchscreen=17;
 #elif defined(__arm__) //Si es una Raspberry Pi
   const byte pinDC_display=24;
   const byte pinRES_display=25;
   const byte pinCS_display=8;
   const byte pinCS_touchscreen=7;
+  const byte pinIRQ_touchscreen=17;
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinDC_display=5;
   const byte pinRES_display=4;
   const byte pinCS_display=3;
   const byte pinCS_touchscreen=6;
+  const byte pinIRQ_touchscreen=2;
 #endif
 
 //Creamos objetos de gestión
@@ -130,17 +134,12 @@ void configTS()
   display.rotation(0);
   //Borramos la pantalla
   display.clear();
-  do
-  {
-    //Solicitamos que se dibuje una línea que nos dará una coordenada de
-    //hardware que se encuentra a 20 pixels del borde
-    configTSline(20,20,xMax-20,20,&xDummy,&yDummy); y0=yDummy; //Obtenemos y0
-    configTSline(20,yMax-20,xMax-20,yMax-20,&xDummy,&yDummy); y1=yDummy; //Obtenemos y1
-    configTSline(20,20,20,yMax-20,&xDummy,&yDummy); x0=xDummy; //Obtenemos x0
-    configTSline(xMax-20,20,xMax-20,yMax-20,&xDummy,&yDummy); x1=xDummy; //Obtenemos x1
-  }
-  //Repetiremos si las coordenadas no parecen válidas
-  while(x0<x1 || y0<y1);
+  //Solicitamos que se dibuje una línea que nos dará una coordenada de
+  //hardware que se encuentra a 20 pixels del borde
+  configTSline(20,20,xMax-20,20,&xDummy,&yDummy); y0=yDummy; //Obtenemos y0
+  configTSline(20,yMax-20,xMax-20,yMax-20,&xDummy,&yDummy); y1=yDummy; //Obtenemos y1
+  configTSline(20,20,20,yMax-20,&xDummy,&yDummy); x0=xDummy; //Obtenemos x0
+  configTSline(xMax-20,20,xMax-20,yMax-20,&xDummy,&yDummy); x1=xDummy; //Obtenemos x1
   //Calculamos cuanto suponen 20 pixels de pantalla en coordenadas de hardware
   int32_t x20=((x1-x0)*20)/(xMax-40);
   int32_t y20=((y1-y0)*20)/(yMax-40);
@@ -155,7 +154,7 @@ void setup()
   //Inicializamos el display
   display.begin(pinRES_display,pinDC_display,pinCS_display);
   //Inicializamos el touch screen
-  ts.begin(pinCS_touchscreen);
+  ts.begin(pinCS_touchscreen,pinIRQ_touchscreen);
   //Calibramos el touch screen
   configTS();
   //Guardamos los parámetros actuales

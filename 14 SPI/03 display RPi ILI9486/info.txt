@@ -49,7 +49,7 @@ Pinout (pantalla por debajo):
                                                        |       XPT2046 Touch Controller|
                                                         -------------------------------
 
-TP_IRQ : LOW si se está pulsando el touch panel
+TP_IRQ : Sólo lectura. LOW si se está pulsando el touch panel
 LCD_DC : Data/Command. Selector de envío de comando o datos. HIGH (data) / LOW (command)
 SPI_MOSI : Recepción de datos del LCD/touch panel
 SPI_MISO : Envío de datos al touch panel
@@ -75,7 +75,7 @@ Notas:
   modelo se ha eliminado la posibilidad de lectura. Por lo tanto no necesitaremos la conexión MISO para
   el vídeo.
 - El touch panel SI necesita de la conexión MISO porque envía las coordenadas de la pulsación a la placa.
-- Aunque la alimentación se de 5V para poder soportar el consumo del display, las conexiones de datos
+- Aunque se alimente con 5V para poder soportar el consumo del display, las conexiones de datos
   están preparadas para 3.3V. Si utilizamos 5V, no responderá. Esto es un problema en placas que sólo
   funcionan a 5V. Se debe utilizar un conversor lógico (como en el ejemplo) o un divisor de voltaje.
 

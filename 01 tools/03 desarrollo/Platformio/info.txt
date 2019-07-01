@@ -1,0 +1,63 @@
+Tema: Platformio
+Fecha: 20190701
+
+Web oficial: http://platformio.org/
+
+Descripción
+  Platformio es un plugin para entornos de desarrollo especializado en IoT.
+  Permite trabajar con distintas plataformas y microcontroladores.
+  Las ventajas de Platformio respecto a un IDE estándar son:
+  - Ayuda contextual de clases, métodos, tipos, etc.
+  - Facilidad para saltar a la definición de funciones o clases.
+  - La compilación detecta las librerías necesarias y sólo carga esas.
+  - Las librerías se actualizan automáticamente.
+  - Permite trabajar con varios archivos de un mismo proyecto.
+  - Las referencias cruzadas entre archivos se pueden actualizar solas.
+  - Los compiladores se actulizan solos dependiendo del dispositivo.
+  Estas facilidades no dan más funcionalidades que las que nos da el IDE de Arduino.
+
+Compatibilidad y selección de IDE
+  Platformio no es un IDE, sino un plugin.
+  Los IDEs que lo soportan son Atom y Visual Studio Code.
+  La versión para Visual Studio Code tiene algunas ventajas sobre la de Atom porque
+  nos da información adicional de los parámetros.
+  No existe versión de Atom 32 para Linux.
+  Por estas razones, seleccionaremos Visual Studio Code como IDE para Platformio.
+
+Visual Studio Code para ARM (Raspberry Pi)
+  Microsoft Visual Studio Code no tiene soporte oficial para plataforma ARM, pero
+  publicó el código fuente y se ha podido recompilar la aplicación para ARM.
+  Platformio en ARM funciona igual que con procesadores x86 o x64, pero con ciertas
+  limitaciones:
+  - Los plugins se han desarrollado para x86, no para ARM. Por lo tanto, no podrán
+    ser ejecutados en ARM (no funcionarán).
+    Algunos plugins se instalan por defecto, como el de C/C++. Así que se pierden las
+    facilidades de escritura en C++, aunque no afecta a la compilación.
+  - Las librerías para Arduino suelen incluir el archivo keywords.txt con la información
+    de los nombres de la clase y sus métodos. Este archivo debe ser eliminado
+    cuando se selecciona como dispositivo la propia Raspberry. Si no lo hacemos,
+    aparecerá el error de que no encuentra la librería, aunque realmente exista.
+
+Instalación de librerías en Platformio
+  De la misma manera que la gestión de instalación y actualización de drivers de
+  dispositivos está automatizada, se puede hacer lo mismo con las librerías.
+  Desde la página inicial de Platformio, en la sección izquierda, el segundo icono
+  es el de librerías. Podemos buscar, seleccionar y descargar cualquier librería.
+  Ante actualizaciones, se aplicarán automáticamente.
+  Por ejemplo, el dispositivo M5Stack contiene un microprocesador ESP32, pero existe
+  la librería M5Stack.h para poder gestionar cómodamente el dispositivo y sus
+  múltiples sensores.
+
+platformio.ini
+  Es el archivo de configuración del proyecto.
+  Se pueden incluir instrucciones para:
+  - Añadir constantes globales para el compilador
+  - Definir la velocidad de comunicación del puerto serie (monitor_baud = 115200)
+  - Definir la velocidad de subida del programa al dispositivo (upload_speed = 921600)
+  Por ejemplo:
+    [env:nodemcuv2]
+    platform = espressif8266
+    board = nodemcuv2
+    framework = arduino
+    upload_speed = 921600
+    monitor_baud = 115200

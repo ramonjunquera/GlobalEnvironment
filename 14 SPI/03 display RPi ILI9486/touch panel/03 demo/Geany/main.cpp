@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190625
+  Fecha: 20190630
   Tema: Touch Screen XPT2046 de ILI9486
   Objetivo: Demo de detección de pulsaciones en botones
   Material: breadboard, cables, display ILI9486, lector SD (obligatorio en
@@ -46,24 +46,28 @@
 //Definición de pines
 #ifdef ESP8266 //Si es un ESP8266...
   const byte pinDC_display=D2;
-  const byte pinRES_display=D0;
+  const byte pinRES_display=D8;
   const byte pinCS_display=D3;
   const byte pinCS_touchscreen=D1;
+  const byte pinIRQ_touchscreen=D0;
 #elif defined(ESP32) //Si es un ESP32...
   const byte pinDC_display=22;
   const byte pinRES_display=2;
   const byte pinCS_display=5;
   const byte pinCS_touchscreen=16;
+  const byte pinIRQ_touchscreen=17;
 #elif defined(__arm__) //Si es una Raspberry Pi
   const byte pinDC_display=24;
   const byte pinRES_display=25;
   const byte pinCS_display=8;
   const byte pinCS_touchscreen=7;
+  const byte pinIRQ_touchscreen=17;
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinDC_display=5;
   const byte pinRES_display=4;
   const byte pinCS_display=3;
   const byte pinCS_touchscreen=6;
+  const byte pinIRQ_touchscreen=2;
 #endif
 
 //Creamos objetos de gestión
@@ -83,7 +87,7 @@ void setup()
   //Inicializamos el display
   display.begin(pinRES_display,pinDC_display,pinCS_display);
   //Inicializamos el touch screen
-  ts.begin(pinCS_touchscreen);
+  ts.begin(pinCS_touchscreen,pinIRQ_touchscreen);
   //Cargamos configuración de touchscreen
   ts.loadConfig();
   //Llenamos los códigos de la paleta de colores
