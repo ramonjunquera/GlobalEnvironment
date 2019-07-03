@@ -1,10 +1,10 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20180630
+  Fecha: 20180703
   Tema: Librería para display ILI9341 SPI 240x320
   Objetivo: Demo de librería RoJoILI9341
   Material: breadboard, cables, display ILI9486, lector SD
-  Ejemplos: ESP32, ESP8266, Mega, UNO, Nano, Raspberry Pi
+  Ejemplos: ESP32, M5Stack Fire, ESP8266, Mega, UNO, Nano, Raspberry Pi
 
   Descripción:
   Descripción y demostración de funcionalidades de la librería.
@@ -50,26 +50,27 @@
   const byte pinDC_display=D2;
   const byte pinRES_display=D8;
   const byte pinCS_display=D3;
-  //const byte pinCS_touchscreen=D1;
-  //const byte pinIRQ_touchscreen=D0;
-#elif defined(ESP32) //Si es un ESP32...
+  const byte pinBackLight_display=255; //No utilizado
+#elif defined(ARDUINO_M5STACK_FIRE) //Si es un M5Stack Fire...los pines son fijos
+  const byte pinDC_display=27;
+  const byte pinRES_display=33;
+  const byte pinCS_display=14;
+  const byte pinBackLight_display=32; //Ya viene conectado
+#elif defined(ESP32) //Si es un cualquier otro ESP32...
   const byte pinDC_display=22;
   const byte pinRES_display=2;
   const byte pinCS_display=5;
-  //const byte pinCS_touchscreen=16;
-  //const byte pinIRQ_touchscreen=17;
+  const byte pinBackLight_display=255; //No utilizado
 #elif defined(__arm__) //Si es una Raspberry Pi
   const byte pinDC_display=24;
   const byte pinRES_display=25;
   const byte pinCS_display=8;
-  //const byte pinCS_touchscreen=7;
-  //const byte pinIRQ_touchscreen=17;
+  const byte pinBackLight_display=255; //No utilizado
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinDC_display=5;
   const byte pinRES_display=4;
   const byte pinCS_display=3;
-  //const byte pinCS_touchscreen=6;
-  //const byte pinIRQ_touchscreen=2;
+  const byte pinBackLight_display=255; //No utilizado
 #endif
 
 //Creamos objeto de gestión
@@ -761,7 +762,7 @@ void setup()
 {
   Serial.begin(115200); //Para DEBUG
   //Inicializamos el display
-  display.begin(pinRES_display,pinDC_display,pinCS_display);
+  display.begin(pinRES_display,pinDC_display,pinCS_display,pinBackLight_display);
 }
 
 void loop()

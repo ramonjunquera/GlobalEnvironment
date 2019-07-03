@@ -16,10 +16,10 @@ Los archivos que nos interesan son:
     - Particiones de memoria disponibles
     - Velocidades de transmisión
     - etc
-    Se encuentra en la carpeta arduino-1.8.5/hardware/espressif/esp32
+    Se encuentra en la carpeta arduino-1.8.9/hardware/espressif/esp32
   Archivos de particiones
     Contienen la definición de cómo debe distribuirse la memoria
-    Se encuentran en la carpeta arduino-1.8.5/hardware/espressif/esp32/tools/partitions
+    Se encuentran en la carpeta arduino-1.8.9/hardware/espressif/esp32/tools/partitions
     Tienen extensión y formato csv.
     Ya hay unos cuantos definidos.
 
@@ -148,7 +148,7 @@ Las más grandes son app0, app1 y spiffs.
   spiffs es el sistema de archivos accesibles desde el programa.
 
 El parámetro esp32_16MB.upload.maximum_size define de manera global y para todos los esquemas el tamaño
-máximo que puede tener un programa al cargar un programa.
+máximo que puede tener un programa.
 Debería coincidir con el tamaño de la partición app0, pero como no es obligatorio que todas las
 particiones sean iguales, se puede reescribir en la definición de esquemas con el parámetro:
   esp32_16MB.menu.PartitionScheme.no_ota.upload.maximum_size
@@ -178,7 +178,7 @@ De todas las posibilidades existentes sólo tomaremos aquellas que nos resulten 
   16default
     Esquema versátil. Debería servir para cualquier cosa. No debe estar limitado en nada.
     Asignaremos 2Mb a la partición app0 para guardar el programa principal.
-    El mismo tamaño para app0 para tener la posibilidad de utilizar OTA.
+    El mismo tamaño para app1 para tener la posibilidad de utilizar OTA.
     El espacio restante irá para spiffs (más de 12Mb).
     El archivo 16default.csv debería contener el siguiente texto:
 ----inicio de texto----
@@ -192,8 +192,8 @@ spiffs,   data, spiffs,  0x412000,0xBEE000,
 ----fin de texto----
   16min_spiffs
     Esquema especialmente creado para trabajar con programas muy grandes que requieran OTA.
-    La partición SPIFFS se reduce al máximo y el resto de memoria se divide por igual entre
-    app0 y app1.
+    La partición SPIFFS se reduce al máximo (60Kb) y el resto de memoria se divide por igual
+    entre app0 y app1 (casi 8Mb).
     El archivo 16min_spiffs.csv debería contene el siguiente texto.
 ----inicio de texto----
 # Name,   Type, SubType, Offset,  Size, Flags
@@ -205,7 +205,7 @@ eeprom,   data, 0x99,    0xFF0000,0x1000,
 spiffs,   data, spiffs,  0xFF1000,0xF000,
 ----fin de texto----
   16no_ota
-    Esquema que maximiza la partición spiffs, eliminando la posibilidad de usar OTA.
+    Esquema que maximiza la partición spiffs (casi 14Mb), eliminando la posibilidad de usar OTA.
     La partición de programa principal se mantiene en 2Mb. Debería ser suficiente.
     El archivo 16no_ota.csv debería contene el siguiente texto.
 ----inicio de texto----

@@ -1,0 +1,15 @@
+Instalación de Arduino IDE en Linux
+
+- Visitar la web oficial: https://www.arduino.cc/en/Main/Software
+- Descargar la versión que corresponda (Ej: arduino-1.8.9-linux32.tar.xz)
+  en la carpeta Downloads
+- Doble click en el archivo comprimido. Se abrirá Xarchiver
+- Extraer su contenido en la misma carpeta (Downloads)
+- Se crea carpeta en Downloads (Ej: arduino-1.8.9)
+- Borramos el archivo comprimido o por el explorador o por terminal.
+  (Ej: sudo rm arduino-1.8.9-linux32.tar.xz)
+- Movemos la carpeta a usr/share (Ej: sudo mv arduino-1.8.9 /usr/share)
+- Ejecutamos el script de instalación
+  (Ej: sudo /usr/share/arduino-1.8.9/install.sh)
+- Tras la instalación se habrá creado un nuevo icono para la aplicación
+  en la sección Programming.

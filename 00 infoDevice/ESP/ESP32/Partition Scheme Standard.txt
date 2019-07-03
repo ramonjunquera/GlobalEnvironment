@@ -49,7 +49,7 @@ El parámetro de Partition Scheme permite seleccionar distintos tipos de partici
     El resto se reparte entre app0 y app1. Permite utilizar OTA con aplicaciones grandes.
     Configuración para aplicaciones grandes que necesiten OTA, pero no usen datos de spiffs.
 
-Tabla conlos tamaños en bytes de cada partición:
+Tabla con los tamaños en bytes de cada partición:
 
 Partition Scheme                     app0    app1    spiffs
 ------------------------------------ ------- ------- -------

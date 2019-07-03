@@ -1,0 +1,40 @@
+﻿M5 Stack Fire
+
+Technical details
+  Microcontroller : ESP32 dual core
+  Frequency : 240MHz
+  Flash : 16Mb
+  RAM : 6.25Mb
+  Vendor : M5Stack
+
+platformio.ini
+  [env:m5stack-fire]
+  platform = espressif32
+  board = m5stack-fire
+  framework = arduino
+  monitor_speed = 115200
+  upload_speed = 921600
+
+Comm protocols:
+  SPI
+  I2C
+  UART x2
+  DAC
+  ADC
+  IIS
+  GPIO
+
+Devices:
+  Buttons x3
+  Display ILI9341
+  TF card reader (lee 32Gb ok)
+  Speaker NS4148
+  MPU6050 acelerómetro + giróscopo
+  MAG3110 magnetómetro
+  Microphone MEMS Analog BSE3729
+  SK6812 3535 RGB LED x10
+
+Ports:
+  PORT A I2C : SCL (22),SDA (21), 5V, GND
+  PORT B I/O : ADC (36), DAC (26), 5V, GND
+  PORT C UART2: TX (17), RX (16), 5V, GND
