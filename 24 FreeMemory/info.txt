@@ -1,0 +1,59 @@
+Cálculo de la memoria libre.
+
+En microprocesadores que no tienen sistema operativo que gestione la memoria, es
+importante conocer de cuánta memoria libre disponemos en tiempo de ejecución.
+En el ejemplo se define una función compatible con todos los dispositivos.
+Es una excelente opción para hacer debug ante problemas de memory leak.
+
+Simplificaremos la estructura de la memoria de un dispositivo diciendo que está 
+compartida entre la que contiene el código del programa (parte baja) y la pila (parte alta).
+La memoria que hay entre estas dos queda disponible para las variables del programa.
+
+Las primeras variables que ocupan la memoria son las globales, puesto que deben estar
+presentes a lo largo de todo el programa.
+Las variables de una función se reservan cuando se hace la llamada a la función.
+Y se liberan automáticamente al finalizar.
+Por último quedan las variables dinámicas que reservan y liberan memoria cuando son utilizadas.
+Habitualmente son las tratadas por punteros: listas, diccionarios, arrays dinámicos, etc...
+
+La cantidad de memoria utilizada no corresponde con el tamaño de memoria reservada.
+Siempre es más, debido a que se necesita anotar un puntero que indique la posición de inicio
+de memoria para poder localizarla más tarde.
+
+La gestión de la memoria es distinta entre dispositivos.
+
+Placas Arduino
+  Arduino no dispone de ninguna función que devuelve la cantidad de memoria disponible.
+  Existe la librería MemoryFree.h que permite conocerla.
+  Esta librería se toma la molestia de calcular exáctamente la memoria libre teniendo en cuenta
+  todas las reservas realizadas.
+  No tiene en cuenta la fragmentación.
+  En el elemplo, lo simplificamos y simplemente calculamos la cantidad de memoria desde la 
+  última variable definida hasta el comienzo de la pila.
+  Es posible que haya fragmentación y la memoria disponible real sea algo mayor, pero los
+  propósitos de hacer debug de memory leak es más que suficiente.
+  Arduino necesita 2 bytes para anota la posición de la memoria reservada.
+  No tiene un número de bytes mínimo de reserva.
+  Por lo tanto, si queremos reservar 4 bytes para un uint32_t, necesitaremos 2 para el puntero
+  y 4 para el almacenamiento. Total 6 bytes.
+Placas ESP
+  Disponemos de la función ESP.getFreeHeap() que devuelve la cantidad de memoria disponible en bytes.
+  Sólo las variables dinámicas (listas, etc) reservan una cantidad variable de memoria.
+  En ESP se necesitan 4 bytes para guardar el tamaño de memoria reservada
+  La memoria se reserva en bloques de 8 bytes
+  Por lo tanto, la reserva de un byte consume 8 bytes: 4 de tamaño + 1 reservado = 5, pero
+  como la reserva mínima es 8, la memoria consumida es 8 bytes.
+  Si reservamos 4 bytes, consumiremos lo mismo que reservando 1: 4 de tamaño + 4 reservados = 8
+  Si reservamos 12 bytes, consumiremos 16 bytes: 4 de tamaño + 12 reservados = 16 bytes.
+  Esto ocurre con cualquier tipo de variable.
+  Si reservamos un uint16_t, consumiremos 8 bytes: 4 de tamaño + 2 reservados = 6, pero
+  como la reserva mínima es 8, la memoria consumida es 8 bytes.
+  Un ejemplo más...
+  Si reservamos 11 uint16_t consumiremos: 4 de tamaño + 2*11 reservados = 26 bytes, pero
+  26 no es divisible por 8. El siguiente divisible por 8 es 4*8=32 bytes.
+Placas Raspberry Pi
+  En estos dispositivos no tiene sentido el cálculo de la memoria RAM disponible, porque tenemos
+  un gestor de memoria que pertenece al sistema operativo que es capaz de intercambiar información
+  entre la RAM y una partición de SWAP cuando lo crea conveniente, porque es un servicio que está
+  corriendo independiente a nuestro programa.
+  Por lo tanto, las medidas no tendrían porqué ser correctas.

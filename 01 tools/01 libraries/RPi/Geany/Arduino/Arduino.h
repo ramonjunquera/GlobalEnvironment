@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3 con comandos de Arduino
- * Versión: 20190617
+ * Versión: 20190705
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -110,7 +110,7 @@ class SerialClass
   {
     cout << v << endl;
   }
-  void println(String v)
+  void println(String v="")
   {
     cout << v << endl;
   }
@@ -500,7 +500,6 @@ void yield()
   //En Linux no es necesario. La función sólo se define para guardar
   //compatibilidad
 }
-
 
 //Funciones para interrupciones
 
