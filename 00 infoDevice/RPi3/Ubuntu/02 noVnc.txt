@@ -27,11 +27,18 @@ Utilizaremos varios parámetros:
   -repeat porque sino no se detectará la repetición de teclas.
   -loop para que reinicie el servicio ante cualquier error
 La línea de comandos es la siguiente:
-  x11vnc -forever -rfbauth ~/.vnc/passwd -repeat -loop
+  x11vnc -forever -rfbauth ~/.vnc/passwd -repeat -loop display :0
 Al ejecutar veremos en una de sus últimas líneas el puerto del servidor. Habitualmente el 5900.
 Para detener el servidor VNC es suficiente con pulsar CTRL+C.
 En este momento ya podríamos utilizar un cliente VNC y tomar el control remoto a través del 
 puerto 5900.
+
+
+Prerequisitos para la instalación del interface web.
+- Tener instalado Python. Sino, lo instalamos la versión 2.7 con:
+  sudo apt-get install python
+- Tener instalada la librería de Python "numpy". Sino, la instalamos con:
+  sudo apt install python-numpy
 
 Instalaremos ahora el interface web.
 Necesitaremos tener instalada la herramienta git para hacer clonar en local repositorios
@@ -47,6 +54,7 @@ Suponemos que tenemos x11vnc escuchando en el puerto 5900.
   ~/noVNC/utils/launch.sh --vnc localhost:5900
 La primera vez es posible que detecte que le falta algún componente.
 Si es websockify y lo descargará e instalará automáticamente.
+Si es Python, debemos instalarlo nosotros con: sudo apt-get install python
 Utiliza Python para abrir un socket. Por defecto utiliza el puerto 6080.
 Podemos probar que funciona correctamente accediendo desde otra máquina a través del 
 navegador. Una dirección de ejemplo sería:
@@ -68,11 +76,67 @@ Incluiremos el script al arrancar la sesión gráfica (/etc/X11).
 El funcionamiento de los scripts lanzados al inicio de la sesión gráfica se describe en otro documento.
 Nos limitamos a listar las acciones:
 Creamos un script llamada 99noVNC en /etc/X11/Xsession.d/ con:
-  sudo leafpad /etc/X11/Xsession.d/99noVNC
+  sudo gedit /etc/X11/Xsession.d/99noVNC
 El script sería el siguiente:
 ------inicio del script 99noVNC------
 #! /bin/sh
 x11vnc -forever -rfbauth ~/.vnc/passwd -repeat -loop -display :0 &
-/home/pi/noVNC/utils/websockify/websockify.py --web /home/pi/noVNC 6080 localhost:5900 &
+/home/ra/noVNC/utils/websockify/websockify.py --web /home/ra/noVNC 6080 localhost:5900 &
 ------fin del script 99noVNC------
+
+Arranque sin monitor.
+Si pretendemos arrancar la máquina sin conectar un monitor, descubriremos que VNC muestra una pantalla
+negra sin posibilidad de ver o hacer nada.
+Este problema tiene solución, pero también consecuencias:
+- No se volverá a ver la imágen de la sesión de trabajo por el monitor físico.
+- El teclado y ratón físicos dejarán de funcionar.
+Si estamos dispuestos a perder estos detalles, continuemos.
+Crearemos un monitor virtual.
+Instalamos video-dummy y sus paquetes de prerequisitos con:
+  sudo apt-get install libglew-dev xserver-xorg-input-all xserver-xorg-video-dummy
+Ahora crearemos la configuración del monitor virtual en /etc/X11/xorg.conf con:
+  sudo gedit /etc/X11/xorg.conf
+Se abrirá vacío, porque por defecto el archivo no existe.
+Incluiremos la siguiente configuración:
+------inicio del archivo xorg.conf------
+Section "Device"
+    Identifier  "Dummy Video Device"
+    Driver      "dummy"
+    VideoRam 256000
+EndSection
+
+Section "monitor"
+    Identifier  "Dummy Monitor"
+    HorizSync 28.0-80.0
+    VertRefresh 48.0-75.0
+    Modeline "1920x1080" 172.80 1920 2040 2248 2576 1080 1081 1084 1118 -HSync +Vsync
+EndSection
+
+Section "Screen"
+    Identifier  "Default Screen"
+    monitor     "Dummy Monitor"
+    Device      "Dummy Video Device"
+    DefaultDepth 24
+    SubSection "Display"
+      Depth 24
+      Modes "1920x1080"
+      Virtual 1368 768 #Si no es especifica tomará la máxima resolución
+    EndSubSection
+EndSection
+------fin del archivo xorg.conf------
+Guardamos con CTRL+O
+Y salimos con CTRL+X
+
+Notas:
+- Una vez que hemos abierto la sesión, podemos cambiar la resolución. Ejemplo:
+  xrandr --output default --mode 1024x768
+- La resolución por defecto de indica en el parámtro "Virtual" de la configuración
+  Este parámetro es optativo. Si no se indica, se tomará la máxima resolución.
+  Este monitor virtual está preparado para una resolución máxima de 1920x1080.
+- Para elimimar el monitor virtual y volver a activar el real, sólo necesitamos
+  eliminar el archivo /etc/X11/xorg.conf con:
+    sudo rm /etc/X11/xorg.conf
+
+
+
 

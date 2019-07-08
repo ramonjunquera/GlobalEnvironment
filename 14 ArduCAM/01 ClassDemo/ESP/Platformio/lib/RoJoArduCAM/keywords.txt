@@ -1,0 +1,15 @@
+# RoJoArduCAM Tipos de datos
+RoJoArduCAM	KEYWORD1
+# RoJoArduCAM Métodos de la librería
+begin	KEYWORD2
+takePhoto	KEYWORD2
+photoIsReady	KEYWORD2
+setResolution	KEYWORD2
+setFormatJPG	KEYWORD2
+setFormatBMP	KEYWORD2
+savePhoto	KEYWORD2
+setLight	KEYWORD2
+setSaturation	KEYWORD2
+setBrightness	KEYWORD2
+setContrast	KEYWORD2
+setEffect	KEYWORD2

@@ -1,0 +1,20 @@
+Instalacón de Google Chrome en Ubuntu
+
+El navegador Google Chrome está basado en Chromium.
+Chromium es Open Source. Chrome no.
+Por esa razón no puede ser incluirdo por defecto en Linux.
+
+Instrucciones:
+- Abrimos una sesión de terminal
+- Descargamos el paquete .deb con:
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+- Instalamos el paquete con:
+  sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+Se ha creado un icono para Chrome en la sección de aplicaciones.
+También se puede llamar desde la ínea de comandos con google-chrome
+
+En el proceso de instalación se ha añadido el repositorio de Google
+a la lista de repositorios. Esto nos asegura que tendrá aseguradas
+las actualizaciones.
+

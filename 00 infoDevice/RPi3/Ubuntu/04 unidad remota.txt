@@ -1,0 +1,43 @@
+Tema: Cómo mapear una unidad de red en Ubuntu
+Fecha: 20190708
+
+El sistema de mapeo de red en Ubuntu es similar al de Raspbian: añadir una
+referencia en /etc/fstab
+Se incluye una sección adicional para problemas de sincronización.
+
+Entrada fstab.
+Creamos la carpeta que queremos utilizar como punto de montaje de la unidad
+remota. Por ejemplo:
+  mkdir /home/ra/synology
+Editamos el archivo fstab con:
+  sudo gedit /etc/fstab
+Incluimos la nueva entrada al final. Por ejemplo:
+  //192.168.1.197/public /home/ra/synology/ cifs username=usuario,password=contraseña,vers=1.0,rw 0 0
+Guardamos y salimos
+Esto sería suficiente para que se monte la unidad remota automáticamente al arrancar.
+
+Problemas de sincronización.
+Hay algunos paquetes que cambiar la velocidad de arranque del sistema (como
+el simulador de monitor) que hace que no se espere a la detección de monitor.
+Por lo tanto el sistema arranca más rápido.
+Cuando se intenta procesar las entradas de fstab, aun no se ha conectado la
+red, y las unidades remotas no se montan.
+Una vez iniciada la sesión, podemos escribir:
+  sudo mount -a
+Y se montarán sin problema.
+Ubuntu no tiene la opción de Rasbian para que se espere la conexión a red antes de 
+montar unidades remotas.
+Nota: incluir el parámetro _netdev en fstab, no funciona.
+Para solventar este problema crearemos un script que se debe ejecutar una vez que
+se complete la conexión de red. El script repetirá el comando "mount -a".
+Creamos el script con:
+  sudo gedit /etc/network/if-up.d/fstab
+Incluimos su contenido:
+---begin---
+#!/bin/sh
+mount -a
+---end---
+Guardamos y salimos.
+Aplicamos permisos de ejecución con:
+  sudo chmod +x /etc/network/if-up.d/fstab
+
