@@ -1,6 +1,6 @@
 /*
   Nombre de la librería: RoJoArduCAM.h
-  Versión: 20180711
+  Versión: 20190709
   Autor: Ramón Junquera
   Descripción:
     Gestión de cámara ArduCAM-Mini-2MP para placas ESP
@@ -136,40 +136,39 @@
     - Unificar los modos de conexión SPI. Es necesario utilizar SPI_MODE0 y SPI_MODE3?
 */
 
-#include "Arduino.h"
-#if defined(ESP32)
-  #include <SPIFFS.h> 
-#else
-  #include <FS.h>
-#endif
-#include <Wire.h> //Gestión I2C
-#include <SPI.h> //Gestión SPI
-#include "RoJoArduCAM.h"
-#include "RoJoSprite16.h" //Gestión de sprites color
+#include <RoJoArduCAM.h>
 
+//Inicialización de la cámara
+//Devuelve el código de error
+// 0 = Sin errores
+// 1 = Error al inicializar el sistema de archivos
+// 2 = Falta el archivo RoJoArduCAM.dat
+// 3 = Error de conexión SPI
+// 4 = La cámara no es el modelo esperado
 byte RoJoArduCAM::begin(byte csPin,byte pinSDA,byte pinSCL)
 {
-  //Inicialización de la cámara
-  //Devuelve el código de error
-  // 0 = Sin errores
-  // 1 = Error al inicializar el sistema de archivos
-  // 2 = Falta el archivo RoJoArduCAM.dat
-  // 3 = Error de conexión SPI
-  // 4 = La cámara no es el modelo esperado
+  //No se controlará el estado del pin CS por hardware. Lo haremos nosotros
+  //Esto nos permite compartir el bus SPI con distintos dispositivos
+  SPI.setHwCs(false);
 
   //Guardamos en la variable interna el pin CS
   _csPin=csPin;
   //El pin CS será de salida
   pinMode(_csPin,OUTPUT);
   
-  //Si no podemos inicializar el sistema de archivos...error 1
-  if(!SPIFFS.begin()) return 1;
-  //Si no existe al archivo RoJoArduCAM.dat...error 2
-  if(!SPIFFS.exists("/RoJoArduCAM.dat")) return 2;
-
-  //No se controlará el estado del pin CS por hardware. Lo haremos nosotros
-  //Esto nos permite compartir el bus SPI con distintos dispositivos
-  SPI.setHwCs(false);
+  #ifdef ROJO_PIN_CS_SD //Si guardamos los archivos en SD...
+    //Inicializamos la SD
+    //No comprobamos si es correcto, porque sólo ocurre la primera
+    //vez y es posible que se haya inicializado antes en otra librería.
+    SD.begin(ROJO_PIN_CS_SD);
+    //Si no existe al archivo RoJoArduCAM.dat...error 2
+    if(!SD.exists("/RoJoArduCAM.dat")) return 2;
+  #else //Si guardamos los archivos en SPIFFS
+    //Si no podemos inicializar el sistema de archivos...error 1
+    if(!SPIFFS.begin()) return 1;
+    //Si no existe al archivo RoJoArduCAM.dat...error 2
+    if(!SPIFFS.exists("/RoJoArduCAM.dat")) return 2;
+  #endif
 
   //Comprobamos la comunicación SPI
   uint16_t counter=0; //Contador de tests realizados
@@ -179,7 +178,7 @@ byte RoJoArduCAM::begin(byte csPin,byte pinSDA,byte pinSCL)
     //Inicializamos conexiones SPI
     SPI.begin();
     //Iniciamos transacción
-	SPI.beginTransaction(_spiSetting3);
+	  SPI.beginTransaction(_spiSetting3);
     digitalWrite(_csPin,LOW);
       //Comprobamos si la comunicación SPI es correcta
       //Para ello la cámara dispone de un registro especial para hacer pruebas (ARDUCHIP_TEST1=0x00)
@@ -212,32 +211,31 @@ byte RoJoArduCAM::begin(byte csPin,byte pinSDA,byte pinSCL)
     //Si se ha indicado pin de I2C (SDA & SCL)...activamos el I2C personalizado
     if(pinSCL<255)
     {
-	  Wire.begin(pinSDA,pinSCL);
-	  _pinSCL=pinSCL;
-	}
+      Wire.begin(pinSDA,pinSCL);
+      _pinSCL=pinSCL;
+	  }
     //...y si no...usamos una I2C con los pines por defecto
     else
     {
-	  Wire.begin();
-	  _pinSCL=SCL;
-	}
+      Wire.begin();
+      _pinSCL=SCL;
+	  }
   #endif
 	
-  //Habitualmente el bus I2C transmite con una frecuencia de 100KHz.
-  //Los procesadores ESP son capaces de alcanzar los 400KHz.
+  //El bus I2C transmite con una frecuencia por defecto de 100KHz.
+  //Algunos procesadores (como los ESP) son capaces de alcanzar los 400KHz.
   //ArduCAM da muchos errores de conexión cuando se superan los 100KHz.
-  //Por lo tanto, no cambiaremos la velocidad por defecto.
-  //Wire.setClock(400000L);
+  //Por lo tanto, no cambiaremos la frecuencia
 
   //Comprobamos si la cámara es el modelo esperado
   counter=0;
   byte chipIdH,chipIdL;
   do
   {
-	_writeRegI2C(0xFF,0x01);
+	  _writeRegI2C(0xFF,0x01);
     chipIdH=_readRegI2C(0x0A); //OV2640_CHIPID_HIGH=0x0A
     chipIdL=_readRegI2C(0x0B); //OV2640_CHIPID_LOW=0x0B
-	counter++;
+	  counter++;
   }
   //Repetiremos el test si los valores recibidos no son los esperados y
   //si no llevamos más de un determinado número de tests realizados
@@ -264,17 +262,16 @@ byte RoJoArduCAM::begin(byte csPin,byte pinSDA,byte pinSCL)
   return 0;
 }
 
+//Escribe un registro y su valor (2 bytes) por SPI
 void RoJoArduCAM::_writeRegSPI(byte reg,byte value)
 {
-  //Escribe un registro y su valor (2 bytes) por SPI
   SPI.write(reg);
   SPI.write(value);
 }
 
+//Lee un registro por SPI con SPI_MODE0
 byte RoJoArduCAM::_readRegSPI0(byte reg)
 {
-  //Lee un registro por SPI con SPI_MODE0
-  
   //En SPI_MODE0, antes de leer un registro, la cámara necesita resetear el pin CS
   digitalWrite(_csPin,HIGH);
   digitalWrite(_csPin,LOW);
@@ -283,18 +280,16 @@ byte RoJoArduCAM::_readRegSPI0(byte reg)
   return SPI.transfer(0x00); //Devolvemos el valor recibido
 }
 
+//Lee un registro por SPI con SPI_MODE3
 byte RoJoArduCAM::_readRegSPI3(byte reg)
 {
-  //Lee un registro por SPI con SPI_MODE3
-  
   SPI.write(reg); //Indicamos el registro a leer
   return SPI.transfer(0x00); //Devolvemos el valor recibido
 }
 
+//Escribe un registro y su valor (2 bytes) por I2C
 void RoJoArduCAM::_writeRegI2C(byte reg,byte value)
 {
-  //Escribe un registro y su valor (2 bytes) por I2C
-  
   //Detectaremos si la conexión ha sido correcta al obtener el código
   //de error al cerrarla
   //Ante el error 4 (error desconocido) se puede hacer algo:
@@ -305,24 +300,23 @@ void RoJoArduCAM::_writeRegI2C(byte reg,byte value)
   byte error;
   do
   {
-	Wire.beginTransmission(_I2Cid);
+	  Wire.beginTransmission(_I2Cid);
     Wire.write(reg);
     Wire.write(value);
     error=Wire.endTransmission();
     yield();
     if(error==4)
     {
-		pinMode(_pinSCL,OUTPUT);
-		Wire.begin();
-	}
+		  pinMode(_pinSCL,OUTPUT);
+		  Wire.begin();
+	  }
   }
   while(error==4);
 }
 
+//Lee un registro por I2C
 byte RoJoArduCAM::_readRegI2C(byte reg)
 {
-  //Lee un registro por I2C
-  
   byte answer=0;
   Wire.beginTransmission(_I2Cid);
   Wire.write(reg); //Indicamos el registro a leer
@@ -333,15 +327,18 @@ byte RoJoArduCAM::_readRegI2C(byte reg)
   return answer; //Devolvemos el valor recibido
 }
 
+//Envía la colección de registros de índice regIndex guardada en
+//el archivo RoJoArduCAM.dat
 void RoJoArduCAM::_writeRegI2C(byte regIndex)
 {
-  //Envía la colección de registros de índice regIndex guardada en
-  //el archivo RoJoArduCAM.dat
-
   //Abrimos archivo de datos
-  File f=SPIFFS.open(F("/RoJoArduCAM.dat"),"r");
+  #ifdef ROJO_PIN_CS_SD //Si utilizamos SD...
+    File f=SD.open(F("/RoJoArduCAM.dat"),FILE_READ);
+  #else //Si utilizamos SPIFFS...
+    File f=SPIFFS.open(F("/RoJoArduCAM.dat"),"r");
+  #endif
   //Ponemos el puntero de lectura en el registro correcto
-  f.seek(regIndex*2,SeekSet);
+  f.seek(regIndex*2);
   //Creamos la variable donde guardaremos la posición de inicio de datos
   uint16_t start;
   //Obtenemos la posición de inicio de datos
@@ -372,10 +369,9 @@ void RoJoArduCAM::_writeRegI2C(byte regIndex)
   f.close();
 }
 
+//Fija el formato de salida a JPG
 void RoJoArduCAM::setFormatJPG()
 {
-  //Fija el formato de salida a JPG
-
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   
@@ -393,10 +389,9 @@ void RoJoArduCAM::setFormatJPG()
   _writeRegI2C(_currentResId); //Aplicamos la resolución que tenemos definida actualmente. Obligatorio al cambiar de modo
 }
 
+//Fija el formato de salida a BMP
 void RoJoArduCAM::setFormatBMP()
 {
-  //Fija el formato de salida a BMP
-
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   
@@ -410,20 +405,19 @@ void RoJoArduCAM::setFormatBMP()
   _writeRegI2C(_currentResId); //Aplicamos la resolución que tenemos definida actualmente. Obligatorio al cambiar de modo
 }
 
+//Fija una resolución a la cámara
+//Los códigos de las distintas resoluciones son:
+// 0 = 160x120
+// 1 = 176x144
+// 2 = 320x240
+// 3 = 352x288
+// 4 = 640x480
+// 5 = 800x600
+// 6 = 1024x768
+// 7 = 1280x1024
+// 8 = 1600x1200
 void RoJoArduCAM::setResolution(byte resId)
 {
-  //Fija una resolución a la cámara
-  //Los códigos de las distintas resoluciones son:
-  // 0 = 160x120
-  // 1 = 176x144
-  // 2 = 320x240
-  // 3 = 352x288
-  // 4 = 640x480
-  // 5 = 800x600
-  // 6 = 1024x768
-  // 7 = 1280x1024
-  // 8 = 1600x1200
-
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
 
@@ -431,11 +425,10 @@ void RoJoArduCAM::setResolution(byte resId)
   _currentResId=resId; //Anotamos la resolución actual
 }
 
+//Hay alguna foto en la memoria de la cámara para descargar?
+//No necesita inicialización SPI
 bool RoJoArduCAM::photoIsReady()
 {
-  //Hay alguna foto en la memoria de la cámara para descargar?
-  //No necesita inicialización SPI
-
   SPI.beginTransaction(_spiSetting0);
   digitalWrite(_csPin,LOW);
     byte recVal=_readRegSPI0(0x41); //Pedimos valor del mismo registro ARDUCHIP_TRIG=Trigger source=0x41
@@ -444,11 +437,10 @@ bool RoJoArduCAM::photoIsReady()
   return recVal & 8;
 }
 
+//Hace una foto y la guarda en la memoria de la cámara
+//No necesita inicialización SPI
 void RoJoArduCAM::takePhoto()
 {
-  //Hace una foto y la guarda en la memoria de la cámara
-  //No necesita inicialización SPI
-
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
 
@@ -468,11 +460,10 @@ void RoJoArduCAM::takePhoto()
   SPI.endTransaction();
 }
 
+//Lee el tamaño de la imagen de la memoria de la cámara
+//No necesita inicialización SPI
 uint32_t RoJoArduCAM::_bufferSize()
 {
-  //Lee el tamaño de la imagen de la memoria de la cámara
-  //No necesita inicialización SPI
-
   //Si no se ha inicializado la cámara...devolvemos tamaño cero
   if(!_started) return 0;
 
@@ -486,15 +477,18 @@ uint32_t RoJoArduCAM::_bufferSize()
   return fileSize;
 }
 
+//Copia los datos del índice regIndex guardado en
+//el archivo RoJoArduCAM.dat a un archivo
 void RoJoArduCAM::_writeRegFile(byte regIndex,File *destF)
 {
-  //Copia los datos del índice regIndex guardado en
-  //el archivo RoJoArduCAM.dat a un archivo
-
   //Abrimos archivo de datos
-  File f=SPIFFS.open(F("/RoJoArduCAM.dat"),"r");
+  #ifdef ROJO_PIN_CS_SD //Si utilizamos SD...
+    File f=SD.open(F("/RoJoArduCAM.dat"),FILE_READ);
+  #else //Si utilizamos SPIFFS...
+    File f=SPIFFS.open(F("/RoJoArduCAM.dat"),"r");
+  #endif
   //Ponemos el puntero de lectura en el registro correcto
-  f.seek(regIndex*2,SeekSet);
+  f.seek(regIndex*2);
   //Creamos la variable donde guardaremos la posición de inicio de datos
   uint16_t start;
   //Obtenemos la posición de inicio de datos
@@ -513,19 +507,18 @@ void RoJoArduCAM::_writeRegFile(byte regIndex,File *destF)
   f.close();
 }
 
+//Si hay alguna imagen en la memoria de la cámara, la guarda en un archivo.
+//El nombre del archivo no debe incluir extensión. Se añade automáticamente.
+//En resX y resY devuelve el tamaño de la imágen guardada, porque no tiene que
+//coincidir en filas con la resolución fijada.
+//Devuelve el código de error:
+// 0 = foto guardada con éxito
+// 1 = cámara no inicializada
+// 2 = no se ha capturado ninguna imagen
+// 3 = la imagen aun no ha terminado de capturarse
+// 4 = no se puede crear el archivo
 byte RoJoArduCAM::savePhoto(String filename,uint32_t *resX,uint32_t *resY)
 {
-  //Si hay alguna imagen en la memoria de la cámara, la guarda en un archivo.
-  //El nombre del archivo no debe incluir extensión. Se añade automáticamente.
-  //En resX y resY devuelve el tamaño de la imágen guardada, porque no tiene que
-  //coincidir en filas con la resolución fijada.
-  //Devuelve el código de error:
-  // 0 = foto guardada con éxito
-  // 1 = cámara no inicializada
-  // 2 = no se ha capturado ninguna imagen
-  // 3 = la imagen aun no ha terminado de capturarse
-  // 4 = no se puede crear el archivo
-
   byte errorCode=0; //Inicialmente no hay errores
   uint32_t fileSize=0; //Tamaño de la imagen de la memoria de la cámara
 
@@ -547,7 +540,11 @@ byte RoJoArduCAM::savePhoto(String filename,uint32_t *resX,uint32_t *resY)
         //Componemos el nombre del archivo final en función del formato
         filename="/"+filename+(_bufferIsJPG?".jpg":".bmp");
         //El método open de SPIFFS sólo permite cadenas en formato C
-        File f = SPIFFS.open(filename.c_str(),"w");
+        #ifdef ROJO_PIN_CS_SD //Si utilizamos SD...
+          File f=SD.open(filename.c_str(),FILE_WRITE);
+        #else //Si utilizamos SPIFFS...
+          File f=SPIFFS.open(filename.c_str(),"w");
+        #endif
         //Si no se ha creado el archivo...Error. No se puede crear el archivo
         if (!f) errorCode=4;
         else
@@ -687,18 +684,17 @@ byte RoJoArduCAM::savePhoto(String filename,uint32_t *resX,uint32_t *resY)
   return errorCode;
 }
 
+//Guarda la imagen capturada en un sprite
+//Se indica el tamaño que debe tener el sprite
+//Se redimensionará la imagen al tamaño del sprite
+//Devuelve el código de error:
+// 0 = foto guardada con éxito
+// 1 = cámara no inicializada
+// 2 = no se ha capturado ninguna imagen
+// 3 = la imagen aun no ha terminado de capturarse
+// 4 = la imagen está comprimida
 byte RoJoArduCAM::savePhoto(uint32_t resX,uint32_t resY,RoJoSprite16 *sprite)
 {
-  //Guarda la imagen capturada en un sprite
-  //Se indica el tamaño que debe tener el sprite
-  //Se redimensionará la imagen al tamaño del sprite
-  //Devuelve el código de error:
-  // 0 = foto guardada con éxito
-  // 1 = cámara no inicializada
-  // 2 = no se ha capturado ninguna imagen
-  // 3 = la imagen aun no ha terminado de capturarse
-  // 4 = la imagen está comprimida
- 
   byte errorCode=0; //Inicialmente no hay errores
   uint32_t imgX,imgY; //Resolución de la imagen capturada
   uint16_t colorH,colorL,color;
@@ -761,15 +757,14 @@ byte RoJoArduCAM::savePhoto(uint32_t resX,uint32_t resY,RoJoSprite16 *sprite)
   return errorCode;
 }
 
+//Fija un tipo de iluminación de la siguiente tabla
+// 0: auto
+// 1: soleado
+// 2: nublado
+// 3: oficina
+// 4: hogar
 void RoJoArduCAM::setLight(byte lightId)
 {
-  //Fija un tipo de iluminación de la siguiente tabla
-  // 0: auto
-  // 1: soleado
-  // 2: nublado
-  // 3: oficina
-  // 4: hogar
-
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   //Si no es un código válido...hemos terminado
@@ -785,11 +780,10 @@ void RoJoArduCAM::setLight(byte lightId)
   _writeRegI2C(lightId + 14);
 }
 
+//Fija la saturación de color
+//Sólo se permiten valores entre -2 y 2
 void RoJoArduCAM::setSaturation(int8_t s)
 {
-  //Fija la saturación de color
-  //Sólo se permiten valores entre -2 y 2
-  
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   //Si no es un código válido...hemos terminado
@@ -805,11 +799,10 @@ void RoJoArduCAM::setSaturation(int8_t s)
   _writeRegI2C(s + 21);
 }
 
+//Fija el nivel de brillo
+//Sólo se permiten valores entre -2 y 2
 void RoJoArduCAM::setBrightness(int8_t b)
 {
-  //Fija el nivel de brillo
-  //Sólo se permiten valores entre -2 y 2
-  
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   //Si no es un código válido...hemos terminado
@@ -825,11 +818,10 @@ void RoJoArduCAM::setBrightness(int8_t b)
   _writeRegI2C(b + 26);
 }
 
+//Fija el nivel de contraste
+//Sólo se permiten valores entre -2 y 2
 void RoJoArduCAM::setContrast(int8_t c)
 {
-  //Fija el nivel de contraste
-  //Sólo se permiten valores entre -2 y 2
-  
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   //Si no es un código válido...hemos terminado
@@ -844,17 +836,17 @@ void RoJoArduCAM::setContrast(int8_t c)
   //Directamente los leemos y enviamos por I2C
   _writeRegI2C(c + 31);
 }
+
+//Fija un efecto especial de la siguiente tabla
+// 0: ninguno
+// 1: antiguo
+// 2: azulado
+// 3: verdoso
+// 4: rojizo
+// 5: blanco y negro
+// 6: negativo
 void RoJoArduCAM::setEffect(byte effectId)
 {
-  //Fija un efecto especial de la siguiente tabla
-  // 0: ninguno
-  // 1: antiguo
-  // 2: azulado
-  // 3: verdoso
-  // 4: rojizo
-  // 5: blanco y negro
-  // 6: negativo
-
   //Si no se ha inicializado la cámara...hemos terminado
   if(!_started) return;
   //Si no es un código válido...hemos terminado

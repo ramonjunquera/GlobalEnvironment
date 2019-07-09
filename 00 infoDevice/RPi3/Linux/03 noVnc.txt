@@ -1,0 +1,147 @@
+﻿noVNC
+
+Instrucciones probadas sólo en Ubuntu
+
+Nota. Todos los ejemplos se han hecho con el usuario pi.
+
+El objetivo es conseguir tomar el control remoto de la máquina a través de un interface web.
+Sin necesidad de instalar aplicaciones cliente.
+
+Como sistema de control remoto utilizaremos VNC. Pero necesita un cliente.
+El cliente lo sustituiremos por noVNC. Lo que hace es crear el servidor web que interactúa
+con el servicio VNC.
+
+La página oficial de noVNC es:
+  https://novnc.com/info.html
+
+Comenzamos instalando el servidor VNC.
+noVNC recomienda x11vnc.
+  sudo apt-get install x11vnc
+Ya podemos ejecutar el servidor de VNC.
+La primera vez configuraremos el servidor VNC para que solicite una contraseña.
+Esto impedirá que cualquiera pueda tomar el control.
+  x11vnc -storepasswd
+Esto crea el archivo ~/.vnc/passwd que contiene la contraseña encriptada.
+A partir de ahora ya podemos ejecutar el servidor VNC.
+Utilizaremos varios parámetros:
+  -forever para que tras la primera desconexión detectada, no se detenga el servidor.
+  -rfbauth con el path del archivo con la contraseña, para que la tenga en cuenta.
+  -repeat porque sino no se detectará la repetición de teclas.
+  -loop para que reinicie el servicio ante cualquier error
+La línea de comandos es la siguiente:
+  x11vnc -forever -rfbauth ~/.vnc/passwd -repeat -loop
+Al ejecutar veremos en una de sus últimas líneas el puerto del servidor. Habitualmente el 5900.
+Mientras no paremos el programa, podemos tomar el control con un cliente VNC por el puerto 5900.
+Para detener el servidor VNC es suficiente con pulsar CTRL+C.
+
+Prerequisitos para la instalación del interface web.
+- Tener instalado Python. Sino, lo instalamos la versión 2.7 con:
+  sudo apt-get install python
+- Tener instalada la librería de Python "numpy". Sino, la instalamos con:
+  sudo apt install python-numpy
+- Tener instalada la herramienta git para clonar repositorios remotos, con:
+  sudo apt-get install git
+
+Instalación de noVNC.
+Desde home (/home/pi), clonamos el repositorio de noVNC de GitHub:
+  git clone git://github.com/kanaka/noVNC
+El repositorio se ha descargado en la carpeta noVNC (/home/pi/noVNC).
+Siguiendo las instrucciones para un quick start publicadas en:
+  https://github.com/novnc/noVNC/blob/master/README.md#quick-start
+Abrimos una nueva sesión del terminal y lanzamos noVNC con su launcher.
+Suponemos que tenemos x11vnc escuchando en el puerto 5900.
+  ~/noVNC/utils/launch.sh --vnc localhost:5900
+La primera vez es posible que detecte que le falta algún componente.
+Si es websockify y lo descargará e instalará automáticamente.
+Por defecto utiliza el puerto 6080.
+Podemos probar que funciona correctamente accediendo desde otra máquina a través del 
+navegador. Una dirección de ejemplo sería:
+  http://192.168.1.103:6080/vnc.html
+Como en el caso anterior, detenemos el interface web con CTRL+C.
+El problema es que si usamos una URL sin archivo, nos devolverá el listado de archivos de la
+carpeta en la que reside el noVNC. Y no interesa.
+Para evitarlo, duplicaremos el archivo vnc.html con el nombre index.html.
+De esta manera, podemos utilizar la URL sin nombre de archivo:
+  http://192.168.1.103:6080
+Y el navegador cargará automáticamente el archivo por defecto: index.html.
+
+Automatización.
+Podemos crear un script que cargue al inicio para que siempre quede disponible para tomar
+el control remoto.
+No es buena idea crearlo en el arranque del sistema (/etc/init.d/) porque aún no se ha 
+arrancado la sesión gráfica. VNC lo detectará y fallará.
+Incluiremos el script al arrancar la sesión gráfica (/etc/X11).
+El funcionamiento de los scripts lanzados al inicio de la sesión gráfica se describe en otro documento.
+Nos limitamos a listar las acciones:
+Creamos un script llamada 99noVNC en /etc/X11/Xsession.d/ con:
+  sudo gedit /etc/X11/Xsession.d/99noVNC
+El script sería el siguiente:
+------inicio del script 99noVNC------
+#! /bin/sh
+x11vnc -forever -rfbauth ~/.vnc/passwd -repeat -loop -display :0 &
+/home/pi/noVNC/utils/websockify/websockify.py --web /home/pi/noVNC 6080 localhost:5900 &
+------fin del script 99noVNC------
+Recordemos que esto sólo funciona una vez que se abre la sesión de usuario.
+Si no queremos tener problemas, lo más sencillo es eliminar la solicitud de credenciales para arrancar.
+
+Arranque sin monitor.
+Si pretendemos arrancar la máquina sin conectar un monitor, descubriremos que VNC muestra una pantalla
+negra sin posibilidad de ver o hacer nada.
+IMPORTANTE!!!
+Este problema tiene solución, pero también consecuencias:
+- No se volverá a ver la imágen de la sesión de trabajo por el monitor físico.
+- El teclado y ratón físicos dejarán de funcionar.
+Si estamos dispuestos a perder estos detalles, continuemos.
+Crearemos un monitor virtual.
+Instalamos video-dummy y sus paquetes de prerequisitos con:
+Instalamos los paquetes necesario para video-dummy
+  sudo apt-get install libglew-dev
+  sudo apt-get install xserver-xorg-input-all
+  sudo apt-get install xserver-xorg-video-dummy
+Ahora crearemos la configuración del monitor virtual en /etc/X11/xorg.conf con:
+  sudo gedit /etc/X11/xorg.conf
+Se abrirá vacío, porque por defecto el archivo no existe.
+Incluiremos la siguiente configuración:
+------inicio del archivo xorg.conf------
+Section "Device"
+    Identifier  "Dummy Video Device"
+    Driver      "dummy"
+    VideoRam 256000
+EndSection
+
+Section "monitor"
+    Identifier  "Dummy Monitor"
+    HorizSync 28.0-80.0
+    VertRefresh 48.0-75.0
+    Modeline "1920x1080" 172.80 1920 2040 2248 2576 1080 1081 1084 1118 -HSync +Vsync
+EndSection
+
+Section "Screen"
+    Identifier  "Default Screen"
+    monitor     "Dummy Monitor"
+    Device      "Dummy Video Device"
+    DefaultDepth 24
+    SubSection "Display"
+      Depth 24
+      Modes "1920x1080"
+      Virtual 1368 768 #Si no es especifica tomará la máxima resolución
+    EndSubSection
+EndSection
+------fin del archivo xorg.conf------
+Guardamos y salimos.
+
+Notas:
+- Una vez que hemos abierto la sesión, podemos cambiar la resolución. Ejemplo:
+  xrandr --output default --mode 1024x768
+- La resolución por defecto de indica en el parámetro "Virtual" de la configuración
+  Este parámetro es optativo. Si no se indica, se tomará la máxima resolución.
+  Este monitor virtual está preparado para una resolución máxima de 1920x1080.
+- Para elimimar el monitor virtual y volver a activar el real, sólo necesitamos
+  eliminar el archivo /etc/X11/xorg.conf con:
+    sudo rm /etc/X11/xorg.conf
+  Pero seguiremos sin poder utilizar el raton y teclado reales!
+
+
+
+
+

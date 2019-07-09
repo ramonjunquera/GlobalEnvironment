@@ -1,28 +1,18 @@
 /*
   Nombre de la librería: RoJoArduCAM.h
-  Versión: 20180711
+  Versión: 20190709
   Autor: Ramón Junquera
   Descripción:
     Gestión de cámara ArduCAM-Mini-2MP para placas ESP
 */    
 
-//Comprobamos que la placa es compatible
-#if !defined(ESP32) && !defined(ESP8266)
-  #error Library RoJoSprite16 is only compatible with ESP32 & ESP8266 family devices
-#endif  
-
 #ifndef RoJoArduCAM_h
 #define RoJoArduCAM_h
 
-#include "Arduino.h"
-#if defined(ESP32)
-  #include <SPIFFS.h> 
-#else
-  #include <FS.h>
-#endif
+#include <Arduino.h>
+#include <RoJoSprite16.h> //Gestión de sprites color
 #include <Wire.h> //Gestión I2C
 #include <SPI.h> //Gestión SPI
-#include "RoJoSprite16.h" //Gestión de sprites color
 
 class RoJoArduCAM
 {
@@ -63,5 +53,9 @@ class RoJoArduCAM
     void setContrast(int8_t c); //Fija el nivel de contraste
     void setEffect(byte effectId); //Fija un efecto especial
 };
+
+#ifdef __arm__
+  #include <RoJoArduCAM.cpp> //Para guardar compatibilidad con RPi
+#endif
 
 #endif
