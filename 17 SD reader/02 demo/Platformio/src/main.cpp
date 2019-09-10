@@ -305,6 +305,7 @@ void setup()
 {
   //Abrimos puerto serie para mostrar los mensajes de debug
   Serial.begin(115200);
+  delay(3000);
 
   //Si no se puede montar el sistema de archivos... 
   if (!SD.begin(SS))

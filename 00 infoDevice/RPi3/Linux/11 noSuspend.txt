@@ -1,0 +1,18 @@
+﻿noSuspend
+
+Cuando el sistema operativo está instalado en un portátil, la configuración por defecto
+indica que cuando se cierra la tapa se entrará en suspensión.
+Para evitar esto debemos editar el archivo /etc/system/logind.conf con:
+  Linux
+    sudo nano /etc/systemd/logind.conf
+  Ubuntu
+    sudo gedit /etc/systemd/logind.conf
+  Raspbian:
+    sudo leafpad /etc/systemd/logind.conf
+Localizamos la línea
+  #HandleLidSwitch=suspend
+Y la sustituimos por:
+  HandleLidSwitch=ignore
+Guardamos y salimos
+Para que se apliquen los cambios inmediatamente:
+  sudo service systemd-logind restart

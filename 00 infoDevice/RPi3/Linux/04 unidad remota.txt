@@ -1,0 +1,65 @@
+Mapear una unidad de red
+Fecha: 20190709
+
+Carpeta para montar la unidad.
+Lo primero que haremos será crear la carpeta donde montaremos la unidad remota.
+En nuestro caso la llamaremos synology y se encontrará en /home/pi/synology
+  mkdir /home/pi/synology
+
+Modificación de fstab.
+A continuación debemos modificar la configuración de las unidades que monta 
+cuando arranca. Esto se encuentra en el archivo /etc/fstab. La editamos:
+  Linux:
+    sudo nano /etc/fstab
+  Ubuntu:
+    sudo gedit /etc/fstab
+  Raspbian:
+    sudo leafpad /etc/fstab
+Añadimos el final del archivo la siguiente línea:
+  //192.168.1.197/public /home/pi/synology/ cifs username=usuario,password=contraseña,vers=1.0,rw 0 0
+En ella se define:
+- La dirección y nombre del recurso compartido
+- La carpeta local sobre la que se montará
+- El tipo de servidor
+- El usuario y contraseña de acceso a la carpeta remota
+- Los permisos que se aplicarán por defecto
+Guardamos y salimos.
+Si hemos utilizado nano como editor, guardamos con CTRL+O y salimos con CTRL+X
+
+Test.
+Para probarlo sólo tenemos que ejecutar:
+  sudo mount -a
+La carpeta compartida de la unidad de red se ha montado en la carpeta local que
+hemos creado.
+
+Prueba de parámetros.
+Si no estamos seguros de la línea escrita en fstab, siempre podemos montar la unidad
+manualmente con el siguiente comando:
+  Raspbian:
+    sudo mount.cifs //192.168.1.197/public /home/pi/synology/ -o username=usuario,password=contraseña,vers=1.0
+  Ubuntu: no dispone de esta instrucción
+
+Problemas de sincronización.
+En el arranque, si al procesar el archivo fstab aun no se ha inicializado la red,
+las unidades remotas no se montarán.
+Comprobamos que esto es así cuando una vez arrancado, no tenemos acceso a la unidad de red, pero
+si escribimos "sudo mount -a" podemos conectar.
+Si esto ocurre, la solución al problema depende del sistema operativo.
+  Raspbian:
+    Esto se hace desde el menú:
+      Menú/Preferences/Raspberry Pi Configuration/System/Network at Boot
+    Y marcar el check de: Wait for network
+  Ubuntu:
+    Lo más sencillo es crear un script que incluya el "mount -a" y que se ejecute
+    una vez se haya completado la conexión de red.
+    Nota: incluir el parámetro _netdev en fstab, no funciona.
+    Creamos el script con:
+      sudo gedit /etc/network/if-up.d/fstab
+    Incluimos su contenido:
+    ---begin---
+    #!/bin/sh
+    mount -a
+    ---end---
+    Guardamos y salimos.
+    Aplicamos permisos de ejecución con:
+      sudo chmod +x /etc/network/if-up.d/fstab

@@ -1,0 +1,63 @@
+Servicio plymouth
+
+Plymouth es una aplicación que se ejecuta en el arranque del sistema.
+Habitualmente se incluye en distribuciones Ubuntu.
+Su funcionalidad es mostrar una animación gráfica mientras se inicia el sistema.
+No es imprescindible para un arranque correcto.
+Si queremos acelerar algo el arranque, podemos desactivarla.
+
+El verdadero problema viene cuando esta aplicación no funciona correctamente
+y demora en exceso el inicio del sistema.
+
+Cómo puedo saber el tiempo que tardan los procesos de arranque?
+  Con la siguiente instrucción: sudo systemd-analyze blame
+  Se puede salir del listado con CTRL+Z
+  Si queremos guardar una representación gráfica: systemd-analyze plot > plot.svg
+  Los servicios están ordenados por defecto de mayor a menor tiempo.
+  Debemos fijarnos en los primeros.
+
+Cómo puedo saber si un servicio es imprescindible?
+  Buscando en Internet
+
+Cómo puede desactivar un servicio?
+  Con el parámetro disable.
+  Ejemplo de desactivación del servicio de plymouth:
+    sudo systemctl disable plymouth-quit-wait.service
+  Cuando se desactiva un servicio, simplemente se indica que no arrancará
+  automáticamente en el inicio. Pero podría ser llamado por otro servicio
+  que sí ha arrancado en el inicio.
+  Por eso es importante desactivar el servicio correcto.
+  Concretamente con Plymouth, servicio que lo inicia todo es:
+    plymouth-start.service
+  Para evitar que Plymouth inicie deberíamos escribir:
+    sudo systemctl disable plymouth-start.service
+
+Puedo volver a activarlo?
+  Sí, con el parámetro enable. Ejemplo de activación de un servicio de plymouth:
+    sudo systemctl enable plymouth-quit-wait.service
+
+El servicio sigue arrancando
+  Utilizaremos el comando mask. Por ejemplo:
+    sudo systemctl mask plymouth-start.service
+
+Cuál es el comando inverso a mask?
+  unmask. Por ejemplo:
+    sudo systemctl unmask plymouth-start.service
+
+Dónde están los servicios que se cargan en arranque?
+  En la carpeta /lib/systemd/system/
+  Ejemplo: listado de todos los servicios de plymouth:
+    ls /lib/systemd/system/ply*
+
+Cuál es la diferencia entre disable y mask?
+  La carpeta /etc/systemd/system contiene enlaces a programas
+  habitualmente contenidos en /lib/systemd/system
+  Al iniciar, intenta ejecutar todos los enlaces.
+  Con disable, eliminamos el enlace de la carpeta.
+  Con mask se crea un enlace, pero apuntando a /dev/null
+  que impide su ejecución, aunque sea llamado por otro servicio.
+
+Puedo saber si algún servicio está fallando?
+  Sí con:
+    systemctl --failed
+

@@ -1,0 +1,33 @@
+Raspberry Pi Desktop
+
+Descripción.
+Raspbian tiene su versión de 64 bits para procesadores x86.
+Se puede descargar la iso desde:
+https://www.raspberrypi.org/downloads/raspberry-pi-desktop/
+
+Creación de USB bootable.
+Si queremos crear un USB bootable, utilizaremos Rufus con los siguientes parámetros:
+Partition scheme: MBR partition scheme for BIOS or UEFI
+File system: FAT32
+
+Prueba de compatibilidad.
+Antes de hacer una instalación local es conveniente cargarlo sin hacer modificaciones
+en el disco duro para comprobar compatibilidad. Sobre todo de comunicaciones:
+wifi y red.
+
+Instalación.
+Para una instalación local seleccionamos Graphical install.
+
+Máquina virtual.
+Si queremos crear una máquina virtual, debemos seleccionar como sistema operativo:
+Linux Debian 9.x 64-bit
+Una vez completada la instalación debemos instalar las vmware-tools:
+- Copiamos el contenido del CD virtual con las vm-tools a Downloads
+- Descomprimimos allí mismo el tar.gz
+- Dentro de la carpeta descomprima encontramos el archivo: vmware-install.pl
+- Lo ejecutamos con:
+    sudo /home/pi/Downloads/vmware-tools-distrib/vmware-install.pl
+- A la primera pregunta hay que responder yes
+- Para el resto es suficiente con aceptar la respuesta por defecto.
+- Ya podemos borrar los archivos copiados a Downloads
+

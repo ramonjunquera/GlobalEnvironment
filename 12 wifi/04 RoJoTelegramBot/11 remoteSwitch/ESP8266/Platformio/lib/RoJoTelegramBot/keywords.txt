@@ -1,0 +1,9 @@
+# RoJoTelegramBot Tipos de datos
+RoJoTelegramBot	KEYWORD1
+# RoJoTelegramBot Métodos de la librería
+begin	KEYWORD2
+getNextMessage	KEYWORD2
+sendMessage	KEYWORD2
+sendPhotoRemote	KEYWORD2
+sendPhotoLocal	KEYWORD2
+sendChatAction	KEYWORD2

@@ -1,0 +1,8 @@
+﻿Iniciar en modo consola
+
+Cuando tenemos problemas para arrancar debido a que hay algún fallo en la configuración,
+podemos arrancar en modo consola para poder corregirlos.
+
+Ubuntu:
+  Cuando tengamos el menú de login, podemos pasar a modo consola con CTRL+ALT+F2
+  Y volver al modo gráfico con CTRL+ALT+F1

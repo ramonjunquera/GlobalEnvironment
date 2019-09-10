@@ -49,7 +49,7 @@ Pines de protocolo I2C
    A5 SCL
 
 Los 8 pines de entrada digitales tienen una resolución de 10 bits.
-Los pines de entrada analógica se puden utilizar como pines digitales
+Los pines de entrada analógica se pueden utilizar como pines digitales
 continuando con la numeración:
   A0 = pin 14
   A1 = pin 15

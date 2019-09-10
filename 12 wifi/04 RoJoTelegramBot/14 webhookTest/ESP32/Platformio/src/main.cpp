@@ -17,8 +17,8 @@
       para la librería
     - Crear una dirección dns dinámica para nuestra dirección
       pública de Internet
-    - Asignar una dirección ip fija a nuestro dispositivo
-      (seleccionable por código)
+    - Asignar una dirección ip fija a nuestro dispositivo, ya sea por
+	  DHCP o por código
     - Redirigir el puerto utilizado desde el router a nuestro
       dispositivo
     - Creat un bot de Telegram
@@ -51,7 +51,7 @@ const char* secureServerPrivateKeyFile="/private.key";
 const uint16_t port=8443;
 //Cadena de confirmación de recepción
 const String receivedOK="HTTP/1.1 200 OK\r\n\r\n";
-//Dirección ip fija
+//Dirección ip fija (opcional)
 const IPAddress fixIP=IPAddress(192,168,1,105);
  
 //Creamos un servidor wifi seguro en el puerto indicado

@@ -1,9 +1,0 @@
-Demostración de las capacidades de la librería RoJoSSD1306SD.h
-Se muestran distintos tests en pantalla para mostrar puntos, lineas, sprites, textos, etc.
-La librería es idéntica a RoJoSSD1306.h excepto que se ha activado una constante que
-permite cambiar su comportamiento.
-Esta librería trabaja con una SD como sistema de archivos.
-Se utiliza el pin CS por defecto
-
-No se pueden utilizar las librerías *SD con Raspberry Pi porque no se ha 
-creado la librería <SD.h> para esta plataforma.

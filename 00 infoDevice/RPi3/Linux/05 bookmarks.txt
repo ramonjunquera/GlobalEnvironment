@@ -1,0 +1,24 @@
+Uso de bookmarks para archivos
+
+Ubuntu:
+  El navegador de archivos que trae el escritorio de Gnome (Nautilus) permite añadir como
+  bookmar la carpeta actual de dos maneras:
+  - Pulsando CTRL+D
+  - Haciendo click en el botón burger (tres rayitas horizontales), y pulsando el botón 
+    central superior.
+  Con esto se añadirá la referencia en al menú de ubicaciones del panel izquierdo.
+  Para quitarla, hacemos click con el botón derecho y seleccionamos "remove".
+Raspbian:
+  Por defecto el navegador de archivos de Raspbian no muestra los bookmarks, porque
+  utiliza el modo "simplificado".
+  Para desactivarlo debemos abrir File Manager/Edit/Preferences/Layout
+  y desmarcar la opción de "Display simplified user interface and menus".
+  El cambio de configuración no tedrá efecto en las sesiones de "File Manager" que
+  estén abiertas.
+  Las cerramos todas y volvemos a abrir una.
+  Ahora al abrir el menú contextual (con el botón derecho) en el panel de carpetas
+  (izquierdo), nos aparecerá la opción "Add to bookmarks".
+  El menú principal tendrá la opción "Bookmarks".
+  Y sobre el panel izquierdo aparecerá el desplegable "Directory Tree" con la
+  posibilidad de seleccionar "Places" para gestionar los bookmarks.
+
