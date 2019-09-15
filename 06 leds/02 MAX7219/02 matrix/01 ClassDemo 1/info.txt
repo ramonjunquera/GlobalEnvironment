@@ -1,4 +1,0 @@
-Demo de la clase de gestión del chip MAX7219
-
-Sólo se utiliza un chip y una matriz.
-No se utilizan soportes.

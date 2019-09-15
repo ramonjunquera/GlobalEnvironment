@@ -1,5 +1,0 @@
-Demo de la clase de gestión del chip MAX7219
-
-Se utilizan 4 chips y 4 matrices con sus correspondiente soportes.
-La librería utilizada necesita un lector de tarjetas SD y es compatible
-con tanto con ESP como con Arduino.

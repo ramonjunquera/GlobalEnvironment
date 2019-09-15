@@ -1,0 +1,5 @@
+Led matrix con MAX7219
+
+Podemos considerar el conjunto de matrices de leds encadenadas se comportan
+como un display monocromo.
+El driver así lo contempla.

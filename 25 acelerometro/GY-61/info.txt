@@ -1,0 +1,12 @@
+Acelerómetro GY-61
+
+Descripción:
+  Informa de la aceleración de los tres ejes cartesianos hasta un máximo de +-3g.
+  El valor de cada eje se puede leer de manera analógica en 3 pines.
+  Recordemos que gracias a que estamos sometidos a una aceleración constante de 1g, podemos
+  leer la posición del dispositivo relativa a los ejes de referencia cuando está 
+  parado.
+  Puede ser que cada sensor devuelva valores ligeramente distintos. Deberían ser calibrados.
+  GY-61 es una variante del modelo ADXL335.
+Alimentación:
+  Soporta un rango de voltaje entre 1.8 y 3.3V

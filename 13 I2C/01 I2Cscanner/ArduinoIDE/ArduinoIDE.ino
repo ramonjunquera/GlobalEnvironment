@@ -23,7 +23,7 @@
 
   Resultado:
   Se muestra por el monitor serie los identificadores de los dispositivos encontrados.
-  En el caso del reloj Tiby RTC I2C podemos ver los identificadores 0x50 y 0x68.
+  En el caso del reloj Tiny RTC I2C podemos ver los identificadores 0x50 y 0x68.
   El 0x50 corresponde a la memoria EEPROM. y el 0x68 corresponde al reloj.
 */
 
