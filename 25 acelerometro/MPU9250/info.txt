@@ -1,0 +1,32 @@
+MPU9250
+Sensor fabricado por Invensense que contiene acelerómetro, giróscopo y magnetómetro.
+- Giróscopo: indica la posición en el espacio
+- Acelerómetro: indica la aceleración (movimiento)
+- Magnetómetro: indica la orientación respecto al polo magnético
+
+Tiene 9 grados de libertas (9DOF), 3 para cada uno de los sensores.
+Contiene un MPU6500 con los tres sensores.
+El magnetómetro es un AK8963 fabricado por Asahi Kasei Microdevices Corporation.
+
+La conexión se puede realizar tanto por SPI como por I2C.
+En dispositivos ya montados como M5Stack Watch el cableado ya está hecho y sólo
+está disponible la conexión I2C.
+Los identificadores de I2C de cada sensor son:
+- Magnetómetro: 0x0C
+- Acelerómetro/Giróscopo: 0x68
+
+El rango de voltaje es de 2.4 a 3.6V.
+La placa suele incluir un regulador de voltaje para poder conectar directamente
+a dispositivos Arduino. Depende de cada placa.
+
+El consumo máximo con todos los sensores activados es de 3.5mA.
+
+Dispone de conversores analógicos digitales (ADC) de 16bits.
+Los rangos de los sensores pueden ser ajustados con distintos códigos:
+- Acelerómetro: ±2g (0x00), ±4g (0x08), ±8g (0x10), y ±16g (0x18)
+- Giróscopo: ±250 (0x00), ±500 (0x08), ±1000 (0x10), and ±2000°/sec [DPS=Degrees Per Second] (0x18)
+- Magnetómetro: hasta ±4800µT
+
+
+
+ 

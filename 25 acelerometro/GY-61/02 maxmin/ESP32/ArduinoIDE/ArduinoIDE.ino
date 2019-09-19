@@ -16,7 +16,7 @@
   [1758,1963] [1835,2032] [2141,2363] 
 
   Resultado:
-  Vemos el los valores máxmios y mínimos decada eje
+  Vemos el los valores máximos y mínimos decada eje
 */
 
 #include <Arduino.h>
