@@ -1,9 +1,8 @@
 /*
   Librería: RoJoDictionary
   Autor: Ramón Junquera
-  Fecha: 20190704
+  Fecha: 20190924
   Objetivo: Ejemplo de uso de librería
-  Material adicional: Cualquier placa
   Descripción:
     Utilizaremos la clase RoJoDictionary con varios ejemplos simples para aprender su uso.
     El tipo de la clave será byte y del valor String.
@@ -15,10 +14,8 @@
 
 RoJoDictionary<byte,String> myDicc;
 
-void list()
-{
-  //Muestra en pantalla el contenido del diccionario
-
+//Muestra en pantalla el contenido del diccionario
+void list() {
   //Puntero a valor del item
   String *pValue;
   //Clave
@@ -27,8 +24,7 @@ void list()
   //Mostramos el número de items
   Serial.println("# items="+String(myDicc.count()));
   //Recorremos todos los items del diccionario
-  for(uint16_t i=0;i<myDicc.count();i++)
-  {
+  for(uint16_t i=0;i<myDicc.count();i++) {
     //Obtenemos los datos de una posición del diccionario: la clave y el puntero al valor
     myDicc.index(i,&key,&pValue);
     //Mostramos la información obtenida
@@ -36,8 +32,7 @@ void list()
   }
 }
 
-void setup()
-{
+void setup() {
   //Activamos la comunicación serie
   Serial.begin(115200);
   delay(3000);
@@ -50,18 +45,15 @@ void setup()
   //Reservamos memoria y la inicializamos con un texto
   pValue=new String("treintaytres");
   //Añadimos la clave y el valor al diccionario
-  myDicc.add(33,pValue);
-  Serial.println("Añadido item 33");
+  Serial.println("Añadido item 33. Respuesta="+String(myDicc.add(33,pValue)));
   //Mostramos la lista de items en el diccionario. Sólo debería tener uno
   list();
 
   //Creamos dos nuevos items
   pValue=new String("veintinueve");
-  myDicc.add(29,pValue);
-  Serial.println("Añadido item 29");
+  Serial.println("Añadido item 29. Respuesta="+String(myDicc.add(29,pValue)));
   pValue=new String("dieciocho");
-  myDicc.add(18,pValue);
-  Serial.println("Añadido item 18");
+  Serial.println("Añadido item 18. Respuesta="+String(myDicc.add(18,pValue)));
   //Mostramos la lista de items en el diccionario. Deberían ser 3
   list();
 
@@ -88,8 +80,7 @@ void setup()
   //2. Creando un nuevo valor y añadiéndolo con la misma clave, porque antes de añadir
   //un nuevo item, elimina cualquiera que tenga la misma clave.
   pValue=new String("treinta y 3");
-  myDicc.add(33,pValue);
-  Serial.println("Añadido/Actualizado item 33");
+  Serial.println("Añadido/Actualizado item 33. Respuesta="+String(myDicc.add(33,pValue)));
   list();  
 
   //Borramos todos los items
@@ -98,7 +89,6 @@ void setup()
   list();
 }
 
-void loop()
-{
+void loop() {
   //Nada especial que hacer aquí
 }

@@ -1,0 +1,218 @@
+Tema: Cómo dar de alta una nueva tarjeta
+Fecha: 20190923
+
+Un IDE tiene un limitado número de tarjetas reconocidas. Habitualmente las más populares.
+Puesto que contínuamente aparecen nuevas o variantes de las existentes, nos podemos encontrar que 
+nuestra tarjeta no aparece en el listado por defecto.
+A continuación se muestran las instrucciones para dar de alta una nueva tarjeta tanto en el IDE de
+Arduino como en Platformio.
+Como ejemplo crearemos una tarjeta ESP32 genérica con 16Mb.
+La creación de particiones de memoria personalizadas no se trata en este docuemento.
+
+
+Arduino IDE
+
+El archivo que contiene la definición de las tarjetas se encuentra en:
+  arduino-1.8.9/hardware/espressif/esp32/boards.txt
+Y contiene la siguiente información:
+  - Tipo de procesador
+  - Frecuencias de procesador
+  - Tamaño de memoria
+  - Particiones de memoria disponibles
+  - Velocidades de transmisión
+  - etc
+Antes de hacer ninguna modificación, es conveniente hacer una copia de seguridad.
+Al final del archivo añadiremos el siguiente texto:
+----inicio de archivo----
+##############################################################
+
+esp32dev-16mb.name=ESP32 Dev Module 16Mb
+
+esp32dev-16mb.upload.tool=esptool
+esp32dev-16mb.upload.maximum_size=8323072
+esp32dev-16mb.upload.maximum_data_size=1048576
+esp32dev-16mb.upload.wait_for_upload_port=true
+
+esp32dev-16mb.serial.disableDTR=true
+esp32dev-16mb.serial.disableRTS=true
+
+esp32dev-16mb.build.mcu=esp32
+esp32dev-16mb.build.core=esp32
+esp32dev-16mb.build.variant=esp32
+esp32dev-16mb.build.board=ESP32_DEV
+
+esp32dev-16mb.build.f_cpu=240000000L
+esp32dev-16mb.build.flash_size=16MB
+esp32dev-16mb.build.flash_freq=40m
+esp32dev-16mb.build.flash_mode=dio
+esp32dev-16mb.build.boot=dio
+esp32dev-16mb.build.partitions=16default
+esp32dev-16mb.build.defines=
+
+esp32dev-16mb.menu.PSRAM.disabled=Disabled
+esp32dev-16mb.menu.PSRAM.disabled.build.defines=
+esp32dev-16mb.menu.PSRAM.enabled=Enabled
+esp32dev-16mb.menu.PSRAM.enabled.build.defines=-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue
+
+esp32dev-16mb.menu.PartitionScheme.16default=16MB Default
+esp32dev-16mb.menu.PartitionScheme.16default.build.partitions=16default
+esp32dev-16mb.menu.PartitionScheme.16default.upload.maximum_size=2097152
+esp32dev-16mb.menu.PartitionScheme.16default.upload.maximum_data_size=1048576
+esp32dev-16mb.menu.PartitionScheme.16min_spiffs=16MB Minimal SPIFFS
+esp32dev-16mb.menu.PartitionScheme.16min_spiffs.build.partitions=16min_spiffs
+esp32dev-16mb.menu.PartitionScheme.16min_spiffs.upload.maximum_size=8323072
+esp32dev-16mb.menu.PartitionScheme.16min_spiffs.upload.maximum_data_size=4161536
+esp32dev-16mb.menu.PartitionScheme.16no_ota=16MB No OTA
+esp32dev-16mb.menu.PartitionScheme.16no_ota.build.partitions=16no_ota
+esp32dev-16mb.menu.PartitionScheme.16no_ota.upload.maximum_size=2097152
+esp32dev-16mb.menu.PartitionScheme.16no_ota.upload.maximum_data_size=1048576
+esp32dev-16mb.menu.PartitionScheme.default=4MB Default
+esp32dev-16mb.menu.PartitionScheme.default.build.partitions=default
+esp32dev-16mb.menu.PartitionScheme.no_ota=4MB No OTA
+esp32dev-16mb.menu.PartitionScheme.no_ota.build.partitions=no_ota
+esp32dev-16mb.menu.PartitionScheme.no_ota.upload.maximum_size=2097152
+esp32dev-16mb.menu.PartitionScheme.min_spiffs=4MB Minimal SPIFFS
+esp32dev-16mb.menu.PartitionScheme.min_spiffs.build.partitions=min_spiffs
+esp32dev-16mb.menu.PartitionScheme.min_spiffs.upload.maximum_size=1966080
+esp32dev-16mb.menu.PartitionScheme.minimal=2MB Default
+esp32dev-16mb.menu.PartitionScheme.minimal.build.partitions=minimal
+
+esp32dev-16mb.menu.FlashMode.qio=QIO
+esp32dev-16mb.menu.FlashMode.qio.build.flash_mode=dio
+esp32dev-16mb.menu.FlashMode.qio.build.boot=qio
+esp32dev-16mb.menu.FlashMode.dio=DIO
+esp32dev-16mb.menu.FlashMode.dio.build.flash_mode=dio
+esp32dev-16mb.menu.FlashMode.dio.build.boot=dio
+esp32dev-16mb.menu.FlashMode.qout=QOUT
+esp32dev-16mb.menu.FlashMode.qout.build.flash_mode=dout
+esp32dev-16mb.menu.FlashMode.qout.build.boot=qout
+esp32dev-16mb.menu.FlashMode.dout=DOUT
+esp32dev-16mb.menu.FlashMode.dout.build.flash_mode=dout
+esp32dev-16mb.menu.FlashMode.dout.build.boot=dout
+
+esp32dev-16mb.menu.FlashFreq.80=80MHz
+esp32dev-16mb.menu.FlashFreq.80.build.flash_freq=80m
+esp32dev-16mb.menu.FlashFreq.40=40MHz
+esp32dev-16mb.menu.FlashFreq.40.build.flash_freq=40m
+
+esp32dev-16mb.menu.FlashSize.16M=16MB (128Mb)
+esp32dev-16mb.menu.FlashSize.16M.build.flash_size=16MB
+esp32dev-16mb.menu.FlashSize.4M=4MB (32Mb)
+esp32dev-16mb.menu.FlashSize.4M.build.flash_size=4MB
+esp32dev-16mb.menu.FlashSize.2M=2MB (16Mb)
+esp32dev-16mb.menu.FlashSize.2M.build.flash_size=2MB
+esp32dev-16mb.menu.FlashSize.2M.build.partitions=minimal
+
+esp32dev-16mb.menu.UploadSpeed.921600=921600
+esp32dev-16mb.menu.UploadSpeed.921600.upload.speed=921600
+esp32dev-16mb.menu.UploadSpeed.115200=115200
+esp32dev-16mb.menu.UploadSpeed.115200.upload.speed=115200
+esp32dev-16mb.menu.UploadSpeed.256000.windows=256000
+esp32dev-16mb.menu.UploadSpeed.256000.upload.speed=256000
+esp32dev-16mb.menu.UploadSpeed.230400.windows.upload.speed=256000
+esp32dev-16mb.menu.UploadSpeed.230400=230400
+esp32dev-16mb.menu.UploadSpeed.230400.upload.speed=230400
+esp32dev-16mb.menu.UploadSpeed.460800.linux=460800
+esp32dev-16mb.menu.UploadSpeed.460800.macosx=460800
+esp32dev-16mb.menu.UploadSpeed.460800.upload.speed=460800
+esp32dev-16mb.menu.UploadSpeed.512000.windows=512000
+esp32dev-16mb.menu.UploadSpeed.512000.upload.speed=512000
+
+esp32dev-16mb.menu.DebugLevel.none=None
+esp32dev-16mb.menu.DebugLevel.none.build.code_debug=0
+esp32dev-16mb.menu.DebugLevel.error=Error
+esp32dev-16mb.menu.DebugLevel.error.build.code_debug=1
+esp32dev-16mb.menu.DebugLevel.warn=Warn
+esp32dev-16mb.menu.DebugLevel.warn.build.code_debug=2
+esp32dev-16mb.menu.DebugLevel.info=Info
+esp32dev-16mb.menu.DebugLevel.info.build.code_debug=3
+esp32dev-16mb.menu.DebugLevel.debug=Debug
+esp32dev-16mb.menu.DebugLevel.debug.build.code_debug=4
+esp32dev-16mb.menu.DebugLevel.verbose=Verbose
+esp32dev-16mb.menu.DebugLevel.verbose.build.code_debug=5
+----fin de archivo----
+Con esto creamos una nueva placa con identificador esp32dev-16Mb basada en la esp32, que es
+la genérica (ESP32 Dev Module).
+El nombre asignado es "ESP32 Dev Module 16MB".
+Mantendremos los esquemas de particiones habituales por si queremos trabajar con 2 o 4Mb (poco probable),
+pero añadimos alguno nuevo para poder aprovechar mejor toda la memoria.
+El parámetro esp32dev-16mb.upload.maximum_size define de manera global y para todos los esquemas (particiones
+de memoria) el tamaño máximo que puede tener un programa.
+Debería coincidir con el tamaño de la partición app0, pero como no es obligatorio que todas las
+particiones sean iguales, se puede reescribir en la definición de esquemas con el parámetro:
+  esp32dev-16mb.menu.PartitionScheme.no_ota.upload.maximum_size
+Por esta razón dejaremos el valor más común en el parámetro global, pero incluiremos siempre el mismo
+parámetro al definir los esquemas.
+Algo similar ocurre con el parámetro esp32dev-16mb.upload.maximum_data_size, que indica el tamaño de
+memoria máximo que puede utilizar un programa para variables.
+Puesto que en la partición app0 conviven el programa y sus variables, este valor nunca podrá ser
+mayor que el tamaño de la partición app0. Como norma general y para flexibilidar la regla por defecto
+de estas placas, se suele asumir que las variables pueden ocupar como máximo la mitad de la partición.
+En el parámetro global indicaremos el valor más común, pero en este caso también tenemos un parámetro
+que lo sobreescribe en la definición de cada esquema:
+  esp32dev-16mb.menu.PartitionScheme.16min_spiffs.upload.maximum_data_size
+También incluiremos este parámetro en todas las nuevas definiciones, por seguridad.
+
+
+Platformio
+
+En Platformio no hay un archivo con la definición de todas las tarjetas reconocidas como en el IDE de
+Arduino. Cada tarjeta tiene su propio archivo de definición. Y todos los archivos se encuentran en
+la carpeta:
+  C:\Users\<usuario>\.platformio\platforms\espressif32\boards
+Son archivos de tipo .json. Pueden ser editados con el bloc de notas.
+El nombre del archivo es importante puesto que es el que se referencia en el archivo platformio.ini
+del proyecto, en el parámetro board.
+Ejemplo: board = zesp32-16 haría referencia al archivo zesp32-16.json
+Por lo tanto sería suficiente con duplicar archivo existente, cambiarle el nombre y editar su contenido.
+Crearemos en esta carpeta el archivo: esp32dev-16mb.json con el siguiente contenido:
+----inicio de archivo----
+{
+  "build": {
+    "core": "esp32",
+    "extra_flags": "-DARDUINO_ESP32_DEV_16MB",
+    "f_cpu": "240000000L",
+    "f_flash": "40000000L",
+    "flash_mode": "dio",
+    "ldscript": "esp32_out.ld",
+    "mcu": "esp32",
+    "partitions": "default_16MB.csv",
+    "variant": "esp32"
+  },
+  "connectivity": [
+    "wifi",
+    "bluetooth",
+    "ethernet",
+    "can"
+  ],
+  "frameworks": [
+    "arduino",
+    "espidf"
+  ],
+  "name": "ESP32 Dev Module 16Mb",
+  "upload": {
+    "flash_size": "16MB",
+    "maximum_ram_size": 6553600,
+    "maximum_size": 16777216,
+    "require_upload_port": true,
+    "speed": 921600
+  },
+  "url": "https://www.banggood.com/LILYGO-TTGO-16M-bytes-128M-Bit-Pro-ESP32-OLED-V2_0-Display-WiFi-bluetooth-ESP-32-Module-For-Arduino-p-1205876.html?akmClientCountry=ES&rmmds=myorder&cur_warehouse=CN",
+  "vendor": "Espressif"
+}
+----fin de archivo----
+El parámetro "extra_flags" permite añadir una constante global de compilación para poder 
+reconocer la tarjeta por el programa. En este caso define la constante ARDUINO_ESP32_DEV_16M
+
+El parámetro "partitions" indica la distribución de particiones de memoria que se utilizará por
+defecto.
+
+Para utilizar esta nueva tarjeta deberíamos utilizar los siguientes parámetros en platformio.ini:
+;Dispositivo: ESP32+OLED 16Mb
+[env:esp32_16mb]
+platform = espressif32
+board = esp32dev-16mb
+framework = arduino
+monitor_speed = 115200
+upload_speed = 921600
+;board_build.partitions = 16no_ota.csv

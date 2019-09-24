@@ -1,9 +1,8 @@
 /*
   Librería: RoJoDictionary
   Autor: Ramón Junquera
-  Fecha: 20190704
+  Fecha: 20190924
   Objetivo: Ejemplo de uso de librería
-  Material adicional: Cualquier placa
   Descripción:
     Utilizaremos la clase RoJoDictionary con varios ejemplos simples para aprender su uso.
     El tipo de la clave será byte y del valor String.
@@ -14,18 +13,15 @@
 #include <RoJoDictionary.h> //Librería de gestión de diccionarios en memoria
 
 //Definimos la estructura de datos para el valor
-struct persona
-{
+struct persona {
   byte edad;
   String empleo;
 };
 
 RoJoDictionary<String,persona> myDicc;
 
-void list()
-{
-  //Muestra en pantalla el contenido del diccionario
-
+//Muestra en pantalla el contenido del diccionario
+void list() {
   //Puntero a valor del item
   persona *pValue;
   //Clave
@@ -34,8 +30,7 @@ void list()
   //Mostramos el número de items
   Serial.println("# items="+String(myDicc.count()));
   //Recorremos todos los items del diccionario
-  for(uint16_t i=0;i<myDicc.count();i++)
-  {
+  for(uint16_t i=0;i<myDicc.count();i++) {
     //Obtenemos los datos de una posición del diccionario: la clave y el puntero al valor
     myDicc.index(i,&key,&pValue);
     //Mostramos la información obtenida
@@ -43,8 +38,7 @@ void list()
   }
 }
 
-void setup()
-{
+void setup() {
   //Activamos la comunicación serie
   Serial.begin(115200);
   delay(3000);
@@ -59,8 +53,7 @@ void setup()
   pValue->edad=33;
   pValue->empleo="tornero";
   //Añadimos la clave y el valor al diccionario
-  myDicc.add(myKey,pValue);
-  Serial.println("Añadido item Fernando");
+  Serial.println("Añadido item Fernando. Resultado="+String(myDicc.add(myKey,pValue)));
   //Mostramos la lista de items en el diccionario. Sólo debería tener uno
   list();
 
@@ -68,13 +61,11 @@ void setup()
   pValue = new persona;
   pValue->edad=29;
   pValue->empleo="fresador";
-  myDicc.add("Alberto",pValue);
-  Serial.println("Añadido item Alberto");
+  Serial.println("Añadido item Alberto. Respuesta="+String(myDicc.add("Alberto",pValue)));
   pValue = new persona;
   pValue->edad=18;
   pValue->empleo="ayudante";
-  myDicc.add("Juan",pValue);
-  Serial.println("Añadido item Juan");
+  Serial.println("Añadido item Juan. Resultado="+String(myDicc.add("Juan",pValue)));
   //Mostramos la lista de items en el diccionario. Deberían ser 3
   list();
 
@@ -103,8 +94,7 @@ void setup()
   pValue = new persona;
   pValue->edad=60;
   pValue->empleo="calderero";
-  myDicc.add("Fernando",pValue);
-  Serial.println("Añadido/Actualizado item Fernando");
+  Serial.println("Añadido/Actualizado item Fernando. Resultado="+String(myDicc.add("Fernando",pValue)));
   list();  
   
   //Borramos todos los items
@@ -113,7 +103,6 @@ void setup()
   list();
 }
 
-void loop()
-{
+void loop() {
   //Nada especial que hacer aquí
 }
