@@ -1,5 +1,28 @@
-Mapear una unidad de red
-Fecha: 20190709
+Mapear una unidad de red popr Samba (smb)
+Fecha: 20190928
+
+Tenemos dos métodos de configuración: gráfico y por consola.
+
+Configuración gráfica de unidad remota
+--------------------------------------
+
+La configuración es sencilla y gráfica.
+El problema es que no mantiene la unidad al cerrar la sesión.
+
+Ubuntu:
+  - Abrimos el navegador de archivos (Nautilus)
+  - Seleccionamos en el panel izquierdo "Other Locations"
+  - En la parte inferior del panel derecho encontramos "Connect to server".
+  - Escribimos el protocolo como prefijo: smb://. A continuación el nombre del servidor y su carpeta.
+    Ejemplo: smb://192.168.1.197/public
+  - Nos aparecerá una ventana solicitando las credenciales. Se deben completar.
+  - En la parte inferior se pregunta hasta cuando recordará esta información. Si pretendemos no tener
+    que escribir las credenciales a cada inicio de sesión, indicaremos que las guarde indefinidamente.
+  - Con esto se crear un enlace a la carpeta remota.
+
+
+Configuración por consola de unidad remota
+------------------------------------------
 
 Carpeta para montar la unidad.
 Lo primero que haremos será crear la carpeta donde montaremos la unidad remota.
@@ -16,7 +39,7 @@ cuando arranca. Esto se encuentra en el archivo /etc/fstab. La editamos:
   Raspbian:
     sudo leafpad /etc/fstab
 Añadimos el final del archivo la siguiente línea:
-  //192.168.1.197/public /home/pi/synology/ cifs username=usuario,password=contraseña,vers=1.0,rw 0 0
+  //192.168.1.197/public /home/pi/synology/ cifs username=usuario,password=contraseña,noexec,user,vers=1.0,rw,nounix,uid=1000,iocharset=utf8 0 0
 En ella se define:
 - La dirección y nombre del recurso compartido
 - La carpeta local sobre la que se montará

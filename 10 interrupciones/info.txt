@@ -3,7 +3,7 @@ para llamar a una función concreta que se supone que hace algo tan importante qu
 no puede esperar. Una vez completada se continúa en el mismo punto en el que se
 quedó.
 A la señal de la interrupción le llamaremos evento.
-Los eventos pueden ser provocador por software o por hardware.
+Los eventos pueden ser provocados por software o por hardware.
 Los eventos de software pueden ser programados (timer) o manuales.
 Las placas que vamos a gestionar no disponen de eventos manuales, por lo que podemos
 simplificarlos a:

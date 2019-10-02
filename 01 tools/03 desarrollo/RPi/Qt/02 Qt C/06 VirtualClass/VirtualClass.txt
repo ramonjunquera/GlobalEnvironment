@@ -29,5 +29,5 @@ Desarrollo:
   En cambio, si lo declaramos como virtual, al utilizar el método show desde el puntero
   de la clase base, aparecerá el método de la clase derivada.
 Nota:
-  Si un método se declara como virtual, no es obligatorio volve a hacerlo en una clase
+  Si un método se declara como virtual, no es obligatorio volver a hacerlo en una clase
   derivada. Porque hay que recordar que las clases derivadas pueden derivarse de nuevo.

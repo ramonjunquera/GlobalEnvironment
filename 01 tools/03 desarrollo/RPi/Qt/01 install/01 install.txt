@@ -11,6 +11,6 @@ Instalamos los dos paquetes necesarios:
   sudo apt-get install qt5-default
   sudo apt-get install qtcreator
 
-Esto creará un nuevo icono en la sección de progración.
+Esto creará un nuevo icono en la sección de programación.
 Pero también puede llamarse desde la línea de comandos con:
   qtcreator

@@ -7,13 +7,13 @@
   Descripción:
     Ejemplo básico de configuración y uso de un timer en ESP32.
     Utilizamos el primero de los 4 timers disponibles.
-    Aplicamos un prescaler de 80 para la frecuencia de actualización del contador del timer
+    Aplicamos un prescaler de 80 para que la frecuencia de actualización del contador del timer
     tenga un periodo de 1 microsegundo.
     Utilizamos una alarma para que salte cuando el contador sea un millón.
     En este caso cada millón de microsegundos = cada segundo.
     La función del timer simplemente envía el valor de millis por el puerto serie.
     Este no es el mejor ejemplo de calidad de código, puesto que una interrupción debe durar
-    el mínimo tiempo posible y en envío por el puerto serie no es algo rápido.
+    el mínimo tiempo posible y el envío por el puerto serie no es algo rápido.
     Aun así el código es muy sencillo y cumple con el objetivo didáctico.
     Para mejorar la calidad del código de debería tener un flag que la función de timer active y
     en la función loop hacer pooling al flag para detectar cuándo se ha activado y tomar las 

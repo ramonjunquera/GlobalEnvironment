@@ -11,6 +11,7 @@ La creación de particiones de memoria personalizadas no se trata en este docuem
 
 
 Arduino IDE
+-----------
 
 El archivo que contiene la definición de las tarjetas se encuentra en:
   arduino-1.8.9/hardware/espressif/esp32/boards.txt
@@ -155,11 +156,14 @@ También incluiremos este parámetro en todas las nuevas definiciones, por segur
 
 
 Platformio
+----------
 
 En Platformio no hay un archivo con la definición de todas las tarjetas reconocidas como en el IDE de
-Arduino. Cada tarjeta tiene su propio archivo de definición. Y todos los archivos se encuentran en
-la carpeta:
-  C:\Users\<usuario>\.platformio\platforms\espressif32\boards
+Arduino. Cada tarjeta tiene su propio archivo de definición.
+Ejemplo de ubicación de tarjetas ESP32:
+  {Windows] C:\Users\<usuario>\.platformio\platforms\espressif32\boards
+  [Linux] Home/.platformio/platforms/espressif32/boards
+  
 Son archivos de tipo .json. Pueden ser editados con el bloc de notas.
 El nombre del archivo es importante puesto que es el que se referencia en el archivo platformio.ini
 del proyecto, en el parámetro board.

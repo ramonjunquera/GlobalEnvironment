@@ -3,7 +3,7 @@ Fecha: 20181125
 
 ESP32 no tiene implementada la instrucción analogWrite de Arduino para poder otorgar
 funcionalidades PWM a un pin.
-Por el contrario, el juego de instrucciones nativas porvee de un par de soluciones
+Por el contrario, el juego de instrucciones nativas provee de un par de soluciones
 que funcionan perfectamente.
 
 PWM por SigmaDelta
@@ -19,7 +19,7 @@ PWM por SigmaDelta
       El canal debe estar en el rango de 0 a 7.
     void sigmaDeltaWrite(uint8_t channel,uint8_t duty)
       Permite indicar el valor a partir del cual el estado cambia.
-      Este valor sebe estar dentro del rango de la resolución: entre 0 y 255.
+      Este valor debe estar dentro del rango de la resolución: entre 0 y 255.
     void sigmaDeltaAttachPin(uint8_t pin,uint8_t channel)
       Permite asociar un pin a un canal
   Una vez asociado el pin, se puede desasociar con:
@@ -96,7 +96,7 @@ Librerías
   Se ha construido una librería para cada método:
   - RoJoAnalogWriteESP32S para SigmaDelta
   - RoJoAnalogWriteESP32L para ledc
-  En ambas se implementa la función analogWrite con los mismo parámetros que en Arduino:
+  En ambas se implementa la función analogWrite con los mismos parámetros que en Arduino:
     bool analogWrite(byte pin,byte level);
 
 Nota

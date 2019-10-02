@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190926
+  Fecha: 20190927
   Tema: Acelerómetro 
   Objetivo: Mostrar lecturas gráficamente. Gestión de partículas
   Material: M5Stack Fire
@@ -115,6 +115,10 @@ void beginParticles() {
       }
   }
   sprite.end();
+  //Recogemos los valores actuales del acelerómetro que utilizaremos como referencia
+  GAM.readA(refXY);
+  //Esperamos a que se puse el botón
+  while(!button1.pressed());
 }
 
 void setup() {
@@ -125,23 +129,13 @@ void setup() {
   display.rotation(1);
   //Inicialización de sensores
   GAM.begin();
-  //Recogemos los valores actuales del acelerómetro que utilizaremos como referencia
-  GAM.readA(refXY);
   //Inicialización de partículas
   beginParticles();
-  //Esperamos a que se puse el botón
-  while(!button1.pressed());
 }
 
 void loop() {
-  //Si se ha pulsado el botón...
-  if(button1.pressed())
-  {
-    //Inicialización de partículas
-    beginParticles();
-    //Esperamos a que se puse el botón
-    while(!button1.pressed());
-  }
+  //Si se ha pulsado el botón...inicializamos de nuevo las partículas
+  if(button1.pressed()) beginParticles();
   //Leemos los datos actuales del acelerómetro
   GAM.readA(dataA);
   //Calculamos aceleración para cada eje

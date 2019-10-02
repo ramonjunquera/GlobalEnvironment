@@ -1,7 +1,7 @@
 /*
   Librería: RoJoDictionary
   Autor: Ramón Junquera
-  Fecha: 20190924
+  Fecha: 20190928
   Objetivo: Ejemplo de uso de librería
   Descripción:
     Utilizaremos la clase RoJoDictionary con varios ejemplos simples para aprender su uso.
@@ -42,18 +42,17 @@ void setup() {
   //Activamos la comunicación serie
   Serial.begin(115200);
   delay(3000);
+  persona *pValue;
 
   //Listamos el contenido del diccionario. Debería estar vacío
   list();
-  //Creamos la clave
-  String myKey="Fernando";
   //Creamos una nueva estructura para el valor
-  persona *pValue = new persona;
+  pValue=new persona;
   //Asignamos valores a la estructura
   pValue->edad=33;
   pValue->empleo="tornero";
   //Añadimos la clave y el valor al diccionario
-  Serial.println("Añadido item Fernando. Resultado="+String(myDicc.add(myKey,pValue)));
+  Serial.println("Añadido item Fernando. Resultado="+String(myDicc.add("Fernando",pValue)));
   //Mostramos la lista de items en el diccionario. Sólo debería tener uno
   list();
 
@@ -78,9 +77,10 @@ void setup() {
   Serial.println("Existe elemento Juan? : "+String(myDicc.containsKey("Juan")?"SI":"NO"));
   Serial.println("Existe elemento Juana? : "+String(myDicc.containsKey("Juana")?"SI":"NO"));
 
-  //Recuperamos el valor de un item
-  myDicc.value("Fernando",&pValue);
-  Serial.println("Valor de item Fernando : edad=" + String(pValue->edad) +" : empleo=" + pValue->empleo);
+  //Si podemos recuperar el valor de un item...lo mostramos
+  if(myDicc.value("Fernando",&pValue)) Serial.println("Valor de item Fernando : edad=" + String(pValue->edad) +" : empleo=" + pValue->empleo);
+  //Si no hemos podido...informamos
+  else Serial.println("No se ha podido recuperar el valor del item Fernando");
 
   //Actualizamos el valor de la clave Fernando
   //Podemos hacerlo de dos maneras

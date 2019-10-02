@@ -1,0 +1,75 @@
+Tema: Sensor de distancia por ultrasonidos HC-SR04
+Fecha: 20190929
+Autor: Ramón Junquera
+
+Descripción  
+  El sensor consta de dos cilindros apuntando en la misma dirección.
+  Uno de ellos es el emisor y otro el receptor.
+  El emisor envía una serie de pulsos de ultrasonidos. La frecuencia es tan alta que sobrepasa el umbral del oido humano.
+  La onda de sonido viaja por el aire, choca contra un objeto y rebota. Parte de las ondas regresan al punto de origen
+  y son detectadas por el cilindro que escucha, que las identifica porque tienen la misma frecuencia que las ondas emitidas.
+  El cilindro emisor lo llamaremos trigger, y al receptor, echo (o receptor del eco).
+  El sensor tiene 4 pines con los siguientes nombres:
+  - VCC : Alimentación
+  - Trig : Pin para el trigger
+  - Echo : Pin para el echo
+  - GND : Tierra. Se conecta directamente a GND
+  El pin del trigger deberá ser configurado como salida digital. Cuando se activa (estado HIGH), comenzará a emitir pulsos.
+  El pin del echo deberá ser configurado como entrada. Cada vez que reciba un pulso, se activará.
+  Como sería complicado medir el tiempo transcurrido entre cada activación de pin de entrada, utilizaremos la función PulseIn().
+  Directamente nos indica el tiempo transcurrido entre dos activaciones del pin.
+  La sintaxis es:
+    pulseIn(pin,estado)
+    pulseIn(pin,estado,timeout)
+    
+  El pin hace referencia al número de pin que hemos configurado como entrada y al que está conectado el Echo.
+  El estado es el estado que debe tener en cuenta para contar el tiempo. Los posibles valores son LOW y HIGH.
+  El timeout es el tiempo máximo que debe esperar antes de seguir contando. Se mide en microsegundos. Un microsegundo es la millonésima
+  parte de un segundo. El valor por defecto es 1000000 (un millón) que corresponde con un segundo.
+  El resultado de la función es el tiempo transcurrido en el último pulso en microsegundos.
+  
+  Si el sensor sólo nos indica el tiempo que tarda un pulso en regresar, tendremos que hacer algo más para obtener la distancia.
+  Sabiendo que la velocidad de propagación del sonido en el aire a 1 atmósfera de presión (nivel del mar), a 20 grados centígrados y con
+  un 50% de humedad, es de 343 m/s, podríamos hacer algunos cálculos.
+  Sabiendo también que velocidad = distancia / tiempo, deducimos que distancia = velocidad * tiempo
+  La velocidad la tenemos en m/s pero quisieramos utilizar cm y microsegundos.
+  343 m/s = 34300 cm/s = 34300 cm / 10000000 microsegundo = 343/10000 cm/microsegundo
+  También tenemos que tener en cuenta que la distancia que debe recorrer el pulso de sonido es de ida y vuelta.
+  Por lo tanto distancia al sensor = 343/10000/2 * tiempo de pulso en microsegundos = 0.01715 * tiempo de pulso en microsegundos
+  
+  distancia al sensor = 0.01715 * tiempo de pulso en microsegundos
+  
+  El sensor tiene un rango de detección entre 3 cm y 3 m, con una precisión de 3mm.
+  De todas maneras, las medidas nunca serán totalmente exactas porque no tendremos las condiciones de presión, temperatura y humedad
+  en las que fue tomada la medida patrón; pero es una excelente aproximación.
+  
+  El programa consultará contínuamente el sensor. Obteniendo el tiempo que tarda un pulso en regresar y calculando la distancia correspondiente.
+  El resultado lo enviará por el puerto serie para que podamos monitorizarlo desde el PC.
+  
+  Atención porque no utilizamos la función delay para la configuración del sensor. La función delay hace que el sistema se espere un número
+  determinado de milisegundos. Pero para el sonido, un milisegundo es demasiado tiempo. Por eso usamos la función delayMicroseconds, que
+  espera un número determinado de microsegundos.
+  
+  Al comenzar el programa desactivamos el sensor un momento (5 microsegundos) para, a continuación, hacer la medida que nos interesa.
+   
+Detalles a tener en cuenta:
+  Cuando hay un objeto delante del sensor, pero se encuentra más lejos que el rango detectado, se emite un pulso, llega al objeto, rebota, pero
+  regresa al receptor con tan poca intensidad que no es detectado. Por lo tanto no produce una activación de pin de recepción.
+  Aquí es donde entra el juego el timeout, que espera el tiempo indicado. Pero si no recibe nada, da como respuesta el valor 0.
+  Esta es la razón por la cual, cuando hay un objeto delante, no hay problema en calcular la distancia cada décima de segundo. Pero cuando no lo
+  hay, tenemos como respuesta 0 cada segundo.
+  Si queremos reducir el tiempo de timeout para no tener que esperar tanto, podemos hacerlo, pero....
+  Imaginemos que ponemos un timeout de una milésima de segundo = 1000 microsegundos.
+  El programa funcionará perfectamente haciendo el cálculo cada décima de segundo, tal y como le hemos pedido. Pero descubriremos que nunca detecta
+  objetos más alla de los 13cm. La razón es que el sonido tarda exáctamente 1 milésima de segundo en recorrer 26cm. Si separas más el objeto, la
+  función que cuenta el tiempo entre pulsos se cansará de esperar y devolverá 0.
+  Si lo que quieres es tomar medidas en una distancia más cercana que el máximo detectado y quieres hacerlo rápido, se puede fijar un timeout.
+  Otro detalle importante es que no todos los objetos están compuestos por el mismo material.
+  Los materiales duros (metal, pástico, madera, vidrio, ...) hacen que el sonido rebote en ellos mucho mejor que los materiales blandos (tejidos,
+  corcho, esponja, ...). Los materiales blandos absorben la onda de sonido y no la devuelven. Eliminan el eco. Es la razón por la que una habitación
+  vacía tiene eco, pero con cortinas no.
+  Esto quiere decir que probablemente si tomas la distancia a unas cortinas, trapos, o jerseis, la medida sea errónea o nula.
+
+  Hay modelos de HC-SR04 que sólo permiten ser alimentados con 5V, concretamente los modelos antiguos.
+  Los nuevos se pueden alimentar con 3.3V. Al hacerlo se advierten más errores (dispersión aleatoria de datos). Pero funcionan correctamente.
+  Conclusión: mejor alimentarlos siempre con 5V.
