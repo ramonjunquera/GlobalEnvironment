@@ -1,11 +1,6 @@
 /*
-  Pendiente:
-    Modificaciones para ESP32. M5Stick Watch
-    Necesario incluir librerías nuevas
-
-
   Autor: Ramón Junquera
-  Fecha: 20191001
+  Fecha: 20191007
   Tema: Elementos analógicos
   Objetivo: Aprender cómo funcionan las escrituras analógicas
 
@@ -17,6 +12,9 @@
     de 8 bits (2^8=256), pero las ESP tiene precisión de 10 bits (2^10=1024).
     Por esta razón definimos distinto máximo para el nivel de PWM, dependiendo
     de la placa.
+  Placa ATtiny85:
+    Sólo tiene 3 pines con capacidad PWM. Utilizaremos el 1 que además tiene
+    asociado el led integrado, para evitar montar circuito.
   Placas UNO/Nano:
     No todos los pines de las placas Arduino tienen la posibilidad de escritura
     analógica (PWM). En Arduino UNO o Nano, el pin 13 asociado al led integrado
@@ -46,7 +44,10 @@
 #include <Arduino.h>
 
 //Pinout
-#ifdef ARDUINO_ARCH_AVR //Si es una placa Arduino
+#ifdef ARDUINO_AVR_ATTINYX5 //Si es una placa ATtiny85
+  const byte pinLed=1; //Led integrado
+  const uint16_t maxLevel=255; //Máximo nivel de PWM
+#elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinLed=3;
   const uint16_t maxLevel=255; //Máximo nivel de PWM
 #elif defined(ESP8266) //Si es un ESP8266

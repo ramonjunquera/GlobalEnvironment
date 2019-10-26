@@ -1,0 +1,19 @@
+Tema: Instalación de VirtualBox en Ubuntu
+
+- Abrimos una sesión de terminal
+- Instalamos VirtualBox con:
+  sudo apt-get install virtualbox-qt
+- Se ha creado un nuevo icono de aplicación
+- La abrimos
+
+Nota:
+  Si sólo podemos ver versiones de sistemas operativos de 32bits es porque_
+  - El sistema operativo que contiene VirtualBox es de 32bits
+  - El sistema es de 64bits pero en la BIOS no está habilitada la opción de virtualización
+
+Consejo:
+  Después de la instalación de un sistema operativo, es conveniente añadir las herramientas
+  de VirtualBox para activar funcionalidades como el redimensionamiento automático de
+  escritorio.
+
+

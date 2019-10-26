@@ -1,0 +1,94 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa M5Stack Fire
+
+Dispositivo basado en placa ESP32 de Espressif, con 16Mb de memoria.
+Conexión USB-C para puerto serie y alimentación.
+
+Puerto serie:
+  UART0 (USB-C) : Velocidad máxima 921600 baudios
+    pin 1 : TX
+    pin 3 : RX
+  UART 2
+    pin 17 : TX
+    pin 16 : RX
+
+Puertos
+  A : I2C
+    pin 22 : SCL
+    pin 21 : SDA
+    pin 5V
+    pin GND
+  B : I/O
+    pin 36 : ADC
+    pin 26 : DAC
+    pin 5V
+    pin GND
+  C : UART2
+    pin 17 : TX
+    pin 16 : RX
+    pin 5V
+    pin GND
+
+Botones
+  pin 39 : A
+  pin 38 : B
+  pin 37 : C
+
+Display
+  Modelo: ILI9341
+  Color: SI
+  Resolución: 320x240
+  Conexión: SPI
+  Pinout
+    pin 14 : CS
+    pin 27 : DC
+    pin 32 : backlight
+    pin 33 : reset
+
+SD reader
+  Conexión: SPI
+  Tamaño máximo de tarjeta: 32Gb
+  Pinout
+    pin 4 : CS
+
+SPI
+  Pinout común
+    pin 18 : SCK
+    pin 19 : MISO
+    pin 23 : MOSI
+  Pines CS
+    pin  4 : SD reader
+    pin 14 : display ILI9341
+
+Speaker/Buzzer
+  Modelo: NS4148
+  Tipo: pasivo
+  Pin 25
+
+Micrófono
+  Modelo: MEMS Analog BSE3729
+  Pin 34
+
+Leds
+  Tipo: NeoPixel
+  Modelo: SK6812 3535 RGB LED x10
+  Pin 15
+  Nota: Esta placa NO tiene led integrado
+
+Pines libres
+  pin 26 : DAC : ADC2_CH9
+  pin 35 : ADC : ADC1_CH7
+  pin 36 : ADC : ADC1_CH0
+  pin 12 : IIS : SK / ADC2_CH5
+  pin 13 : IIS : WS/ ADC2_CH1
+  pin  2 : ADC : ADC2_CH2
+  pin  5 : GPIO
+
+I2C
+  Pinout
+    pin 21 : SDA
+    pin 22 : SCL
+  Identificadores
+    0x68 : MPU6050 : acelerómetro + giróscopo (6DOF)
+    0x0C : AK8963 : magnetómetro (3DOF)
+    0x75 : IP5306 : gestor de batería

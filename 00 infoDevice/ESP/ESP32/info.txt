@@ -1,0 +1,25 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa ESP32
+
+Esta famila de placas está basada en el microprocesador ESP-WROOM-32 de Espressif.
+Este procesador tiene 2 cores a 240MHz.
+Habitualmente las placas tienen 4Mb de memoria, aunque existen versiones con 16Mb.
+Uno de los cores se utiliza exclusívamente para comunicaciones. El otro para desarrollos de usuario.
+El procesador es un Tensilica Xtensa 32-bits LX6
+Tiene Wifi incluido y soporta los protocolos 802.11 b/g/n
+Tiene Bluetooth integrado y soporta el protocolo 4.2 LE.
+Se alimenta con 5V.
+Todos sus pines funcionan a 3.3V
+Tiene 26 pines digitales.
+Tiene 12 entradas analógicas.
+Tiene un puerto serie (UART).
+Soporta los protocolos I2C, SPI, VP/VN, DAC.
+Todos los pines numerados tienen posibilidad de PWM.
+
+Habitualmente tienen un led integrado asociado a la constante LED_BUILTIN.
+
+Consumo medio:
+  modo      consumo
+  --------- -------
+  Normal      64mA
+  DeepSleep   16mA

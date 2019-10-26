@@ -1,0 +1,69 @@
+Autor: Ramón Junquera
+Fecha: 20191025
+Tema: Descripción de placa ATtiny85
+Descripción:
+  Placa aconsejada para proyectos sencillos en los que no necesitemos demasiados pines de conexión,
+  poca memoria y un bajo consumo.
+
+  Características comparadas con un Arduino UNO   
+
+  Placa:                UNO        ATTiny85
+  --------------------  ---------  --------
+  Procesador:           ATmega328  ATtiny85
+  Frecuencia:           16MHz      16MHz
+  Memoria:              32Kb        8Kb
+  RAM:                   2Kb      0.5Kb
+  Pines:                20          5
+  Pines digitales:      14          5
+  Pines PWM:             6          3
+  Entradas analógicas:   6          3
+
+  Además soporta el protocolo I2C y SPI.
+  Tiene un regulador de tensión que permite voltajes de entrada entre 5 y 12V.
+  Tiene un puerto USB para comunicación y alimentación que le proporciona 500mA.
+
+Pinout:
+  Al igual que el Arduino UNO tiene un led integrado en placa asociado al pin 13, el ATtiny85
+  lo tiene asociado al pin 1.
+  Esto ocurre en el modelo A.
+  Parece que existe otro modelos (B) en el que el led integrado está asociado al pin 0.
+  Para todos los ejemplos, consideraremos que el modelo utilizado es el A, con el led integrado en el pin 1.
+  Si seleccionamos en Platformio la placa ATtiny85, asignará por defecto el valor 0 a la variable global LED_BUILTIN.
+  Esto ocurre gracias al archivo:
+    C:\Users\<user>\.platformio\packages\framework-arduinoavr\variants\tinyX5\pins_arduino.h
+  Podríamos modificar el archivo y cambiar el valor, pero esta acción se tendría que hacer siempre que se distribuyan
+  desarrollos para esta placa. No es una buena solución.
+
+  Pines con PWM: 0, 1 y 4
+    La frecuencia de refresco de PWM de los pines 0 y 1 es de 504Hz.
+    El pin 4 refresca a 1007Hz.
+    Es posible cambiar la frecuencia de refresco del PWN por hardware. Documentado en:
+      http://digistump.com/wiki/digispark/tricks
+    Existe una librería llamada TinySoftPwm que permite simular PWM por software en los
+    pines que no lo hacen por hardware.
+
+  Pines para lecturas analógicas:
+    pin 2 = A1
+    pin 3 = A3
+    pin 4 = A2
+
+  Pin asociado al led integrado en placa: 1
+  Color: rojo
+
+  Pin asociado a interrupción de hardware 0: 2
+
+  Pin asociado a reset: 5
+    LOW = reset, HIGH o desconectado = normal
+
+  Pines de protocolo I2C:
+    pin 0 : SDA
+    pin 2 : SCK
+
+  Pines de protocolo SPI:
+    pin 2 : SCK
+    pin 1 : MISO
+    pin 0 : MOSI
+
+Alimentación:
+  Para alimentar la placa de manera externa (sin USB) debemos conectar los pines GND y 5V (no Vin) a una fuente
+  de alimentación que suministre entre 5V y 12V.

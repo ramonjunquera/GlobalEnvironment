@@ -23,14 +23,14 @@ La conexión entre el FTDI y Sonoff es la siguiente:
   GND     GND
 
 Debemos configurar el dispositivo con estos parámetros:
-    Placa: “Generic ESP8266 Module”
-    Flash Mode: “DIO”
-    Flash Frequency: “40MHz”
-    Upload Using: “Serial”
-    CPU Frequency: “80 MHz”
-    Flash Size: “1m(64K SPIFFS)”
-    Reset Method: “ck”
-    Upload Speed: “115200”
+    Placa: "Generic ESP8266 Module"
+    Flash Mode: "DIO"
+    Flash Frequency: "40MHz"
+    Upload Using: "Serial"
+    CPU Frequency: "80 MHz"
+    Flash Size: "1m(64K SPIFFS)"
+    Reset Method: "ck"
+    Upload Speed: "115200"
 
 Es muy importante recordar que para que Sonoff se encuentre en
 modo de recepción de datos, se debe arrancar manteniendo el 

@@ -1,0 +1,59 @@
+Autor: Ramón Junquera
+Tema: Instalación de Ubuntu en Cube iWork'10
+
+Live:
+  Antes de hacer una instalación definitiva es muy conveniente probarlo con una versión Live.
+  Si además la versión Live admite cambios permanentes, mejor.
+  Esta funcionalidad sólo está permitida a partir de la versión 19.10 de Ubuntu.
+  No es consejable utilizar versiones anteriores porque larotación de pantalla no está
+  sincronizada con la posición del acelerómetro, o no reconoce el dispositivo de sonido.
+  Actualmente es beta, pero funciona bastante bien.
+  Como generador de la memoria USB seguiremos utilizadno Rufus. Al menos la versión 3.8.
+  El sistema operativa ocupa 2Gb. Por lo tanto, necesitaremos una memoria de al menos 4Gb.
+  2 para sistema y 2 para datos permanentes.
+  En Rufus ya aparece la opción de cuánta memoria se puede reservar para datos permanentes.
+  Para el arranque con la USB de Ubuntu tenemos que arrancar en BIOS. Lo conseguimos pulsando
+  la tecla suprimir cuando veamos el logo chino de inicio.
+  Después no iremos a la última opción del menú superior y seleccionaremos la partición de
+  arranque del USB.
+Wifi:
+  No es muy estable pero la reconoce.
+  Si la wifi se desconecta del punto de acceso, se debe apagar y volver a activar la wifi.
+Audio:
+  Se reconoce
+Touch panel:
+  No está sincronizado con la imágen que se muestra.
+  El touch panel tiene viene con la opción de autoirotación activada.
+  Se puede bloquear desde el menú superior derecho. Aparece una opción en la parte inferior.
+  El estado del bloqueo se mantiene tras un reinicio.
+  El escritorio tiene 4 direcciones de rotación: normal, left, inverted y right.
+  Con el comando xinput se muestran todos los dispositivos de entrada.
+  Podemos ver como el touch panel tiene de nombre "Goodix Capacitive TouchScreen" y
+  habitualmente tiene el identificador 16 (id=16).
+  Nos referiremos al dispositivo por identificador y no por nombre, porque está duplicado
+  y daría lugar a confusión.
+  Mostramos las propiedades del dispositivo con:
+    xinput list-props 16
+  Una de los valores que responde es: Coordinate Transformation Matrix = 1 0 0 0 1 0 0 0 1
+  Estos son los valores por defecto que tiene aplicados en este momento y para la rotación
+  actual para calcular las coordenadas de pantalla.
+  Esta matrix de 9 valores puede ser cambiada.
+  El problema es que desaparecen al cambiar de rotación y no se conservan tras un reinicio.
+  Primero nos aseguramos que aplicamos la rotación normal (con el logotippo de Windows abajo):
+    xrandr -o normal
+  A continuación se indicas los valores correctos de la matriz para cada orientación:
+  normal:
+    xinput set-prop 16 "Coordinate Transformation Matrix" -1 0 1 0 1 0 0 0 1
+  left:
+    xinput set-prop 16 "Coordinate Transformation Matrix" 0 -1 1 -1 0 1 0 0 1
+  inverted:
+    xinput set-prop 16 "Coordinate Transformation Matrix" 1 0 0 0 -1 1 0 0 1
+  right:
+    xinput set-prop 16 "Coordinate Transformation Matrix" 0 1 0 1 0 0 0 0 1
+      Intentar meterlo para que se autoejecute cada vez que se entre en una sesión gráfica
+
+Pendiente:
+  Crear script que aplique la configuración correcta de TouchPanel cada vez que el 
+  acelerómetro detecte un cambio de orientación.
+
+

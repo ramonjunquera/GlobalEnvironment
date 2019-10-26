@@ -1,0 +1,39 @@
+Autor: Ramón Junquera
+Tema: Buzzer (zumbador)
+Fecha: 20191002
+
+Descripción:
+  Un zumbador es un componente que produce sonido (un zumbido o pitido).
+  El sonido procede de un cristal (habitualmente cuarzo) que al vibrar genera ondas sonoras.
+  El efecto se conoce como piezoelectricidad. Si sometemos a ciertos cristales a un campo eléctrico, se deforman.
+  No tanto como para romperse, pero lo suficiente como para que afecte al aire que le rodea.
+  La deformación es instantánea.
+  Si el campo eléctrico se activa y desactiva lo suficientemente rápido, conseguiremos que el cristal vibre.
+  
+  Hay dos tipos de zumbadores: activos y pasivos.
+  - Circuitería interna. Un zumbador activo es como un zumbador pasivo al que se le ha añadido un oscilador.
+    El oscilador se encarga de generar una onda (serie de pulsos) a un determinada frecuencia que es enviada al
+    cristal.
+  - Polaridad. Un zumbador pasivo no tiene polaridad, aunque aparezca el simbolo + marcado para una de sus patas.
+    Además ambas patas tienen la misma longitud. Un zumbador activo tiene polaridad y sus patas tienen distinta
+    longitud igual que ocurre con los leds. La pata más larga corresponde al polo positivo.
+  - Frecuencia. La frecuencia de vibración corresponde con el tono que emite. Puesto que en un zumbador pasivo
+    somos nosotros los encargados de controlar la frecuencia, podemos hacerlo vibrar en cualquier frecuencia.
+    Un zumbador activo vibrará a la frecuencia que indique su oscilador. El oscilador no varía más de medio
+    tono cuando cambiamos el voltaje que aplicamos. Por lo tanto, podemos considerar que un zumbador pasivo
+    sólo vibra en una única frecuencia.
+  - Forma. Un zumbador pasivo tiene forma cilíndrica, con una altura de 8mm. Uno activo, al incluir el oscilador,
+    es un poco más grande (9mm).
+  - Usos. Un zumbador pasivo nos permitirá "interpretar canciones" gracias a la facilidad de variación de frecuencia.
+    Un zumbador activo sólo nos permitirá generar un pitido. Dependiendo de la necesidad del proyecto decidiremos
+    utilizar uno u otro.
+  - Comportamiento. Si suministramos alimentación a un zumbador pasivo, sólo escucharemos un "click" al conectarlo,
+    peoducido por la contracción instantánea del cristal. Un zumbador activo generará un pitido contínuo mientras
+    esté alimentado.
+  - Volumen. En ambos casos el volumen viene ligado a la cantidad de electricidad que se suministremos. Por lo tanto
+    dependiendo de la resistencia que le asociemos controlaremos su volumen. Habitualmente lo que queremos es que
+    suene lo más alto posible, así que veremos que no aparece ninguna resistencia junto al zumbador.
+
+  Truco:
+    Si tenemos un zumbador pasivo y sólo necesitamos pitidos, podríamos conectarlo a un pin PWM.
+    No podremos controlar su frecuencia y su nivel de PWM tampoco influirá mucho, pero funcionará.

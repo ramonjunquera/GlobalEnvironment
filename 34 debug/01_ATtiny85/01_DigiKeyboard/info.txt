@@ -1,0 +1,85 @@
+Tema: Librería DigiKeyboard.h
+Fecha: 24/10/2019
+
+La placa ATtiny85 no tiene un sistema de transferecia de programas como el resto de placas
+Arduino. Cuando pulsamos el botón de transferencia desde el IDE de Arduino, compila y espera
+a que conectemos la placa. En el momento que la detecta, envía el programa y al finalizar
+corta la conexión.
+
+Este sistema nos impide utilizar el práctico monitor serial de Arduino que simplifica
+mucho el debug de un programa.
+
+La librería DigiKeyboard.h intenta suplir esta carencia emulando un teclado que se conecta
+por USB.
+Cualquier PC dectecta la placa como un teclado y recibe pulsaciones.
+
+Si conectamos más de un teclado a un ordenador no habrá conflictos. Simplemente funcionarán
+todos a la vez.
+Puesto que ATtiny85 es reconocido como teclado, es capaz de escribir (enviar combinaciones de teclas)
+en el ordenador, como si se hubiesen escrito con un teclado real.
+
+Cómo se debe utilizar?
+Lo más sencillo es abrir el block de notas y tenerlo preparado.
+Cuando enviamos el programa al ATtiny85, tenemos unos segundos para activar el block de notas.
+Las teclas "pulsadas" por la placa se mostrarán en el notepad como si las hubiésemos 
+pulsado nosotros.
+
+Inconvenientes.
+- Como cualquier teclado, se considera un dispositivo de entrada. Ni de salida ni mixto. Por lo 
+  tanto sólo podremos recibir información de la placa. No enviarla.
+  Pero para la mayoría de los debugs es más que suficiente.
+- El puerto serie del USB está conectado a los pines 3 y 4. Así que necesitaremos dejarlos libres.
+
+Con la instalación de la colección de tarjetas de DigiStump se incluye la librería DigiKeyboard.h
+dentro de la carpeta DigisparkKeyboard que habitualmente se encuentra en:
+  Windows: C:\Users\<user>\AppData\Local\Arduino15\packages\digistump\hardware\avr\1.6.7\libraries\DigisparkKeyboard
+  Ubuntu: /Home/.arduino15/packages/digistump/hardware/avr/1.6.7/libraries/DigisparkKeyboard
+Esta librería sólo reconoce la distribución de teclado US (inglés americano).
+Con un teclado ES (español) no coincidirán la mayoría de las teclas no alfabéticas.
+
+Existe una actualización de esta librería con compatibilidad para varias distribuciones.
+La podemos descargar desde:
+  https://github.com/ernesto-xload/DigisparkKeyboard
+
+Sólo tenemos que eliminar la carpeta original y copiar la nueva.
+
+Para utilizarla tendremos que definir una constante de compilación previa a la llamada de la librería,
+de la liguiente manera:
+  #define kbd_es_es
+  #include <DigiKeyboard.h>
+
+Recordar que en C los caracteres especiales se escriben con el prefijo \. Ejemplos:
+  \' comilla simple (')
+  \" comilla doble (")
+  \? interrogante (?)
+  \\ barra invertida (\)
+  \a campana sonora
+  \b borrar atrás
+  \f alimentación de formulario - nueva página
+  \n alimentación de línea - nueva página
+  \r retorno de carro
+  \t tabulador horizontal
+  \v tabulador vertical
+
+Compatibilidad.
+Esta librería sólo es compatible para el ATtiny85 debido a cómo gestiona el USB.
+El puerto serie de un Arduino UNO (rev.3) no está conectado directamente con el USb.
+Lo hace a través de un intermediario: el chip ATMEL 16u2.
+El firmware que tiene por defecto hace que un PC reconozca que se ha conectado por USB una placa
+Arduino UNO.
+Si queremos que se reconozca como un teclado (o ratón) necesitaremos actualizar el firmware del
+16u2. En cuanto lo hagamos el UNO se reconocerá como teclado. Cualquier información que enviemos
+por el puerto serie, se verá desde el PC como pulsaciones recibidas.
+La comunicación será unidireccional (UNO->PC) y ya no podrá utilizarse el USB para cargar nuevos
+programas, hasta que restauremos el firmware original.
+Más información en:
+  https://forum.arduino.cc/index.php?topic=302586.0
+
+Interrupciones.
+Esta librería utiliza la interrupción por software (timer) número 0.
+Si utilizamos este mismo timer con otra librería, dejarán de funcionar correctamente sus funciones.
+Por ejemplo:
+- delay devolverá el control instantáneamente sin importar el valor del parámetro
+- DigiKeyboard.delay nunca devolverá el control
+- millis nunca cambiará su valor
+

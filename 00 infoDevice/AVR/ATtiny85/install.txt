@@ -1,0 +1,95 @@
+Autor: Ramón Junquera
+Fecha: 20191007
+Tema: ATtiny85. Configuración de entorno y upload
+Descripción:
+  La placa ATtiny85 tiene un sistema de transferencia/upload distinto al resto de placas.
+  La transferencia se hace a través de un programador.
+
+Instalación de drivers de DigiStump en Windows
+  Antes de configurar ningún entorno, es necesario instalar los drivers USB que permitirán
+  reconocer el dispositivo.
+  Los podemos localizar en: http://digistump.com/wiki/digispark/tutorials/connecting
+  Concretamente desde el link: 
+    https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip
+  Se incluye una copia de este archivo.
+  Descomprimimos y ejecutamos el archivo Install Drivers.exe
+  Ahora el dispositivo será reconocido y podremos enviar código desde el PC.
+
+  Imcompatibilidades con Windows 10 (sin solventar):
+    Es posible que en las últimas versiones de Windows 10 finalice la instalación con un error en
+    la instalación del controlador "Digistump LLC (usbser)".
+    Esto es debido a que en Windows 10 se ha reescrito totalmente el driver Usbser.sys.
+    Es necesaria la instalación de un driver compatible como LowCDC, descargable desde:
+      https://github.com/protaskin/LowCDC-Win10x64
+    Los comandos utilizados en el .bat pertenecen al kit de desarrollo de Windows 8.1.
+    La versión de Windows 10 no los incluye por considerarlos obsoletos.
+    Se puede descargar desde aquí:
+      https://developer.microsoft.com/es-es/windows/downloads/sdk-archive
+    Es posible que se necesite deshabilitar la comprobación de certificados firmados:
+      https://www.howtogeek.com/167723/how-to-disable-driver-signature-verification-on-64-bit-windows-8.1-so-that-you-can-install-unsigned-drivers/
+
+Configuración del IDE de Arduino:
+  Seleccionamos Archivo\Preferencias\Gestor de URLs adicionales de tarjetas y escribimos:
+    http://digistump.com/package_digistump_index.json
+  Si ya teníamos algo escrito en este campo, tendremos que separar las distintas URLs con una coma
+  o pulsar en el botón de la derecha, que desplegará una ventana en la que podremos escribir en
+  distintas líneas todas las URLs que tengamos.
+  Ahora vamos a Herramientas/Placa/Gestor de tarjetas...
+  Esperamos a que se actualice y buscamos "Digistump AVR Boards by Digistump".
+  Pulsamos el botón de instalar. Con esto descargamos los drivers para toda la familia de placas.
+  Si nos fijamos, el último mensaje en el IDE es que no ha ejecutado un script no confiable
+  Además indica el path. Por ejemplo:
+    ATENCIÓN: contribución no segura, saltando la ejecución del script
+    (C:\Users\cube\AppData\Local\Arduino15\packages\digistump\tools\micronucleus\2.0a4\post_install.bat)
+  Podemos copiarlo y ejecutarlo a mano. Son los mismos drivers que hemos instalado antes.
+  Seleccionamos el modelo de la placa desde Herramientas/Placa/Digispark (Default - 16.5mhz)
+  Ya estaremos preparados para comenzar a desarrollar.
+
+Comportamiento en Windows:
+  Si conectamos el dispositivo a Windows, comprobaremos que está contínuamente conectando y
+  desconectando.
+  Esto es normal, porque esta placa no funciona como las que conocemos hasta ahora.
+  En realidad esta placa debe estar desconectada mientras desarrollamos.
+
+Transferencia en el IDE de Arduino:
+  El dispositivo debe mantenerse desconectado.
+  Cuando tenemos una compilación correcta y queremos transferir el programa, pulsamos el botón
+  de transferencia en el IDE de Arduino y nos aparecerá un mensaje en el panel inferior que
+  nos pedirá conectar la placa en menos de 60 segundos.
+  La conectamos y al momento es detectada y comienza la transferencia.
+  Finaliza con un mensaje de confirmación.
+  Si el dispositivo está conectado cuando iniciamos la transferencia, dará un error.
+
+Configuración en Platformio:
+  El archivo platformio.ini debe contener la siguiente configuración:
+    [env:attiny85]
+    platform = atmelavr
+    board = attiny85
+    framework = arduino
+  Desde Platformio sólo podremos desarrollar y compilar. La transferencia será manual.
+  Tomaremos como base la línea de comando utilizada en el IDE de Arduino para tranferir el
+  programa. Por ejemplo (Ubuntu):
+    /home/pi/.arduino15/packages/digistump/tools/micronucleus/2.0a4/launcher -cdigispark --timeout 60 -Uflash:w:/tmp/arduino_build_253034/Attiny85.ino.hex:i
+  En ella podemos identificar:
+    - El ejecutable que transfiere: launcher
+    - El path del ejecutable: /home/pi/.arduino15/packages/digistump/tools/micronucleus/2.0a4/
+    - Los parámetro utilizados: -cdigispark --timeout 60 -Uflash:w:
+    - El archivo hexadecimal que se ha generado en la compilación: Attiny85.ino.hex
+    - El path del archivo compilado: /tmp/arduino_build_253034/
+  Para transferir el archivo compilado en Platformio, lanzaremos esta misma línea, sustituyendo
+  solamente el nombre y path del archivo compilado.
+  Así que una vez que hemos compilado correctamente nuestro programa, miraremos el log en el panel inferior
+  buscando la línea que comienza por Building. Por ejemplo:
+    Building .pio/build/attiny85/firmware.hex
+  En ella nos está diciendo el nombre del archivo compilado (*.hex) y su ubicación.
+  Sustituyendo en la línea de comando utilizada en el IDE de Arduino tenemos:
+    /home/pi/.arduino15/packages/digistump/tools/micronucleus/2.0a4/launcher -cdigispark --timeout 60 -Uflash:w:.pio/build/attiny85/firmware.hex:i
+  Esta es la línea que debemos ejecutar. No hace falta salir de Platformio.
+  En la barra inferior, el último de los iconos permite abrir una sesión de terminal para lanzar nuestros comandos.
+  Por supuesto, el funcionamiento es el mismo que en el IDE de Arduino: tenemos 60 segundos para conectar el
+  dispositivo. En cuanto lo hagamos, comenzará la transferencia.
+
+  Conclusión:
+    Para poder transferir archivos compilados en Platformio, es necesaria la previa instalación y 
+    configuración del IDE de Arduino.
+

@@ -1,0 +1,33 @@
+Autor: Ramón Junquera
+Tema: Cube iWork'10
+Objetivo: Descripción de equipo
+
+Características:
+  Pedo: 635g
+  Pantalla:
+    Tamaño: 10.1"
+    Resolución: 1920x1200
+  Memoria:
+    RAM: 4Gb
+    Disco duro (eMMC): 64Gb
+  CPU:
+    Modelo: Intel Cherry Trail Atom X5-Z8350
+    Cores: 4
+    Frecuencia: 1.44GHz
+  Sistema operativo:
+    - Windows 10
+    - Android 5.1
+  Batería: 7500mAh
+  Dispositivos:
+    - Webcamp
+    - Acelerómetro
+  Puertos:
+    - Lector microSD (hasta 128Gb)
+    - Salida microHDMI
+    - Puerto microUSB (coin adaptador a USB)
+    - Puerto USB3 para alimentación
+    - Salida de audio estéreo (jack 3.5")
+  Accesorios:
+    - Teclado que amplia 2 USBs y batería
+
+

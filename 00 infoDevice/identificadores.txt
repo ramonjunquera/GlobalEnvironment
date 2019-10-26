@@ -4,6 +4,7 @@ de placas:
 Arduino Mega          ARDUINO_AVR_MEGA2560                  ARDUINO_ARCH_AVR
 Arduino UNO           ARDUINO_AVR_UNO                       ARDUINO_ARCH_AVR
 Ardunio Nano          ARDUINO_AVR_NANO                      ARDUINO_ARCH_AVR
+Ardunio ATtiny85      ARDUINO_AVR_ATTINYX5                  ARDUINO_ARCH_AVR
 ESP-12E               ARDUINO_ESP8266_NODEMCU       ESP8266 ARDUINO_ARCH_ESP8266
 WeMos D1              ARDUINO_ESP8266_WEMOS_D1MINI  ESP8266 ARDUINO_ARCH_ESP8266
 ESP01 (generic)       ARDUINO_ESP8266_ESP01         ESP8266 ARDUINO_ARCH_ESP8266
