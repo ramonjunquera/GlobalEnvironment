@@ -7,6 +7,7 @@ Sensor fabricado por Invensense que contiene acelerómetro, giróscopo y magnet�
 Tiene 9 grados de libertas (9DOF), 3 para cada uno de los sensores.
 Contiene un MPU6500 con los tres sensores.
 El magnetómetro es un AK8963 fabricado por Asahi Kasei Microdevices Corporation.
+El giróscopo y acelerómetro es un MPU6050 (compatible con MPU6886).
 
 La conexión se puede realizar tanto por SPI como por I2C.
 En dispositivos ya montados como M5Stack Watch el cableado ya está hecho y sólo
@@ -26,7 +27,5 @@ Los rangos de los sensores pueden ser ajustados con distintos códigos:
 - Acelerómetro: ±2g (0x00), ±4g (0x08), ±8g (0x10), y ±16g (0x18)
 - Giróscopo: ±250 (0x00), ±500 (0x08), ±1000 (0x10), and ±2000°/sec [DPS=Degrees Per Second] (0x18)
 - Magnetómetro: hasta ±4800µT
-
-
 
  

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191025
+  Fecha: 20191027
   Tema: Gestión de interrupciones
   Objetivo: Aprender a utilizar el timer0 en ATtiny85
   Material adicional: ATTiny85
@@ -17,17 +17,17 @@
   El procesador ATtiny85 contiene un procesador que funciona a una frecuencia de 16MHz.
   Esto son 16 millones de ciclos de reloj cada segundo.
   Si calculamos el periodo de un ciclo tenemos:
-    Periodo = 1 / frecuencia = 1 / 16.000.000 = 0,000000063s = 0,000063ms = 0,063µs = 63ns
-  Cada 63 nanosegundos se aumenta el contador del timer.
+    Periodo = 1 / frecuencia = 1 / 16.500.000 = 0,000000061s = 0,000061ms = 0,061µs = 61ns
+  Cada 61 nanosegundos se aumenta el contador del timer.
 
-  Podríamos hacer que salte la interrupción cada 63 nanosegundos, pero no sería práctico
+  Podríamos hacer que salte la interrupción cada 61 nanosegundos, pero no sería práctico
   porque es un valor demasiado pequeño.
 
   Cuando el contador de un timer llega a su máximo valor (255), el siguiente ciclo lo incrementará
   y lo hará volver a cero.
 
   El tiempo que tarda el timer en recorrer todos sus valores es:
-    tiempo total = tiempo de cambio * número de valores = 63ns * 256 = 16128ns = 16µs
+    tiempo total = tiempo de cambio * número de valores = 61ns * 256 = 15515ns = 16µs
   Auque podamos hacer saltar una interrupción cada vez que el contador alcance su máximo valor, 16µs sigue
   siendo un valor muy pequeño.
 
@@ -125,7 +125,6 @@
   entonces cambiaremos el estado del led.
 
   Si queremos que el led parpadee cada segundo (aproximadamente), necesitaremos que nuestro contador alcance el siguiente valor:
-    k = periodo deseado/periodo de timer = 1000ms/33ms = 30,3 ~ 30
     k = periodo deseado/periodo de timer = 1000ms/16ms = 62,5 ~ 63
 
   Resultado:

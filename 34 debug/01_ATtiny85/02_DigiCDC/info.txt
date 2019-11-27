@@ -1,0 +1,62 @@
+Tema: Librería DigiCDC.h
+Fecha: 20191027
+
+La placa ATtiny85 no tiene un sistema de transferencia de programas como el resto de placas
+Arduino. Cuando pulsamos el botón de transferencia desde el IDE de Arduino, compila y espera
+a que conectemos la placa. En el momento que la detecta, envía el programa y al finalizar
+corta la conexión.
+
+Este sistema nos impide utilizar el práctico monitor serial de Arduino que simplifica
+mucho el debug de un programa.
+
+La librería DigiCDC.h intenta suplir esta carencia emulando un puerto serie por USB.
+Los métodos y funcionamiento son los mismos que el Serial de Arduino.
+Permite una comunicación bidireccional con el ordenador.
+Incluso se puede utilizar el monitor serial del IDE de Arduino.
+
+Para que el ordenador reconozca el dispositivo conectado a USB es necesaria la
+intalación de sus correspondientes drivers.
+Afortunadamente son parte de la intalación de los drivers globales de Digispark.
+
+Es obligatoria la línea que hace referencia al uso de la librería:
+  #include <DigiCDC.h>
+
+Esta librería ocupa la mitad de la memoria disponible. Esto es mucho, teniendo en 
+cuenta los pocos recursos de los que disponemos.
+Así que nos servirá como sistema de debug para proyectos muy pequeños.
+Si nuestro proyecto es grande, tendremos que pensar seccionarlo en funcionalidades
+para poder probarlas por separado con debug.
+
+La sintaxis es igual que el Serial, pero este puerto se llama SerialUSB
+Ejemplo:
+  En UNO:       Serial.println(35);
+  En ATtiny85:  SerialUSB.println(35);
+
+El buffer de entrada el puerto serie USB es de 48 bytes.
+
+La sentencia de inicialización del puerto NO requiere indicar la velocidad de transmisión.
+Esto es debido a que la librería trata al ATtiny85 como si fuese un dispositivo CDC.
+Por lo tanto el comando de inicialización queda reducido a SerialUSB.begin();
+
+La velocidad de transferencia no es demasiado elevada. Tarda unos 5ms en enviar un
+carácter. Esto corresponde aproximadamente con unos 1800 baudios.
+De todas formas, la velocidad de comunicación que seleccionaremos en el monitor serial es
+de 9600 baudios.
+
+Es obligatorio indicar que la comunicación sigue abierta cada 10ms o menos.
+Tenemos dos maneras de hacerlo:
+  - Utilizando alguno de los métodos de SerialUSB: delay, write, print, println, reaf, available, etc
+  - Utilizando el método SerialUSB.refresh();
+Si no lo hacemos, el ordenador decidirá que se ha perdido la conexión porque no tiene
+respuesta del dispositivo.
+Por eso es conveniente incluir alguno de estos comando en la función loop, o utilizar un
+timer para que se encargue de ello.
+Es muy conveniente sustituir el uso de la función delay() del sistema por SerialUSB.delay()
+
+Cuando se abre el monitor serie en el IDE de Arduino, habitualmente se envía un comando de
+reset al dispositivo que hace que el programa vuelva a comenzar.
+Esto no ocurrirá con este puerto serie USB. Al abrir el monitor serie NO se reseteará el 
+ATtiny85.
+
+La comunicación por USB utiliza los pines 3 y 4. No podrán ser usados para nada más. Deberán
+quedar libres.

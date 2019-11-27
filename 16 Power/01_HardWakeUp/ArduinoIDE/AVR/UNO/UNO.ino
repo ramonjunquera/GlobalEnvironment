@@ -1,5 +1,6 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20191030
   Tema: Modo de bajo consumo
   Objetivo: Uso del modo de bajo consumo con interruptciones hardware
   Material: breadboard, cables, pulsador, placa Arduino UNO
@@ -21,7 +22,7 @@
     - SLEEP_MODE_PWR_DOWN  0.36mA
   Describimos algunos con más profundidad:
   - El normal es el que conocemos. Sin ahorro de energía.
-  - SLEEP_MODE_IDLE permite que funcione el timer 1 de (16 bits) y la comuniucaciones por puerto serie. Para mejorar
+  - SLEEP_MODE_IDLE permite que funcione el timer 1 de (16 bits) y la comunicación por puerto serie. Para mejorar
     el ahorro de energía se podrían utilizar funciones adicionales para desactivar otros circuitos, como:
     - power_adc_disable()
     - power_spi_disable()
@@ -69,16 +70,14 @@ const byte pinLed = 13; //Pin del led integrado en placa
 const byte pinSwitch = 2; //Pin del interruptor
 const byte pinInt=0; //Interrupción asociada al pin del interruptor
 
-void IntSwitch()
-{
+void IntSwitch() {
   //Función a la que se llama cuando cambia el estado del interruptor
 
   //Despertamos!. Salimos del modo de bajo consumo. Se volverá a repetir la función loop()
   sleep_disable();
 }
 
-void setup()
-{
+void setup() {
   //Configuramos el pin del interruptor como entrada con las resistencias de pullup activas
   pinMode(pinSwitch,INPUT_PULLUP);
   //El pin del led será de salida para poder escribir en él
@@ -90,8 +89,7 @@ void setup()
   attachInterrupt(pinInt,IntSwitch,FALLING);
 }
  
-void loop()
-{
+void loop() {
   //Inicializamos el modo de bajo consumo
   sleep_enable();
   //Entramos en modo de bajo consumo
@@ -101,8 +99,7 @@ void loop()
   //En el momento que despertemos, continuaremos en este punto
   
   //Hacemos parpadear 3 veces el led
-  for(byte i=0;i<3;i++)
-  {
+  for(byte i=0;i<3;i++) {
     digitalWrite(pinLed,HIGH);
     delay(400);
     digitalWrite(pinLed,LOW);
@@ -112,4 +109,3 @@ void loop()
   //Hemos terminado
   //En la siguiente ejecución de la función loop() volveremos a entrar en modo de bajo consumo
 }
-

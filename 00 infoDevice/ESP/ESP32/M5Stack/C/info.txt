@@ -81,5 +81,6 @@ I2C
     pin 21 : SDA
     pin 22 : SCL
   Identificadores
-    0x?? : MPU6886 : acelerómetro + giróscopo (6DOF)
-    0x?? : AXP192 : gestor de batería
+    0x68 : MPU6886 : acelerómetro + giróscopo (6DOF) compatible con MPU6050
+    0x34 : AXP192 : gestor de batería
+    0x51 : BM8563 : reloj con hora real (RTC)

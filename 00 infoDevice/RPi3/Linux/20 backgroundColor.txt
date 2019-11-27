@@ -1,0 +1,24 @@
+Tema: Fijar color plano para background en Ubunto 19.10
+Fecha: 09/11/2019
+
+En las opciones de configuración del background, falta la posibilidad de fijar
+un color plano, como ocurría en versiones anteriores.
+Se puede hacer manualmente.
+Es necesario instalar dconf-editor con:
+  sudo apt install dconf-editor
+Tras la instalación abrimos la aplicación con dconf-editor
+Navegamos hasta /org/gnome/desktop/background
+Aquí encontraremos los controles de configuración del background.
+El parámetro "picture-url" indica la ubicación del archivo gráfico.
+Si lo eliminamos, no se dibujará ninguna imágen y se tendrán en cuenta los colores planos.
+El parámetro "color-shading-type" indica si hay degradado.
+Por defecto contiene la opción "solid" en la que sólo se tiene en cuenta el color 
+primario "primary-color".
+Podemos cambiar "solid" por "horizontal" o "vertical", en las que se tendrá en cuenta
+el color secundario "secondary-color" para hacer un degradado en esa dirección.
+Los colores se escriben en formato #RRGGBB 
+Para cada uno de los canales se escribe su valor en hexadecimal.
+Para facilitar la selección del color podemos utilizar alguna web de ayuda como:
+  https://www.w3schools.com/colors/colors_picker.asp
+
+  

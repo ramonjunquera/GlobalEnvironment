@@ -1,5 +1,5 @@
 Mapear una unidad de red popr Samba (smb)
-Fecha: 20190928
+Fecha: 20191122
 
 Tenemos dos métodos de configuración: gráfico y por consola.
 
@@ -37,7 +37,7 @@ cuando arranca. Esto se encuentra en el archivo /etc/fstab. La editamos:
   Ubuntu:
     sudo gedit /etc/fstab
   Raspbian:
-    sudo leafpad /etc/fstab
+    sudo mousepad /etc/fstab
 Añadimos el final del archivo la siguiente línea:
   //192.168.1.197/public /home/pi/synology/ cifs username=usuario,password=contraseña,noexec,user,vers=1.0,rw,nounix,uid=1000,iocharset=utf8 0 0
 En ella se define:

@@ -1,32 +1,35 @@
 Autor: Ramón Junquera
-Fecha: 20191007
+Fecha: 20191027
 Tema: ATtiny85. Configuración de entorno y upload
 Descripción:
   La placa ATtiny85 tiene un sistema de transferencia/upload distinto al resto de placas.
   La transferencia se hace a través de un programador.
 
-Instalación de drivers de DigiStump en Windows
-  Antes de configurar ningún entorno, es necesario instalar los drivers USB que permitirán
-  reconocer el dispositivo.
-  Los podemos localizar en: http://digistump.com/wiki/digispark/tutorials/connecting
-  Concretamente desde el link: 
-    https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip
-  Se incluye una copia de este archivo.
-  Descomprimimos y ejecutamos el archivo Install Drivers.exe
-  Ahora el dispositivo será reconocido y podremos enviar código desde el PC.
-
-  Imcompatibilidades con Windows 10 (sin solventar):
-    Es posible que en las últimas versiones de Windows 10 finalice la instalación con un error en
-    la instalación del controlador "Digistump LLC (usbser)".
-    Esto es debido a que en Windows 10 se ha reescrito totalmente el driver Usbser.sys.
-    Es necesaria la instalación de un driver compatible como LowCDC, descargable desde:
-      https://github.com/protaskin/LowCDC-Win10x64
-    Los comandos utilizados en el .bat pertenecen al kit de desarrollo de Windows 8.1.
-    La versión de Windows 10 no los incluye por considerarlos obsoletos.
-    Se puede descargar desde aquí:
-      https://developer.microsoft.com/es-es/windows/downloads/sdk-archive
-    Es posible que se necesite deshabilitar la comprobación de certificados firmados:
-      https://www.howtogeek.com/167723/how-to-disable-driver-signature-verification-on-64-bit-windows-8.1-so-that-you-can-install-unsigned-drivers/
+Instalación de drivers de DigiStump
+  Windows
+    Antes de configurar ningún entorno, es necesario instalar los drivers USB que permitirán
+    reconocer el dispositivo.
+    Los podemos localizar en: http://digistump.com/wiki/digispark/tutorials/connecting
+    Concretamente desde el link: 
+      https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip
+    Se incluye una copia de este archivo.
+    Descomprimimos y ejecutamos el archivo Install Drivers.exe
+    Ahora el dispositivo será reconocido y podremos enviar código desde el PC.
+  Ubuntu
+    No es necesario
+  
+Imcompatibilidades con Windows 10 (no solventado).
+  En las últimas versiones de Windows 10 finaliza la instalación finaliza con un error en
+  la instalación del controlador "Digistump LLC (usbser)".
+  Esto es debido a que en Windows 10 se ha reescrito totalmente el driver Usbser.sys.
+  Es necesaria la instalación de un driver compatible como LowCDC, descargable desde:
+    https://github.com/protaskin/LowCDC-Win10x64
+  Los comandos utilizados en el .bat pertenecen al kit de desarrollo de Windows 8.1.
+  La versión de Windows 10 no los incluye por considerarlos obsoletos.
+  Se puede descargar desde aquí:
+    https://developer.microsoft.com/es-es/windows/downloads/sdk-archive
+  Es posible que se necesite deshabilitar la comprobación de certificados firmados:
+    https://www.howtogeek.com/167723/how-to-disable-driver-signature-verification-on-64-bit-windows-8.1-so-that-you-can-install-unsigned-drivers/
 
 Configuración del IDE de Arduino:
   Seleccionamos Archivo\Preferencias\Gestor de URLs adicionales de tarjetas y escribimos:

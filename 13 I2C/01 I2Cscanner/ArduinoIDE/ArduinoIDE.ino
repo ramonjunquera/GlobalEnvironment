@@ -30,14 +30,12 @@
 #include <Arduino.h>
 #include <Wire.h> //Gestión de I2C
 
-void setup()
-{
+void setup() {
   //Activamos el puerto serie
   Serial.begin(115200);
 }
 
-void loop()
-{
+void loop() {
   int nDevices;
 
   //Indicamos que comenzamos a escanear el bus I2C
@@ -48,15 +46,13 @@ void loop()
   //Inicialmente no hemos encontrado ningún dispositivo
   nDevices = 0;
   //Recorremos todos los posibles identificadores de dispositivos...
-  for(byte address=1;address<127;address++) 
-  {
+  for(byte address=1;address<127;address++) {
     //Activamos la conexión con el identificador procesado
     Wire.beginTransmission(address);
     //Sin enviar ningún dato, cerramos las comunicaciones tomando nota del posible error
     byte error = Wire.endTransmission();
     //Si no se ha producido ningún error...
-    if (!error)
-    {
+    if (!error) {
       //...es porque el dispositivo ha respodido correctamente!
       //Informamos del descubrimiento
       Serial.print(F("I2C device found at address 0x"));
@@ -68,8 +64,7 @@ void loop()
       //Hemos encontrado un nuevo dispositivo conectado
       nDevices++;
     }
-    else if (error==4) //Si se ha producido un error y es el 4...
-    {
+    else if (error==4) { //Si se ha producido un error y es el 4...
       //No sabemos qué ha podido ocurrir. Informamos.
       Serial.print("Unknow error at address 0x");
       //Añadimos el cero al principio por tener un sólo dígito

@@ -1,16 +1,16 @@
 Tema: Configuración de Geany
-Fecha: 20190602
+Fecha: 20191122
 
-Habitualmente guardamos las librerías compartidas en la carpeta /home/pi/prg
+Habitualmente guardemos las librerías necesarias en la carpeta lib dentro de la carpeta del proyecto.
 Es necesario indicar al compilador que busque en esa carpeta las librerías que no encuentre.
 Para ello añadimos la directiva -I con el path, quedando la línea de llamada al Build:
-  g++ -Wall -std=c++11 -o "%e" "%f" -lbcm2835 -lpigpio -lrt -lwiringPi -pthread -I"/home/pi/prg/"
+  g++ -Wall -std=c++11 -o "%e" "%f" -lbcm2835 -lpigpio -lrt -lwiringPi -pthread -I"lib"
 
 Los parámetros -l podrían ser eliminados si no se utilizan. Por ejemplo:
-  g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"/home/pi/prg/"
+  g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"lib"
 
 También se debe incluir el parámetro del path en la sección Compile. Por ejemplo:
-  g++ -Wall -std=c++11 -c "%f" -pthread -I"/home/pi/prg/"
+  g++ -Wall -std=c++11 -c "%f" -pthread -I"lib"
 
 Para que la ejecución se haga con permisos de root, la línea del run quedaría:
   sudo "./%e"

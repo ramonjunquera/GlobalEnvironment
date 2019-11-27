@@ -1,13 +1,13 @@
-﻿Instalación de Platformio
+Tema: ﻿Instalación de Platformio
+Fecha: 09/11/2019
 
 Es requisito previo imprescindible la instalación de Visual Code, puesto que
 Platformio es un plugin.
 
-Platformio tiene un segundo requisito previo, la instalación de Python.
-Esto lo podemos completar con:
-  sudo apt-get install python
-Si este paso se omite y Python no está instalado, aparecerá un error de ejecución
-de un script .py.
-
 La instalación consiste simplemente en añadir el plugin de Platformio.
+En la instalación se pueden producir distintos errores:
+- Error "Could not create PIO Core Virtual Environment"
+  Debemos instalar un paquete adicional con:
+    sudo apt install virtualenv
+- Error al abrir un archivo .py
 

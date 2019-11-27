@@ -1,0 +1,3 @@
+Tema: Aplicación para generar archivos pdf desde imágenes con interface gráfico
+
+sudo apt-get install gscan2pdf

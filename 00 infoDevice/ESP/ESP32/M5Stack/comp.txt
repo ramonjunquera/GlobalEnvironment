@@ -1,0 +1,15 @@
+Autor: Ramón Junquera
+Tema: Comparativa entre dispositivos de M5Stack
+
+Fire  C  Watch Característca
+---- --- ----- -------------
+ X    X        Display color
+ 3    2    1   Botones
+ X             SD reader
+ X         X   Buzzer
+ X    X        Mic
+      X    X   Led integrado
+ X             NeoPixel
+ X    X    X   Acelerómetro
+ X         X   Magnetómetro
+           X   Led IR

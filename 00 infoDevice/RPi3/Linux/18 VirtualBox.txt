@@ -1,0 +1,57 @@
+﻿Tema: Instalación de VirtualBox en Ubuntu
+- Abrimos una sesión de terminal
+- Instalamos VirtualBox con:
+  sudo apt-get install virtualbox-qt
+- Se ha creado un nuevo icono de aplicación
+- La abrimos
+Nota:
+  Si sólo podemos ver versiones de sistemas operativos de 32bits es porque_
+  - El sistema operativo que contiene VirtualBox es de 32bits
+  - El sistema es de 64bits pero en la BIOS no está habilitada la opción de virtualización
+Consejo:
+  Después de la instalación de un sistema operativo, es conveniente añadir las herramientas
+  de VirtualBox para activar funcionalidades como el redimensionamiento automático de
+  escritorio.
+
+Carpetas compartidas
+  VirtualBox permite que el sistema operativo host comparta con el guest ciertas
+  carpetas.
+  Antes de utilizar esta funcionalidad por primera vez, es necesario completar algunos pasos.
+    - Instalación de "guest additions".
+      "guest addition" es una colección de herramientas que ofrece VirtualBox para la
+      mayoría de sistemas. Una de sus funcionalidades es la posibilidad de compartir
+      carpetas con el sistema operativo anfitrión (host).
+      Desde VirtualBox seleccionamos desde el menú:
+        Dispositivos/Insertar imagen del CD de las "Guest Additions"
+      Aceptamos su instalación.
+    - Añadir el usuario actual al grupo de carpetas compartidas para que tenga permisos
+      para trabajar con ellas, con la siguiente línea:
+        sudo usermod -a -G vboxsf "$(whoami)"
+      El último parámetro puede ser sustituido por el nombre del usuario actual, por ejemplo:
+        sudo usermod -a -G vboxsf miusuario
+      En necesario reiniciar para que los permisos se tengan en cuenta.
+  Creación de carpetas compartidas.
+    - Selección de carpeta
+      Seleccionamos desde el menú:
+        Dispositivos/Carpetas compartidas/Preferencias de carpetas compartidas...
+      Pulsamos el icono de la derecha para agregar una nueva carpeta compartida
+      Desplegamos el campo "Ruta carpeta" y seleccionamos la opción "Otro..."
+      Aquí seleccionaremos la carpeta del anfitrión que queremos compartir.
+      Es este ejemplo será la unidad E:
+      Por defecto le asigna el nombre E_DRIVE que aceptaremos
+    - Selección de montar automáticamente
+      Activaremos el check "Automontar"
+    - Selección de tipo de compartición
+      Activaremos el check "Hacer permanente"
+    - Finalizamos pulsando el botón "Aceptar"
+  Comprobación de acceso
+    A partir del próximo reinicio, nos aparecerá la carperta compartida.
+    Automáticamente se la añade el prefijo sf_ al nombre original que le dimos a la carpeta.
+    Las carpetas automontadas se crean bajo el path /media. En el se ha creado automáticamente
+    una carpeta con el nombre compartido.
+    El funcionamiento de las carpetas compartidas no está vinculado a la existencia de
+    interfaces de red. Funcionarán igual aunque no tengamos tarjetas de red activas.
+  Eliminación
+    Es suficiente con borrar la carpeta compartida y la carpeta creada en /media
+
+

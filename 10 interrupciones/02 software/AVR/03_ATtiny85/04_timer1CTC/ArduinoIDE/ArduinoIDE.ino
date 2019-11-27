@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191025
+  Fecha: 20191027
   Tema: Gestión de interrupciones
   Objetivo: Aprender a utilizar el timer1 en ATtiny85
   Material adicional: ATTiny85
@@ -246,8 +246,8 @@
   Así pondemos como límite de nuestro contador 10, para obtener el segundo de parpadeo.
   
   Calculamos el valor límite:
-  valor límite = frecuencia CPU / prescaler * periodo deseado - 1
-  valor límite = 16.000.000 / 16.384 * 0,1 - 1 = 96.65625 ~ 97
+    valor límite = frecuencia CPU / prescaler * periodo deseado - 1
+    valor límite = 16.500.000 / 16.384 * 0,1 - 1 = 99.7080 ~ 100
 
   Resultado:
     El led integrado en placa parpadea cada segundo (aproximadamente).
@@ -274,7 +274,7 @@ void setup() {
   //el valor del registro OCR1C
   TCCR1=B01001111;
   //Fijamos el valor de comparación para que salte la interrupción y resetee el contador automáticamente
-  OCR1A = OCR1C = 97;
+  OCR1A = OCR1C = 100;
   //Registro TIMSK. bits referentes a interrupción 1:
   //  bit 2 : TOIE1 : timer1 Overflow Interrupt Enable, bit 1 = 0 = salta cuando el contador llega al valor máximo
   //  bit 5 : OCIE1B : timer1 Output Compare Interrupt Enable = 0 = salta cuando el contador sea igual a OCR1B

@@ -1,74 +1,20 @@
 Tema: Cómo instalar Fritzing
+Fecha: 20191112
+
+Nota.
+No utilizaremos la web oficial de Fritzing para la descarga.
+Usaremos paquetes instalables por apt-get.
+La razón es que la web oficial solicita registro para la descarga y además la aplicación
+requere de librerías obsoletas que no se incluyen.
 
 Instrucciones:
-
-  Ubuntu
-    Instalación
-    - Descargamos el paquete de instalación para Linux 64 directamente de la web oficial
-      de Fritzing: http://fritzing.org/download/?donation=0
-      El archivo descargado es fritzing-0.9.3b.linux.AMD64.tar.bz2
-      Suponemos que se ha descargado en la carpeta Downloads
-      Abrimos una sesión de terminal y escribimos:
-    - Cambiamos a la carpeta de Downloads:
-        cd /home/pi/Downloads
-    - Lo descomprimimos ahí mismo con:
-        tar -vxf fritzing-0.9.3b.linux.AMD64.tar.bz2
-    - Renombramos la carpeta descomprimida a fritzing con:
-        mv fritzing-0.9.3b.linux.AMD64 fritzing
-    - Movemos la carpeta a /usr/share/fritzing con:
-        sudo mv fritzing /usr/share
-    - Ejecutamos el script de instalación con:
-        /usr/share/fritzing/install_fritzing.sh
-    - Ya podríamos ejecutarlo con:
-        /usr/share/fritzing/Fritzing
-    Asociar extensión.
-    - Localizamos un archivo con extensión .fzz (por ejemplo Mega.fzz)
-    - Abrimos una sesión de terminal en esa carpeta
-    - Creamos una nueva asociación con:
-        mimeopen -d Mega.fzz
-    - Pide seleccionar una opción. Seleccionamos la opción "Other..."
-    - Escribimos el comando de asociación:
-        /usr/share/fritzing/Fritzing %f
-    - A partir de ahora se podrán abrir archivos con extensión fzz desde el explorador de
-      archivos, haciendo doble click sobre ellos.
-    Path con espacios.
-      Debido a un error en el script de inicio, cuando se hace doble click sobre un archivo
-      con extensión fzz desde el explorador de archivos y éste contiene espacios, ya sea en
-      el path o en el nombre del archivo, se abre la aplicación pero no carga el archivo.
-      Lo corregiremos con:
-        sudo gedit /usr/share/fritzing/Fritzing
-      El contenido original es:
-----begin----
-#!/bin/sh
-appname="Fritzing"
-# dirname=`dirname "${0}"`
-
-# new dirname procedure from Volker Kuhlmann
-# use -f to make the readlink path absolute
-dirname="$(dirname -- "$(readlink -f -- "${0}")" )"
-
-if [ "$dirname" = "." ]; then
-	dirname="$PWD/$dirname"
-fi
-
-LD_LIBRARY_PATH="${dirname}/lib"
-export LD_LIBRARY_PATH
-
-"$dirname/lib/$appname" $*
-----end----
-      Y actualizaremos su última línea a:lo actualizaremos por:
-        "$dirname/lib/$appname" "$*"
-      Guardamos
-
-  Raspbian
-    Instalación.
-    - Abrimos terminal e instalamos:
-        sudo apt-get install fritzing-parts fritzing-data fritzing
-    - Tras la instalación se crea un icono en la sección Programming.
-    - También se puede ejecutar desde la línea de comandos con: Fritzing (con F mayúscula).
-    - Nota: No utilizamos el paquete descargado desde la web oficial porque da un error de
-      falta de librerías, tanto en 32 como en 64 bits.
-    Asociación de extensión.
+  Instalación.
+  - Abrimos terminal e instalamos:
+      sudo apt-get install fritzing-parts fritzing-data fritzing
+  - Tras la instalación se crea un icono en la sección Programming.
+  - También se puede ejecutar desde la línea de comandos con: Fritzing (con F mayúscula).
+  Asociación de extensión.
+    Raspbian
       - Hacemos click con el botón derecho sobre un archivo con extensión fzz
       - Seleccionamos "Properties"
       - Desplegamos el campo "Open with:"
@@ -76,28 +22,30 @@ export LD_LIBRARY_PATH
       - Seleccionamos Programming/Fritzing
       - Pulsamos el botón OK
       - Volvemos a pulsar el botón OK
-    Abrir desde explorador de archivos
-      Debido a un error en el script de inicio, cuando se hace doble click sobre un archivo
-      con extensión fzz desde el explorador de archivos, se abre la aplicación, pero nunca
-      el archivo indicado.
-      Lo corregiremos con:
-        sudo leafpad /usr/bin/Fritzing
-      El contenido original es:
-----begin----
-#!/bin/sh
-
-cd /usr/share/fritzing/parts
-exec /usr/bin/fritzing
-----end----
-      Y lo actualizaremos por:
-----begin----
-#!/bin/sh
-
-cd /usr/share/fritzing/parts
-exec /usr/bin/fritzing "$1"
-----end----
-      Guardamos y a partir de ahora no sólo podremos abrir archivos desde el explorador de archivos,
-      sino que el path o nombre del archivo podrían contener espacios.
+    Ubuntu
+      - Localizamos un archivo con extensión .fzz (por ejemplo Mega.fzz)
+      - Abrimos una sesión de terminal en esa carpeta
+      - Creamos una nueva asociación con:
+          mimeopen -d Mega.fzz
+      - Pide seleccionar una opción. Seleccionamos la opción "Other..."
+      - Escribimos el comando de asociación:
+          /usr/bin/fritzing %f
+      - A partir de ahora sse abrirá la aplicación Fritzing cuando se haga doble click sobre 
+        un archivo .fzz
+  Abrir desde explorador de archivos
+    Debido a un error en el script de inicio, cuando se hace doble click sobre un archivo
+    con extensión fzz desde el explorador de archivos, se abre la aplicación, pero nunca
+    el archivo indicado.
+    Lo corregiremos con:
+      Raspbian: sudo leafpad /usr/bin/Fritzing
+      Ubuntu  : sudo gedit /usr/bin/fritzing
+    En el script vemos que primero cambia a la carpeta de la aplicación y después lanza
+    la aplicación. En Raspbian es fritzing y en Ubuntu fritzing.real
+    Debemos añadir después del nombre del ejecutable el parámetro "$1" separado por un espacio.
+      Ejemplo Ubuntu: exec /usr/bin/fritzing.real "$1"
+      Ejemplo Raspbian: exec /usr/bin/fritzing "$1"
+    Guardamos y a partir de ahora no sólo podremos abrir archivos desde el explorador de archivos,
+    sino que el path o nombre del archivo podrían contener espacios.
 
 
 

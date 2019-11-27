@@ -29,19 +29,30 @@ sección llamada ESP32 Modules con varios modelos.
 
 Nota:
   07/05/2019. Error en Linux.
-  He notado que desde el IDE de Arduino, no funciona la transferencia del compilado al microprocesador,
-  dando un error de: "AttributeError: 'Serial' object has no attribute 'dtr'".
-  Esto es debido a que las nuevas versiones del compilador de ESP32 utilizan la última versión de
-  las herramientas de python.
-  Deberíamos actualizar o instalar (si es que no está), python-serial con:
-    apt-cache policy python-serial
-  Debemos actualizar pyserial con:
-    sudo pip install --upgrade pyserial
-  Si tenemos alguna versión antigua como la 2.6 se informará que queda obsoleta.
-  Se actualiza a la versión 3.4
-  Es posible que también informe que estamos utilizando un pip antiguo (versión 9.0.1) y que existe
-  uno más moderno (versión 19.1.1). Si es así, lo actualizamos con:
-    sudo pip install --upgrade pip
+    He notado que desde el IDE de Arduino, no funciona la transferencia del compilado al microprocesador,
+    dando un error de: "AttributeError: 'Serial' object has no attribute 'dtr'".
+    Esto es debido a que las nuevas versiones del compilador de ESP32 utilizan la última versión de
+    las herramientas de python.
+    Deberíamos actualizar o instalar (si es que no está), python-serial con:
+      apt-cache policy python-serial
+    Debemos actualizar pyserial con:
+      sudo pip install --upgrade pyserial
+    Si tenemos alguna versión antigua como la 2.6 se informará que queda obsoleta.
+    Se actualiza a la versión 3.4
+    Es posible que también informe que estamos utilizando un pip antiguo (versión 9.0.1) y que existe
+    uno más moderno (versión 19.1.1). Si es así, lo actualizamos con:
+      sudo pip install --upgrade pip
+  03/11/2019. Error en Ubuntu.
+    Al intentar transferir el compilado en el IDE de Arduino, da un error de compilación debido a que no
+    puede importar el módulo serial de python. El problema se resuelve instalando el módulo serial para
+    python. Para su instalación debemos tener previamente instalado el módulo pip.
+    Primero comprobaremos que tenemos instalado el módulo pip, pidiendo su versión:
+      pip --version
+    Si no lo tenemos, lo instalamos con:
+      sudo apt-get install python-pip
+    Ahora debería funcionar el comando para pedir la versión de pip.
+    Finalmente instalamos el módulo serial para python:
+      sudo -H pip install pyserial
 
 Instalación de plugin data
 El plugin data permite subir el contenido de la carpeta "data" que cuelga de la carpeta de

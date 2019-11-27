@@ -28,7 +28,7 @@
 */
 
 #include <Arduino.h>
-#include <RoJoILI9341.h> //Librería de gestión del display RoJoILI9341
+#include <RoJoILI9341.h> //Librería de gestión del display ILI9341
 #include <RoJoSprite.h> //Librería de gestión de sprites monocromos
 #include <RoJoMPU9250.h> //Librería de gestión de sensores de MPU9250
 #include <RoJoSwitch.h> //Librería de gestión de interruptores

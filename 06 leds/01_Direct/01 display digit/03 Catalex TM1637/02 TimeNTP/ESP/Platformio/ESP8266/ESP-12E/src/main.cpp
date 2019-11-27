@@ -54,8 +54,8 @@ const byte pinDIO=D7;
 const byte pinSwitch=D3;
 
 //Definimos como constantes el nombre del punto de acceso y su contraseña
-const char *wifiSSID = "RoJo";
-const char *wifiPassword = "ZAMPABOLLOS5";
+const char *wifiSSID = "xxx";
+const char *wifiPassword = "xxx";
 
 //Definimos objeto de gestión del display
 RoJoTM1637 display;

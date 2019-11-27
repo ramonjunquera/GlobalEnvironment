@@ -1,5 +1,5 @@
 Autor: Ramón Junquera
-Fecha: 20191025
+Fecha: 20191029
 Tema: Descripción de placa ATtiny85
 Descripción:
   Placa aconsejada para proyectos sencillos en los que no necesitemos demasiados pines de conexión,
@@ -65,5 +65,6 @@ Pinout:
     pin 0 : MOSI
 
 Alimentación:
-  Para alimentar la placa de manera externa (sin USB) debemos conectar los pines GND y 5V (no Vin) a una fuente
+  Para alimentar la placa de manera externa (sin USB) debemos conectar los pines GND y Vin a una fuente
   de alimentación que suministre entre 5V y 12V.
+  El pin 5V servirá para alimentar al resto de elementos de nuestro circuito.

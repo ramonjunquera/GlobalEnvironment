@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191025
+  Fecha: 20191027
   Tema: Gestión de interrupciones
   Objetivo: Aprender a utilizar el timer1 en ATtiny85
   Material adicional: ATtiny85
@@ -209,7 +209,7 @@
   
   Calculamos el valor límite:
     valor límite = frecuencia CPU / prescaler * periodo deseado - 1
-    valor límite = 16.000.000 / 16.384 * 0,1 - 1 = 96.65625 ~ 97
+    valor límite = 16.500.000 / 16.384 * 0,1 - 1 = 99.7080 ~ 100
 
   Importante!.
   Según la documentación, el registro TCNT1 contiene el contador del timer1 (el que estamos utilizando).
@@ -243,7 +243,7 @@ void setup() {
   //Tambien se suele utilizar la siguiente nomenclatura: TCCR1=(1<<CS10) | (1<<CS11) | (1<<CS12) | (1<<CS13);
   TCCR1=B00001111;
   //Fijamos el valor de comparación 
-  OCR1A = 97;
+  OCR1A = 100;
   //Registro TIMSK. bits referentes a interrupción 1:
   //  bit 2 : TOIE1 : timer1 Overflow Interrupt Enable, bit 1 = 0 = salta cuando el contador llega al valor máximo
   //  bit 5 : OCIE1B : timer1 Output Compare Interrupt Enable = 0 = salta cuando el contador sea igual a OCR1B

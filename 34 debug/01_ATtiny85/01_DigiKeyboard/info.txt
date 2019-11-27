@@ -1,7 +1,7 @@
 Tema: Librería DigiKeyboard.h
-Fecha: 24/10/2019
+Fecha: 20191027
 
-La placa ATtiny85 no tiene un sistema de transferecia de programas como el resto de placas
+La placa ATtiny85 no tiene un sistema de transferencia de programas como el resto de placas
 Arduino. Cuando pulsamos el botón de transferencia desde el IDE de Arduino, compila y espera
 a que conectemos la placa. En el momento que la detecta, envía el programa y al finalizar
 corta la conexión.

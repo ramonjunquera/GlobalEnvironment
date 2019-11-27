@@ -1,20 +1,20 @@
 Cómo instalar el IDE de Arduino en Raspbian ARM32 o x86
-Fecha:20190528
+Fecha:20191110
 
 Descargamos la última versión desde la página oficial:
 https://www.arduino.cc/en/Main/Software
 Suponemos que quedará en la carpeta Downloads del usuario pi (/home/pi/Downloads).
 
-Actualmente la última versión es la 1.8.9.
+Actualmente la última versión es la 1.8.10.
 Dependiendo del tipo de procesador obtenemos el archivo:
-  ARM32  : arduino-1.8.9-linuxarm.tar.xz
-  Linux64: arduino-1.8.9-linux64.tar.xz
+  ARM32  : arduino-1.8.10-linuxarm.tar.xz
+  Linux64: arduino-1.8.10-linux64.tar.xz
 
 Descomprimimos el archivo en /usr/share para que quede a disposición de todos los usuarios
-  sudo tar -Jxvf /home/pi/Downloads/arduino-1.8.9-linuxarm.tar.xz -C /usr/share
-  sudo tar -Jxvf /home/pi/Downloads/arduino-1.8.9-linux64.tar.xz -C /usr/share
+  sudo tar -Jxvf /home/pi/Downloads/arduino-1.8.10-linuxarm.tar.xz -C /usr/share
+  sudo tar -Jxvf /home/pi/Downloads/arduino-1.8.10-linux64.tar.xz -C /usr/share
 Ejecutar el script install con permisos de root:
-  sudo /usr/share/arduino-1.8.9/install.sh
+  sudo /usr/share/arduino-1.8.10/install.sh
 Indica que está añadiendo un enlace al escritorio y trabajando en las asociaciones de archivos.
 Tras un rato finaliza. Tenemos un nuevo icono en Menú/Programming/Arduino IDE y en el escritorio.
 
@@ -23,4 +23,10 @@ comunes.
 
 Después de reiniciar, ya tenemos asociadas las extensiones con la aplicación.
 
-
+Nota.
+En Ubuntu, si utilizamos puertos de conexión especiales (/dev/ttyACM0 o /dev/ttyACM0), ya
+sea porque usamos placas que lo necesitan o porque tenemos la máquina virtualizada, es
+posible que nos encontremos
+con errores a la hora de transferir el compilado por falta de permisos.
+Esto se corrige dando permisos globales al puerto:
+  sudo chmod a+rw /dev/ttyACM0

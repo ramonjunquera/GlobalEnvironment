@@ -1,12 +1,13 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20191030
   Tema: Modo de bajo consumo
   Objetivo: Uso del bajo consumo con interrupciones software (timers)
   Material: Arduino UNO, breadboard, interruptor de pulsador, cables
 
   Descripción:
-  En el ejercicio anterior hemos aprendido a entrar en el modo de bajo consumo y salir a través de una interrupción
-  de cambio de estado de un pin.
+  En ejercicios anteriores hemos aprendido a entrar en modo de bajo consumo y salir de él por un cambio
+  de estado en un pin.
   Hay una segunda manera de salir... con un timer.
   El timer no es ninguno de los utilizados en ejercicios anteriores. Esta vez se llama WatchDog.
   Es un timer que se encarga de que el programa no se quede atascado, y si lo hace resetea la placa.
@@ -20,21 +21,18 @@
   Cuando lo pulsamos hacemos que se despierte y que parpadee el led.
     
   Resultado:
-  La placa permanece en estado de bajo consumo surante un tiempo máximo o hasta que se pulse el interruptor.
+  La placa permanece en estado de bajo consumo durante un tiempo máximo o hasta que se pulse el interruptor.
 */
 
 #include <Arduino.h>
+#include "RoJoLowPowerWDT.h" //Gestión del timer para el modo de bajo consumo
 
-//Gestión del timer para el modo de bajo consumo
-#include "RoJoLowPowerWDT.h"
-
-//Declaración de constantes
+//Declaración de constantes globales
 const byte pinLed = 13; //Pin del led integrado en placa
 const byte pinSwitch = 2; //Pin del interruptor
 const long sleepTime = 3000; //Tiempo de hibernación en milisegundos
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
   //El pin del interruptor estará en HIGH y cuando se pulse en LOW
   pinMode(pinSwitch,INPUT_PULLUP);
@@ -45,8 +43,7 @@ void setup()
   attachInterrupt(0,IntSwitch,FALLING);
 }
  
-void loop()
-{
+void loop() {
   //Entramos en modo de bajo consumo durante el tiempo definido
   lowPowerWDT.sleep(sleepTime);
     
@@ -59,11 +56,9 @@ void loop()
   digitalWrite(pinLed,LOW);
 }
 
-void IntSwitch()
-{
+void IntSwitch() {
   //Función a la que se llama cuando cambia el estado del interruptor
 
   //Despertamos!. Cancelamos el timer. Se continuará la función loop() en el mismo punto en el que se dejó
   lowPowerWDT.wakeup();
 }
-

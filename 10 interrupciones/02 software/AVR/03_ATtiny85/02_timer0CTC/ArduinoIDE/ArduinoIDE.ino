@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191025
+  Fecha: 20191027
   Tema: Gestión de interrupciones
   Objetivo: Aprender a utilizar el timer0 en ATtiny85
   Material adicional: ATtiny85
@@ -114,7 +114,7 @@
 
   La fórmula es la siguiente:
   valor límite = frecuencia CPU / prescaler * periodo deseado - 1
-  valor límite = 16.000.000 / 1.024 * 0,01 - 1 = 155,25 ~ 155
+  valor límite = 16.500.000 / 1.024 * 0,01 - 1 = 161,13 ~ 161
   
   Resultado:
   El led integrado en placa parpadea cada segundo (aproximadamente).
@@ -142,7 +142,7 @@ void setup() {
   //Fijaremos un prescaler de 1024: CS02=1 + CS01=0 + CS00=1
   TCCR0B=B101;
   //Fijamos el valor que se comparará con el contador y si es igual saltará la interrupción
-  OCR0A = 155;
+  OCR0A = 161;
   //Registro TIMSK. bits referentes a interrupción 0:
   //  bit 1 : TOIE0 : timer0 Overflow Interrupt Enable        = 0 = salta cuando el contador llega al valor máximo
   //  bit 3 : OCIE0B : timer0 Output Compare Interrupt Enable = 0 = salta cuando el contador sea igual a OCR0B
