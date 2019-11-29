@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191127
+  Fecha: 20191128
   Tema: Librería de gestión de RTC Tiny
   Objetivo: Mostrar reloj sincronizado por Internet en display
 
@@ -16,16 +16,12 @@
   #include <WiFi.h> //Gestión de wifi
 #endif
 #include <RoJoRTCtiny.h> //Gestión de RTC Tiny
-#ifdef __arm__
-  #include <RoJoNTPclientRPi.h> //Gestión conexión servidor NTP para RPi
-#else
-  #include <RoJoNTPclientESP.h> //Gestión conexión servidor NTP para ESP
-#endif
+#include <RoJoNTPclient.h> //Gestión conexión servidor NTP
 #include <RoJoTM1637.h> //Gestión de display Catalex
 
 //Definición de constantes globales
-const char *wifiSSID = "IronMan"; //Nombre del punto de acceso wifi
-const char *wifiPassword = "1234yasitolrato"; //Contraseña del punto de acceso wifi
+const char *wifiSSID = "xxx"; //Nombre del punto de acceso wifi
+const char *wifiPassword = "xxx"; //Contraseña del punto de acceso wifi
 const uint32_t periodUpdateNTP=10; //Periodo de actualización de hora de Internet en segundos
 #ifdef ESP8266
   const byte pinCLKdisplay=D5;

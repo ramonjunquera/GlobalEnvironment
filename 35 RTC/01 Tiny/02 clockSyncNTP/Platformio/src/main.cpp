@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191127
+  Fecha: 20191128
   Tema: Librería de gestión de RTC Tiny
   Objetivo: Ejemplo de lectura de hora desde un servidor NTP
 
@@ -15,11 +15,7 @@
   #include <WiFi.h> //Gestión de wifi
 #endif
 #include <RoJoRTCtiny.h> //Gestión de RTC Tiny
-#ifdef __arm__
-  #include <RoJoNTPclientRPi.h> //Gestión conexión servidor NTP para RPi
-#else
-  #include <RoJoNTPclientESP.h> //Gestión conexión servidor NTP para ESP
-#endif
+#include <RoJoNTPclient.h> //Gestión conexión servidor NTP
 
 //Definición de constantes globales
 const char *wifiSSID = "xxx"; //Nombre del punto de acceso wifi

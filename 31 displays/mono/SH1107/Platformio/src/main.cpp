@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190826
+  Fecha: 20191128
   Tema: Librería para display SH1107 SPI 64x128
   Objetivo: Demo de librería RoJoSH1107
 
@@ -9,7 +9,7 @@
 
   Notas:
   - La memoria interna debe contener los archivos de la carpeta data para su correcto funcionamiento.
-  - Este modelo de display no permite dibujar directamente en pantalla, pero si se puede dibujar
+  - Este modelo de display no permite dibujar directamente en pantalla, pero sí se puede dibujar
     un sprite sobre ella. Para la mayoría de los ejemplos utilizarmos un sprite con las mismas
     dimensiones del display (64x128) en el que dibujaremos para después volcarlo en el display.
     Este sprite lo llamaremos 'v' (de memoria de vídeo) y lo definiremos globalmente.
@@ -478,21 +478,21 @@ void Test17() {
   //Escribimos el texto en el sprite
   textSprite.print("/10x15d.fon","123",1);
   //Dibujamos el sprite de texto en la memoria de vídeo
-  v.drawSprite(&textSprite,30,0);
+  v.drawSprite(&textSprite,15,0);
   //Creamos el sprite monocromo que contendrá el texto rotado
   RoJoSprite textSpriteRotate(1);
   //Rotamos el sprite de texto 90 grados
   textSpriteRotate.rotate(&textSprite,90);
   //Dibujamos el sprite de texto rotado en la memoria de vídeo
-  v.drawSprite(&textSpriteRotate,60,16);
+  v.drawSprite(&textSpriteRotate,45,16);
   //Rotamos el sprite de texto 180 grados
   textSpriteRotate.rotate(&textSprite,180);
   //Dibujamos el sprite de texto rotado en la memoria de vídeo
-  v.drawSprite(&textSpriteRotate,30,46);
+  v.drawSprite(&textSpriteRotate,15,46);
   //Rotamos el sprite de texto 270 grados
   textSpriteRotate.rotate(&textSprite,270);
   //Dibujamos el sprite de texto rotado en la memoria de vídeo
-  v.drawSprite(&textSpriteRotate,14,16);
+  v.drawSprite(&textSpriteRotate,0,16);
   //Mostramos la memoria de vídeo
   display.drawSprite(&v);
   //Borramos los sprites utilizados
@@ -609,6 +609,9 @@ void setup(void) {
 }
 
 void loop(void) {
+  Test17(); //Rotar sprites
+  delay(9999);
+  
   Test1(); //Función drawPixel con color 1 = dibujar
   Test2(); //Función drawPixel con color 2 = invertir
   Test3(); //Función drawPixel con color 0 = borrar

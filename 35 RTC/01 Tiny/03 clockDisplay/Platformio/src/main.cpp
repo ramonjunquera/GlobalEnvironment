@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191127
+  Fecha: 20191128
   Tema: Librería de gestión de RTC Tiny
   Objetivo: Mostrar reloj sincronizado por Internet en display
 
@@ -16,11 +16,7 @@
   #include <WiFi.h> //Gestión de wifi
 #endif
 #include <RoJoRTCtiny.h> //Gestión de RTC Tiny
-#ifdef __arm__
-  #include <RoJoNTPclientRPi.h> //Gestión conexión servidor NTP para RPi
-#else
-  #include <RoJoNTPclientESP.h> //Gestión conexión servidor NTP para ESP
-#endif
+#include <RoJoNTPclient.h> //Gestión conexión servidor NTP
 #include <RoJoTM1637.h> //Gestión de display Catalex
 
 //Definición de constantes globales

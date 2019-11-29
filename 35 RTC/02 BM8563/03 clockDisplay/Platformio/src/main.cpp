@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191127
+  Fecha: 20191128
   Tema: Librería de gestión de RTC BM8563
   Objetivo: Mostrar reloj sincronizado por Internet en display
   Material: M5Stick-C
@@ -14,7 +14,7 @@
 #include <Arduino.h>
 #include <WiFi.h> //Gestión de wifi
 #include <RoJoRTCBM8563.h> //Gestión de RTC BM8563
-#include <RoJoNTPclientESP.h> //Gestión conexión servidor NTP para ESP
+#include <RoJoNTPclient.h> //Gestión conexión servidor NTP
 #include <RoJoST7735S.h> //Gestión de display
 
 //Definición de constantes globales

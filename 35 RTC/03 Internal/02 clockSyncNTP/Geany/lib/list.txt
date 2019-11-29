@@ -1,5 +1,4 @@
 Arduino
-Wire
 RoJoRTC
-RoJoRTCtiny
+RoJoRTCinternal
 RoJoNTPclient

@@ -1,0 +1,20 @@
+Descripción de reloj interno
+
+Todos los procesadores tienen un reloj interno para contar el tiempo.
+El valor del reloj no suele ser modificable.
+El reloj comienza desde cero tras un reset o reinicio.
+
+Comentaremos los detalles de reloj interno de cada placa:
+  Arduino
+    Es un reloj muy básico. La mejor manera de obtener su valor es a través de la
+    función millis.
+    No se puede modificar manualmente su valor. Es de sólo lectura.
+  ESP
+    Permite ser leido como si fuese un reloj unix.
+    No se puede modificar manualmente su valor. Es de sólo lectura.
+  Raspberry Pi
+    Es el reloj que mantiene la hora del sistema.
+    Habitualmente sincroniza su hora con un servidor NTP.
+    Permite ser leido y escrito como un reloj estándar de unix.
+
+La librería permite utilizar el reloj interno de la misma manera que uno externo.

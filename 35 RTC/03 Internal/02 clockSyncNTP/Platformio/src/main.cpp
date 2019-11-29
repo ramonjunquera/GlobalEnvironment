@@ -1,20 +1,20 @@
 /*
   Autor: Ramón Junquera
   Fecha: 20191128
-  Tema: Librería de gestión de RTC BM8563
+  Tema: Librería de gestión de RTC interno
   Objetivo: Ejemplo de lectura de hora desde un servidor NTP
-  Material: M5Stick-C
 
   Descripción:
-    Se fija una hora y se envía por el puerto serie la hora leida cada segundo
-  Nota.
-    Es posible que se tenga que reiniciar dos veces el dispositivo para que conecte con
-    el punto de acceso.
+    Se obtiene la hora de un servidor NTP, se fija en el RTC y se envía por el puerto serie cada segundo
 */
 
 #include <Arduino.h>
-#include <WiFi.h> //Gestión de wifi
-#include <RoJoRTCBM8563.h> //Gestión de RTC BM8563
+#ifdef ESP8266
+  #include <ESP8266WiFi.h> //Gestión de wifi
+#elif defined(ESP32)
+  #include <WiFi.h> //Gestión de wifi
+#endif
+#include <RoJoRTCinternal.h> //Gestión de RTC interno
 #include <RoJoNTPclient.h> //Gestión conexión servidor NTP
 
 //Definición de constantes globales
@@ -22,8 +22,9 @@ const char *wifiSSID = "xxx"; //Nombre del punto de acceso wifi
 const char *wifiPassword = "xxx"; //Contraseña del punto de acceso wifi
 
 //Definición de objetos globales
-RoJoRTCBM8563 myClock; //Objeto de gestión del RTC BM8563 del M5Stick-C
+RoJoRTCinternal myClock; //Objeto de gestión del RTC Tiny
 
+#if !defined(__arm__) //RPi no necesita inicializar conectividad
 //Inicializa y conecta wifi
 void beginWiFi() {
   WiFi.mode(WIFI_STA); //Ponemos el wifi en modo cliente que conecta a punto de acceso
@@ -35,20 +36,13 @@ void beginWiFi() {
   }
   Serial.println(F("ok"));
 }
+#endif
 
 void setup() {
-  Serial.begin(115200);
-
-  //Encendemos el led para saber que está funcionando
-  pinMode(10,OUTPUT); digitalWrite(10,LOW); //DEBUG
-
-  //Nota. M5Stick-C tiene un RTC BM8563 con identificador I2C: 0x51
-  //Conectado a los pines SDA=21 y SCL=22
-  Serial.print("\nInicializando RTC..");
-  Serial.println(myClock.begin(21,22)?"ok":"ko");
-
-  //Inicializamos y conectamos wifi
-  beginWiFi();
+  Serial.begin(115200); delay(3000);
+  #if defined(ESP32) || defined(ESP8266) //Si es un ESP
+    beginWiFi(); //Inicializamos y conectamos wifi
+  #endif
 
   RoJoNTPclient ntp; //Objeto de gestión de conexión con servidor NTP
   //Inicialización
