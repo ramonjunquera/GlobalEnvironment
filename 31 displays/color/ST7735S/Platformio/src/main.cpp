@@ -1,12 +1,32 @@
-//Pendiente:
-//- Cuando se utiliza la librería utility/In_eSPI.h no se inicializa bien y no se muestra imagen
-//  Porque antes de utilizar el display en M5Stick-C se debe alimentar!!
-//  Hay que indicar al chip AXP192 que active la alimentación al display
+/*
+  Autor: Ramón Junquera
+  Fecha: 20191204
+  Tema: Librería para display ST7735S SPI de 80x160
+  Objetivo: Demo de librería RoJoST7735S
+
+  Descripción:
+    Demostración de funcionalidades de la librería.
+*/
 
 #include <Arduino.h>
 #include <RoJoST7735S.h>
 
 RoJoST7735S display;
+
+//Pinout
+#ifdef ARDUINO_LOLIN32 //Para Lolin32
+  byte pinRES=2;
+  byte pinDC=22;
+  byte pinCS=5;
+  byte pinCLK=18;
+  byte pinMOSI=23;
+#elif defined(ARDUINO_M5Stick_C) //Para M5Stick-C
+  byte pinRES=18;
+  byte pinDC=23;
+  byte pinCS=5;
+  byte pinCLK=13;
+  byte pinMOSI=15;
+#endif
 
 //Test de color
 //Ejemplo de funciones:
@@ -629,7 +649,7 @@ void test23() {
 
 void setup() {
   //Serial.begin(115200); delay(4000); //Para DEBUG
-  display.begin(); //Inicialización con valores por defecto
+  display.begin(pinRES,pinDC,pinCS,39999999,pinCLK,pinMOSI); //Inicialización
 }
 
 void loop() {

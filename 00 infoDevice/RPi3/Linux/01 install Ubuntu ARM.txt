@@ -1,0 +1,28 @@
+Tema: Preparación de una SD para instalar Ubuntu en Raspberry Pi
+Fecha: 20191201
+
+Necesitaremos una SD de al menos 16Gb.
+
+Descagamos el archivo comprimido desde la web oficial:
+  https://ubuntu.com/download/raspberry-pi
+
+Existen dos versiones. La de 32 y la de 64 bits.
+Actualmente no es aconsejable utilizar la versión de 64 bits.
+La de 32 funciona, aunque es bastante inestable.
+
+Es conveniente conectar la RPi a red antes de arrancarla por primera vez, para que
+pueda descargar todas las actualizaciones necesarias.
+
+El primer login con ubuntu:ubuntu obliga a cambiar la contraseña.
+
+Sabremos que ha terminado de instalar las actualizaciones, porque un:
+  sudo apt-get upgrade
+No dirá que tiene un archivo bloqueado por otro proceso.
+
+Después se puede instalar el interface gráfico.
+
+No conviene utilizar el entorno GNOME por defecto:
+  sudo apt-get install ubuntu-desktop
+Es demasiado pesado para la RPi3
+Es preferible kubuntu, por ser más ligero:
+  sudo apt-get install kubuntu-desktop
