@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191204
+  Fecha: 20191210
   Tema: Librería para display ST7735S SPI de 80x160
   Objetivo: Demo de librería RoJoST7735S
 
@@ -26,6 +26,18 @@ RoJoST7735S display;
   byte pinCS=5;
   byte pinCLK=13;
   byte pinMOSI=15;
+#elif defined(ESP8266) //Para ESP8266
+  byte pinRES=D0;
+  byte pinDC=D2;
+  byte pinCS=D3;
+  byte pinCLK=D5; //Su valor no se tendrá en cuenta
+  byte pinMOSI=D7; //Su valor no se tendrá en cuenta
+#elif defined(ARDUINO_ARCH_AVR) //Para placas Arduino
+  byte pinRES=3;
+  byte pinDC=5;
+  byte pinCS=4;
+  byte pinCLK=255; //Su valor no se tendrá en cuenta
+  byte pinMOSI=255; //Su valor no se tendrá en cuenta
 #endif
 
 //Test de color
@@ -670,18 +682,16 @@ void loop() {
     #ifndef ARDUINO_AVR_MEGA2560 //Mega no tiene memoria para cargar sprites tan grandes
       test12(); //Test de texto
       test13(); //Test de cambio de tamaño
-      #ifndef ESP8266 //ESP8266 no tiene memoria para cargar sprites grandes
-        test14(); //Test de líneas
-        test15(); //Test de rectángulos
-        test16(); //Test de triángulos
-        test17(); //Test de circunferencias y elipses
-        test18(); //Test de pixels
-        test19(); //Test de guardado
-        test20(); //Test de reemplazar color y transparencia
-        test21(); //Test de copia parcial
-        test22(); //Test de sincronización
-        test23(); //Test de carga de sprites grandes desde archivo
-      #endif
+      test14(); //Test de líneas
+      test15(); //Test de rectángulos
+      test16(); //Test de triángulos
+      test17(); //Test de circunferencias y elipses
+      test18(); //Test de pixels
+      test19(); //Test de guardado
+      test20(); //Test de reemplazar color y transparencia
+      test21(); //Test de copia parcial
+      test22(); //Test de sincronización
+      test23(); //Test de carga de sprites grandes desde archivo
     #endif
   #endif
 }
