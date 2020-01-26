@@ -14,3 +14,5 @@ Tiene 5 pines:
 Si colocamos los pines del joystick a la izquierda, tenemos que la esquina superior izquierda tiene las 
 coordenadaa 0,0.
 El horizontal es el eje X. El vertical el Y.
+
+Aunque se indica como alimentación 5V, al ser una resistencia, no hay problema para alimentarlo con 3.3V

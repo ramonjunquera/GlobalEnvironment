@@ -1,8 +1,9 @@
 /*
   Autor: Ramón Junquera
+  Fecha: 20191230
   Tema: Lectura y escritura de señales digitales
   Objetivo: Funcionamiento del joystick de PS2
-  Material: breadboard, Arduino Nano, joystick de PS2, cables
+  Material: breadboard, joystick de PS2, cables
 
   Descripción:
   Aprenderemos a utilizar el joystick que tenía la antigua PlayStation 2.
@@ -25,7 +26,6 @@
   Podemos considerar que el joystick está en el centro si se encuentra en el rango de valores de 511+-30 
 
   Consideramos el botón del mando como un interruptor de pulsador normal.
-  Lo conectaremos al pin 12.
   En la función setup() definiremos el pin del botón como de entrada, pero con la particularidad de que
   activaremos las resistencias internas de pullup.
   Esto nos permite ahorrarnos incluir la resistencia en el circuito.
@@ -46,22 +46,36 @@
   
   Resultado:
   Vemos los valores leidos del joystick en pantalla en tiempo real
+
+  Nota:
+  Puesto que los circuitos de conversión analógico-digital dependen del dispositivo
+  podremos comprobar que en placas Arduino, los valores máximos son de 1023, y en 
+  placas ESP32 alcanzan los 4095.
 */
 
 #include <Arduino.h>
 
-const byte pinButton=12;
+//Definición de pines
+//Los ejes X,Y están intercambiados
+//El eje x está invertido
+#ifdef ARDUINO_ARCH_AVR //Placa Arduino
+  const byte pinButton=12;
+  const byte pinX=A1;
+  const byte pinY=A0;
+#elif defined(ESP32) //Si es ESP32
+  const byte pinButton=17;
+  const byte pinX=2; 
+  const byte pinY=0; 
+#endif
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
   pinMode(pinButton,INPUT_PULLUP);
 }
 
-void loop()
-{
-  int x=analogRead(A0);
-  int y=analogRead(A1);
+void loop() {
+  int x=analogRead(pinX);
+  int y=analogRead(pinY);
   bool b=digitalRead(pinButton);
   Serial.print("X=");
   Serial.print(x);
@@ -71,3 +85,4 @@ void loop()
   Serial.println(b);
   delay(500);
 }
+

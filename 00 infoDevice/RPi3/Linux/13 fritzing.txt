@@ -30,7 +30,7 @@ Instrucciones:
       - Pide seleccionar una opción. Seleccionamos la opción "Other..."
       - Escribimos el comando de asociación:
           /usr/bin/fritzing %f
-      - A partir de ahora sse abrirá la aplicación Fritzing cuando se haga doble click sobre 
+      - A partir de ahora se abrirá la aplicación Fritzing cuando se haga doble click sobre 
         un archivo .fzz
   Abrir desde explorador de archivos
     Debido a un error en el script de inicio, cuando se hace doble click sobre un archivo

@@ -1,5 +1,5 @@
 Tema: Cómo instalar Free File Sync
-Fecha: 20191108
+Fecha: 20191218
 
 Instrucciones:
 
@@ -7,13 +7,13 @@ Instrucciones:
     Instalación
     - Descargamos el paquete de instalación para Linux de la web oficial:
         https://freefilesync.org/download.php
-      El archivo descargado es FreeFileSync_10.17_Linux.tar.gz
+      El archivo descargado es FreeFileSync_10.18_Linux.tar.gz
       Suponemos que se ha descargado en la carpeta Downloads
       Abrimos una sesión de terminal y escribimos:
     - Cambiamos a la carpeta de Downloads:
         cd /home/pi/Downloads
     - Lo descomprimimos ahí mismo con:
-        tar -vxf FreeFileSync_10.17_Linux.tar.gz
+        tar -vxf FreeFileSync_10.18_Linux.tar.gz
     - Movemos la carpeta descomprimida a /usr/share/FreeFileSync con:
         sudo mv FreeFileSync /usr/share
     - Ya podríamos ejecutarlo con:

@@ -1,0 +1,35 @@
+Módulo de joystick para M5Stick C
+
+Incluye un procesador STM32F030F4 para gestionar las resistencias, convertir la
+señal a digital, crear un cliente I2C y atender peticiones.
+
+M5StickC JoyHAT
+-------- ------
+pin 0    SDA
+pin 26   SCL
+3.3V     3.3V
+GND      GND
+
+Puesto que los pines de I2C no corresponden con los internos para gestionar el IMU,
+alimentación y RTC (SDA=pin21,SCL=pin22), es necesario utilizar otro puerto I2C.
+ESP32 es capaz de gestionar dos puertos I2C independientes.
+Por lo general se utiliza Wire para el puerto interno y Wire1 para los accesorios
+externos.
+Soporta perfectamente una frecuencia de 400KHz.
+La definición de Wire sería:
+  Wire1.begin(0,26,400000);
+
+Identificador I2C = 0x38
+
+El comando para que devuelva los valores es 0x02.
+Devuelve 3 bytes con signo (int8_t): x, y & button.
+El valor central (en roposo) debería ser 0,0. Aunque sea difícil que coincida.
+El rango de valores teóricos para cada eje es de -128 a 127.
+En la realidad es posible que no se alcancen.
+Los signos corresponden con el eje de coordenadas cartesiano:
+Eje X. derecha=+,izquierda=-
+Eje Y. arriba=+, abajo=-
+
+El botón tiene los siguiente valores:
+  0 pulsado
+  1 normal

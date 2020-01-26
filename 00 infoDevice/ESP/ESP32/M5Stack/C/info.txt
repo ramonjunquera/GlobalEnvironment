@@ -13,8 +13,8 @@ Puertos
   GROOVE : I/O
     pin GND
     pin 5V
-    pin 32
-    pin 33
+    pin 32 : SDA
+    pin 33 : SCL
   FRONT : I/O
     pin GND
     pin 5V
@@ -26,8 +26,8 @@ Puertos
     pin 5V
 
 Botones
-  pin 39 : SIDE
-  pin 37 : M5
+  A : pin 37 : M5
+  B : pin 39 : SIDE
 
 Display
   Tamaño: 0.96"
@@ -51,6 +51,7 @@ IMU
   Modelo: SH200Q
   Funciones: giróscopo y acelerómetro
   Grados de libertad (DOF): 6
+  Conexión: I2C
 
 SPI
   Pinout común
@@ -64,9 +65,13 @@ Led
   Pin 10
   Modo: HIGH=OFF,LOW=ON
 
+Led IR
+  Pin 9
+
 Micrófono
   Modelo: SPM1423
-  Pin 34
+  Pin 34 : SDA
+  Pin 0 : SCL
 
 Buzzer: no tiene
 
@@ -81,6 +86,6 @@ I2C
     pin 21 : SDA
     pin 22 : SCL
   Identificadores
-    0x68 : MPU6886 : acelerómetro + giróscopo (6DOF) compatible con MPU6050
     0x34 : AXP192 : gestor de batería
     0x51 : BM8563 : reloj con hora real (RTC)
+    0x68 : MPU6886 : acelerómetro + giróscopo (6DOF) compatible con MPU6050
