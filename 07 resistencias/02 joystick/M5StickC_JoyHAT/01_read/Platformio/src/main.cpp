@@ -14,8 +14,6 @@
 #include <Wire.h>
 #include <RoJoM5JoyHAT.h> //Gestión del HAT de joystick para M5Stick C
 
-//Definición de constantes globales
-const byte idJoy=0x38;
 //Definición de objetos globales
 RoJoM5JoyHAT joy;
 //Definición de variables globales
