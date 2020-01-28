@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200126
+  Fecha: 20200127
   Tema: M5Stick C. Joystick HAT
   Objetivo: Representación gráfica de posición del Joy
   Material: M5Strick C, M5Stick Joystick HAT
@@ -45,8 +45,11 @@ void loop() {
     if(joyY<yMin) yMin=joyY;
     if(joyY>yMax) yMax=joyY;
     digitalWrite(LED_BUILTIN,button);
-    byte x=(int)(joyX-xMin)*80/((int)(xMax-xMin)+1);
-    byte y=160-(int)(joyY-yMin)*160/((int)(yMax-yMin)+1); //Eje y está invertido
+    byte x,y;
+    if(xMin==xMax) x=40;
+    else x=(int)(joyX-xMin)*80/((int)(xMax-xMin));
+    if(yMin==yMax) y=80;
+    else y=160-(int)(joyY-yMin)*160/((int)(yMax-yMin)); //Eje y está invertido
     if(x!=lastX || y!=lastY) { //Si la coordenada ha cambiado...
       display.drawPixel(lastX,lastY,0); //Borramos la coordenada anterior
       lastX=x; lastY=y;
