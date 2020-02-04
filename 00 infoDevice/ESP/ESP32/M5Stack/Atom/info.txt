@@ -1,0 +1,45 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa M5Stack Atom Matrix
+
+Dispositivo basado en placa ESP32 (ESP32-PICO) de Espressif, con 4Mb de memoria.
+Conexión USB-C para puerto serie y alimentación.
+
+Librerías oficiales en: https://github.com/m5stack/M5Atom
+
+Leds
+  Tipo: NeoPixel
+  Modelo: WS2812 RGB LED 5x5
+  Pin 27
+
+Botón
+  Pin 39
+
+IMU
+  MPU6886
+
+Led IR
+  Pin 12
+
+I2C
+  Pinout
+    pin 25 : SDA
+    pin 21 : SCL
+  Identificadores
+    0x68 : MPU6886 : acelerómetro + giróscopo (6DOF) compatible con MPU6050
+
+Puerto
+  GROOVE : I/O
+    pin GND
+    pin 5V
+    pin 25 : SDA
+    pin 32 : SCL
+  Bottom
+    pin 2V2
+    pin 22
+    pin 19
+    pin 23
+    pin 33
+    pin 21
+    pin 25
+    pin 5V
+    pin GND
