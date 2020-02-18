@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191029
+  Fecha: 20200217
   Tema: Comunicaciones I2C de ATtiny85
   Objetivo: Comprobar la comunicación I2C de Attiny85
   Material adicional: breadboard, cables, placa ATtiny85, display OLED I2C
@@ -76,7 +76,7 @@ void setup() {
     oled.clear(17);
     delay(1000);
 
-    //Añadimos la líneas verticaes
+    //Añadimos la líneas verticales
     linesV();
     delay(1000);
   }

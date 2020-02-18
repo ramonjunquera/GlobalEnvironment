@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190515
+  Fecha: 20200218
   Componentes: ESP32 OLED TTGO 16Mb, HC-SR04, buzzer activo
   Descripción:
     Ejemplo de detector de puerta abierta.
@@ -24,36 +24,32 @@
 
 #include <Arduino.h>
 #include <RoJoSSD1306.h> //Librería de gestión del display SSD1306
-#include <RoJoSprite.h> //Librería de gestión de sprites monocromos
-#include <RoJoABC.h> //Gestión de fuentes
 
 //Declaración de constantes globales
 const byte pinTrig=27; //Pin del trigger
 const byte pinEcho=14; //Pin del echo
 const byte pinBuzzer=13; //Pin del buzzer
 const uint16_t alertTime=10; //Número de segundos para que salte la alarma
+const byte displaySDA=4,displaySCL=15,displayRES=16; //Pinout de display integrado
 
 //Declaración de variable globales
-RoJoSSD1306 display;
+RoJoSSD1306 display; //Objeto de gestión de display
+RoJoSprite v(1); //Sprite monocromo que utilizaremos como memoria de vídeo
 uint16_t alertCount=0; //Número de alertas (más de 30 seg)
 uint16_t openCount=0; //Número de veces que se ha abierto la puerta
 uint16_t openTime=0; //Tiempo total de puerta abierta en segundos
 bool alertON=false; //Estamos en modo alarma?
 uint32_t openStart=0; //Tiempo de inicio de puerta abierta
 uint16_t lastValue; //Último valor mostrado
+uint16_t currentDistance=10; //Distancia actual a la puerta
+uint16_t lastDistance=10; //Última medida de distancia
 
-uint16_t getDistance()
-{
-  //Devuelve la distancia del HC-SR04 en centímetros
-
-  //Comenzamos desactivando el sensor
-  digitalWrite(pinTrig,LOW);
-  //Esperamos un momento
-  delayMicroseconds(5);
-  //Activamos el pulso de ultrasonidos
-  digitalWrite(pinTrig,HIGH);
-  //Esperamos un instante para que llegue el eco
-  delayMicroseconds(10);
+//Devuelve la distancia del HC-SR04 en centímetros
+uint16_t getDistance() {
+  digitalWrite(pinTrig,LOW); //Comenzamos desactivando el sensor
+  delayMicroseconds(5); //Esperamos un momento
+  digitalWrite(pinTrig,HIGH); //Activamos el pulso de ultrasonidos
+  delayMicroseconds(10); //Esperamos un instante para que llegue el eco
   //Apagamos el trigger. Realmente no es necesario, porque ya lo hacemos al principio.
   digitalWrite(pinTrig,LOW);
   //Con pulseIn solicitamos el tiempo entre dos pulsos de un pin
@@ -68,40 +64,22 @@ uint16_t getDistance()
   return 0.01715*pulseIn(pinEcho,HIGH,2000);
 }
 
-String twoDigits(byte a)
-{
+String twoDigits(byte a) {
   //Convierte el valor a una cadena de 2 dígitos
   String tmp="0"+String(a);
   return tmp.substring(tmp.length()-2,tmp.length());
 }
 
-void showOK()
-{
-  //Paramos el buzzer y mostramos la pantalla de OK
-
-  //Apagamos el buzzer
-  digitalWrite(pinBuzzer,LOW);
-
-  //Variables
-  RoJoSprite tmpSprite;
-  RoJoABC font;
-
-  //Limpiamos pantalla
-  display.videoMem->clear();
-  
-  //Dibujamos el OK
-  tmpSprite.load("/ok.spr");
-  display.videoMem->drawSpritePage((128-tmpSprite.width())/2,0,&tmpSprite,4);
+//Paramos el buzzer y mostramos la pantalla de OK
+void showOK() {
+  digitalWrite(pinBuzzer,LOW); //Apagamos el buzzer
+  v.clear();
+  v.drawSprite("/ok.spr",25,0);
 
   //Dibujamos el texto informativo en formato hh:mm:ss a/o
   String info=twoDigits(openTime/3600)+":"+twoDigits((openTime/60)%60)+":"+twoDigits(openTime%60)+" "+String(alertCount)+"/"+String(openCount);
-  font.print("/10x15.fon",info,&tmpSprite);
-  display.videoMem->drawSpritePage((128-tmpSprite.width())/2,6,&tmpSprite,4);
-
-  //Refrescamos pantalla
-  display.show();
-  //Borramos el sprite utilizado
-  tmpSprite.clear();
+  v.printOver("/10x15.fon",info,{0,0,1},0,48);
+  display.drawSprite(&v);
 
   //El último valor mostrado no es 0
   //Sí la puerta se vuelve a abrir en menos de un segundo, queremos que se refresque la
@@ -109,119 +87,67 @@ void showOK()
   lastValue=9;
 }
 
-void showTimer()
-{
-  //Muestra el contador hacia atrás con el último valor
-
-  //Variables
-  RoJoSprite tmpSprite;
-  RoJoABC font;
-
-  //Limpiamos pantalla
-  display.videoMem->clear();
-  
-  //Dibujamos el valor
-  String info=twoDigits(openTime/3600)+":"+twoDigits((openTime/60)%60)+":"+twoDigits(openTime%60)+" "+String(alertCount)+"/"+String(openCount);
-  font.print("/21x33d.fon",String(lastValue),&tmpSprite);
-  display.videoMem->drawSpritePage((128-tmpSprite.width())/2,2,&tmpSprite,4);
-
-  //Refrescamos pantalla
-  display.show();
-  //Borramos el sprite utilizado
-  tmpSprite.clear();
+//Muestra el contador hacia atrás con el último valor
+void showTimer() {
+  v.clear();
+  v.printOver("/21x31d.fon",String(lastValue),{0,0,1},50,10);
+  display.drawSprite(&v);
 }
 
-void setup()
-{ 
-  //Activamos el puerto serie para mensajes de debug
-  Serial.begin(115200);
-
-  //Definimos el pin del trigger como salida (generación del pulso de ultrasonidos)
-  pinMode(pinTrig,OUTPUT);
-  //Definimos el pin del echo como entrada (tiempo de rebote del ultrasonido)
-  pinMode(pinEcho,INPUT);
-  //Definimos el pin del buzzer como salida
-  pinMode(pinBuzzer,OUTPUT);
-  //Inicializamos el display con los pines en los que está conectado la placa
-  //En este modelo no son seleccionables y no coinciden con los estandar:
-  //void begin(byte pinCS_SD,byte pinSDA,byte pinSCL,byte pinRST);
-  //Nota es este ejemplo no se utiliza una tarjeta SD para almacenar los archivos
-  //por lo tanto el pinCS_SD no se tiene en cuenta. Podríamos escribir cualquier valor
-  display.begin(SS,4,15,16);
-  //Comenzamos mostrando la pantalla de OK
-  showOK();
+void setup() { 
+  Serial.begin(115200); //DEBUG
+  pinMode(pinTrig,OUTPUT); //Definimos el pin del trigger como salida (generación del pulso de ultrasonidos)
+  pinMode(pinEcho,INPUT); //Definimos el pin del echo como entrada (tiempo de rebote del ultrasonido)
+  pinMode(pinBuzzer,OUTPUT); //Definimos el pin del buzzer como salida
+  display.begin(displaySDA,displaySCL,displayRES); //Init display
+  v.setSize(display.xMax(),display.yMax()); //Dimensionamos memoria de vídeo
+  showOK(); //Comenzamos mostrando la pantalla de OK
 }
 
-void loop(void)
-{
-  //Obtenemos la distancia actual
-  uint16_t d=getDistance();
-  //Obtenemos el tiempo actual
-  uint32_t now=millis();
+void loop(void) {
+  //La distancia obtenida de este sensor no es muy fiable, porque de vez en
+  //cuando lee 0 cuando no es cierto.
+  //Para evitar lecturas falsas, sólo tendremos en cuenta una medida
+  //cuando en dos ciclos consecutivos obtengamos el mismo valor.
+  uint16_t d=getDistance(); //Obtenemos la distancia actual
+  //Si es igual que la medida anterior...la tenemos en cuenta
+  if(d==lastDistance) currentDistance=d;
+  lastDistance=d; //La última medida será la actual
+
+  uint32_t now=millis(); //Obtenemos el tiempo actual
   
-  //Si estamos en modo alarma...
-  if(alertON)
-  {
-    //Si la puerta está abierta...
-    if(d==0)
-    {
+  if(alertON) { //Si estamos en modo alarma...
+    if(currentDistance==0) { //Si la puerta está abierta...
       //Seguimos mostrando el tiempo de apertura
-      //Calculamos el valor a mostrar
-      uint16_t v=(now-openStart)/1000;
-      //Si el valor es distinto al último mostrado...
-      if(v!=lastValue)
-      {
+      uint16_t v=(now-openStart)/1000; //Calculamos el valor a mostrar
+      if(v!=lastValue) { //Si el valor es distinto al último mostrado...
         //...tenemos que refrescarlo
-        //El último valor será el actual
-        lastValue=v;
-        //Mostramos el timer
-        showTimer();
-        //Si llevamos más tiempo del permitido...
-        if(lastValue>alertTime)
-        {
+        lastValue=v; //El último valor será el actual
+        showTimer(); //Mostramos el timer
+        if(lastValue>alertTime) { //Si llevamos más tiempo del permitido...
           //...tenemos que hacer sonar la alarma
-          //Activamos el buzzer
-          digitalWrite(pinBuzzer,HIGH);
+          digitalWrite(pinBuzzer,HIGH); //Activamos el buzzer
         }
-      }
-      else //El valor es el mismo que antes
-      {
+      } else { //El valor es el mismo que antes
         //No lo refrescamos
-        //Si el buzzer lleva activo más de 500ms...
-        if((now-openStart)%1000>500)
-        {
-          //...lo apagamos
-          digitalWrite(pinBuzzer,LOW);
+        if((now-openStart)%1000>500) { //Si el buzzer lleva activo más de 500ms...
+          digitalWrite(pinBuzzer,LOW); //...lo apagamos
         }
       }
     }
-    else //Si la puerta está cerrada...
-    {
-      //Incrementamos el número de veces que se ha abierto la puerta
-      openCount++;
-      //Incrementamos el tiempo total de puerta abierta (en segundos)
-      openTime+=lastValue;
-      //Si llevábamos más tiempo del permitido con la puerta abierta...
-      if(lastValue>alertTime)
-      {
-        //...incrementamos el número de veces que ha saltado la alarma
-        alertCount++;
+    else { //Si la puerta está cerrada...
+      openCount++; //Incrementamos el número de veces que se ha abierto la puerta
+      openTime+=lastValue; //Incrementamos el tiempo total de puerta abierta (en segundos)
+      if(lastValue>alertTime) { //Si llevábamos más tiempo del permitido con la puerta abierta...
+        alertCount++; //...incrementamos el número de veces que ha saltado la alarma
       }
-      //Desactivamos el modo alarma
-      alertON=false;
-      //Mostramos la pantalla de Ok
-      showOK();
+      alertON=false; //Desactivamos el modo alarma
+      showOK(); //Mostramos la pantalla de Ok
     }
-  }
-  else //Si no estamos en modo alarma...
-  {
-    //Si la puerta está abierta...
-    if(d==0)
-    {
-      //Anotamos que la puerta se ha abierto ahora
-      openStart=now;
-      //...pasamos a modo alarma
-      alertON=true;
+  } else { //Si no estamos en modo alarma...
+    if(currentDistance==0) { //Si la puerta está abierta...
+      openStart=now; //Anotamos que la puerta se ha abierto ahora
+      alertON=true; //...pasamos a modo alarma
     }
   }
   //Evitamos errores de watchdog

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190927
+  Fecha: 20200218
   Tema: Acelerómetro 
   Objetivo: Mostrar lecturas gráficamente. Gestión de partículas
   Material: M5Stack Fire
@@ -46,7 +46,7 @@ RoJoSwitch button1(39); //Primer botón
 //Definición de variables globales
 uint16_t particles; //Número de partículas
 int32_t *coorX,*coorY,*speedX,*speedY; //Arrays de coordenadas y velocidad de cada partícula
-uint16_t* color; //Array de color de cada partícula
+RoJoColor* color; //Array de color de cada partícula
 int16_t dataA[3]; //Datos del acelerómetro
 int16_t refXY[2]; //Valores de referencia del Acelerómetro
 uint16_t xRes,yRes; //Resolución de trabajo
@@ -62,10 +62,10 @@ void clearParticles() {
 }
 
 //Dibuja un pixel en pantalla y máscara teniendo en cuenta el tamaño de grano
-void drawPixel(uint16_t pixelIndex,uint16_t color) {
+void drawPixel(uint16_t pixelIndex,RoJoColor color) {
   uint16_t x=coorX[pixelIndex]>>16;
   uint16_t y=coorY[pixelIndex]>>16;
-  m.drawPixel(x,y,color>0); //Anotamos pixel en sprite de máscara
+  m.drawPixel(x,y,{0,0,color.get24()>0}); //Anotamos pixel en sprite de máscara
   uint16_t xx=x*grain,yy=y*grain; //Cálculo de coordenadas de display
   display.block(xx,yy,xx+grain-1,yy+grain-1,color); //Dibujamos bloque en display
 }
@@ -88,13 +88,13 @@ void beginParticles() {
   particles=0;
   for(uint16_t y=0;y<sprite.yMax();y++)
     for(uint16_t x=0;x<sprite.xMax();x++)
-      if(sprite.getPixel(x,y)>0) particles++;
+      if(sprite.getPixel(x,y).get24()>0) particles++;
   //Reservamos memoria para los array de propiedades de partículas
   coorX=(int32_t*)malloc(particles*4);
   coorY=(int32_t*)malloc(particles*4);
   speedX=(int32_t*)malloc(particles*4);
   speedY=(int32_t*)malloc(particles*4);
-  color=(uint16_t*)malloc(particles*2);
+  color=(RoJoColor*)malloc(particles*3);
   //Si nos ha faltado memoria para algún array...no trataremos ninguna partícula
   if(coorX==0 || coorY==0 || speedX==0 || speedY==0 || color==0) particles=0;
   else { //Hemos podido dimensionar todos los arrays
@@ -102,8 +102,8 @@ void beginParticles() {
     uint16_t pixelIndex=0;
     for(uint16_t y=0;y<sprite.yMax();y++)
       for(uint16_t x=0;x<sprite.xMax();x++) {
-        uint16_t c=sprite.getPixel(x,y); //Obtenemos el color del pixel procesado
-        if(c>0) { //Si tiene color...
+        RoJoColor c=sprite.getPixel(x,y); //Obtenemos el color del pixel procesado
+        if(c.get24()>0) { //Si tiene color...
           coorX[pixelIndex]=((int32_t)(xOffset+x))<<16;; //Coordenada x
           coorY[pixelIndex]=((int32_t)(yOffset+y))<<16; //Coordenada y
           speedX[pixelIndex]=0; //Velocidad X inicial nula
@@ -169,12 +169,12 @@ void loop() {
         coorX[p]=destX32;
       } else { //El pixel origen y destino son distintos
         //Si el pixel destino está ocupado...
-        if(m.getPixel(destX16,coorY[p]>>16)) {
+        if(m.getPixel(destX16,coorY[p]>>16).get24()>0) {
           //...ha chocado. Cambiamos la velocidad horizontal y no la movemos
           speedX[p]=-speedX[p]*elastic/100;
         } else { //Si el pixel destino está libre...
           //Borramos la partícula en origen
-          drawPixel(p,0);
+          drawPixel(p,{0,0,0});
           //Movemos la coordenada horizontal
           coorX[p]=destX32;
           //Dibujamos el pixel de la nueva posición
@@ -194,12 +194,12 @@ void loop() {
         coorY[p]=destY32;
       } else { //El pixel origen y destino son distintos
         //Si el pixel destino está ocupado...
-        if(m.getPixel(coorX[p]>>16,destY16)) {
+        if(m.getPixel(coorX[p]>>16,destY16).get24()>0) {
           //...ha chocado. Cambiamos la velocidad vertical y no la movemos
           speedY[p]=-speedY[p]*elastic/100;
         } else { //Si el pixel destino está libre...
           //Borramos la partícula en origen
-          drawPixel(p,0);
+          drawPixel(p,{0,0,0});
           //Movemos la coordenada vertical
           coorY[p]=destY32;
           //Dibujamos el pixel de la nueva posición

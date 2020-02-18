@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200201
+  Fecha: 20200218
   Tema: M5Stick C. ToF HAT (sensor de distancia láser)
   Objetivo: Mostrar en el display la distancia medida
   Material: M5Strick C, M5Stick ToF HAT
@@ -25,7 +25,7 @@ void loop() {
   uint16_t d;
   while((d=tof.get())==0); //Intentaremos conseguir una medida válida
   spr.clear(); //Borramos sprite
-  spr.printOver("/15x23d.fon",String(d),65530);
+  spr.printOver("/15x23d.fon",String(d),{255,255,255});
   display.drawSprite(&spr,8,10);
   delay(100);
 }

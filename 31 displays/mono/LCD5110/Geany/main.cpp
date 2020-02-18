@@ -56,7 +56,7 @@ void Test1() {
   //Dibujamos una matriz de puntos
   for(uint16_t x=0;x<v.xMax();x+=5)
     for(uint16_t y=0;y<v.yMax();y+=5)
-      v.drawPixel(x,y,1);
+      v.drawPixel(x,y,{0,0,1});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -68,7 +68,7 @@ void Test2() {
   //Dibujamos pixels en la mitad izquierda del display con el color 2 (invertir color)
   for(uint16_t y=0;y<v.yMax();y++)
     for(uint16_t x=0;x<v.xMax()/2;x++)
-      v.drawPixel(x,y,2);
+      v.drawPixel(x,y,{0,0,2});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -80,7 +80,7 @@ void Test3() {
   //Dibujamos un rectángulo relleno en el interior que borra
   for(uint16_t y=10;y<30;y++)
     for(uint16_t x=10;x<30;x++)
-      v.drawPixel(x,y,0);
+      v.drawPixel(x,y,{0,0,0});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -92,7 +92,7 @@ void Test4() {
   //Comprobamos los pixels de un cuadrado y dibujamos el color opuesto
   for(uint16_t y=20;y<40;y++)
     for(uint16_t x=20;x<40;x++)
-      v.drawPixel(x,y,!v.getPixel(x,y));
+      v.drawPixel(x,y,{0,0,(byte)(1-v.getPixel(x,y).channels[2])});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -105,9 +105,9 @@ void Test5() {
   //Limpiamos pantalla
   v.clear();
   //Dibujamos un rectángulo relleno sin borde (un bloque)
-  v.block(0,0,20,20,1); //1=sólido
+  v.block(0,0,20,20,{0,0,1}); //1=sólido
   //Dibujamos un rectángulo con borde inverso (sin relleno)
-  v.rect(10,10,30,30,2);
+  v.rect(10,10,30,30,{0,0,2});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -119,7 +119,7 @@ void Test5() {
 void Test6() {
   //Limpiamos pantalla
   v.clear();
-  for(byte y=0;y<v.yMax();y+=5) v.line(0,0,v.xMax()-1,y,1);
+  for(byte y=0;y<v.yMax();y+=5) v.line(0,0,v.xMax()-1,y,{0,0,1});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -131,10 +131,10 @@ void Test7() {
   //Limpiamos la memoria de vídeo
   v.clear();
 
-  v.circle(12,12,11,1);
-  v.disk(12,36,11,1);
-  v.ellipse(54,12,29,11,1);
-  v.ellipseFill(54,36,29,11,1);
+  v.circle(12,12,11,{0,0,1});
+  v.disk(12,36,11,{0,0,1});
+  v.ellipse(54,12,29,11,{0,0,1});
+  v.ellipseFill(54,36,29,11,{0,0,1});
   //Lo mostramos
   display.drawSprite(&v);
 
@@ -146,9 +146,9 @@ void Test8() {
   //Limpiamos la memoria de vídeo
   v.clear();
 
-  v.triangle(24,0,48,40,0,16,1);
-  v.triangleFill(0,24,56,16,16,47,1);
-  v.triangle(40,0,72,0,56,47,1);
+  v.triangle(24,0,48,40,0,16,{0,0,1});
+  v.triangleFill(0,24,56,16,16,47,{0,0,1});
+  v.triangle(40,0,72,0,56,47,{0,0,1});
   //Lo mostramos
   display.drawSprite(&v);
 
@@ -270,7 +270,7 @@ void Test12() {
     //Dibujamos la imagen fija en la memoria de vídeo
     v.drawSprite(&backSprite);
     //Dibujamos el sprite en movimiento tomando los pixels apagados como transparentes
-    v.drawSprite(&ball,x,y,1);
+    v.drawSprite(&ball,x,y,{0,0,1});
     //Refrescamos pantalla
     display.drawSprite(&v);
     //Esperamos un momento para evitar en lo posible el efecto "estela"
@@ -315,9 +315,9 @@ void Test13() {
     //Dibujamos el sprite estático
     v.drawSprite(&backSprite);
     //Dibujamos la máscara del sprite en movimiento borrando
-    v.drawSprite(&ballMask,x,y,0);
+    v.drawSprite(&ballMask,x,y,{0,0,0});
     //Dibujamos el sprite en movimiento
-    v.drawSprite(&ball,x,y,1);
+    v.drawSprite(&ball,x,y,{0,0,1});
     //Esperamos un momento para evitar en lo posible el efecto "estela"
     delay(50);
     //Refrescamos pantalla
@@ -422,11 +422,11 @@ void Test17() {
   //Creamos el sprite monocromo que contendrá el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto en el sprite
-  textSprite.print("/5x7d.fon","20190829",1);
+  textSprite.print("/5x7d.fon","20190829",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite);
   //Utilizamos una fuente más grande que crea un texto más grande que la anchura del display
-  textSprite.print("/10x15d.fon","123456789",1);
+  textSprite.print("/10x15d.fon","123456789",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo. No se verá el final
   v.drawSprite(&textSprite,5,16);
   //Lo mostramos de nuevo desplazado a la izquierda, comenzando desde una
@@ -447,7 +447,7 @@ void Test18() {
   //Creamos el sprite monocromo que contendrá el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto en el sprite
-  textSprite.print("/5x7d.fon","123",1);
+  textSprite.print("/5x7d.fon","123",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite,30,0);
   //Creamos el sprite monocromo que contendrá el texto rotado
@@ -480,7 +480,7 @@ void Test19() {
   //Creamos el sprite monocromo que contendrá el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto en el sprite
-  textSprite.print("/10x15d.fon","123",1);
+  textSprite.print("/10x15d.fon","123",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite);
   //Creamos el sprite monocromo que contendrá el texto volteado
@@ -509,7 +509,7 @@ void Test20() {
   //Creamos el sprite monocromo para el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto con una fuente pequeña
-  textSprite.print("/5x7d.fon","1234",1);
+  textSprite.print("/5x7d.fon","1234",{0,0,1});
   //Creamos el sprite del texto redimensionado
   RoJoSprite textSpriteResize(1);
   //Redimensionamos el texto rotado al tamaño del display
@@ -528,13 +528,13 @@ void Test21() {
   //Limpiamos la memoria de vídeo
   v.clear();
   //Escribimos con distintos tamaños de fuente
-  v.printOver("/5x7.fon","Hello world!",1);
-  v.printOver("/7x11.fon","Hello world!",1,0,8);
-  v.printOver("/10x15.fon","Hello world!",1,0,24);
+  v.printOver("/5x7.fon","Hello world!",{0,0,1});
+  v.printOver("/7x11.fon","Hello world!",{0,0,1},0,8);
+  v.printOver("/10x15.fon","Hello world!",{0,0,1},0,20);
   //Para escribir con borde necesitamos crear un sprite
   RoJoSprite textSprite(1);
-  textSprite.print("/5x7.fon","Hello",0,0,1);
-  v.drawSprite(&textSprite,0,40);
+  textSprite.print("/5x7.fon","Hello",{0,0,0},{0,0,0},{0,0,1});
+  v.drawSprite(&textSprite,0,38);
   textSprite.end();
   //Lo mostramos
   display.drawSprite(&v);
@@ -543,6 +543,7 @@ void Test21() {
 }
 
 void setup() {
+  //Serial.begin(115200); //DEBUG
   //Inicializamos el display
   //void begin(byte pinRES,byte pinDC,byte pinCS,uint32_t freqCOMM=0); //Inicialización
   display.begin(pinRES,pinDC,pinCS);

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190630
+  Fecha: 20200216
   Tema: Librería de touch screen para display RPI_ILI9486 SPI 3.5" 480*320
   Objetivo: Calibración del touch screen
   Material: breadboard, cables, display ILI9486, lector SD (obligatorio en
@@ -74,8 +74,8 @@ void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,ui
   //Dibuja una línea, recoge las medidas y devuelve la media
 
   //Definimos colores
-  uint16_t colorWhite=display.getColor(255,255,255); //Cuando se dibuja
-  uint16_t colorYellow=display.getColor(255,255,0); //Cuando se muestra
+  RoJoColor colorWhite={255,255,255}; //Cuando se dibuja
+  RoJoColor colorYellow={255,255,0}; //Cuando se muestra
 
   //Definimos variables de sumatorios
   uint32_t xSum,ySum;
@@ -116,7 +116,7 @@ void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,ui
   }
   
   //Borramos la línea
-  display.block(x0,y0,x1,y1,0);
+  display.block(x0,y0,x1,y1,{0,0,0});
 }
 
 void configTS()
@@ -166,7 +166,7 @@ void loop()
 {
   int16_t x,y;
   //Si se detecta pulsación...dibujamos el pixel
-  if(ts.getXY(&x,&y)) display.drawPixel(x,y,0xFFFF);
+  if(ts.getXY(&x,&y)) display.drawPixel(x,y,{255,255,255});
   #ifdef ESP8266
     yield();
   #endif

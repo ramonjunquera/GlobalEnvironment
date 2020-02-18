@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Librería para chip MAX7219
-  Fecha: 20190913
+  Fecha: 20200218
   Objetivo: Demostración de capacidades de la librería RoJoMAX7219
   Material: breadboard, cables, 4 soportes para chip MAX7219, 4 matrix led 8x8
 
@@ -44,7 +44,7 @@ void Test1() {
   //Dibujamos una matriz de puntos
   for(byte y=0;y<display.yMax();y+=2)
     for(byte x=0;x<display.xMax();x+=3) {
-      display.drawPixel(x,y,1);
+      display.drawPixel(x,y,{0,0,1});
       delay(50);
     }
   delay(1000);
@@ -143,7 +143,7 @@ void Test4() {
   RoJoSprite textSprite(1);
   //Creamos el sprite con el texto
   //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!textSprite.print(("/5x7.fon"),F("12345"),1)) return;
+  if(!textSprite.print(("/5x7.fon"),F("12345"),{0,0,1})) return;
   //Lo mostramos
   display.drawSprite(&textSprite);
   //Esperamos un momento
@@ -151,7 +151,7 @@ void Test4() {
 
   //Reaprovechamos el sprite de texto
   //Si no podemos crear el sprite de texto...hemos terminado  
-  if(!textSprite.print(F("/5x7.fon"),F("Hola!"),1)) return;
+  if(!textSprite.print(F("/5x7.fon"),F("Hola!"),{0,0,1})) return;
   //Desplazamiento horizontal del sprite
   //Recorremos todas las columnas de pantalla
   for(int16_t x=-(int16_t)textSprite.xMax();x<(int16_t)display.xMax()+1;x++) {
@@ -175,7 +175,7 @@ void Test5() {
       //Limpiamos pantalla
       display.clear();
       //Dibujamos la línea
-      display.line(0,y1,display.xMax(),y2,1);
+      display.line(0,y1,display.xMax(),y2,{0,0,1});
       //Refrescamos pantalla
       display.draw(); 
       //Esperamos un momento

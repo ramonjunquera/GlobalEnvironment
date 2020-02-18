@@ -67,3 +67,114 @@ Timers:
     3    16 bits   Librería Servo (12 terceros servos) y PWM de pines 2, 3 y 5
     4    16 bits   Librería Servo (12 cuartos servos) y PWM de pines 6. 7 y 8
     5    16 bits   Librería Servo (12 primeros servos) y PWM de pines 44, 45 y 46
+
+Pines analógicos:
+  Los pines analógicos pueden ser utilizados como digitales. Continúan con la numeración de los digitales:
+    A0  -> 54
+    A1  -> 55
+    A2  -> 56
+    A3  -> 57
+    A4  -> 58
+    A5  -> 59
+    A6  -> 60
+    A7  -> 61
+    A8  -> 62
+    A9  -> 63
+    A10 -> 64
+    A11 -> 65
+    A12 -> 66
+    A13 -> 67
+    A14 -> 68
+    A15 -> 69
+
+Puertos (direcciones de memoria para controlar los pines digitales):
+puerto	base	offset	address
+A	2	32	34
+B	5	32	37
+C	8	32	40
+D	11	32	43
+E	14	32	46
+F	17	32	49
+G	20	32	52
+H	258	0	258
+J	293	0	293
+K	264	0	264
+L	267	0	267
+
+Bits de puertos para pines digitales:
+pin	puerto	bit	base
+0	E	0	46
+1	E	1	46
+2	E	4	46
+3	E	5	46
+4	G	5	52
+5	E	3	46
+6	H	3	258
+7	H	4	258
+8	H	5	258
+9	H	6	258
+10	B	4	37
+11	B	5	37
+12	B	6	37
+13	B	7	37
+14	J	1	293
+15	J	0	293
+16	H	1	258
+17	H	0	258
+18	D	3	43
+19	D	2	43
+20	D	1	43
+21	D	0	43
+22	A	0	34
+23	A	1	34
+24	A	2	34
+25	A	3	34
+26	A	4	34
+27	A	5	34
+28	A	6	34
+29	A	7	34
+30	C	7	40
+31	C	6	40
+32	C	5	40
+33	C	4	40
+34	C	3	40
+35	C	2	40
+36	C	1	40
+37	C	0	40
+38	D	7	43
+39	G	2	52
+40	G	1	52
+41	G	0	52
+42	L	7	267
+43	L	6	267
+44	L	5	267
+45	L	4	267
+46	L	3	267
+47	L	2	267
+48	L	1	267
+49	L	0	267
+50	B	3	37
+51	B	2	37
+52	B	1	37
+53	B	0	37
+54:A0	F	0	49
+55:A1	F	1	49
+56:A2	F	2	49
+57:A3	F	3	49
+58:A4	F	4	49
+59:A5	F	5	49
+60:A6	F	6	49
+61:A7	F	7	49
+62:A8	K	0	264
+63:A9	K	1	264
+64:A10	K	2	264
+65:A11	K	3	264
+66:A12	K	4	264
+67:A13	K	5	264
+68:A14	K	6	264
+69:A15	K	7	264
+
+
+
+
+  

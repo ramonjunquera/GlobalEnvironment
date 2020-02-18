@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190919
+  Fecha: 20200218
   Tema: Acelerómetro 
   Objetivo: Mostrar brújula gráficamente
   Material: M5Stack Watch
@@ -10,9 +10,10 @@
     forma de brújula: flecha, posición de norte y grados con respecto al norte real (azimut).
 
   Notas:
+    - Existe una constante global (autoCalibrate) para que la brújula se
+      calibre automáticamente. Por defecto está activa. Si la desactivamos
+      debemos indicar manualmente los valores de configuración.
     - Puesto que no se utiliza ni el giróscopo ni el acelerómetro, se desactivan.
-    - Si se desea activar el modo de configuración automática se deben eliminar las líneas
-      de código que fijan las coordenadas del punto medio (indicadas).
     - Se incluye una línea comentada para que se muestre en el display las coordenadas del
       punto medio. Esto es útil para recalcular las coordenadas del punto medio cuando
       se activa el modo de configuración automático.
@@ -28,6 +29,7 @@ RoJoSH1107 display;
 RoJoSprite v(1); //Sprite monocromo de memoria de vídeo
 RoJoMPU9250 GAM; //Sensores
 
+const bool autoCalibrate=true; //Autocalibración
 int16_t azimut; //Ángulo de azimut
 
 void setup() {
@@ -40,10 +42,11 @@ void setup() {
   //No necesitaremos ni el Giróscopo ni el Acelerómetro
   GAM.sleepGA(true);
 
-  //Si queremos que la configuración sea automática, se deben eliminar las siguientes 3 líneas
-  GAM.autoM=false;
-  GAM.midM[0]=21435; //Promedio de medidas X en horizontal
-  GAM.midM[1]=5439; //Promedio de medidas Y en horizontal
+  if(!autoCalibrate) { //Si no se debe autocalibrar...
+    GAM.autoM=false;
+    GAM.midM[0]=21435; //Promedio de medidas X en horizontal
+    GAM.midM[1]=5439; //Promedio de medidas Y en horizontal
+  }
 }
 
 void loop() {
@@ -53,7 +56,7 @@ void loop() {
 
     //Escribimos el valor del azimut en pantalla
     RoJoSprite txt(1); //Creamos un sprite monocromo para guardar el texto
-    txt.print("/5x7.fon",String(azimut),1); //Lo llenamos con el valor texto del valor del azimut
+    txt.print("/5x7.fon",String(azimut),{0,0,1}); //Lo llenamos con el valor texto del valor del azimut
     v.drawSprite(&txt,(display.xMax()-txt.xMax())/2,104); //lodibujamos centrado
     txt.end(); //Hemos terminado con el sprite de texto
 
@@ -61,17 +64,17 @@ void loop() {
 
     //Dibujamos la flecha que indica la dirección
     //Versión simple: una sóla línea
-    //v.line(32,64,32-31*sin(azimutRad),64-31*cos(azimutRad),1);
+    //v.line(32,64,32-31*sin(azimutRad),64-31*cos(azimutRad),{0,0,1});
     //Versión más bonita: un triángulo
-    v.triangle(32-31*sin(azimutRad),64-31*cos(azimutRad),32-15*sin(azimutRad+2.5),64-15*cos(azimutRad+2.5),32-15*sin(azimutRad-2.5),64-15*cos(azimutRad-2.5),1);
+    v.triangle(32-31*sin(azimutRad),64-31*cos(azimutRad),32-15*sin(azimutRad+2.5),64-15*cos(azimutRad+2.5),32-15*sin(azimutRad-2.5),64-15*cos(azimutRad-2.5),{0,0,1});
 
-    v.circle(32,64,31,1); //Dibujamos la esfera
+    v.circle(32,64,31,{0,0,1}); //Dibujamos la esfera
 
-    v.line(32,32,32,29,1); //Marca de Norte
-    v.printOver("/5x7.fon","N",1,30,20); //N de Norte
+    v.line(32,32,32,29,{0,0,1}); //Marca de Norte
+    v.printOver("/5x7.fon","N",{0,0,1},30,20); //N de Norte
 
     //DEBUG. Muestra coordenadas de punto medio
-    //v.printOver("/5x7.fon",String(GAM.midM[0])+","+String(GAM.midM[1]),1,0,120);
+    //v.printOver("/5x7.fon",String(GAM.midM[0])+","+String(GAM.midM[1]),{0,0,1},0,120);
 
     display.drawSprite(&v);
   }

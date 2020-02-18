@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191104
+  Fecha: 20200218
   Tema: Acelerómetro 
   Objetivo: Mostrar lecturas gráficamente
   Material: M5Stick-C
@@ -42,7 +42,7 @@ void setup() {
   display.begin();
   //Definición del sprite de bola
   ball.setSize(5,5); //Lo dimensionamos. 5x5
-  ball.circle(2,2,2,0xFFFF); //Círculo blanco
+  ball.circle(2,2,2,{255,255,255}); //Círculo blanco
   //Definimos el área dibujable (display - tamaño de sprite de bola)
   displaySize[0]=display.xMax()-5;
   displaySize[1]=display.yMax()-5;

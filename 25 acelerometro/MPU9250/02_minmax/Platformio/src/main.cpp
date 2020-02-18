@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190917
+  Fecha: 20200218
   Tema: Acelerómetro MPU9250
   Objetivo: Lectura de los valores mínimos y máximos
   Material: M5Stack Watch
@@ -109,16 +109,16 @@ void loop() {
    //Si ha habido cambios...los mostramos
    if (changed) {
       v.clear();
-      v.printOver("/3x5.fon","GX:"+String(minmax[0][0][0])+","+String(minmax[0][0][1]),1);
-      v.printOver("/3x5.fon","GY:"+String(minmax[0][1][0])+","+String(minmax[0][1][1]),1,0,8);
-      v.printOver("/3x5.fon","GZ:"+String(minmax[0][2][0])+","+String(minmax[0][2][1]),1,0,16);
-      v.printOver("/3x5.fon","AX:"+String(minmax[1][0][0])+","+String(minmax[1][0][1]),1,0,24);
-      v.printOver("/3x5.fon","AY:"+String(minmax[1][1][0])+","+String(minmax[1][1][1]),1,0,32);
-      v.printOver("/3x5.fon","AZ:"+String(minmax[1][2][0])+","+String(minmax[1][2][1]),1,0,40);
-      v.printOver("/3x5.fon","MX:"+String(minmax[2][0][0])+","+String(minmax[2][0][1]),1,0,48);
-      v.printOver("/3x5.fon","MY:"+String(minmax[2][1][0])+","+String(minmax[2][1][1]),1,0,56);
-      v.printOver("/3x5.fon","MZ:"+String(minmax[2][2][0])+","+String(minmax[2][2][1]),1,0,64);
-      v.printOver("/3x5.fon","mid:"+String(GAM.midM[0])+","+String(GAM.midM[1]),1,0,72);
+      v.printOver("/3x5.fon","GX:"+String(minmax[0][0][0])+","+String(minmax[0][0][1]),{0,0,1});
+      v.printOver("/3x5.fon","GY:"+String(minmax[0][1][0])+","+String(minmax[0][1][1]),{0,0,1},0,8);
+      v.printOver("/3x5.fon","GZ:"+String(minmax[0][2][0])+","+String(minmax[0][2][1]),{0,0,1},0,16);
+      v.printOver("/3x5.fon","AX:"+String(minmax[1][0][0])+","+String(minmax[1][0][1]),{0,0,1},0,24);
+      v.printOver("/3x5.fon","AY:"+String(minmax[1][1][0])+","+String(minmax[1][1][1]),{0,0,1},0,32);
+      v.printOver("/3x5.fon","AZ:"+String(minmax[1][2][0])+","+String(minmax[1][2][1]),{0,0,1},0,40);
+      v.printOver("/3x5.fon","MX:"+String(minmax[2][0][0])+","+String(minmax[2][0][1]),{0,0,1},0,48);
+      v.printOver("/3x5.fon","MY:"+String(minmax[2][1][0])+","+String(minmax[2][1][1]),{0,0,1},0,56);
+      v.printOver("/3x5.fon","MZ:"+String(minmax[2][2][0])+","+String(minmax[2][2][1]),{0,0,1},0,64);
+      v.printOver("/3x5.fon","mid:"+String(GAM.midM[0])+","+String(GAM.midM[1]),{0,0,1},0,72);
       display.drawSprite(&v);
    }
 

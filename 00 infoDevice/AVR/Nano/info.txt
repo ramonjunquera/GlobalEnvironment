@@ -77,3 +77,32 @@ Atención!
 Si la placa es antigua, al intentar subir el programa dará un error de sincronización.
 Si esto ocurre, se debe indicar en:
   Herramientas/Procesador/ATmega328P (Old Bootloader)
+
+Puertos (direcciones de memoria para controlar los pines digitales):
+port	base	offset
+B	5	32
+C	8	32
+D	11	32
+
+Bits de puertos para pines digitales:
+pin	port	bit	address
+0	D	0	43
+1	D	1	43
+2	D	2	43
+3	D	3	43
+4	D	4	43
+5	D	5	43
+6	D	6	43
+7	D	7	43
+8	B	0	37
+9	B	1	37
+10	B	2	37
+11	B	3	37
+12	B	4	37
+13	B	5	37
+14:A0	C	0	40
+15:A1	C	1	40
+16:A2	C	2	40
+17:A3	C	3	40
+18:A4	C	4	40
+19:A5	C	5	40

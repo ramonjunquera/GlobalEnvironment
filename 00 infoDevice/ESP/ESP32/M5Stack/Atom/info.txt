@@ -31,10 +31,10 @@ Puerto
   GROOVE : I/O
     pin GND
     pin 5V
-    pin 25 : SDA
+    pin 26 : SDA
     pin 32 : SCL
   Bottom
-    pin 2V2
+    pin 3V2
     pin 22
     pin 19
     pin 23

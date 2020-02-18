@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190917
+  Fecha: 20200218
   Tema: Acelerómetro 
   Objetivo: Mostrar lecturas gráficamente. Gestión de partículas
   Material: M5Stack Watch
@@ -47,8 +47,8 @@ void setup() {
     coorXY[p][1]=10;
   }
   //Añadimos un par de objetos inmóviles
-  v.circle(-32-1,64,64,1);
-  v.circle(64+32+1,64,64,1);
+  v.circle(-32-1,64,64,{0,0,1});
+  v.circle(64+32+1,64,64,{0,0,1});
 
   //Inicialización de sensores
   GAM.begin();
@@ -86,17 +86,17 @@ void loop() {
         coorXY[p][0]+=speedXY[p][0];
       } else { //El pixel origen y destino son distintos
         //Si el pixel destino está ocupado...
-        if(v.getPixel(p2[0],display.yMax()-1-p1[1])) {
+        if(v.getPixel(p2[0],display.yMax()-1-p1[1]).get24()>0) {
           //...ha chocado. Cambiamos la velocidad horizontal
           speedXY[p][0]=-speedXY[p][0]*elastic;
         } else { //Si el pixel destino está libre...
           //Borramos la partícula en origen
-          v.drawPixel(p1[0],display.yMax()-1-p1[1],0);
+          v.drawPixel(p1[0],display.yMax()-1-p1[1],{0,0,0});
           //Movemos la coordenada horizontal
           coorXY[p][0]+=speedXY[p][0];
           p1[0]=p2[0];
           //Dibujamos el pixel de la nueva posición
-          v.drawPixel(p1[0],display.yMax()-1-p1[1],1);
+          v.drawPixel(p1[0],display.yMax()-1-p1[1],{0,0,1});
         }
       }
     }
@@ -112,17 +112,17 @@ void loop() {
         coorXY[p][1]+=speedXY[p][1];
       } else { //El pixel origen y destino son distintos
         //Si el pixel destino está ocupado...
-        if(v.getPixel(p1[0],display.yMax()-1-p2[1])) {
+        if(v.getPixel(p1[0],display.yMax()-1-p2[1]).get24()>0) {
           //...ha chocado. Cambiamos la velocidad vertical
           speedXY[p][1]=-speedXY[p][1]*elastic;
         } else { //Si el pixel destino está libre...
           //Borramos la partícula en origen
-          v.drawPixel(p1[0],display.yMax()-1-p1[1],0);
+          v.drawPixel(p1[0],display.yMax()-1-p1[1],{0,0,0});
           //Movemos la coordenada vertical
           coorXY[p][1]+=speedXY[p][1];
           p1[1]=p2[1];
           //Dibujamos el pixel de la nueva posición
-          v.drawPixel(p1[0],display.yMax()-1-p1[1],1);
+          v.drawPixel(p1[0],display.yMax()-1-p1[1],{0,0,1});
         }
       }
     }

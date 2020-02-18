@@ -1,76 +1,70 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190703
-  Tema: M5Stack. Leds
+  Fecha: 20200216
+  Tema: M5Stack Fire. Leds NeoPixel
   Objetivo: Demo de gestión de leds
-  Material: M5Stack
+  Material: M5Stack Fire
 
   Descripción:
     Sucesión de varios ejemplos
 */
 
 #include <Arduino.h>
-#include <RoJoM5Leds.h> //Gestión de leds para M5Stack
+#include <RoJoNeoPixel.h> //Gestión de leds NeoPixel
 
-RoJoM5Leds leds; //Objeto de gestión de leds en M5Stack
+RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
 
 //Sucesión ascendente
-void Test1()
-{
-  Serial.println("Test1 start");
-  //Apagamos todos los leds
-  leds.clear();
-  //Damos 3 vueltas
-  for(byte turnCount=0;turnCount<3;turnCount++)
-    //Recorremos todos los leds
-    for(byte ledIndex=0;ledIndex<10;ledIndex++)
-    {
-      //Encendemos el led procesado. Sólo canal verde
-      leds.ledColor[ledIndex][1]=255;
-      //Mostramos la configuración actual
-      leds.show();
-      //Apagamos el led procesado para que no aparezca en el siguiente ciclo
-      leds.ledColor[ledIndex][1]=0;
-      //Esperamos un momento
-      delay(100);
+void Test1() {
+  leds.v->clear(); //Apagamos todos los leds
+  for(byte turnCount=0;turnCount<3;turnCount++) { //Damos 3 vueltas
+    for(byte y=0;y<2;y++) { //Recorremos todos los leds
+      for(byte x=0;x<5;x++) { //Recorremos todos los leds
+        leds.v->drawPixel(x,y,{0,255,0}); //Encendemos el led procesado. Sólo canal verde
+        leds.draw(); //Mostramos la configuración actual
+        leds.v->drawPixel(x,y,{0,0,0}); //Apagamos el led procesado para que no aparezca en el siguiente ciclo
+        delay(100); //Esperamos un momento
+      }
     }
-  Serial.println("Test1 end");
-}
-
-//Efecto KITT por ambos lados
-void Test2()
-{
-  char currentLed=0; //Posición del led procesado
-  char delta=1; //Dirección
-
-  //Apagamos todos los leds
-  leds.clear();
-  //Hacemos 100 cambios de led
-  for(byte i=0;i<100;i++)
-  {
-    //Encendemos el led procesado en ambos lados
-    leds.ledColor[(byte)currentLed][0]=255; //Derecha
-    leds.ledColor[9-currentLed][0]=255; //Izquierda
-    //Mostramos la configuración actual
-    leds.show();
-    //Calculamos la siguiente posición
-    currentLed+=delta;
-    //Si hemos llegado a un extremo...cambiamos de dirección
-    if(currentLed==0 || currentLed==4) delta=-delta;
-    //Atenuamos todos los leds rojos
-    for(byte ledIndex=0;ledIndex<10;ledIndex++) leds.ledColor[ledIndex][0]/=2;
-    //Esperamos un momento
-    delay(100);
   }
 }
 
-void setup()
-{
-  Serial.begin(115200);
+//Efecto KITT por ambos lados
+void Test2() {
+  int8_t x=0; //Posición del led procesado
+  int8_t delta=1; //Dirección
+  RoJoColor color;
+
+  leds.v->clear(); //Apagamos todos los leds
+  for(byte i=0;i<100;i++) { //Hacemos 100 cambios de led
+    for(byte y=0;y<2;y++) { //Recorremos ambos lados
+      leds.v->drawPixel(x,y,{255,0,0}); //Encendemos el led en rojo
+    }
+    leds.draw(); //Mostramos la configuración actual
+    x+=delta; //Calculamos la siguiente posición
+    if(x==0 || x==4) delta=-delta; //Si hemos llegado a un extremo...cambiamos de dirección
+    //Atenuamos el canal rojo de todos los pixels
+    for(byte dimY=0;dimY<2;dimY++) {
+      for(byte dimX=0;dimX<5;dimX++) {
+        color=leds.v->getPixel(dimX,dimY); //Obtenemos el color
+        color.channels[0]/=2; //Reducimos el nivel de rojo a la mitad
+        leds.v->drawPixel(dimX,dimY,color); //Dibujamos de nuevo el pixel
+      }
+    }
+    delay(100); //Esperamos un momento
+  }
 }
 
-void loop()
-{
+void setup() {
+  //Configuración NeoPixel para M5Stack Fire. 5x2 en pin 15
+  //Cada fila representa un lado: fila 0 = lado derecho, fila 1 = lado izquierdo
+  //Las columnas representan el led.
+  //En la derecha las columnas se cuentan de arriba a abajo
+  //En el lado izquierdo se cuentan de abajo arriba.
+  leds.begin(5,2,15);
+}
+
+void loop() {
   Test1(); //Sucesión ascendente
   Test2(); //KITT
 }

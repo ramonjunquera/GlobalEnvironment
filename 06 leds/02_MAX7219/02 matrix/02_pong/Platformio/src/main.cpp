@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191005
+  Fecha: 20200218
   Tema: Pong
   Objetivo: Desarrollar el pong para una matrix de leds de 8x8
   Material adicional: breadboard, cables, buzzer pasivo, led matrix 8x8 con chip MAX7219,
@@ -63,8 +63,8 @@ void RefreshPads() {
   yPad1=analogRead(pinPad1)/171;
   yPad2=analogRead(pinPad2)/171;
   //Dibujamos los pads
-  display.block(0,yPad1,0,yPad1+2,1);
-  display.block(7,yPad2,7,yPad2+2,1);
+  display.block(0,yPad1,0,yPad1+2,{0,0,1});
+  display.block(7,yPad2,7,yPad2+2,{0,0,1});
   //Refrescamos la pantalla para que se visualicen los cambios
   display.draw();
 }
@@ -84,7 +84,7 @@ void loop() {
       //La pelota comenzará en la columna más lejana al jugador al que se dirige. Valores: 3,4
       xBall=4-(dxBall+1)/2;
       //Dibujamos la pelota
-      display.drawPixel(xBall,yBall,1);
+      display.drawPixel(xBall,yBall,{0,0,1});
       //Fijamos la velocidad actual como la inicial
       currentSpeed=startSpeed;
       //Indicamos cómo será la música de inicio
@@ -129,7 +129,7 @@ void loop() {
             music.start();
           }
           //Si choca con alguna pala...
-          if(display.v->getPixel(xBall+dxBall,yBall+dyBall)) {
+          if(display.v->getPixel(xBall+dxBall,yBall+dyBall).get24()>0) {
             //Debe rebotar. Cambiamos su dirección horizontal
             dxBall=-dxBall;
             //Si ha chocado con el pad1
@@ -160,12 +160,12 @@ void loop() {
             music.start();
           }
           //Borramos la posición actual de la pelota
-          display.drawPixel(xBall,yBall,0);
+          display.drawPixel(xBall,yBall,{0,0,0});
           //Calculamos las nuevas coordenadas de la pelota
           xBall+=dxBall;
           yBall+=dyBall;
           //Dibujamos la pelota
-          display.drawPixel(xBall,yBall,1);
+          display.drawPixel(xBall,yBall,{0,0,1});
           //Si la pelota está dentro de alguna portería...
           if(xBall==0 || xBall==7) {
             //Dibujamos la pantalla
@@ -200,7 +200,7 @@ void loop() {
         //Cambiamos el estado a la visualización de la pelota
         visibleBall=1-visibleBall;
         //Dibujamos (o borramos la pelota)
-        display.drawPixel(xBall,yBall,visibleBall);
+        display.drawPixel(xBall,yBall,{0,0,visibleBall});
         //Refrescamos la pantalla
         display.draw();
       }

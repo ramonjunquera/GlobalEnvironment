@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191128
+  Fecha: 20200217
   Tema: Librería para display SH1107 SPI 64x128
   Objetivo: Demo de librería RoJoSH1107
 
@@ -33,7 +33,7 @@ void Test1() {
   //Dibujamos una matriz de puntos
   for(uint16_t x=0;x<v.xMax();x+=5)
     for(uint16_t y=0;y<v.yMax();y+=5)
-      v.drawPixel(x,y,1);
+      v.drawPixel(x,y,{0,0,1});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -45,7 +45,7 @@ void Test2() {
   //Dibujamos pixels en la mitad superior del display con el color 2 (invertir color)
   for(uint16_t y=0;y<v.yMax()/2;y++)
     for(uint16_t x=0;x<v.xMax();x++)
-      v.drawPixel(x,y,2);
+      v.drawPixel(x,y,{0,0,2});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -57,7 +57,7 @@ void Test3() {
   //Dibujamos un rectángulo relleno en el interior que borra
   for(uint16_t y=10;y<40;y++)
     for(uint16_t x=10;x<40;x++)
-      v.drawPixel(x,y,0);
+      v.drawPixel(x,y,{0,0,0});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -69,7 +69,7 @@ void Test4() {
   //Comprobamos los pixels de un cuadrado y dibujamos el color opuesto
   for(uint16_t y=30;y<50;y++)
     for(uint16_t x=30;x<50;x++)
-      v.drawPixel(x,y,!v.getPixel(x,y));
+      v.drawPixel(x,y,{0,0,(byte)(1-v.getPixel(x,y).channels[2])});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -82,9 +82,9 @@ void Test5() {
   //Limpiamos pantalla
   v.clear();
   //Dibujamos un rectángulo relleno sin borde (un bloque)
-  v.block(0,0,20,20,1); //1=sólido
+  v.block(0,0,20,20,{0,0,1}); //1=sólido
   //Dibujamos un rectángulo con borde inverso (sin relleno)
-  v.rect(10,10,30,30,2);
+  v.rect(10,10,30,30,{0,0,2});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -96,7 +96,7 @@ void Test5() {
 void Test6() {
   //Limpiamos pantalla
   v.clear();
-  for(byte y=0;y<v.yMax();y+=10) v.line(0,0,v.xMax()-1,y,1);
+  for(byte y=0;y<v.yMax();y+=10) v.line(0,0,v.xMax()-1,y,{0,0,1});
   //Mostramos el resultado
   display.drawSprite(&v);
 
@@ -287,7 +287,7 @@ void Test11() {
     //por páginas, que es mucho más rápido que pixel a pixel
     v.drawSprite(&backSprite,4,32);
     //Dibujamos el sprite en movimiento tomando los pixels apagados como transparentes
-    v.drawSprite(&ball,x,y,1);
+    v.drawSprite(&ball,x,y,{0,0,1});
     //Refrescamos pantalla
     display.drawSprite(&v);
     //Calculamos las nuevas coordenadas
@@ -334,9 +334,9 @@ void Test12() {
     //Dibujamos el sprite estático centrado
     v.drawSprite(&backSprite,4,32);
     //Dibujamos la máscara del sprite en movimiento borrando
-    v.drawSprite(&ballMask,x,y,0);
+    v.drawSprite(&ballMask,x,y,{0,0,0});
     //Dibujamos el sprite en movimiento
-    v.drawSprite(&ball,x,y,1);
+    v.drawSprite(&ball,x,y,{0,0,1});
     //Refrescamos pantalla
     display.drawSprite(&v);
     //Calculamos las nuevas coordenadas
@@ -450,11 +450,11 @@ void Test16() {
   //Creamos el sprite monocromo que contendrá el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto en el sprite
-  textSprite.print("/5x7d.fon","20190829",1);
+  textSprite.print("/5x7d.fon","20190829",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite);
   //Utilizamos una fuente más grande que crea un texto más grande que la anchura del display
-  textSprite.print("/10x15d.fon","123456",1);
+  textSprite.print("/10x15d.fon","123456",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo. No se verá el final
   v.drawSprite(&textSprite,5,16);
   //Lo mostramos de nuevo desplazado a la izquierda, comenzando desde una
@@ -476,7 +476,7 @@ void Test17() {
   //Creamos el sprite monocromo que contendrá el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto en el sprite
-  textSprite.print("/10x15d.fon","123",1);
+  textSprite.print("/10x15d.fon","123",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite,15,0);
   //Creamos el sprite monocromo que contendrá el texto rotado
@@ -510,7 +510,7 @@ void Test18() {
   //Creamos el sprite monocromo que contendrá el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto en el sprite
-  textSprite.print("/10x15d.fon","123",1);
+  textSprite.print("/10x15d.fon","123",{0,0,1});
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite);
   //Creamos el sprite monocromo que contendrá el texto volteado
@@ -542,7 +542,7 @@ void Test19() {
   //Creamos el sprite monocromo para el texto
   RoJoSprite textSprite(1);
   //Escribimos el texto con una fuente pequeña
-  textSprite.print("/5x7d.fon","1234",1);
+  textSprite.print("/5x7d.fon","1234",{0,0,1});
   //Creamos el sprite monocromo para el texto rotado
   RoJoSprite textSpriteRotate(1);
   //Rotamos el texto
@@ -567,13 +567,13 @@ void Test20() {
   //Limpiamos la memoria de vídeo
   v.clear();
   //Escribimos con distintos tamaños de fuente
-  v.printOver("/3x5.fon","Hello world!",1);
-  v.printOver("/5x7.fon","Hello world!",1,0,8);
-  v.printOver("/7x11.fon","Hello world!",1,0,16);
-  v.printOver("/10x15.fon","Hello world!",1,0,32);
+  v.printOver("/3x5.fon","Hello world!",{0,0,1});
+  v.printOver("/5x7.fon","Hello world!",{0,0,1},0,8);
+  v.printOver("/7x11.fon","Hello world!",{0,0,1},0,16);
+  v.printOver("/10x15.fon","Hello world!",{0,0,1},0,32);
   //Para escribir con borde necesitamos crear un sprite
   RoJoSprite textSprite(1);
-  textSprite.print("/10x15.fon","Hello",0,0,1);
+  textSprite.print("/10x15.fon","Hello",{0,0,0},{0,0,0},{0,0,1});
   v.drawSprite(&textSprite,0,48);
   textSprite.end();
   //Lo mostramos
@@ -587,10 +587,10 @@ void Test21() {
   //Limpiamos la memoria de vídeo
   v.clear();
 
-  v.circle(15,15,14,1);
-  v.disk(45,15,14,1);
-  v.ellipse(15,60,14,29,1);
-  v.ellipseFill(45,60,14,29,1);
+  v.circle(15,15,14,{0,0,1});
+  v.disk(45,15,14,{0,0,1});
+  v.ellipse(15,60,14,29,{0,0,1});
+  v.ellipseFill(45,60,14,29,{0,0,1});
   //Lo mostramos
   display.drawSprite(&v);
 
@@ -609,9 +609,6 @@ void setup(void) {
 }
 
 void loop(void) {
-  Test17(); //Rotar sprites
-  delay(9999);
-  
   Test1(); //Función drawPixel con color 1 = dibujar
   Test2(); //Función drawPixel con color 2 = invertir
   Test3(); //Función drawPixel con color 0 = borrar

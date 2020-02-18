@@ -1,0 +1,58 @@
+Descompilación de programas Arduino
+
+En ocasiones es interesante ver el cósigo en ensamblador que se genera en base a nuestro programa en C++.
+Así podemos obtener los valores reales de las direcciones y registros.
+Con esta información podríamos crear nuestras propias rutinas maximizando su eficiencia.
+
+Cuando pulsamos en el botón de enviar en el IDE de Arduino, se ejecutan varios procesos encadenados de
+manera automática. Los archivos temporales intermedios están ocultos.
+
+Para poder conocer el lugar y nombre de estos archivos es necesario poder visualizar la máxima información
+posible en el momento de la compilación. Para elo accedemos a:
+  Archivo/Preferencias
+Y marcamos la opción "Mostrar salida detallada mientras: Compilación".
+
+Ahora cuando compilamos nuestro proyecto aparecen todos los detalles en la sección inferior.
+Necesitamos localizar el archivo .elf
+Habitualmente se encuentra en una carpeta del tipo "arduino_build_668068" dentro de la carpeta de archivos
+temporales de nuestro usuario. En su interior hay varios archivos. Uno de ellos el .elf, con la siguiente 
+sintaxis:
+  Nombre_del_programa.ino.elf
+
+Podemos decodificar el archivo con una de las utilidades incluidas en el paquete de Arduino IDE.
+Concretamente con:
+  D:\programas\Arduino\hardware\tools\avr\bin\avr-objdump.exe
+La sintaxis de la línea de comando es:
+  avr-objdump.exe -S nombre_del_programa.ino.elf
+Para exportar todo a un archivo de texto podemos utilizar:
+  avr-objdump.exe -S nombre_del_programa.ino.elf >> salida.txt
+
+Para automatizar la descompilación, podemos crear un arhivo .bat con la siguiente línea:
+  D:\programas\Arduino\hardware\tools\avr\bin\avr-objdump.exe -S %1 > %1.txt
+Lo podemos llamar decom.bat y dejarlo en alguna ruta incluida en la variable PATH (como Windows).
+Después asociamos la extensión .elf a decom.bat
+Ahora sólo tenemos que hacer doble click sobre el archivo .elf para que se genere en la misma carpeta
+un archivo con el mismo nombre y extensión .txt con el código descompilado.
+
+Se puede añadir código en ensamblador en un un programa en C++ con el comando asm
+
+Ejemplo1:
+  asm("sbi 0x05,7");
+  asm("cbi 0x05,7");
+  asm("sbi 0x05,7");
+Ejemplo2:
+  asm("sbi 0x05,7\ncbi 0x05,7\nsbi 0x05,7");
+Ejemplo3:
+  asm(
+    "sbi 0x0e,5 \n"//
+    "cbi 0x0e,5 \n"//
+    "sbi 0x0e,5 \n"
+  );
+
+
+
+
+
+
+
+
