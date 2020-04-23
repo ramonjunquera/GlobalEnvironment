@@ -1,0 +1,41 @@
+Módulo M5Bala
+Accesorio para dispositivos M5Stack de tamaño estándar (5cm x 5cm) que incluye dos
+motores, dos encoders y un puente H para controlarlos.
+Todo ello se gestiona por I2C.
+Soporta perfectamente 400KHz como frecuencia de conexión.
+El módulo tiene un botón propio. Con una pulsación corta se resetea/inicializa.
+Con dos pulsaciones cortas se apaga.
+En la parte inferior tiene dos leds de color verde que se pueden ver cuando está encendido.
+Los encoders indican el número de pasos que se han contado desde la última lectura.
+El valor puede ser positivo o negativo.
+Tras cada petición, el valor se resetea a cero.
+
+Identificador I2C: 0x56
+
+Lectura de encoders
+Se debe enviar el código 0x04 para indicar que queremos leer los encoders.
+Se devuelve el valor de los dos encoders en formato int16_t.
+Ejemplo:
+  Wire.beginTransmission(0x56);
+  Wire.write(0x04); //Solicitud de encoders
+  Wire.endTransmission();
+  Wire.beginTransmission(0x56);
+  Wire.requestFrom(0x56,4); //Solicitamos 4 bytes
+  int16_t encoder0,encoder1;
+  Wire.readBytes((byte*)encoder0,2); //Leemos valor de encoder0
+  Wire.readBytes((byte*)encoder1,2); //Leemos valor de encoder1
+
+Escritura de potencia de motores
+Se envía el código 0x00 para indicar que queremos escribir la potencia de motores.
+Se envían ambas potencias en formato int16_t
+Atención. Aunque el tipo es int16_t, no se deben enviar valores fuera del rango [-255,255]
+Si se hace, sólo se tendrá en cuenta su resto de 256.
+Ejemplo:
+  int16_t p0=0,p1=0; //Adignación de potencias
+  Wire.beginTransmission(0x56);
+  Wire.write(0x00); //Escritura de potencias
+  Wire.write((byte*)&p0,2);
+  Wire.write((byte*)&p1,2);
+  Wire.endTransmission();
+
+

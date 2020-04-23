@@ -90,5 +90,5 @@ I2C
     pin 22 : SCL
   Identificadores
     0x68 : MPU6050 : acelerómetro + giróscopo (6DOF)
-    0x0C : AK8963 : magnetómetro (3DOF)
+    0x0C : AK8963 : magnetómetro (3DOF) (oculto)
     0x75 : IP5306 : gestor de batería

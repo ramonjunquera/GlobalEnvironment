@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20200218
   Tema: matriz CJMCU-64 (NeoPixel)
   Objetivo: Demo de gestión de leds NeoPixel
 
@@ -27,6 +27,7 @@
 RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
+  Serial.begin(115200); //DEBUG
   //Definición de pinout
   #ifdef ARDUINO_ARCH_AVR //Placas Arduino: Mega, Nano, UNO
     byte pinComm=3;
@@ -201,13 +202,12 @@ void test6() {
   }
 }
 
-//Carga y digujo de archivos bmp
+//Carga y dibujo de archivos bmp y spr
 void test7() {
-  //leds.v->loadBMP("/heart.bmp");
   leds.v->loadBMP("/heart.bmp");
   leds.draw();
   delay(2000);
-  leds.v->loadBMP("/house.bmp");
+  leds.v->loadBMP("/house.spr");
   leds.draw();
   delay(2000);
   leds.v->loadBMP("/smiley.bmp");
@@ -298,13 +298,16 @@ void test9() {
 }
 
 void loop() {
+  test7(); //Load bmp
+  test7(); //Load bmp
+
   test1(); //Single led
   test2(); //Colores planos
   test3(); //Texto scroll
   test4(); //Dimming
   test5(); //Fading
   test6(); //Kitt circular
-  test7(); //Load bmp
+  test7(); //Load bmp & spr
   test8(); //Glitter
   test9(); //Fire
 }

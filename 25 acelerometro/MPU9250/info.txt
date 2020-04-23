@@ -1,7 +1,7 @@
 MPU9250
 Sensor fabricado por Invensense que contiene acelerómetro, giróscopo y magnetómetro.
-- Giróscopo: indica la posición en el espacio
-- Acelerómetro: indica la aceleración (movimiento)
+- Giróscopo: indica la velocidad angular (movimiento)
+- Acelerómetro: indica la aceleración (posición)
 - Magnetómetro: indica la orientación respecto al polo magnético
 
 Tiene 9 grados de libertas (9DOF), 3 para cada uno de los sensores.

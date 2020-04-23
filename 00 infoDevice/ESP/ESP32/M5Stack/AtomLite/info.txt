@@ -15,17 +15,15 @@ Botón
   Pin 39
 
 IMU
-  MPU6886 (??verificar)
+  No tiene
 
 Led IR
   Pin 12
 
-I2C??
+I2C
   Pinout
     pin 25 : SDA
     pin 21 : SCL
-  Identificadores
-    0x68 : MPU6886 : acelerómetro + giróscopo (6DOF) compatible con MPU6050
 
 Puerto
   GROOVE : I/O

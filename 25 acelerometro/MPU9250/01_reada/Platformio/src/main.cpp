@@ -1,13 +1,13 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200305
+  Fecha: 20200219
   Tema: Acelerómetro MPU9250
   Objetivo: Lectura de los valores
-  Material: M5Stack Watch, M5Stick-C, M5Stack Fire
+  Material: M5Stack Watch, M5Stick-C
   Descripción:
     Inicializa los sensores y muestra los valores contínuamente por el puerto serie
   Nota:
-    Ni M5Stick-C ni Atom Matrix tienen magnetómetro. Sus lecturas no se mostrarán.
+    M5Stick-C no tiene magnetómetro. Sus lecturas no se mostrarán.
 */
 
 #include <Arduino.h>
@@ -48,6 +48,7 @@ void setup() {
       delay(200);
    }
    GAM.begin(pinSDA,pinSCL); //Inicialización de sensores
+   hasM=GAM.hasM();
 }
  
 void loop() {
@@ -58,11 +59,10 @@ void loop() {
    GAM.readA(data); //Leemos datos de Acelerómetro
    Serial.print("\t["+String(data[0])+"\t"+String(data[1])+"\t"+String(data[2])+"]");
    //Si conseguimos datos del Magnetómetro...los mostramos
-   if(GAM.hasM()) {
+   if(hasM) {
      GAM.readM(data);
-     Serial.print("\t["+String(data[0])+"\t"+String(data[1])+"\t"+String(data[2])+"]");
-   }
-   Serial.println();
+     Serial.println("\t["+String(data[0])+"\t"+String(data[1])+"\t"+String(data[2])+"]");
+   } else Serial.println();
    digitalWrite(pinLED,LOW); //Apagamos el led integrado
    delay(300);
 }

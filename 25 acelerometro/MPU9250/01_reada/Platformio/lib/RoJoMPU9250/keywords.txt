@@ -1,0 +1,17 @@
+﻿# RoJoMPU9250 datatypes
+RoJoMPU9250	KEYWORD1
+autoM	KEYWORD1
+midM	KEYWORD1
+fixAzimut	KEYWORD1
+# RoJoMPU9250 library methods
+resetGA	KEYWORD1
+resetM	KEYWORD1
+reset	KEYWORD2
+begin	KEYWORD2
+sleepGA	KEYWORD2
+sleepM	KEYWORD2
+sleep	KEYWORD2
+readG	KEYWORD2
+readA	KEYWORD2
+readM	KEYWORD2
+readAzimut	KEYWORD2
