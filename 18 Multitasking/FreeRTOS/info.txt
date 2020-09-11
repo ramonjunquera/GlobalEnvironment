@@ -14,9 +14,12 @@ tiempo de proceso a una tarea, pero cuando llega su límite se lo quita,
 anota sus parámetros y guarda su estado para cuando vuelva a disponer
 tiempo para ella.
 
-En los sistemas operativos de cooperativos, el sistema operativo le entrega
-el control a una tarea y espera que ella misma lo devuelva cuando pueda.
+En la multitarea cooperativa, el sistema operativo le entrega el control
+a una tarea y espera que ella misma lo devuelva cuando pueda.
 En estos casos se corre el riesgo de que por un fallo de programación la
 tarea nunca devuelva el control y cuelgue el sistema o impida que otras
 tareas puedan ser ejecutadas.
+
+Existen librerías como Arduino_FreeRTOS.h que permiten que las placas
+Arduino con un sólo core, utilicen las ventajas de FreeRTOS.
 

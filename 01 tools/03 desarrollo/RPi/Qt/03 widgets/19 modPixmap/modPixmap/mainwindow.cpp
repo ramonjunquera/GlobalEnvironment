@@ -2,9 +2,9 @@
 #include "ui_mainwindow.h"
 #include <QPainter>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 }
@@ -14,10 +14,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+//Pulsado botón bombilla
+void MainWindow::on_pushButton_Bombilla_clicked()
 {
-    //Se ha pulsado el botón
-
     //No se puede editar un QPixmap de un label puesto que se guarda como constante
     //Por lo tanto, necesitamos crear un QPixmap, que tras su edición, se asignará
     //al label, sustituyendo el actual.
@@ -38,7 +37,8 @@ void MainWindow::on_pushButton_clicked()
     ui->label->setPixmap(myPixmap);
 }
 
-void MainWindow::on_pushButton_2_clicked()
+//Pulsado el botón rejilla
+void MainWindow::on_pushButton_Rejilla_clicked()
 {
     //Creamos un QPixmap nuevo y vacío (negro)
     QPixmap myPixmap(201,201);

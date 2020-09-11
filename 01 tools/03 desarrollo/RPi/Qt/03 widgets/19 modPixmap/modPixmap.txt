@@ -1,4 +1,7 @@
-modPixmap
+Tema: Ejemplos de desarrollo en QT. Widgets.
+Autor: Ramón Junquera
+Fecha: 20200609
+Objetivo: Modificación de un objeto QPixmap insertado en un QLabel
 
 Novedades:
 - Modificación del QPixmap de un QLabel por programa
@@ -17,11 +20,69 @@ Funcionalidad:
 - Al pulsar el segundo botón se crea una imagen en forma de rejilla en blanco y negro
 
 Desarrollo:
-  Eliminamos barras :menu, tool y status
-  Definimos layout horizontal
-  Creamos el archivo de recursos con la imágen
+  Creamos aplicación Qt Widgets Application
+  Copiar imágen
+    Antes de crear un archivo de recursos es conveniente tener las imágenes que
+    contendrá dentro de la estructura del mismo proyecto, para mantener una
+    copia de seguridad. Para ello crearemos desde el explorador de archivos una
+    nueva carpeta llamada "icons" y copiaremos en ella la imágen "bulb-on-128.png"
+  Creamos el archivo de recursos
+    Para crearlo debemos estar en la pantalla de edición de código.
+    En la parte superior izquierda vemos la estructura de archivos de
+    nuestro proyecto.
+    Seleccionamos el primer item con el nombre del proyecto.
+    Hacemos click con el botón derecho y seleccionamos "Add New...".
+    En la sección izquierda seleccionamos "Qt".
+    En la sección central seleccionamos "Qt Resource File".
+    Pulsamos el botón "Choose...".
+    Asignamos un nombre al archivo de recursos. En nuestro ejemplo es:
+    "myResources".
+    El path suele ser correcto. Coincide con el del proyecto.
+    Pulsamos el botón "Next>".
+    No modificamos nada de la siguiente pantalla y pulsamos "Finish".
+    Se ha creado una nueva carpeta llamada "Resources" a nivel de
+    proyecto. Dentro está el archivo de recursos que hemos solicitado
+    crear: myResources.
+    Todos los archivos de recursos tienen extensión .qrc.
+  Añadimos la imágen al archivo de recursos
+    Pulsamos el botón "Add Files"
+    Seleccionamos el archivo de recursos (myResources.qrc).
+    Hacemos click con el botón derecho.
+    Seleccionamos "Open in Editor".
+    Pulsamos el botón "Add Prefix...".
+    Automáticamente completa el el campo "Prefix" como /new/prefix1
+    Lo cambiaremos a /images
+    El campo "Language" lo dejamos vacío. Por ahora no haremos programas multiidioma.
+    Hacemos click en el botón "Add Files"
+    Localizamos la carpeta icons con las imágenes.
+    Seleccionamos la imágen "bulb-on-128.png"
+    Pulsamos el botón "Open".
+    Podemos comprobar como se han añadido los archivos al interior de la carpeta prefijo.
+    Los archivos mantiene el path relativo a la carpeta de proyecto. Podemos ver como
+    todos comienzan por icons/
+    Haciendo doble click sobre los archivos podremos visualizarlos.
+    Un programa puede tener más de un archivo de recursos, siempre que tengan distintos
+    nombres. Cada uno de ellos con sus prefijos. Pero es muy conveniente que los prefijos
+    sean únicos. No deberían repetirse, ni siquiera en archivos de recursos distintos.
+    Cuando se cargan varios archivos de recursos, se pone a disposición del programa
+    todo su contenido sin importar de qué archivo de recursos procede cada archivo.
+    Es muy importante guardar (CTRL+S) el archivo de recursos para que quede disponible.
+    Hasta que no se guarde no estará visible par el resto de componentes.
+  Abrimos la edición de la ventana principal con doble click en Forms/mainwindows.ui
+  El centralwidget tiene un tamaño de 400x300
+  Eliminamos barras de menú y status
+  Añadimos un layout vertical que ocupe toda el área del centralwidget
   Creamos los botones y el label con la imágen
-  Definimos las funcionalidades de los botones
+  Definimos las propiedades de los botones
+  Asignamos la imágen al QLabel y la centramos
+  Asignamos funcionalidades a los botones
+    Seleccionamos el botón
+    Hacemos click con el botón derecho y seleccionamos "Go to slot...".
+    Seleccionamos la opción clicked()
+    Pulsamos el botón "Ok"
+    Automáticamente se crea la entrada del método que gestiona el click del botón.
+      Recordar que hacemos uso del objeto QPainter, pero para que sea reconocido
+      se debe incluir (#include <QPainter>)
 
   El objeto QPixmap de un QLabel no es modificable porque se guarda como constante.
   Por lo tanto, se debe crear un QPixmap nuevo. Aplicarle un objeto QPainter para

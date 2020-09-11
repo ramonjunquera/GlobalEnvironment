@@ -1,0 +1,20 @@
+Autor: Ramón Junquera
+Fecha: 20200517
+Tema: Google Home - IFTTT
+Objetivo: Descripción del servicio
+
+IFTTT (IF This Then That)
+Es un servicio web que facilita el control de hardware desde Google Assistant.
+Al dar nuestras credenciales, captura todas las órdenes que damos al sistente,
+detectanto las palabras claves que desencadenan eventos y ejecutándolos.
+
+Es un servicio unidireccional. Nunca podremos devolver al asistente una
+respuesta generada por un dispositivo.
+
+Habitualmente las órdenes de control de dispositivos que damos a Google Assistant
+llegan directamente a Google Home, que es donde están definidos los dispositivos.
+A veces, IFTTT puede fallar en la captura de los mensajes. Así que llegarán a 
+Google Home y éste no será capaz de encontrar o identificar el dispositivo y
+responderá con un error.
+
+

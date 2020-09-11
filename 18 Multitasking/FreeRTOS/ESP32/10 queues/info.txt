@@ -1,0 +1,43 @@
+Autor: Ramón Junquera
+Fecha: 20200901
+Tema: Multitasking / FreeRTOS / Queues
+
+Problema:
+Cuando lanzamos una tarea se ejecuta en su propio proceso, o incluso, en su propia CPU.
+Si la tarea genera calcula y genera información que debe ser utilizada en otra tarea
+(o programa principal), necesitaremos saber cuándo ha terminado y cuáles son los datos.
+Para saber cuándo ha terminado la tarea, podemos usar un semáforo.
+Pero los datos los tendremos que obtener a través de variables globales, con la limitación
+que ello supone. Porque cada tarea lanzada debería tener su propia variable global.
+
+Solución:
+Una cola (queue) es la evolución del semáforo. Su funcionamiento es el mismo, excepto que
+su tipo de variable no es un entero o booleano, sino una lista capaz de almacenar el tipo
+de variable que indiquemos.
+Ahora en vez de "incrementar" el valor del semáforo, añadiremos un nuevo nodo a la lista
+con la información deseada, para que quede a disposición de la tarea que tenga que recogerla.
+El funcionamiento por defecto de la lista es FIFO.
+Para evitar problemas con el contenido de la información, por defecto se guarda una COPIA
+de la variable en el nuevo nodo, gracias a que previamente hemos informado del tamaño del
+nodo.
+De esta manera podremos seguir trabajando con las variables locales sin miedo a que cuando
+se consulten hayan variado.
+Esto no impide que se puedan incluir punteros si las variables contienen estructuras.
+Cuando se solicita un nodo y la lista está vacía, la tarea entra en hibernación sin 
+consumir recursos, como con los semáforos.
+Esto también ocurre en el proceso de añadir nodos: si la lista contiene el máximo número de
+nodos definidos, que quedará en hibernación hasta que otra tarea recupere un nodo y deje
+sitio para insertar uno nuevo.
+
+Notas:
+El juego de instrucciones para la gestión de colas contiene comandos para:
+- Crear o destruir una cola
+- Obtener el primer (siguiente) mensaje de la cola.
+- Añadir mensajes al principio o al final
+- Borrar todos los mensajes de la cola
+- Consultar el número de mensajes
+- Consultar el número de huecos libres
+
+Caso especial:
+- Existe una caso especial que aplica sólo a colas de un sólo mensaje. Se trata de un comando
+  para sobreescribir "el mensaje" con independencia de si ya tiene uno o no.

@@ -1,5 +1,5 @@
 Mapear una unidad de red popr Samba (smb)
-Fecha: 20191201
+Fecha: 20200605
 
 Tenemos dos métodos de configuración: gráfico y por consola.
 
@@ -18,7 +18,7 @@ Ubuntu:
   - Nos aparecerá una ventana solicitando las credenciales. Se deben completar.
   - En la parte inferior se pregunta hasta cuando recordará esta información. Si pretendemos no tener
     que escribir las credenciales a cada inicio de sesión, indicaremos que las guarde indefinidamente.
-  - Con esto se crear un enlace a la carpeta remota.
+  - Con esto se crea un enlace a la carpeta remota.
 
 
 Configuración por consola de unidad remota

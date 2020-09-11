@@ -19,20 +19,17 @@
 #include <iostream>
 using namespace std;
 
-void myFunction()
-{
+void myFunction() {
 	//Función que no devuelve nada y sin parámetros
 	cout << "Hola" << endl;
 }
 
-int add(int a,int b)
-{
+int add(int a,int b) {
 	//Función que devuelve un entero y con 2 parámetros enteros
 	return a+b;
 }
 
-int callAdd(int a,int b,int (*f)(int,int))
-{
+int callAdd(int a,int b,int (*f)(int,int)) {
 	//Función que llama a una función
 	//Se llama a una función que devuelve un entero y tiene dos
 	//parámetros que también son enteros
@@ -40,8 +37,7 @@ int callAdd(int a,int b,int (*f)(int,int))
 	return f(a,b);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	//Declaramos una variable de puntero a una función que no devuelve
 	//nada y que no tiene parámetros
 	void (*myNewFunction)();
@@ -58,7 +54,6 @@ int main(int argc, char **argv)
 	//parámetros primeros
 	cout << callAdd(3,4,add);
 
-    //Todo ok
-	return 0;
+	return 0; //Todo ok
 }
 

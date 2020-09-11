@@ -1,0 +1,45 @@
+Autor: Ramón Junquera
+Fecha: 20200830
+Tema: Multitasking / FreeRTOS / Semáforos
+
+Problema:
+Cuando lanzamos una tarea se ejecuta en su propio proceso, o incluso, en su propia CPU.
+Si tenemos la necesidad de saber cuándo ha terminado, lo único que podemos hacer es
+crear una variable global que se actualice antes de finalizar la tarea y así podamos
+detectar desde el programa principal que ha terminado.
+Esta detección se debe hacer por polling.
+El bucle de polling consume muchos recursos de CPU.
+Esto es un problema si trabajamos con recursos limitados como puede ser un ESP32.
+
+Solución:
+Un semáforo es la variable a través de la cual notificaremos que nuestra tarea ha
+finalizado.
+La diferencia respecto a una veriable normal es que no tenecitamos hacer polling para
+saber si ha cambiado su valor.
+Existen funciones para comprobarlo que son capaces de esperar el cambio de valor sin
+consumir recursos del sistema.
+Simplemente informa que está esperando un cambio y pasa a modo hibernación hasta que
+esto ocurre.
+Para interacturar con un semáforo utilizaremos principalmente estas 4 funciones:
+- Creación de semáforo
+- Incremento de valor
+- Decremento de valor
+- Borrado del semáforo
+
+Semáforos binarios:
+Su variable es de tipo bool. Sólo puede contener los valores 0 y 1.
+Indicado para informar de la finalización o estado de una tarea.
+El valor por defecto al crearlo es 0.
+
+Semáforos contadores:
+Su variable es de tipo entero sin signo (probablemente uint16_t).
+En el momento de crearlo se deben indicar dos parámetros:
+- El valor máximo
+- El valor inicial
+
+Situaciones en las que la tarea entrará en hibernación:
+- Si queremos decrementar el contador por debajo de cero
+
+Valor máximo:
+No hay ningún problema en solicitar incrementar el contador por encima del valor máximo.
+No se entrará en hibernación (o bloqueo), pero NO se tendrá en cuenta!

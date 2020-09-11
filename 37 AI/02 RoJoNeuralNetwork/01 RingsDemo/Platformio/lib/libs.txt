@@ -1,0 +1,9 @@
+RoJoFloatMatrixESP32 o RoJoFloatMatrix
+RoJoGraph
+RoJoILI9341
+RoJoMakeCircles
+RoJoNeoPixel
+RoJoNeuralNetwork
+RoJoSprite
+RoJoSprPlt
+RoJoSwitch

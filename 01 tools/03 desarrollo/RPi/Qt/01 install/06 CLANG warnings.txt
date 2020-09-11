@@ -1,0 +1,19 @@
+Tema: Qt. CLANG warnings
+Fecha: 20200608
+
+Si creamos un proyecto de una aplicación de escritorio y comprobamos el código, podemos
+ver varios mensajes de warning en el código. Incluso en el main.cpp.
+Esto es debido a que el intérprete CLANG no ha podido leer alguno de los archivos
+de cabecera.
+No tiene mayor importancia.
+
+Si queremos eliminar estos mensajes, simlemente debemos eliminar el pluging de CLANG.
+Desde: Help/About Plugins.../C++/ClangCodeModel y quitar el check.
+Es necesario salir del Qt Creator y volverlo a abrir.
+
+Esto evitará errores y warnings mientras escribes (sin compilar).
+Pero si cometes algún error, aparecerá como siempre en los mensajes del compilador y
+te referenciará automáticamente a la línea que lo ha producido.
+
+
+

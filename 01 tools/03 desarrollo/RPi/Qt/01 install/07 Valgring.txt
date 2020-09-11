@@ -1,0 +1,18 @@
+Tema: Qt. Valgring (memory leaks)
+Fecha: 20200616
+
+Valgrind es un software especializado en el análisis de gestión de memoria.
+Facilita la detección de pérdidas de memoria (memory leaks).
+
+Se debe instalar aparte de Qt.
+Qt ya tiene preparada la integración con Valgrind.
+
+Instalación de Valgrind: sudo apt-get install valgrind
+
+Para utilizar el módulo Memcheck de Valgrind, tenemos que ponernos en modo
+debug (botón de la columna izquierda en el IDE de Qt) y cambiar en la barra
+de debug el primero de los items de "debugger" a "Memcheck".
+Después pulsamos el play y ejecutamos con normalidad.
+Cuando termine la ejecución del programa o cuando pulsemos el stop del debugger
+aparecerá el listado de detecciones de uso anómalo con la memoria.
+
