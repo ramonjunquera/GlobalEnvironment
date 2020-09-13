@@ -1,5 +1,7 @@
 FreeRTOS - Free Real Time Operative System
 
+Web oficial y documentación: https://www.freertos.org/
+
 Es un sistema operativo especialmente diseñado para microprocesadores
 (CPUs con velocidad y memoria limitadas), que permite la multitarea.
 

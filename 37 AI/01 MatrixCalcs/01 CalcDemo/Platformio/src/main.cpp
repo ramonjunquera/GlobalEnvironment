@@ -1,11 +1,10 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200910
+  Fecha: 20200911
   Tema: Multitasking / FreeRTOS
-  Objetivo: Demo de librería RoJoFloatMatrixESP32
-  Material adicional: placa ESP32
+  Objetivo: Demo de librería RoJoFloatMatrix
   Descripción:
-    Demostración de uso de librería RoJoFloatMatrixESP32.
+    Demostración de uso de librería RoJoFloatMatrix.
     Se realizan varios cálculos matriciales.
 
     | 1  2  3|   | -4  3  1|   |19  7   16|
@@ -15,12 +14,16 @@
     | 1  2  3|   | -4  3  1|   |-3  5  4|
     |-4  3  5| + |  7 -1  0| = | 3  2  5|
     | 0  7 -3|   |  3  2  5|   | 3  9  2|
+  
+Nota:
+  Este ejemplo puede funcionar tanto con RoJoFloatMatrix
+  como con RoJoFloatMatrixESP32
 */
 
 #include <Arduino.h>
-#include <RoJoFloatMatrixESP32.h> //Gestión de matrices
+#include <RoJoFloatMatrix.h> //Gestión de matrices
 
-void showMatrix(RoJoFloatMatrixESP32 *M) {
+void showMatrix(RoJoFloatMatrix *M) {
   for(uint16_t row=0;row<M->rows();row++) {
     for(uint16_t col=0;col<M->cols();col++) {
       Serial.printf("%f\t",M->m[row][col]);
@@ -31,7 +34,7 @@ void showMatrix(RoJoFloatMatrixESP32 *M) {
 
 void setup() {
   Serial.begin(115200); //Inicializamos el puerto serie
-  RoJoFloatMatrixESP32 A,B,C; //Creamos matrices
+  RoJoFloatMatrix A,B,C; //Creamos matrices
   //Asignamos valores a las matrices
   A.redim(3,3);
   A.m[0][0]=1;  A.m[0][1]=2;  A.m[0][2]=3;
@@ -50,8 +53,9 @@ void setup() {
   A.mSum(&B);
   showMatrix(&A);
 
-  Serial.println("\nA");;
-  showMatrix(&A);
+  Serial.println("\ncopia a C");
+  C.mCopy(&A);
+  showMatrix(&C);
 
   Serial.println("\nMatriz columna");;
   B.redim(3,1);

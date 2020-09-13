@@ -7,6 +7,9 @@
   Descripción:
     Crearemos un par de matrices y repetiremos un número determinado de veces
     su producto matricial, calculando el tiempo que tarda.
+  Nota:
+    Este ejemplo puede funcionar tanto con RoJoFloatMatrix
+    como con RoJoFloatMatrixESP32
 */
 
 #include <Arduino.h>

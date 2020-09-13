@@ -1,0 +1,2 @@
+Excelente página para hacer pruebas gráficas de dimensionaiento de redes neuronales
+https://playground.tensorflow.org/
