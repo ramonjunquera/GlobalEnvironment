@@ -1,5 +1,5 @@
 Tema: Platformio
-Fecha: 20100912
+Fecha: 20101029
 
 Web oficial: http://platformio.org/
 
@@ -63,10 +63,11 @@ platformio.ini
     monitor_baud = 115200
 
 SPIFFS
-  En dispositivos de la familia ESP, se puede crear y subir una immagen con los archivos
-  constenidos en la carpeta data.
-  Para ello podemos seleccionar en el menú principal la opción: Terminal/Run Task...
-  y elegir "Upload File System Image".
-  En últimas versiones de Platformio ha desaparecido esta tarea, pero se puede lanzar
-  manualmente con Terminal/New Terminal y en ella usar el comando: pio run -t uploadfs
-  Nota: antes de subir una imagen de SPIFFS se deben cerrar todas las sesiones de monitor.
+  En dispositivos de la familia ESP, se puede crear y subir una imagen con los archivos
+  contenidos en la carpeta data.
+  Para ello debemos seleccionar el icono de Platformio situado en el panel izquierdo.
+  Aparecerá el panel de PROJECT TASKS.
+  La última de las tareas por debajo corresponde con el entorno definido en platformio.ini.
+  La desplegamos.
+  Desplegamos Platform.
+  Seleccionamos la opción "Upload Filesystems Image"

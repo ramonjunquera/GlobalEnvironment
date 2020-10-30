@@ -63,3 +63,6 @@ Consumo máximo: 70mA
 El display tiene 128*128=16384 pixels
 Cada pixel usa 2 bytes de memoria
 En total son 16384*2 = 32768 bytes = 32Kb
+
+Existe el modo de profundidad de color de 18 bits en vez del de 16, pero
+no vale la pena aplicarlo porque no se distinguen.

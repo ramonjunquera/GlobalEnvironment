@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201018
+  Fecha: 20201020
   Tema: PoC SEAT Happy Faces
   Material: M5Stick C, buzzer pasivo, M5Stick ToF HAT
   Descripción:
@@ -87,8 +87,11 @@ byte getFace() {
 //Gestiona la cara seleccionada
 void manageFace(byte face) {
   if(face!=lastFace) { //Si se ha cambiado la selección...
+    digitalWrite(pinBuzzer,HIGH); //Buzzer activado
     lastFace=face;
     cyclesSelectedFace=0; //Reseteamos el contador de cara seleccionada
+    delay(1); //Pitido corto
+    digitalWrite(pinBuzzer,LOW); //Buzzer en silencio
     //Si se ha seleccionado una cara...se muestra
     if(face<=3) display.drawSprite("/face"+String(face)+".spr");
     //Si no hay nada seleccionado...se borra la pantalla
