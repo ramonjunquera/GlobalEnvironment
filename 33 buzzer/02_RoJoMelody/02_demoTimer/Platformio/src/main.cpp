@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191005
+  Fecha: 20201116
   Tema: Buzzer (zumbador)
   Objetivo: Uso de librería RoJoMelody.h con timers
   Descripción:
@@ -28,6 +28,8 @@
   const byte pinBuzzer=25;
 #elif defined(ARDUINO_M5Stick_Watch) //Si es un M5Stick Watch
   const byte pinBuzzer=26;
+#elif defined(ARDUINO_M5Stick_C) //Si es un M5Stick C+
+  const byte pinBuzzer=2;
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinBuzzer=8; //Coincide con el buzzer integrado de Maker UNO
 #endif
@@ -46,6 +48,11 @@ void callPlay() {
 }
 
 void setup() {
+  #ifdef ARDUINO_M5Stick_C
+    //En M5Stick-C+ es necesario activar la alimentación desde el chip
+    //AXP192 que gestiona la batería antes de usar el buzzer
+    toneBegin();
+  #endif
   #if defined(ESP32) || defined(ESP8266)  //Si es un ESP
     playMelody.attach_ms(1,callPlay); //Mantiene la reproducción de la librería cada milisegundo
   #else //Si es una placa Arduino

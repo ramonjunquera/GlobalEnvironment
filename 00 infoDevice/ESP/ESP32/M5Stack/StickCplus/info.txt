@@ -81,7 +81,8 @@ Micrófono
   Pin  0 : SCL
 
 Buzzer
-  Pin 2
+  Tipo: pasivo
+  Pin : 2
 
 I2C
   Pinout

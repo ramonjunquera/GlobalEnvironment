@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191002
+  Fecha: 20201116
   Tema: Tone
   Objetivo: Uso de la función tone en varios dispositivos
 
@@ -46,6 +46,8 @@
   const byte pinBuzzer=25;
 #elif defined(ARDUINO_M5Stick_Watch) //Si es un M5Stick Watch
   const byte pinBuzzer=26;
+#elif defined(ARDUINO_M5Stick_C) //Si es un M5Stick C+
+  const byte pinBuzzer=2;
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinBuzzer=8; //Coincide con el buzzer integrado de Maker UNO
 #endif
@@ -54,6 +56,11 @@
 uint16_t tones[] = {261, 294, 330, 349, 392, 440, 494, 522};
 
 void setup() {
+  #ifdef ARDUINO_M5Stick_C
+    //En M5Stick-C+ es necesario activar la alimentación desde el chip
+    //AXP192 que gestiona la batería antes de usar el buzzer
+    toneBegin();
+  #endif
 }
 
 void loop() {

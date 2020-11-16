@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191004
+  Fecha: 20201116
   Tema: Buzzer (zumbador)
   Objetivo: Demo de librería para automatizar el uso del zumbador
   Descripción:
@@ -17,6 +17,8 @@
   const byte pinBuzzer=25;
 #elif defined(ARDUINO_M5Stick_Watch) //Si es un M5Stick Watch
   const byte pinBuzzer=26;
+#elif defined(ARDUINO_M5Stick_C) //Si es un M5Stick C+
+  const byte pinBuzzer=2;
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
   const byte pinBuzzer=8; //Coincide con el buzzer integrado de Maker UNO
 #endif
@@ -25,6 +27,11 @@
 RoJoMelody melody(pinBuzzer); //Creamos objeto melody indicando el pin del buzzer
 
 void setup() {
+  #ifdef ARDUINO_M5Stick_C
+    //En M5Stick-C+ es necesario activar la alimentación desde el chip
+    //AXP192 que gestiona la batería antes de usar el buzzer
+    toneBegin();
+  #endif
   //Creamos la canción para que se repita indefinidamente
   melody.setSong("E5-400B4-200C5D-400C-200B4A-390S-10A-200C5E-400D-200CB4-390S-10B-200C5D-400ECA4S-800D5-400F-200A-400G-200FE-600C-200E-400D-200CB4-390S-10B-200C5D-400ECA4S-800",true);
   //Comienza su ejecución
