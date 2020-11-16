@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200911
+  Fecha: 20201110
   Tema: Redes Neuronales
   Objetivo: Demo
   Material: M5Stack Fire
@@ -36,11 +36,10 @@ RoJoSprPlt plt; //Objeto de representación de gráfica de funciones
 RoJoILI9341 display; //Objeto de gestión de display
 RoJoFloatMatrix R0,R1; //Matrices de coordenadas de cada anillo
 uint16_t samples=100; //Número de puntos de cada anillo
-RoJoFloatMatrix topology(3,1); //Definición de la topología de la red neuronal
 RoJoNeuralNetwork nn; //NeuralNetwork Object
 RoJoFloatMatrix X; //Matriz de coordenadas de todos los puntos, para entrenamiento
 RoJoFloatMatrix Z; //Matriz que guardará los valores de salida
-RoJoFloatMatrix Y(samples*2,1); //Matriz de valores correctos para el entrenamiento de la red
+RoJoFloatMatrix Y; //Matriz de valores correctos para el entrenamiento de la red
 RoJoFloatMatrix cXb,cYb; //Guardarán coordenadas de mapa de background
 RoJoFloatMatrix Vb; //Valor de cada pixel de mapa de background
 RoJoFloatMatrix meanCost; //Promedio de los resultados de la función de coste
@@ -64,10 +63,10 @@ void setup() {
   display.begin(33,27,14,32);
 	display.rotation(1);
 	plt.begin(); //Init con dimensiones por defecto: 200*200
-  //Definición de topología. 3 capas
-  topology.m[0][0]=2; //Datos de entrada: 2 = coordenadas del punto
-  topology.m[1][0]=4; //Nodos de la capa oculta
-  topology.m[2][0]=1; //Datos de salida: a qué anillo pertenece?
+  //Matriz de valores correctos para el entrenamiento de la red
+  //Tendrá el doble de muestras que la de un anillo y una sola columna:
+  //el anillo al que pertenece
+  Y.redim(samples*2,1);
 }
 
 void loop() {
@@ -82,7 +81,7 @@ void loop() {
       error=meanCost.m[0][0]; //Lo anotamos para poder salir del bucle
 			Serial.printf("ciclo:%d,error=%f\n",epoch,error);
       nn.mesh(&cXb,&cYb,&Vb); //Calculamos los valores del mapa de background
-      //Dibujamos el mapa de backgroud y pasamos como parámetros:
+      //Dibujamos el mapa de background y pasamos como parámetros:
       //- cXb : la lista de coordenadas horizontales
       //- cYb : La lista de coordenadas verticales
       //- Vb : La matriz de valores
@@ -102,7 +101,8 @@ void loop() {
     } else { //El cálculo se ha terminado hace más de dos ciclos...
       if(button1.pressed()) { //Si se ha pulsado el botón...
         //Inicializamos los datos
-        RoJoMakeCircles circles; //Objeto para generar anillos
+        //Objeto para generar anillos. Cuando termine el if, se eliminará
+        RoJoMakeCircles circles; 
         circles.get(&R0,samples,0.5,0.1); //Generamos puntos de anillo 0 (interior,radio=0.5)
         circles.get(&R1,samples,1,0.1); //Generamos puntos de anillo 1 (exterior,radio=1)
         plt.axis(false,&R1); //Autocalcula escalas y dibuja ejes con datos de anillo exterior
@@ -123,14 +123,19 @@ void loop() {
         X.scramble(sList);
         Y.scramble(sList);
         delete[] sList; //Ya no necesitamos la lista desordenada
-        //Inicializamos red con topología, función de activación y función de coste
-        nn.begin(&topology,sigmoidF,cuadErrorF);
-        //Inicializamos los parámetros de aprendizaje:
-        //- Derivada de la función de activación
-        //- Función de coste/error
-        //- Derivada de la función de coste/error
-        //- learning rate
-        nn.beginTrain(sigmoidD,cuadErrorD,0.05); //Init train
+
+        //Definimos el número de nodos de las capas
+        //  2 : nodos de entrada a capa oculta 1
+        //  4 : nodos entre capa oculta 1 y 2
+        //  1 : nodos de salida de capa oculta 2
+        uint16_t topology[]={2,4,1};
+        //Inicializamos red neuronal con:
+        //  2 : una capa oculta
+        //  topology : número de nodos entre capas (entrada+ocultas+salida)
+        //  1 : función de activación = sigmoide
+        //  1 : función de coste = error cuadrático
+        //  0.05 : learning rate
+        nn.begin(2,topology,1,1,0.05);
         float xMin,yMin,xMax,yMax; //Guardarán los límites de visualización
         plt.getLimitsX(&xMin,&xMax); //Obtenemos límites horizontales
         plt.getLimitsY(&yMin,&yMax); //Obtenemos límites verticales
@@ -142,7 +147,6 @@ void loop() {
         //[0,1] son los límites de la función sigmoide
         plt.meshMin=0;
         plt.meshMax=1;
-        //Cambiar la inicialización de error a 0.1 para que comencemos pasando por aquí (pulsando el botón)
         leds.v->clear({50,0,0}); leds.draw(); //Leds en rojo = trabajando
         error=1; //Error superior al límite mínimo provoca que comience a trabajar
         epoch=0; //Reseteamos el número de ciclos

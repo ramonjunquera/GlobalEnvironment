@@ -1,0 +1,93 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa M5Stick C+
+
+Dispositivo basado en placa ESP32 (ESP32-PICO-D4) de Espressif, con 4Mb de memoria.
+Conexión USB-C para puerto serie y alimentación.
+
+Puerto serie:
+  UART0 (USB-C) : Velocidad máxima 750000 baudios
+    pin 1 : TX
+    pin 3 : RX
+
+Botones
+  A : pin 37 : M5
+  B : pin 39 : SIDE
+
+Puertos
+  GROOVE : I/O
+    pin GND
+    pin 5V
+    pin 32 : SDA
+    pin 33 : SCL
+  FRONT : I/O
+    pin GND
+    pin 5V
+    pin 26
+    pin 36/25
+    pin  0
+    pin BAT
+    pin 3V3
+    pin 5V
+  Nota: no se pueden utilizar los pines 36 y 25 simultáneamente.
+  Si se utiliza uno, el otro se debe configurar como libre: sin resistencias
+  pull up o pull down asociadas.
+  Ej.: Usar el pin 36 como entrada digtal y liberar el 25
+    pinMode(36, INPUT);
+    gpio_pulldown_dis(GPIO_NUM_25);
+    gpio_pullup_dis(GPIO_NUM_25);
+
+Display
+  Tamaño: 1.14"
+  Tipo: TFT LCD
+  Resolución: 135x240
+  Modelo: ST7789V2
+  Color: SI
+  Conexión: SPI
+  Pines:
+    pin  5 : CS
+    pin 23 : DC
+    pin 18 : RST
+
+Batería:
+  Tamaño: 120mAh
+  Gestor: AXP192
+  Apagar: pulsar botón POWER por 6 segundos
+  Encender : pulsar botón POWER por 2 segundos
+
+IMU
+  Modelo: MPU6886
+  Funciones: giróscopo y acelerómetro
+  Grados de libertad (DOF): 6
+  Conexión: I2C
+
+SPI
+  Pinout común
+    pin 15 : MOSI
+    pin 13 : CLK
+    pin ?? : MISO
+
+Led
+  Tipo: led standard
+  Color: rojo
+  Pin 10
+  Modo: HIGH=OFF,LOW=ON
+
+Led IR
+  Pin 9
+
+Micrófono
+  Modelo: SPM1423
+  Pin 34 : SDA
+  Pin  0 : SCL
+
+Buzzer
+  Pin 2
+
+I2C
+  Pinout
+    pin 21 : SDA
+    pin 22 : SCL
+  Identificadores
+    0x34 : AXP192 : gestor de batería
+    0x51 : BM8563 : reloj con hora real (RTC)
+    0x68 : MPU6886 : acelerómetro + giróscopo (6DOF) compatible con MPU6050

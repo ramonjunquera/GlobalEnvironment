@@ -1,15 +1,15 @@
 Autor: Ramón Junquera
 Tema: Comparativa entre dispositivos de M5Stack
 
-Fire  C  Watch AtomM AtomL Característca
----- --- ----- ----- ----- -------------
- X    X                    Display color
- 3    2    1     1     1   Botones
- X                         SD reader
- X         X               Buzzer
- X    X                    Mic
-      X    X               Led integrado
- X               X     X   NeoPixel
- X    X    X     X         Acelerómetro
- X         X               Magnetómetro
-           X     X     X   Led IR
+Fire StickC StickC+ Watch AtomM AtomL Característca
+---- ------ ------- ----- ----- ----- -------------
+ X     X       X                      Display color
+ 3     2       2      1     1     1   Botones
+ X                                    SD reader
+ X             X      X               Buzzer
+ X     X                              Mic
+       X       X      X               Led integrado
+ X                          X     X   NeoPixel
+ X     X       X      X     X         Acelerómetro
+ X                    X               Magnetómetro
+               X      X     X     X   Led IR

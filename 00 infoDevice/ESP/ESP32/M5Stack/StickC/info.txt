@@ -71,7 +71,7 @@ Led IR
 Micrófono
   Modelo: SPM1423
   Pin 34 : SDA
-  Pin 0 : SCL
+  Pin  0 : SCL
 
 Buzzer: no tiene
 

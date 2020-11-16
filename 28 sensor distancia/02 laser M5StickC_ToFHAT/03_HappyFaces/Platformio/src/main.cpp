@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201020
+  Fecha: 20201102
   Tema: PoC SEAT Happy Faces
   Material: M5Stick C, buzzer pasivo, M5Stick ToF HAT
   Descripción:
@@ -41,6 +41,8 @@ const byte pinBuzzer=32;
 WiFiServer server(80); //Creamos un servidor wifi en el puerto 80
 const String pointsFile="/points.dat";
 
+uint16_t dMin=5000;
+
 //Recupera archivo de puntos (si existe)
 void loadPoints() {
   File file = SPIFFS.open(pointsFile);
@@ -60,6 +62,8 @@ void savePoints() {
 }
 
 void setup() {
+  Serial.begin(115200);
+
   pinMode(pinBuzzer,OUTPUT); //Definimos el pin de buzzer como salida
   digitalWrite(pinBuzzer,LOW); //Buzzer en silencio
   display.begin(); //Inicialización por defecto de display para M5StickC
@@ -77,8 +81,8 @@ void setup() {
 byte getFace() {
   uint16_t d=tof.get(); //Obtenemos la distancia
   byte face=255; //Cara seleccionada. Por defecto ninguna
-  if(d>=49) { //Si supera el rango mínimo...
-    face=(d-49)/57;
+  if(d>=36) { //Si supera el rango mínimo...
+    face=(d-36)/60;
     if(face>3) face=255; //Si supera el número máximo de caras...no es válido
   }
   return face;

@@ -16,6 +16,7 @@ Lolin32               ARDUINO_LOLIN32               ESP32   ARDUINO_ARCH_ESP32
 M5Stack-Fire          ARDUINO_M5STACK_FIRE          ESP32   ARDUINO_ARCH_ESP32
 M5Stack-Core-ESP32    ARDUINO_M5Stack_Core_ESP32    ESP32   ARDUINO_ARCH_ESP32
 M5Stick-C             ARDUINO_M5Stick_C             ESP32   ARDUINO_ARCH_ESP32
+M5Stick-C+            ARDUINO_M5Stick_C             ESP32   ARDUINO_ARCH_ESP32
 RaspberryPi           __arm__
 
 #ifdef ESP8266
