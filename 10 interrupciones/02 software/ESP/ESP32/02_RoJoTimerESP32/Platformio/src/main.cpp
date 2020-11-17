@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Gestión de interrupciones en ESP32
-  Fecha: 20191006
+  Fecha: 20201117
   Objetivo: Demostración de clase de gestión del timers de ESP32
   Material: placa ESP32
   Descripción:
@@ -23,11 +23,10 @@ RoJoTimerESP32 myTimer(0); //Creamos un objeto que gestionará el timer 0
 //Función a la que llamará el timer
 void myInterruptFunction() {
   //Simplemente cambia el estado del led integrado
-  digitalWrite(LED_BUILTIN,!(digitalRead(LED_BUILTIN)));
+  digitalWrite(LED_BUILTIN,!digitalRead(LED_BUILTIN));
 }
 
-void setup()
-{
+void setup() {
   //Inicialización del puerto serie
   Serial.begin(115200); delay(4000);
   //Configuramos el pin del led integrado como salida
@@ -53,7 +52,6 @@ void setup()
   Serial.println("Timer. Periodo: 0.5 s. Indefinido");
 }
 
-void loop()
-{
+void loop() {
   //Nada especial que hacer aquí
 }

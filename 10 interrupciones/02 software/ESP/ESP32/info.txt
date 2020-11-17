@@ -1,12 +1,12 @@
 Tema: Timers en ESP32
-Fecha: 20181109
+Fecha: 20201117
 
 La gestión de timers se realiza gracias a la librería nativa esp32-hal-timer.h.
-Las placas ESP32 tienen 4 timers hardware numerados del 0 al 4.
+Las placas ESP32 tienen 4 timers hardware numerados del 0 al 3.
 Un timer es un simple contador. Una variable que cambia su valor en una unidad cada cierto tiempo y cuando
 alcanza un valor concreto, llama a una función definida por el usuario.
 En ESP32 los contadores de los timers son variables enteras y sin signo de 64 bits (uint64_t).
-La frecuencia con la que van actualizando su valor viede definida por la frecuencia de reloj del microprocesador
+La frecuencia con la que van actualizando su valor viene definida por la frecuencia de reloj del microprocesador
 (o frecuencia base) y del prescaler.
 En un ESP32 el procesador funciona a 80MHz.
 El prescaler (o divisor) es el valor por el que se divide la frecuencia base para obtener la frecuencia de 
@@ -32,13 +32,30 @@ Las alarmas se pueden definir de una sóla ejecución o de autorecarga (repetitiva
 Una alarma de una sola ejecución, después de hacer la llamada a la función del timer, se desactiva.
 Una alarma de autorecarga, tras llamar a la función de timer, resetea el contador.
 
+El siguiente código representa el funcionamiento de un timer ascendente con alarma repetitiva:
+
+const uint16_t prescaler=8; //Valores entre 2 y 65535
+const uint64_t alarm=1000;
+const void (*interruptionFunction)()=myFunction;
+uint16_t _prescalerCounter=prescaler;
+uint64_t _timerCounter=0;
+void loop() { //Se llama en cada ciclo de reloj = 80MHz
+  if(--_prescalerCounter==0) { //Si hay que actualizar el contador del timer...
+    _prescalerCounter=prescaler; //Reseteamos el contador del prescaler
+    if(_timerCounter++==alarm) { //Si hemos alcanzado el valor de alarma...
+      _timerCounter=0; //Reseteamos el contador del timer
+      interruptionFunction(); //Llamamos a la función de interrupción
+    }
+  }
+}
+
 Los pasos habituales para crear un timer son:
   Creación de puntero a estructura de timer
     La estructura de un timer tiene es del tipo hw_timer_t
     Ejemplo:
       hw_timer_t *myTimer;
   Creación de la función de timer.
-    Debe ser una función que no tiene parámetros y no devuelve valor.
+    Debe ser una función sin parámetros y que no devuelve valor.
     La teoría dice que debe ser tan corta y rápida como sea posible para no perder otras posibles interrupciones.
     No es un buen lugar para hacer llamadas lentas como trabajar con el puerto serie.
   Creación de timer y asignación a puntero:
