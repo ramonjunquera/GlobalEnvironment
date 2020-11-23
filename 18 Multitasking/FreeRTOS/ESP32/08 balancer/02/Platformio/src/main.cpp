@@ -26,7 +26,7 @@ void sayCore(void *params) {
   //Para no dejar restos en memoria, antes de terminar, debemos preocuparnos
   //por borrar los parámetros
   delete id;
-  RoJoBalancer::deleteTask();
+  RoJoBalancer::deleteTask(); //Indicamos que hemos terminado la tarea
 }
 
 void setup() {

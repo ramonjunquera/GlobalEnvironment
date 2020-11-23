@@ -40,6 +40,12 @@ SPI
 Speaker/Buzzer
   Tipo: pasivo
   Pin 24
+  Nota:
+    Los dos circuitos DAC (Digital Analog Converter) están asociados a los pines 25 y 26.
+    El buzzer está conectado al pin 24.
+    No se pueden utilizar las facilidades del DAC para reproducir ondas. Sólamente tonos simples con PWM.
+    Afortunadamente el pin 25 está expuesto en el puerto grove y puede ser utilizado de manera externa,
+    conectando un buzzer pasivo.
 
 Led
   Tipo: led standard

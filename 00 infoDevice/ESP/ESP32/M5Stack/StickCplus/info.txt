@@ -83,7 +83,14 @@ Micrófono
 Buzzer
   Tipo: pasivo
   Pin : 2
-
+  Nota:
+    El StickC+ tiene un procesador ESP32-pico-d4.
+    Los pines 25 y 26 están asociados a los dos circuitos DAC (Digital Analog Converter) que incluye.
+    El buzzer está conectado al pin 2.
+    No se pueden utilizar las facilidades del DAC para reproducir ondas. Sólamente tonos simples con PWM.
+    Afortunadamente los pines con DAC están expuestos y pueden ser utilizados de manera externa.
+    Se puede conectar un buzzer pasivo a uno de ellos y utilizarlo en vez del integrado.
+    
 I2C
   Pinout
     pin 21 : SDA

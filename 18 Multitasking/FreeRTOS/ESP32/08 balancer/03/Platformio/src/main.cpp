@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200828
+  Fecha: 20201122
   Tema: Multitasking / FreeRTOS
   Objetivo: Balanceo de carga ente cores. Librería RoJoBalancer
   Material adicional: placa ESP32
@@ -38,8 +38,8 @@ void sayCore(void *params) {
   uint16_t msDelay=p->msDelay; //Obtenemos tiempo de demora
   delay(msDelay); //Esperamos el tiempo indicado
   Serial.printf("task %i, core %i, delay %i\n",id,xPortGetCoreID(),msDelay);
-  delete p; //Antes de finalizar la tarea debemos eliminar de la memoria el parámetro
-  RoJoBalancer::deleteTask();
+  delete p; //Antes de finalizar la tarea debemos eliminar el parámetro de la memoria
+  RoJoBalancer::deleteTask(); //Indicamos que hemos finalizado la tarea
 }
 
 void setup() {

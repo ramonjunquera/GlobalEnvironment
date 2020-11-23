@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: Buzzer (zumbador)
-Fecha: 20191002
+Fecha: 20201121
 
 Descripción:
   Un zumbador es un componente que produce sonido (un zumbido o pitido).
@@ -28,7 +28,7 @@ Descripción:
     Un zumbador activo sólo nos permitirá generar un pitido. Dependiendo de la necesidad del proyecto decidiremos
     utilizar uno u otro.
   - Comportamiento. Si suministramos alimentación a un zumbador pasivo, sólo escucharemos un "click" al conectarlo,
-    peoducido por la contracción instantánea del cristal. Un zumbador activo generará un pitido contínuo mientras
+    producido por la contracción instantánea del cristal. Un zumbador activo generará un pitido contínuo mientras
     esté alimentado.
   - Volumen. En ambos casos el volumen viene ligado a la cantidad de electricidad que se suministremos. Por lo tanto
     dependiendo de la resistencia que le asociemos controlaremos su volumen. Habitualmente lo que queremos es que

@@ -1,0 +1,62 @@
+Autor: Ramón Junquera
+Tema: Protocolo I2S
+Fecha: 20201123
+
+I2S
+  I2S es un protocolo creado especialmente para la transmisión de sonido digitalizado entre dispositivos.
+  Asumimos que habitualmente el sonido es estereo (dos canales). Con estas características, necesitaremos
+  que la conexión tenga 3 pines:
+  - Datos (serial data)
+  - Reloj (serial clock)
+  - Canal (word select)
+  Cuando el pin del reloj se encuentre en estado HIGH se podrá leer es estado del pin de datos.
+  Tanto el emisor como el receptor se pueden hacer cargo de la gestión del reloj. Aunque lo normal es que lo
+  haga la parte que gestiona los dispositivos (el microprocesador). 
+  El canal izquierdo se representa por el estado LOW y el derecho por el HIGH.
+  La configuración (rango de frecuencias soportadas, longitud de muestra, número de canales de audio, tipo
+  de dato de la muestra, etc...) viene dada por cada dispositivo.
+  Los datos leidos o a transmitir se suelen guardar en un buffer de memoria.
+  
+I2S en ESP32
+  Los microprocesadores ESP32 incluyen el protocolo I2S de manera nativa.
+  Tienen dos puertos I2S independientes: I2S_NUM_0 & I2S_NUM_1.
+  Estos puertos se encargan de gestionar la conexión. Por ejemplo, en una conexión de lectura a un micrófono,
+  son capaces de leer las muestras a la frecuencia indicada, teniendo en cuenta el número de canales, gestionando
+  los pines de comunicación y guardando el resultado en un buffer de memoria determinado.
+  La secuencia correcta para la puesta en marcha de una comunicación I2S es:
+  - Definición de la configuración I2S
+    - mode: si se recibe o transmite y si generaremos el pulso de reloj
+    - sample_rate: frecuencia de muestreo
+    - bits_per_sample: a fecha actual sólo soporta 16 bits (I2S_BITS_PER_SAMPLE_16BIT)
+    - channel_format: número de canales
+    - communication_format: formato de datos (peso de los bits recibidos y codificación)
+    - intr_alloc_flags: nivel de prioridad de las interrupciones del timer interno
+    - dma_buf_count: número de buffers internos
+    - dma_buf_len: longitud del buffer interno
+  - Definición de los pines de comunicación:
+    - bck_io_num: pin de selección de canal (derecho/izquierdo)
+    - ws_io_num: pin de reloj de transmisión de datos
+    - data_out_num: pin de datos de salida
+    - data_in_num: pin de datos de entrada
+  - Instalación de driver I2S seleccionando el puerto I2S
+  - Asignación de pines
+  - Asignación de reloj (frecuencia de muestreo, tamaño de muestra, número de canales de audio)
+  Una vez completada la configuración ya se puede hacer la:
+  - lectura desde el dispositivo (micrófono) al buffer de memoria
+  - escritura desde el buffer de memoria al dispositivo (buzzer/speaker)
+  Una vez terminadas las comunicaciones, se desinstala el driver I2S.
+  Notas:
+  - El driver tiene un modo que permite enviar datos directamente a un pin DAC. Este modo no funciona a fecha de hoy.
+  - En el caso de querer controlar la duración de la grabación (recepción de datos de micrófono) podríamos pensar
+    en concatenar diferentes llamadas de lectura y guardarlas en distintas posiciones del buffer de memoria.
+    El resultado práctico es que los "cortes" son muy evidentes y acaban con la calidad de audio. No funciona.
+
+I2S en M5Stack
+  Micrófono: StickC, StickC+ & Atom Echo
+    Incluyen un micrófono I2S modelo SPM1423.
+    Está conectado por dos pines: datos (SDA) y reloj de datos (SCL).
+    No exite el pin de selección de canal porque el micrófono es mono.
+    Las muestras se reciben como int16_t.
+    El ADC del micrófono tiene una precisión de 12bits.
+  Speaker: Atom Echo
+    Incluye un speaker I2S mono modelo NS4168.
