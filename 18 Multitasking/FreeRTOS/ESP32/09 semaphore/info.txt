@@ -14,7 +14,7 @@ Esto es un problema si trabajamos con recursos limitados como puede ser un ESP32
 Solución:
 Un semáforo es la variable a través de la cual notificaremos que nuestra tarea ha
 finalizado.
-La diferencia respecto a una veriable normal es que no tenecitamos hacer polling para
+La diferencia respecto a una variable normal es que no necesitamos hacer polling para
 saber si ha cambiado su valor.
 Existen funciones para comprobarlo que son capaces de esperar el cambio de valor sin
 consumir recursos del sistema.

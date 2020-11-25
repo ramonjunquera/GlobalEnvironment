@@ -63,5 +63,5 @@ void loop() {
   delay(3000); //Nos aseguramos que ambas tareas han finalizado
   Serial.println("Loop end");
   //Actualmente el semáforo está a 0 porque lo ha decrementado la segunda tarea.
-  ////Podemos repetir el proceso
+  //Podemos repetir el proceso
 }
