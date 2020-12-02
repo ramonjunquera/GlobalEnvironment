@@ -1,5 +1,5 @@
 Tema: Platformio
-Fecha: 20101029
+Fecha: 20101126
 
 Web oficial: http://platformio.org/
 
@@ -71,3 +71,7 @@ SPIFFS
   La desplegamos.
   Desplegamos Platform.
   Seleccionamos la opción "Upload Filesystems Image"
+Nota:
+  En el caso de que no aparezca, se deberían actualizar todas las librerías del sistema.
+  Desde el icono de Platformio: PROJECT TASKS/Default/Miscellaneous/Update All
+  

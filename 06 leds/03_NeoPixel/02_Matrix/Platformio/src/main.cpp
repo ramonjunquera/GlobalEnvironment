@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200218
+  Fecha: 20201202
   Tema: matriz CJMCU-64 (NeoPixel)
   Objetivo: Demo de gestión de leds NeoPixel
 
@@ -31,6 +31,8 @@ void setup() {
   //Definición de pinout
   #ifdef ARDUINO_ARCH_AVR //Placas Arduino: Mega, Nano, UNO
     byte pinComm=3;
+  #elif defined(ARDUINO_M5STACK_FIRE)
+    byte pinComm=22;
   #elif defined(ESP32)
     byte pinComm=13;
   #elif defined(ESP8266)
@@ -207,7 +209,7 @@ void test7() {
   leds.v->loadBMP("/heart.bmp");
   leds.draw();
   delay(2000);
-  leds.v->loadBMP("/house.spr");
+  leds.v->loadSprite("/house.spr");
   leds.draw();
   delay(2000);
   leds.v->loadBMP("/smiley.bmp");
@@ -249,7 +251,7 @@ void test9() {
   byte heat[8][8]; //Creamos array de calor
   byte descT; //Descenso de temperatura
   leds.v->clear();
-  uint32_t maxTime=millis()+10000; //Definimos duración (6s)
+  uint32_t maxTime=millis()+10000; //Definimos duración (10s)
   while(millis()<maxTime) {
     //Enfriamos todo un poco
     for(byte y=0;y<8;y++) {
@@ -298,9 +300,6 @@ void test9() {
 }
 
 void loop() {
-  test7(); //Load bmp
-  test7(); //Load bmp
-
   test1(); //Single led
   test2(); //Colores planos
   test3(); //Texto scroll
