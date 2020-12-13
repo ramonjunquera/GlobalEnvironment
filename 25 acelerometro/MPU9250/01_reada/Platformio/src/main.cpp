@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200219
+  Fecha: 20201213
   Tema: Acelerómetro MPU9250
   Objetivo: Lectura de los valores
   Material: M5Stack Watch, M5Stick-C
@@ -36,33 +36,39 @@
   const byte pinLED=LED_BUILTIN;
 #endif
 
-RoJoMPU9250 GAM; //Giróscopo, Acelerómetro y Magnetómetro
+RoJoMPU9250 gam; //Giróscopo, Acelerómetro y Magnetómetro
 bool hasM; //Tiene magnetómetro?
 
 void setup() {
-   Serial.begin(115200);
-   //Mientras se inicializa el puerto serie, hacemos parpadear el led integrado
-   pinMode(pinLED,OUTPUT);
-   for(byte i=0;i<20;i++) {
-      digitalWrite(pinLED,!digitalRead(pinLED));
-      delay(200);
-   }
-   GAM.begin(pinSDA,pinSCL); //Inicialización de sensores
-   hasM=GAM.hasM();
+  Serial.begin(115200);
+  //Mientras se inicializa el puerto serie, hacemos parpadear el led integrado
+  pinMode(pinLED,OUTPUT);
+  for(byte i=0;i<20;i++) {
+    digitalWrite(pinLED,!digitalRead(pinLED));
+    delay(200);
+  }
+  gam.begin(pinSDA,pinSCL); //Inicialización de sensores
+  hasM=gam.hasM();
 }
  
 void loop() {
-   digitalWrite(pinLED,HIGH); //Mientras tomamos y enviamos datos, encendemos el led integrado
-   int16_t data[3]; //Array para guardar datos de ejes de un sensor
-   GAM.readG(data); //Leemos datos de Giróscopo
-   Serial.print("["+String(data[0])+"\t"+String(data[1])+"\t"+String(data[2])+"]");
-   GAM.readA(data); //Leemos datos de Acelerómetro
-   Serial.print("\t["+String(data[0])+"\t"+String(data[1])+"\t"+String(data[2])+"]");
-   //Si conseguimos datos del Magnetómetro...los mostramos
-   if(hasM) {
-     GAM.readM(data);
-     Serial.println("\t["+String(data[0])+"\t"+String(data[1])+"\t"+String(data[2])+"]");
-   } else Serial.println();
-   digitalWrite(pinLED,LOW); //Apagamos el led integrado
-   delay(300);
+  digitalWrite(pinLED,HIGH); //Mientras tomamos y enviamos datos, encendemos el led integrado
+  int16_t dataI[3]; //Array para guardar datos enteros
+  float dataF[3]; //Array para guardar datos flotantes
+  gam.readA(dataI); //Leemos valores de acelerómetro
+  Serial.print("A=["+String(dataI[0])+","+String(dataI[1])+","+String(dataI[2])+"]");
+  gam.angleA(dataF); //Leemos ángulos de acelerómetro
+  Serial.print(" aA=["+String(dataF[0])+","+String(dataF[1])+","+String(dataF[2])+"]");
+  gam.readG(dataI); //Leemos valores de giróscopo
+  Serial.print(" G=["+String(dataI[0])+","+String(dataI[1])+","+String(dataI[2])+"]");
+  gam.angleG(dataF); //Leemos ángulos de giróscopo
+  Serial.print(" aG=["+String(dataF[0])+","+String(dataF[1])+","+String(dataF[2])+"]");
+  //Si conseguimos datos del Magnetómetro...los mostramos
+  if(hasM) {
+   gam.readM(dataI);
+   Serial.print(" M=["+String(dataI[0])+","+String(dataI[1])+","+String(dataI[2])+"]");
+  }
+  Serial.println();
+  digitalWrite(pinLED,LOW); //Apagamos el led integrado
+  delay(300);
 }

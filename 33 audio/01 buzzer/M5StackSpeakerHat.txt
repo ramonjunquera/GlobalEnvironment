@@ -1,0 +1,24 @@
+Autor: Ramón Junquera
+Tema: M5Stack Speaker Hat for StickC & StickC+
+Fecha: 20201208
+
+Descripción:
+  M5Stack sacó una versión de un buzzer/speaker para poder conectarlo a los modelos StickC y StickC+.
+  Se conecta como cualquier otro hat.
+  El funcionamiento es idéntico a un buzzer pasivo.
+  Utiliza el pin 26 para como salida.
+  Afortunadamente este pin puede tener una salida analógica y reproducir ondas.
+  Sólo hay dos diferencias con un buzzer pasivo:
+  - El hat utiliza la alimentación de 5V para amplificar el sonido un poco más que un buzzer.
+  - Es obligatorio activar la alimentación de 5V del conector del hat mediante el módulo de alimentación
+    AXP192, de la misma manera que se debe hacer con el display.
+    A continuación se muestra el código necesario para esta activación:
+    
+    #include <Wire.h> //Para gestión de chip de alimentación AXP192
+    void setup() {
+      Wire.begin(21,22);
+      Wire.beginTransmission(0x34);
+      Wire.write(0x12);  
+      Wire.write(0x4D); //Enable DC-DC1, OLED_VDD, 5B V_EXT
+      Wire.endTransmission();
+    }

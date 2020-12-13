@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20201204
   Tema: M5Stack Atom Lite led
   Objetivo: Demo de gestión de led
-  Material: M5Stack Atom Lite
+  Material: M5Stack Atom Lite o M5Stack Atom Echo
 
   Descripción:
     Ejemplo de uso de librería RoJoNeoPixel genérica
@@ -17,7 +17,7 @@ RoJoNeoPixelAtomLite led; //Objeto de gestión de leds NeoPixel
 RoJoSwitch button(39); //Objeto de gestión de pulsador. Pin 39 en Atom
 
 void setup() {
-  led.begin(); //Inicialización de led NeoPixel en M5Stack Atom Lite
+  led.begin(); //Inicialización de led NeoPixel en M5Stack Atom Lite o Echo
 }
 
 void loop() {

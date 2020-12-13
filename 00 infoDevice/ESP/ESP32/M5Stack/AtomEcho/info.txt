@@ -1,0 +1,57 @@
+Autor: Ramón Junquera
+Tema: Descripción de placa M5Stack Atom Echo
+
+Dispositivo basado en placa ESP32 (ESP32-PICO-D4) de Espressif, con 4Mb de memoria.
+Conexión USB-C para puerto serie y alimentación.
+
+Doc oficial: https://docs.m5stack.com/#/en/atom/atomecho
+Librerías oficiales en: https://github.com/m5stack/M5Atom
+
+Led
+  Tipo: NeoPixel
+  Modelo: SK6812 RGB LED
+  Pin 27
+
+Botón
+  Pin 39
+
+IMU
+  No tiene
+
+Led IR
+  Pin 12
+  
+Micrófono
+  Modelo: SPM1423 PDM
+  Pin 23 : DATA
+  Pin 33 : CLK
+
+Speaker
+  Modelo: NS4168 I2S 1W
+  Pin 33 : LRCK
+  Pin 19 : BCLK
+  Pin 22 : SADTA
+
+I2C
+  Pinout
+    pin 25 : SDA
+    pin 21 : SCL
+
+Puerto
+  GROOVE : I/O
+    pin GND
+    pin 5V
+    pin 26 : SDA
+    pin 32 : SCL
+  Bottom short
+    pin GND  
+    pin 5V
+    pin 25
+    pin 21
+  Bottom long
+    pin 33
+    pin 23
+    pin 19
+    pin 22
+    pin GND
+

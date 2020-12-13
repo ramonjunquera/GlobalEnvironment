@@ -8,7 +8,7 @@
   Descripción:
 	  Comprobamos cuánto tiempo tarda en que la velocidad se vuelva
 		constante al aplicar una potencia fija.
-		Aplicamos potencias distintas a las dos ruebas.
+    Aplicamos potencias distintas a las dos ruedas.
 		Vemos que la de menor potencia tarda aproximadamente un segundo,
 		mientras que la de mayor tarde 0.6 segundos.
 		Conclusión: para conseguir una velocidad constante es conveniente
