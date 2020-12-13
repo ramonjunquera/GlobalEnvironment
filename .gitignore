@@ -1,3 +1,4 @@
 local.only
 Thumbs.db
 .sync.ffs_db
+sync.ffs_lock
