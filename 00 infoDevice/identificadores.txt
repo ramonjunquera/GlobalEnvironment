@@ -17,6 +17,11 @@ M5Stack-Fire          ARDUINO_M5STACK_FIRE          ESP32   ARDUINO_ARCH_ESP32
 M5Stack-Core-ESP32    ARDUINO_M5Stack_Core_ESP32    ESP32   ARDUINO_ARCH_ESP32
 M5Stick-C             ARDUINO_M5Stick_C             ESP32   ARDUINO_ARCH_ESP32
 M5Stick-C+            ARDUINO_M5Stick_C             ESP32   ARDUINO_ARCH_ESP32
+M5Stack Watch         ARDUINO_M5Stick_Watch         ESP32   ARDUINO_ARCH_ESP32
+M5Stack Atom Matrix   ARDUINO_M5Stick_Atom_Matrix   ESP32   ARDUINO_ARCH_ESP32
+M5Stack Atom Echo     ARDUINO_M5Stick_Atom_Echo     ESP32   ARDUINO_ARCH_ESP32
+M5Stack Atom Lite     ARDUINO_M5Stick_Atom_Lite     ESP32   ARDUINO_ARCH_ESP32
+
 RaspberryPi           __arm__
 
 #ifdef ESP8266
