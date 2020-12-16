@@ -1,21 +1,25 @@
 Autor: Ramón Junquera
+Fecha: 20201215
 Tema: Descripción de placa
-Objetivo: Descripción de placa WeMos Lolin Lite
+Objetivo: Descripción de placa WeMos Lolin Lite / WeMos Lolin D32
 
 Título del fabricante:
-Wemos® LOLIN32 Lite V1.0.0 Wifi & Bluetooth Board Based ESP-32 Rev1 MicroPython 4MB FLASH
+  Wemos® LOLIN32 Lite V1.0.0 Wifi & Bluetooth Board Based ESP-32 Rev1 MicroPython 4MB FLASH
 
 Descripción del fabricante:
-Lastest ESP32 Version: REV1
-WIFI
-bluetooth 
-4MB Flash
-Lithium battery interface, 500mA Max charging current
-Default firmware: Lastest MicroPython firmware
-Max serial baud rate: 256000bps
+  Lastest ESP32 Version: REV1
+  WIFI
+  bluetooth 
+  4MB Flash
+  Lithium battery interface, 500mA Max charging current
+  Default firmware: Lastest MicroPython firmware
+  Max serial baud rate: 256000bps
 
 URL de compra:
-https://www.banggood.com/Wemos-LOLIN32-Lite-V1_0_0-Wifi-Bluetooth-Board-Based-ESP-32-Rev1-MicroPython-4MB-FLASH-p-1237861.html?rmmds=myorder&cur_warehouse=CN
+  https://www.banggood.com/Wemos-LOLIN32-Lite-V1_0_0-Wifi-Bluetooth-Board-Based-ESP-32-Rev1-MicroPython-4MB-FLASH-p-1237861.html?rmmds=myorder&cur_warehouse=CN
+  
+Web oficial:
+  https://www.wemos.cc/en/latest/d32/d32.html
 
 Placa.
 En el IDE de Arduino se debe seleccionar:
@@ -42,39 +46,39 @@ Características.
   Weight: 4g
 
 Wifi.
-Soporta protocolos 801.11 b/g/n
+  Soporta protocolos 801.11 b/g/n
 
 Bluetooth.
-Soporta Bluetooth LE
+  Soporta Bluetooth LE
 
 LED integrado.
-Esta placa tiene tres leds integrados en placa.
-El rojo no se puede controlar. Sólo indica cuando tiene alimentación.
-Otro que se enciende cuando se está cargando la batería externa.
-El azul corresponde al pin 22.
-Los estados del led son inversos a los del pin:
-  HIGH = apagado
-  LOW = encendido
-Este led no permite PWM. Es digital (encendido o apagado)
+  Esta placa tiene tres leds integrados en placa.
+  El rojo no se puede controlar. Sólo indica cuando tiene alimentación.
+  Otro que se enciende cuando se está cargando la batería externa.
+  El azul corresponde al pin 22.
+  Los estados del led son inversos a los del pin:
+    HIGH = apagado
+    LOW = encendido
+  Este led no permite PWM. Es digital (encendido o apagado)
 
 Botones.
-Tiene integrado un sólo botón de reset.
+  Tiene integrado un sólo botón de reset.
 
 USB.
-Conexión microUSB para alimentación y comunicación.
-Necesario driver CH340G (incluido por defecto en últimas versiones de Windows).
+  Conexión microUSB para alimentación y comunicación.
+  Necesario driver CH340G (incluido por defecto en últimas versiones de Windows).
 
 Gestión de batería.
-En la parte superior de la placa se incluye un conector para una batería externa
-del tipo PG-2.2 2.0mm.
-La placa incluye el circuto de gestión de recarga de la batería (chip TP4054).
-El máximo amperaje que puede cargar a una batería es de 500mA.
+  En la parte superior de la placa se incluye un conector para una batería externa
+  del tipo PG-2.2 2.0mm.
+  La placa incluye el circuto de gestión de recarga de la batería (chip TP4054).
+  El máximo amperaje que puede cargar a una batería es de 500mA.
 
 Alimentación.
-La placa trabaja a 3.3V.
-Se puede alimentar con un voltaje entre 2.4 y 6V.
-No necesita más de 500mA.
-No tiene pin para alimentar a 5V.
+  La placa trabaja a 3.3V.
+  Se puede alimentar con un voltaje entre 2.4 y 6V.
+  No necesita más de 500mA.
+  No tiene pin para alimentar a 5V.
 
   Pinout
   ------
@@ -99,24 +103,24 @@ H_SPI_MISO/Touch5/RTCIO15/GPIO12 -|             |- GPIO15/RTCIO13/Touch3/H_SPI_C
                                   ---------------
 
 I2C.
-Por defecto los pines de I2C son 22-SCL y 21-SDA.
-Esta placa carece del pin 21, por lo tanto no podemos utilizar el estandar.
-Lo que hacemos es definir dos nuevos pines:
-  pin I2C
-  --- ---
-   15 SCL
-    4 SDA
-Podríamos haber tomado cualquier otra pareja, pero estos son los utilizados
-en las placas que incluyen un display I2C. Así no tendremos que redefinirlos
-si las usamos.
-La función Wire.begin de ESP32 permite pasar como parámetros estos pines:
-  Wire.begin(4,15)
+  Por defecto los pines de I2C son 22-SCL y 21-SDA.
+  Esta placa carece del pin 21, por lo tanto no podemos utilizar el estandar.
+  Lo que hacemos es definir dos nuevos pines:
+    pin I2C
+    --- ---
+     15 SCL
+      4 SDA
+  Podríamos haber tomado cualquier otra pareja, pero estos son los utilizados
+  en las placas que incluyen un display I2C. Así no tendremos que redefinirlos
+  si las usamos.
+  La función Wire.begin de ESP32 permite pasar como parámetros estos pines:
+    Wire.begin(4,15)
 
 SPI.
-Mantienen el estandar de ESP32.
-  pin SPI
-  --- ---
-   19 MISO
+  Mantienen el estandar de ESP32.
+    pin SPI
+    --- ---
+     19 MISO
    23 MOSI
    18 SCLK
     5 CS

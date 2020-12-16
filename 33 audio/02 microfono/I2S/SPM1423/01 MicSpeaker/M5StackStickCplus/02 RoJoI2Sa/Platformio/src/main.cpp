@@ -1,11 +1,8 @@
 /*
-  Pendiente:
-  - Redactar info cabecera
-
   Autor: Ramón Junquera
-  Fecha: 20201125
+  Fecha: 20201214
   Tema: Micrófono
-  Objetivo: Demo de grabación/reproducción
+  Objetivo: Demo de grabación/reproducción con librería RoJoI2Sa
   Material: M5Stack StickC+
 
   Descripción:
@@ -18,6 +15,9 @@
   En estos mismos modelos, el buzzer interno está conectado a un pin que no coincide
   con la salida de DAC, por lo tanto no puede ser utilizado para la reproducción de ondas.
   Sólo podemos conectar un buzzer/speaker externo.
+
+  Utilizaremos la librería RoJoI2Sa para gestionar el speaker/buzzer y simplificar
+  el código.
 
   Se define el número de muestras, el tamaño del buffer y la frecuencia.
   Se inicializa el display para poder mostrar mensajes de error.
@@ -35,7 +35,7 @@
   - Convertimos los datos recibidos de int16_t a byte para poder reproducirlo
   Si se pulsa el botón de reproducción:
   - Mostramos el icono de reproducción
-  - Activamos el timer que reproduce
+  - Reproducimos buffer por el speaker/buzzer
   - Borramos el icono de reproducción
 */
 
@@ -43,7 +43,6 @@
 #include <RoJoST7789V2.h> //Librería de gestión del display RoJoST7789V2
 #include <RoJoSwitch.h> //Gestión de interruptores
 #include <driver/i2s.h> //Protocolo I2S para leer micrófono
-#include <RoJoTimerESP32.h> //Gestión de timers
 #include <RoJoI2Sa.h> //Gestión de dispositivos de audio analógicos
 
 //Contantes globales
@@ -95,9 +94,9 @@ void setup() {
     vTaskDelete(NULL); //Eliminamos la tarea del programa principal. Fin
   }
 
-  //Inicializamos timer 0 para I2Sa. No utilizaremos el pin de entrada (micrófono)
-  //Inicializamos I2Sa para pasar datos al buzzer (analógico)
-  //Utilizaremos el timer 0 (valdría cualquiera de los 4)
+  //Gestionaremos el speaker a través del driver RoJoI2Sa para simplificar la
+  //programación y no tener que trabajar con timers.
+  //Inficamos timer, pin analógico de salida y frecuencia.
   RoJoI2Sa_begin(0,pinBuzzer,freq);
   
   display.disk(225,67,10,{255,0,0}); //Label REC
