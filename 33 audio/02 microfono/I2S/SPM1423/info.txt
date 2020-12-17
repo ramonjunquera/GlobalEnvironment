@@ -1,0 +1,7 @@
+Autor: Ramón Junquera
+Tema: Características de micrófono SPM1423
+Fecha: 20201216
+
+Micrófono mono con protocolo I2C.
+Es el que incluye M5Stack en los modelos StickC, StickC+ y Atom Echo.
+
