@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201217
+  Fecha: 20201219
   Tema: Micrófono
   Objetivo: Demo de grabación/reproducción a través de I2S
   Material: M5Stack Atom Echo
@@ -11,19 +11,25 @@
   No procesamos las muestras obtenidas del micrófono para enviarlas al speaker.
   Puesto que sólo tiene un botón, distinguimos si se trata de una grabación o una
   reproducción por el tiempo de pulsación:
-  - Pulsación corta = grabación
-  - Pulsación larga = reproducción
+  - Pulsación corta = reproducción
+  - Pulsación larga = grabación
+  La grabación se mantendrá mientras se mantenga pulsado el botón o hasta que se
+  consuma toda la memoria dispoible (buffer).
+  Atención: la grabación no comienza cuando se pulsa el botón, sino unas décimas
+  de segundo después después. Necesita tiempo para distinguir si se trata de una
+  pulsación corta de reproducción o larga de grabación.
   Utilizaremos sólo el canal 0 de I2S. Lo configuraremos antes de cada uso como
   entrada (micro) o salida (speaker).
   Utilizaremos el led RGB:
-  - Destello azul para indicar que se ha inicializado
+  - Azul parpadeando = error
+  - Destello blanco para indicar que se ha inicializado
   - Rojo = grabando
   - Verde = reproduciendo
 */
 
 #include <Arduino.h>
 #include <RoJoSwitch.h> //Gestión de interruptores
-#include <RoJoNeoPixelAtomLite.h> //Gestión de led NeoPixel
+#include <RoJoNeoPixelAtomLite.h> //Gestión de led NeoPixel en Atom
 #include <driver/i2s.h> //Protocolo I2S para leer micrófono
 
 //Contantes globales
@@ -32,27 +38,31 @@ const byte pinMicClock=33;
 const byte pinSpeakerData=22;
 const byte pinSpeakerClock=19;
 const byte pinSpeakerChannel=33;
-const uint32_t samples=20000; //Número de muestras = 20000 -> 2s a 10KHz
+//Las muestras se recogerán por bloques
+//Cada bloque será 1Kb de datos
+//Puesto que una muestra son 2 bytes, un bloque contiene 1024/2=512 muestras
+const uint32_t blocksMax=80; //Número máximo de bloques. 80 = 80Kb = 80*1024=81920bytes = 80*512=40960muestras
 const uint32_t freq=10000; //Frecuencia de muestreo = 10KHz
+//40960 muestras a una frecuencia de 10KHz son: 40960/10000=4s
 
 //Creamos objetos de gestión
 RoJoNeoPixelAtomLite led;
 RoJoSwitch button(39);
 
 //Variables globales
-int16_t sampleBuffer[samples];
+int16_t sampleBuffer[blocksMax*1024/2]; //Es la mitad de bloques, porque el tipo ocupa 2 bytes
+uint32_t blocks=0; //Número actual de bloques
 
-//Deja parpadeando el led en rojo
+//Deja parpadeando el led en azul
 void error() {
   while(1) {
-    led.draw({255,0,0}); delay(300);
+    led.draw({0,0,255}); delay(300);
     led.draw(); delay(300);
   }
 }
 
 //Configura el canal 0 I2S para recibir datos del micrófono
 void configMic() {
-  i2s_driver_uninstall(I2S_NUM_0);
   i2s_config_t i2s_config={ //Definición de configuración de I2S para micrófono
     //Pedimos que se encargue de generar la señal de reloj = I2S_MODE_MASTER
     //La dirección de la comunicación será recepción = I2S_MODE_RX
@@ -62,8 +72,8 @@ void configMic() {
     .channel_format = I2S_CHANNEL_FMT_ALL_RIGHT,
     .communication_format = I2S_COMM_FORMAT_I2S,
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-    .dma_buf_count = 2,
-    .dma_buf_len = 128
+    .dma_buf_count = 6,
+    .dma_buf_len = 60
   };
   i2s_pin_config_t pin_config={ //Definición de configuración de pines
     .bck_io_num = I2S_PIN_NO_CHANGE, //No tenemos pin para selector de canales (el micro es mono)
@@ -78,7 +88,6 @@ void configMic() {
 
 //Configura el canal 0 I2S para enviar datos al speaker
 void configSpeaker() {
-  i2s_driver_uninstall(I2S_NUM_0);
   i2s_config_t i2s_config={ //Definición de configuración de I2S para speaker
     //Pedimos que se encargue de generar la señal de reloj = I2S_MODE_MASTER
     //La dirección de la comunicación será envío = I2S_MODE_TX
@@ -105,30 +114,47 @@ void configSpeaker() {
 }
 
 void setup() {
+  Serial.begin(115200);
   led.begin(); //Inicialización de led
-  //Indicamos que estamos preparados encendiendo el led en azul durante un momento
-  led.draw({0,0,255}); //Led en azul
+  //Encendemos el led en blanco un instante para indicar que está inicializado
+  led.draw({255,255,255});
   delay(500);
-  led.draw(); //Led apagado
+  led.draw();
 }
 
 void loop() {
+  uint32_t now=millis();
   if(button.pressed()) { //Si se ha pulsado el botón...
+    button.released(); //Borramos el estado de release del botón
+    uint32_t recordingMillis=now+200;
     size_t bytesRead;
-    uint32_t now=millis();
-    uint32_t timeOut=now+500; //Dentro de medio segundo
-    //Esperaremos hata que se suelte o caduque...
-    while(now<timeOut && button.pressing()) now=millis();
-    if(now<timeOut) { //Pulsación corta = grabación
-      led.draw({255,0,0}); //Led en rojo
-      configMic(); //Inicialización de micrófono
-      i2s_read(I2S_NUM_0,sampleBuffer,samples*2,&bytesRead,100); //Leemos buffer completo
-      led.draw();//Led apagado
-    } else { //Pulsación larga = reproducción
+    //Esperamos hasta que se suelte el botón (reproducir) o se llegue al timeout (grabar)
+    while(!button.released() && now<recordingMillis) now=millis();
+    if(now<recordingMillis) { //Reproducción..
+      Serial.print("reproduciendo...");
       led.draw({0,255,0}); //Led en verde
       configSpeaker(); //Inicialización de speaker
-      i2s_write(I2S_NUM_0,sampleBuffer,samples*2,&bytesRead,100); //Escribimos buffer completo
+      i2s_write(I2S_NUM_0,sampleBuffer,blocks*1024,&bytesRead,100); //Escribimos buffer completo
       led.draw();//Led apagado
+      i2s_driver_uninstall(I2S_NUM_0);
+    } else { //Grabación...
+      Serial.print("grabando...");
+      configMic(); //Inicialización de micrófono
+      blocks=0;
+      led.draw({255,0,0}); //Led en rojo
+      while(button.pressing() && blocks<blocksMax) {
+        //Leemos el bloque
+        //Es muy importante la conversión de tipos en el puntero de buffer, porque el array
+        //original es de int16_t. Si fuese de bytes no haría falta.
+        //Convertimos en uint32_t el puntero del array del buffer para poder operar con él.
+        //Y al resultado final le aplicamos el tipo que espera la función (void*).
+        i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*1024),1024,&bytesRead,100);
+        blocks++; //Hemos recibido un bloque más
+      }
+      led.draw();//Led apagado
+      i2s_driver_uninstall(I2S_NUM_0);
+      Serial.print(String(blocks)+"blocks...");
     }
+    Serial.println("Ok");
   }
 }

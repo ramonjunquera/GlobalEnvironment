@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201214
+  Fecha: 20201219
   Tema: Micrófono
   Objetivo: Demo de grabación/reproducción con librería RoJoI2Sa
   Material: M5Stack StickC+
@@ -8,7 +8,7 @@
   Descripción:
   Los modelos StickC y StickC+ de M5Stack incluyen un micrófono SPM1423.
   La recuperación de datos de este dispositivo se hace a través del protocolo I2S.
-  Puesto que el micrófono es mono, se ha eliminado el cable que indica el canal
+  Puesto que el micrófono es mono, se ha eliminado el pin del selector de canal
   de audio en su conexión interna, quedando sólo el de datos y el de reloj.
   Las muestras recibidas por I2S están en formato int16_t, con una precisión de 12bits.
 
@@ -27,16 +27,7 @@
   Se configura el pin del buzzer externo como salida.
   Se muestran los elementos estáticos de pantalla.
 
-  Dentro del loop principal comprobaremos la pulsación de los botones.
-  Si se pulsa el botón de reproducción:
-  - Mostramos el icono de grabación
-  - Llenamos el buffer con los datos del micrófono
-  - Borramos el icono de grabación
-  - Convertimos los datos recibidos de int16_t a byte para poder reproducirlo
-  Si se pulsa el botón de reproducción:
-  - Mostramos el icono de reproducción
-  - Reproducimos buffer por el speaker/buzzer
-  - Borramos el icono de reproducción
+  La grabación se mantendrá mientras se mantenga pulsado el botón, hasta un máximo de 4s.
 */
 
 #include <Arduino.h>
@@ -49,7 +40,10 @@
 const byte pinMicSDA=34;
 const byte pinMICSCL=0;
 const byte pinBuzzer=26; //Buzzer pasivo externo
-const uint32_t samples=20000; //Número de muestras = 20000 -> 2s a 10KHz
+//Las muestras se recogerán por bloques
+//Cada bloque será 1Kb de datos
+//Puesto que una muestra son 2 bytes, un bloque contiene 1024/2=512 muestras
+const uint32_t blocksMax=80; //Número máximo de bloques. 80 = 80Kb = 80*1024=81920bytes = 80*512=40960muestras
 const uint32_t freq=10000; //Frecuencia de muestreo = 10KHz
 
 //Creamos objeto de gestión
@@ -57,7 +51,8 @@ RoJoST7789V2 display;
 RoJoSwitch buttonM5(37),buttonSide(39); //Botones M5 y lateral
 
 //Variables globales
-int16_t sampleBuffer[samples];
+int16_t sampleBuffer[blocksMax*1024/2]; //Es la mitad de bloques, porque el tipo ocupa 2 bytes
+uint32_t blocks=0; //Número actual de bloques
 
 void setup() {
   display.begin();
@@ -106,16 +101,25 @@ void setup() {
 
 void loop() {
   if(buttonM5.pressed()) { //Si se ha pulsado el botón M5...
-    display.disk(115,95,35,{255,0,0}); //Disco rojo
+    blocks=0;
     size_t bytesRead;
-    i2s_read(I2S_NUM_0,sampleBuffer,samples*2,&bytesRead,100); //Leemos buffer completo
+    display.disk(115,95,35,{255,0,0}); //Disco rojo
+    while(buttonM5.pressing() && blocks<blocksMax) {
+      //Leemos el bloque
+      //Es muy importante la conversión de tipos en el puntero de buffer, porque el array
+      //original es de int16_t. Si fuese de bytes no haría falta.
+      //Convertimos en uint32_t el puntero del array del buffer para poder operar con él.
+      //Y al resultado final le aplicamos el tipo que espera la función (void*).
+      i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*1024),1024,&bytesRead,100);
+      blocks++; //Hemos recibido un bloque más
+    }
     display.block(80,60,150,130,{0,0,0}); //Borramos disco rojo
     //Convirtiendo muestras de 16bits (int16_t) a 8bits (byte) con amplificación x32
-    RoJoI2Sa_convert16to8(sampleBuffer,(byte*)sampleBuffer,samples,32);
+    RoJoI2Sa_convert16to8(sampleBuffer,(byte*)sampleBuffer,blocks*512,32);
   }
   if(buttonSide.pressed()) { //Si se ha pulsado el botón lateral...
     display.triangleFill(80,60,150,95,80,130,{0,255,0}); //Triángulo verde
-    RoJoI2Sa_write(0,(byte*)sampleBuffer,samples); //Reproducimos buffer en speaker
+    RoJoI2Sa_write(0,(byte*)sampleBuffer,blocks*512); //Reproducimos buffer en speaker
     display.block(80,60,150,130,{0,0,0}); //Borramos triángulo verde
   }
   delay(10);

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201216
+  Fecha: 20201219
   Tema: Micrófono
   Objetivo: Demo de grabación/reproducción con librería RoJoI2Sa
   Material: ESP32 WeMos Lolin D32, micrófono INM441, buzzer pasivo.
@@ -18,6 +18,7 @@
     Antes de reproducirlo en el buzzer, debemos convertirlas a formato byte, que es
     lo único que permite un pin DAC.
     Es importante que el buzzer sea pasivo, para evitar ruido adicional.
+    La grabación se mantendrá mientras se mantenga pulsado el botón, hasta un máximo de 4s.
 */
 
 #include <Arduino.h>
@@ -31,16 +32,20 @@ const byte pinMicSDA=32;
 const byte pinMICSCL=14;
 const byte pinMICWS=15;
 const byte pinBuzzer=25;
-const uint32_t samples=20000; //Número de muestras = 20000 -> 2s a 10KHz
+//Las muestras se recogerán por bloques
+//Cada bloque será 1Kb de datos
+//Puesto que una muestra son 2 bytes, un bloque contiene 1024/2=512 muestras
+const uint32_t blocksMax=80; //Número máximo de bloques. 80 = 80Kb = 80*1024=81920bytes = 80*512=40960muestras
 const uint32_t freq=10000; //Frecuencia de muestreo = 10KHz
 
 //Creamos objeto de gestión
 RoJoSwitch buttonRecord(33),buttonPlay(26);
 
 //Variables globales
-int16_t sampleBuffer[samples]; //Las muestras serán de 16bits
+int16_t sampleBuffer[blocksMax*1024/2]; //Es la mitad de bloques, porque el tipo ocupa 2 bytes
+uint32_t blocks=0; //Número actual de bloques
 
-//Función de eroor. El led parpadea continuamente.
+//Función de error. El led parpadea continuamente.
 void blinkLed() {
   while(1) {
     digitalWrite(pinLed,!digitalRead(pinLed));
@@ -81,16 +86,25 @@ void setup() {
 
 void loop() {
   if(buttonRecord.pressed()) { //Si se ha pulsado el botón de grabación...
-    digitalWrite(pinLed,LOW); //Encendemos el led
+    blocks=0;
     size_t bytesRead;
-    i2s_read(I2S_NUM_0,sampleBuffer,samples*2,&bytesRead,100); //Leemos buffer completo
+    digitalWrite(pinLed,LOW); //Encendemos el led
+    while(buttonRecord.pressing() && blocks<blocksMax) {
+      //Leemos el bloque
+      //Es muy importante la conversión de tipos en el puntero de buffer, porque el array
+      //original es de int16_t. Si fuese de bytes no haría falta.
+      //Convertimos en uint32_t el puntero del array del buffer para poder operar con él.
+      //Y al resultado final le aplicamos el tipo que espera la función (void*).
+      i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*1024),1024,&bytesRead,100);
+      blocks++; //Hemos recibido un bloque más
+    }
     digitalWrite(pinLed,HIGH); //Apagamos el led
-    //Convirtiendo muestras de 16bits (int16_t) a 8bits (byte) con amplificación x25
-    RoJoI2Sa_convert16to8(sampleBuffer,(byte*)sampleBuffer,samples,25);
+    //Convirtiendo muestras de 16bits (int16_t) a 8bits (byte) con amplificación x32
+    RoJoI2Sa_convert16to8(sampleBuffer,(byte*)sampleBuffer,blocks*512,25);
   }
   if(buttonPlay.pressed()) { //Si se ha pulsado el botón de reproducción...
     digitalWrite(pinLed,LOW); //Encendemos el led
-    RoJoI2Sa_write(0,(byte*)sampleBuffer,samples); //Reproducimos buffer en speaker
+    RoJoI2Sa_write(0,(byte*)sampleBuffer,blocks*512); //Reproducimos buffer en speaker
     digitalWrite(pinLed,HIGH); //Apagamos el led
   }
   delay(10);

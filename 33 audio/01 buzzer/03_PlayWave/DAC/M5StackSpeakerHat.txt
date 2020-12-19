@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: M5Stack Speaker Hat for StickC & StickC+
-Fecha: 20201208
+Fecha: 20201219
 
 Descripción:
   M5Stack sacó una versión de un buzzer/speaker para poder conectarlo a los modelos StickC y StickC+.
@@ -22,3 +22,13 @@ Descripción:
       Wire.write(0x4D); //Enable DC-DC1, OLED_VDD, 5B V_EXT
       Wire.endTransmission();
     }
+  - Hay un pin adicional para la gestión del hat: el 0. Se encarga de la activación/desactivación.
+    - LOW = desactivado
+    - HIGH = activado
+    Debido a la utilización de este pin, existe una incompatibilidad entre el uso del micrófono con el
+    speaker hat.
+    Ambos utilizan el pin 0. El micrófono como pin de reloj para el protocolo I2S y el speaker para
+    deshabilitar el altavoz.
+    Cuando se leen muestras del micrófono, el pin 0 cambia de estado contínuamente. Esto produce que el
+    speaker se apague y encienda muchas veces, lo que provoca un bloqueo.
+    Por lo tanto, NO podemos utilizar el micrófono y el speaker hat en la misma aplicación.
