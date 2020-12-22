@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: Protocolo I2S
-Fecha: 20201123
+Fecha: 20201222
 
 I2S
   I2S es un protocolo creado especialmente para la transmisión de sonido digitalizado entre dispositivos.
@@ -47,9 +47,6 @@ I2S en ESP32
   Una vez terminadas las comunicaciones, se desinstala el driver I2S.
   Notas:
   - El driver tiene un modo que permite enviar datos directamente a un pin DAC. Este modo no funciona a fecha de hoy.
-  - En el caso de querer controlar la duración de la grabación (recepción de datos de micrófono) podríamos pensar
-    en concatenar diferentes llamadas de lectura y guardarlas en distintas posiciones del buffer de memoria.
-    El resultado práctico es que los "cortes" son muy evidentes y acaban con la calidad de audio. No funciona.
 
 I2S en M5Stack
   Micrófono: StickC, StickC+ & Atom Echo
@@ -60,3 +57,44 @@ I2S en M5Stack
     El ADC del micrófono tiene una precisión de 12bits.
   Speaker: Atom Echo
     Incluye un speaker I2S mono modelo NS4168.
+    
+Parámetros en ESP32:
+  Describimos algunos pararámetros de la configuración del driver I2S (i2s_driver_install) en ESP32:
+  - .channel_format
+    I2S_CHANNEL_FMT_RIGHT_LEFT : se enviarán muestras de ambos canales
+    I2S_CHANNEL_FMT_ALL_LEFT : sólo se enviarán las muestras del canal izquierdo y no las del derecho
+    I2S_CHANNEL_FMT_ALL_RIGHT : sólo se enviarán las muestras del canal derecho y no las del izquierdo
+    I2S_CHANNEL_FMT_ONLY_LEFT : se envían todas las muestras como si fueran sólo del canal izquierdo
+    I2S_CHANNEL_FMT_ONLY_RIGHT : se envían todas las muestras como si fueran sólo del canal derecho
+  Parámetros del reloj (i2s_set_clk):
+  - ch (channel)
+    I2S_CHANNEL_MONO : los datos enviados son mono (sólo un canal)
+    I2S_CHANNEL_STEREO : los datos enviados son stereo (dos canales)
+Conexión micrófono - speaker:
+  Micrófono mono - speaker mono
+    Obligatorio seleccionar ch como MONO tanto para entrada como para salida.
+  Micrófono stereo - speaker stereo
+    Habitualmente se quieren aprovechar los dos canales, así que se selección ch como STEREO en entrada y salida.
+  Micrófono stereo - speaker mono
+    Seleccionar micrófono como stereo y para speaker tenemos varias opciones:
+      - Speaker STEREO y channel_format = I2S_CHANNEL_FMT_ALL_LEFT (o I2S_CHANNEL_FMT_ALL_RIGHT).
+        Así se enviarán todas las muestras por un sólo canal y nada por el otro.
+        Es importante que el speaker esté configurado para reproducir el canal enviado.
+      - Speaker MONO y channel format = I2S_CHANNEL_FMT_ONLY_LEFT (o I2S_CHANNEL_FMT_ONLY_RIGHT).
+        Así se enviarán todas las muestras como si fueran de un sólo canal, que es el único que se envía.
+        En este caso da igual seleccionar el derecho o el izquierdo, porque sólo se envía uno.
+  Micrófono mono - speaker stereo
+    - Speaker MONO y channel format = I2S_CHANNEL_FMT_ONLY_LEFT (o I2S_CHANNEL_FMT_ONLY_RIGHT).
+      Así se enviarán todas las muestras como si fueran de un sólo canal, que es el único que se envía.
+      En este caso da igual seleccionar el derecho o el izquierdo, porque sólo se envía uno.
+      Las muestras son reproducidas en ambos canales simultáneaamente.
+    - Si seleccionamos speaker stereo, importa el formato que seleccionemos porque se enviarán las muestras pares por
+      un canal y las impares por otro. Sólo conseguiremos duplicar la frecuencia.
+      
+    
+
+    
+    
+    
+    
+    

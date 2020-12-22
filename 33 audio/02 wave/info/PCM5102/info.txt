@@ -1,0 +1,39 @@
+Autor: Ramón Junquera
+Tema: PCM5102
+Fecha: 20201222
+
+Descripción:
+  Es una pequeña placa con un DAC (Digital to Analog Conversion) stereo con una salida de audio de jack 3.5 para auriculares,
+  que trabaja con protocolo I2S.
+  
+Voltaje: desde -0.3 a 3.9V
+  
+Canales de salida: 2 (stereo)
+
+Rango de frecuencias: desde 8KHz hasta 384KHz
+
+Tamaño de muestras: 16/24/32 bits
+
+Pinout:
+  Pines transversales:
+    SCK : reloj de entrada. Conectado a GND.
+    BCK : reloj I2S
+    DIN : datos I2S
+    LRCK : selector de canal I2S
+    GND : tierra
+    VIN : alimentación (3.3V)
+  Pines longitudinales:
+    FLT : selector de filtro. Sin conectar o conectado a GND = normal. Conectado a VIN = baja latencia
+    DEMP : control de énfasis para 44.1kHz. Sin conectar o conectado a GND = apagado. Conectado a VIN = encendido
+    XSMT : control de silencio por software. Sin conectar o conectado a VIN = sonido. Conectado a GND = silencio
+    FMT : selección de formato de audio. Sin conectar o conectado a GND = I2S. Conectado a VIN = justificado a la izquierda
+    A3V3 : alimentación analógica (3.3V)
+    AGND : tierra analógica
+    ROUT : canal derecho de salida analógica
+    AGND : tierra analógica
+    LOUT : canal izquierdo de salida analógica
+  Notas:
+  - Las conexiones analógicas (AGND & A3V3) se dejan sueltas, se tomará la alimentación general (GND & VIN).
+  - Habitualmente todos los pines del longitudinales no necesitan ser conectados.
+  
+

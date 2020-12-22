@@ -1,0 +1,47 @@
+Autor: Ramón Junquera
+Tema: MAX98357
+Fecha: 20201222
+
+Descripción:
+  Es una pequeña placa con un DAC (Digital to Analog Conversion) mono y un amplificador, que trabaja con protocolo I2S.
+  Permite conectar a su salida analógica un altavoz.
+  
+Voltaje: desde 2.7 a 5.5V
+  
+Potencia de salida:
+  Depende de la resistencia del altavoz. Ejemplos:
+  - 3.2W con una altavoz de 4 ohmios y 5V
+  - 1.8W con una altavoz de 8 ohmios y 5V
+    
+Canales de salida:
+  Sólo uno, pero seleccionable: derecho, izquierdo, el promedio de ambos (opción por defecto)
+
+Rango de frecuencias: desde 8KHz hasta 96KHz
+
+Tamaño de muestras: 16/32 bits
+
+Ganancia de amplificación:
+  Por defecto 9dB, pero admite valores entre 3 y 15db, segun la conectemos el pin GAIN de de las siguientes maneras:
+    15db -> a GND con una resistencia de 100 ohmios
+    12db -> a GND directamente
+     9db -> sin conectar
+     6db -> a Vin directamente
+     3db -> a Vin con una resistencia de 100 ohmios
+     
+Pinout:
+  LRC  : selector de canal
+  BCLK : reloj
+  DIN  : datos
+  GAIN : ganancia
+  SD   : configurador de canales
+  GND  : tierra
+  Vin  : alimentación
+  
+Selección de canales:
+  Por defecto está configurado para que se escuche el valor medio de ambos canales, pero se puede seleccionar
+  con el pin SD:
+  - conectado a GND (menos de 0.16V): dispositivo apagado
+  - entre 0.16V y 0.77V o sin conectar: promedio de canal izquierdo y derecho
+  - entre 0.77V y 1.4V : sólo canal derecho
+  - conectado a VIN (mayor que 1.4V) : sólo canal izquierdo
+
