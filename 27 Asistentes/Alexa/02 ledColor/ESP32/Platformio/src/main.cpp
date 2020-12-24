@@ -2,7 +2,7 @@
   Autor: Ramón Junquera
   Fecha: 20200223
   Tema: librería Espalexa
-  Objetivo: Ejemplo de control de color
+  Objetivo: Ejemplo de control de color con ESP32
 
   Descripción:
     Se utiliza un M5Stack Fire.

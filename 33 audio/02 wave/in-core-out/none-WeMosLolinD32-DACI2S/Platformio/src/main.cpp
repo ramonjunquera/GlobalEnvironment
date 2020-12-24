@@ -1,18 +1,16 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201220
+  Fecha: 20201222
   Tema: Buzzer
   Objetivo: Demo de reproducción
-  Material: WeMos Lolin D32, Max98357A
+  Material: WeMos Lolin D32, DAC I2S (PCM5102 o Max98357A)
 
   Descripción:
-  Al pulsar el botón se reproducirá enviará el contenido del buffer al Max98357A.
+  Al pulsar el botón se enviará el contenido del buffer al DAC I2S.
   Previamente llenaremos el buffer con el resultado de una función senoidal.
   Utilizaremos un buffer con muestras de 16bits (int16_t).
-
-  Nota:
-  Para aumentar un poco el volumen hemos conectado el pin GAIN del Max98357A
-  a tierra. Así amplificaremos un poco más.
+  Solo generaremos muestras para un canal.
+  Para que suene por ambos, indicaremos que el speaker es mono.
 */
 
 #include <Arduino.h>

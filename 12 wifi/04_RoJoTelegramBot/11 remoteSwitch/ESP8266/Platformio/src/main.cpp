@@ -299,7 +299,7 @@ void readStatus() {
     //Se cierra
     f.close();
     //Se vuelve a abrir como sólo lectura
-    f=SPIFFS.open(statusRelayFile,"w");
+    f=SPIFFS.open(statusRelayFile,"r");
   }
   //Tenemos el archivo abierto
   

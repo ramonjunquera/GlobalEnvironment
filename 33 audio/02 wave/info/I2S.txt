@@ -87,7 +87,7 @@ Conexión micrófono - speaker:
     - Speaker MONO y channel format = I2S_CHANNEL_FMT_ONLY_LEFT (o I2S_CHANNEL_FMT_ONLY_RIGHT).
       Así se enviarán todas las muestras como si fueran de un sólo canal, que es el único que se envía.
       En este caso da igual seleccionar el derecho o el izquierdo, porque sólo se envía uno.
-      Las muestras son reproducidas en ambos canales simultáneaamente.
+      Las muestras son reproducidas en ambos canales simultáneamente.
     - Si seleccionamos speaker stereo, importa el formato que seleccionemos porque se enviarán las muestras pares por
       un canal y las impares por otro. Sólo conseguiremos duplicar la frecuencia.
       

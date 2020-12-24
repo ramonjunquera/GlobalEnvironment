@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: Características de micrófono INM441
-Fecha: 20201215
+Fecha: 20201222
 
 Micrófono omnidireccional MH-ET INMP441 MEMES con interface I2S.
 Se vende en https://es.aliexpress.com/item/4000045517597.html?spm=a2g0s.9042311.0.0.4e3463c0Y8nK6G
@@ -15,8 +15,9 @@ Pinout:
 
 Selección de canal:
   El micrófono no es stereo. El único de canal que recoge se puede seleccionar a través del pin L/R.
-  pin L/R conectado a GND o desconectado = canal izquierdo
+  pin L/R conectado a GND = canal izquierdo
   pin L/R conectado a VDD = canal derecho
+  Es muy conveniente que se conecte este pin. Si no se hace la calidad de audio será muy baja.
 
 Rango de frecuencias: 80-15000 Hz
 

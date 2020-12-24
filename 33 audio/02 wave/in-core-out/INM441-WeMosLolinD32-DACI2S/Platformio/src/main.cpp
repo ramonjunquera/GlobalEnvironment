@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201221
+  Fecha: 20201222
   Tema: Micrófono
-  Objetivo: Demo de grabación/reproducción con librería RoJoI2Sa
-  Material: ESP32 WeMos Lolin D32, micrófono INM441, amplificador Max98357A
+  Objetivo: Demo de grabación/reproducción I2S
+  Material: ESP32 WeMos Lolin D32, micrófono INM441, DAC I2S (PCM5120 o Max98357A)
 
   Descripción:
     Ejemplo de grabación y reproducción de audio.
@@ -12,8 +12,12 @@
     Aprovechamos el led integrado de la placa para mostrar cuando está ocupado,
     ya sea grabando o reproduciendo.
 
-    Tanto el micrófono como el amplificador son I2S.
-    Ambos son mono.
+    Tanto el micrófono como el DAC son I2S.
+    Utilizaremos como DAC (decodificador digital analógico) un PCM5120 (DAC) o un
+    Max98357A (DAC + amplificador).
+    PCM5120 es mono y Max98357A stereo.
+    Puesto que las muestras obtenidas del micrófono son mono, en ambos caos configuraremos
+    la salida como mono.
     No necesitaremos hacer ninguna conversión de formatos.
     Utilizaremos la misma configuración y canal I2S para ambos.
     Compartiremos los pines de reloj y selección de canal. El circuito será más simple
@@ -45,8 +49,8 @@
 //Contantes globales
 const byte pinLed=22;
 const byte pinMicData=32;
-const byte pinI2Sclock=14;
-const byte pinI2Schannel=15;
+const byte pinI2Sclock=26;
+const byte pinI2Schannel=25;
 const byte pinSpeakerData=23;
 //Las muestras se recogerán por bloques
 //Cada bloque será 1Kb de datos

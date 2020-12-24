@@ -1,0 +1,6 @@
+Dispositivos Alexa
+
+Cuando se incluye un nuevo dispositivo en Alexa, ésta toma nota de su dirección MAC y es la que utiliza
+para dirigirse en el futuro a él.
+Si el dispositivo de desarrollo no coincide con el final, se tendrá que eliminar y dar de alta de nuevo.
+Si no se hace, no lo reconocerá como el dispositivo correcto.
