@@ -1,0 +1,13 @@
+Autor: Ramón Junquera
+Fecha: 20201225
+Tema: Remote Speaker
+
+Descripción:
+Utilizaremos dos dispositivos con capacidades de audio. Uno con micrófono para grabar
+y otro con speaker/buzzer para reproducir.
+Se comunicarán por wifi.
+El cliente será el grabador. Tendrá dos dunciones seleccionables por el usuario:
+- Grabación: guardará las muestras grabadas
+- Reproducción: enviará las muestras grabadas al otro dispositivo.
+El servidor será el reproductor. Creará un punto de acceso wifi y un servidor en el que
+se recibirán las muestras. Una vez recibidas se reproducirán.

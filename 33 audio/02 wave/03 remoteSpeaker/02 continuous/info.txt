@@ -1,0 +1,11 @@
+Autor: Ramón Junquera
+Fecha: 20201226
+Tema: Reproducción contínua remota
+
+Descripción:
+Utilizaremos dos dispositivos con capacidades de audio. Uno con micrófono para grabar
+y otro con speaker/buzzer para reproducir.
+Se comunicarán por wifi.
+El cliente graba continuamente y envía las muestras al servidor.
+El servidor recibe las muestras y las reproduce. Creará un punto de acceso wifi y un servidor.
+

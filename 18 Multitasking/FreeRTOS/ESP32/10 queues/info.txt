@@ -4,7 +4,7 @@ Tema: Multitasking / FreeRTOS / Queues
 
 Problema:
 Cuando lanzamos una tarea se ejecuta en su propio proceso, o incluso, en su propia CPU.
-Si la tarea genera calcula y genera información que debe ser utilizada en otra tarea
+Si la tarea calcula y genera información que debe ser utilizada en otra tarea
 (o programa principal), necesitaremos saber cuándo ha terminado y cuáles son los datos.
 Para saber cuándo ha terminado la tarea, podemos usar un semáforo.
 Pero los datos los tendremos que obtener a través de variables globales, con la limitación

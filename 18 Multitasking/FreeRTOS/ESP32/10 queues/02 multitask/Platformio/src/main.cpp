@@ -8,7 +8,7 @@
     El objetivo es calcular la suma de los 100 primeros números.
     Para ello utilizaremos simultáneamente las dos CPUs del ESP32.
     Lanzaremos dos tareas. La primera calculará la suma de los 50 primeros 
-    número. La segunda los 50 restantes.
+    números. La segunda los 50 restantes.
     Necesitaremos saber cuándo han terminado y el resultado obtenido.
     Esto lo conseguiremos mediante una cola.
     Puesto que el total es un entero, positivo y relativamente pequeño, la cola
