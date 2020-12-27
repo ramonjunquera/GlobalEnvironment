@@ -8,9 +8,12 @@
   Descripción:
   Crea un punto de acceso wifi.
   Crea un servidor en el puerto 8266/tcp.
-  Comprueba contínuamente si hay algún cliente.
-  Si lo hay recibe su información y la reproduce por el speaker.
-  El tamaño de muestra es fijo.
+  Se separan las tareas de recepción y reproducción. Se asigna cada tarea a un core distinto.
+  Las tareas se sincronizan a través de una cola de mensajes.
+  - Recepción: comprueba si hay algún cliente, recupera el bloque de muestras y se lo entrega
+    a la cola de mensajes.
+  - Reproducción: recupera mensaje de la cola, obtiene el bloque de muestras y las reproduce
+    por el speaker.
 
   Nota:
   Se evita utilizar los leds mientras se lanzan otras tareas.
@@ -28,20 +31,20 @@ const char* wifiPassword = "12345678";
 const byte pinBuzzer=25; //Buzzer interno
 const uint32_t freq=16000; //Frecuencia de muestreo 16KHz
 const uint16_t samplesPerBlock=512;
+const byte maxQueueMessages=5; //Número máximo de mensajes de la cola
 
 //Variables globales
-float period_s=1.0/(float)freq; //Periodo en segundos
 WiFiServer server(8266); //Servidor en puerto 8266
 RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
-QueueHandle_t q=xQueueCreate(7,sizeof(byte*)); //Cola con 7 nodos máximo que guarda punteros
+QueueHandle_t q=xQueueCreate(maxQueueMessages,samplesPerBlock); //Cola que guarda bloques
 
 //Tarea de recepción
 void taskReceiving(void *param) {
   WiFiClient client;
+  byte buffer[samplesPerBlock]; //Buffer de muestras
   while(1) { //Bucle infinito
     client=server.available(); //Anotamos si hay algún cliente
     if(client) { //Si detectamos algún cliente...
-      byte *buffer=new byte[samplesPerBlock]; //Dimensionamos y reservamos memoria para el buffer
       //Nota. La recepción no es instantánea. La información recibida se guarda inicialmente en
       //el buffer de recepción wifi que tiene unas 15Kb.
       //Si la información esperada es mayor que el tamaño del buffer de recepción se perderá.
@@ -56,30 +59,24 @@ void taskReceiving(void *param) {
         if(bytesReceived>0) samplesReceived+=bytesReceived;
       }
       client.stop(); //Desconectamos
-      //Si no se han recibido todos los datos...rellenamos el resto de 127 (silencio)
-      if(samplesReceived<samplesPerBlock) for(uint16_t i=samplesReceived;i<samplesPerBlock;i++) buffer[i]=127;
-      //Añadimos un nodo a la cola (si no hemos llegado al máximo) con el puntero del buffer
-      //Una cola copia el contenido de la dirección indicada, por lo tanto debemos indicar el
-      //puntero del puntero del buffer!
-      xQueueSend(q,&buffer,portMAX_DELAY);
+      xQueueSend(q,buffer,0); //Añadimos el bloque a la cola. Si no hay sitio, se pierde.
     }
   }
 }
 
 //Tarea de reproducción
 void taskPlaying(void *param) {
-  byte *buffer; //Puntero a buffer de muestras recibidas
+  byte buffer[samplesPerBlock]; //Buffer de muestras
   while(1) { //Bucle infinito
-    if(uxQueueMessagesWaiting(q)==0) dacWrite(pinBuzzer,0);
-    //Recuperamos siguiente nodo de la lista (si existe) y tomamos el puntero al buffer de muestras
-    xQueueReceive(q,&buffer,portMAX_DELAY);
+    //Recuperamos siguiente mensaje de la lista y copiamos las muestras al buffer.
+    //Si no hay mensajes, esperaremos.
+    xQueueReceive(q,buffer,portMAX_DELAY);
     //Reproducimos buffer en speaker
-    //No silenciamos el epeaker al terminar para evitar el click que produce
+    //No silenciamos el speaker al terminar para evitar el click que produce
     RoJoI2Sa_write(0,buffer,samplesPerBlock,false);
-    //Si no tenemos pendiente más reproducciones...apagamos el speaker
+    //Si no tenemos pendiente más bloques...apagamos el speaker
     //Esto evita que el speaker que quede encendido y generando ruido.
     if(uxQueueMessagesWaiting(q)==0) dacWrite(pinBuzzer,0);
-    delete[] buffer; //Ya no necesitamos el buffer. Liberamos su memoria
   }
 }
 
@@ -95,9 +92,9 @@ void setup() {
   WiFi.mode(WIFI_AP); //Se creará un punto de acceso wifi
   WiFi.softAP(wifiSSID,wifiPassword); //Nombre y contraseña del punto de acceso
   server.begin(); //Arrancamos el servidor
-  leds.v->clear(); leds.draw(); leds.draw(); //Apagamos leds. Config end
-  xTaskCreatePinnedToCore(taskPlaying,"",2000,NULL,1,NULL,0); //Tarea de reproducción en core 0
-  xTaskCreatePinnedToCore(taskReceiving,"",2000,NULL,1,NULL,1); //Tarea de recepción en core 1
+  leds.v->clear({0,5,0}); leds.draw(); //Leds en verde. Running
+  xTaskCreatePinnedToCore(taskPlaying,"",6000,NULL,1,NULL,0); //Tarea de reproducción en core 0
+  xTaskCreatePinnedToCore(taskReceiving,"",6000,NULL,1,NULL,1); //Tarea de recepción en core 1
   vTaskDelete(NULL); //Borramos la tarea del programa principal. Nunca se ejecutará loop()
 }
 

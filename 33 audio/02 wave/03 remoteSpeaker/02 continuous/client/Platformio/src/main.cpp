@@ -8,7 +8,11 @@
   Descripción:
   No se necesitan botones. Graba continuamente muestras que envía al servidor.
   Se separan las tareas de grabación y envío. Se asigna cada tarea a un core distinto.
-  Las tareas se sincronizan a través de una cola.
+  Las tareas se sincronizan con una cola de mensajes.
+  - Grabación: recupera un bloque de muestras del micrófono y se lo entrega a la cola de
+    mensajes
+  - Envío: recupera mensaje de la cola, obtiene las muestras del micrófono, las convierte
+    a 8bits y las envía al servidor
 */
 
 #include <Arduino.h>
@@ -23,11 +27,12 @@ const char* host = "192.168.4.1"; //Nombre o IP del host
 const byte pinMicData=23;
 const byte pinMicClock=33;
 const uint32_t freq=16000; //Frecuencia de muestreo = 16KHz
-const uint16_t samplesPerBlock=256;
+const uint16_t samplesPerBlock=512;
+const byte maxQueueMessages=5; //Número máximo de mensajes de la cola
 
 //Variables globales
 RoJoNeoPixelAtomLite led;
-QueueHandle_t q=xQueueCreate(5,sizeof(int16_t*)); //Cola con 5 nodos máx que guarda punteros
+QueueHandle_t q=xQueueCreate(maxQueueMessages,samplesPerBlock*2);
 
 //Deja parpadeando el led en azul
 void error() {
@@ -72,47 +77,45 @@ void configMic() {
 
 //Tarea de conversión y envío
 void taskSending(void *param) {
-  int16_t *buffer16; //Puntero a buffer donde se recogerá el bloque de muestras del micrófono
-  byte *buffer8; //Puntero a buffer de muestras convertidas
+  int16_t buffer16[samplesPerBlock]; //Buffer de muestras de micrófono
+  byte buffer8[samplesPerBlock]; //Buffer de muestras convertidas
   WiFiClient client;
   while(1) { //Bucle infinito
-    //Recuperamos siguiente nodo de la lista (si existe) y tomamos el puntero al buffer de muestras
-    xQueueReceive(q,&buffer16,portMAX_DELAY);
-    buffer8=new byte[samplesPerBlock]; //Reservamos memoria para el buffer de muestras convertidas
+    //Recuperamos siguiente mensaje de la lista y el buffer de micrófono
+    //No no hay mensaje, esperamos hasta que lo haya
+    xQueueReceive(q,(byte*)buffer16,portMAX_DELAY);
     //Convertimos muestras de int16_t a byte sin añadir ninguna ganancia
     for(uint16_t i=0;i<samplesPerBlock;i++) buffer8[i]=constrain((float)buffer16[i]/256.0+127.0,0,255);
     checkWifi(); //Nos aseguramos que tenemos conexión wifi con el punto de acceso
-    client.connect(host,8266); //Conectamos con el servidor
-    client.write(buffer8,samplesPerBlock); //Enviamos el bloque de muestras convertidas
-    client.stop(); //Terminamos la conexión
-    delete[] buffer16; //Liberamos memoria del buffer de muestras originales
-    delete[] buffer8; //Liberamos memoria del buffer de muestras convertidas
+    if(client.connect(host,8266)) { //Si conseguimos conectar con el servidor...
+      client.write(buffer8,samplesPerBlock); //Enviamos el bloque de muestras convertidas
+      client.stop(); //Terminamos la conexión
+    }
+    //Si no hemos conseguido conectar con el servidor, no enviamos este bloque y lo perdemos.
   }
 }
 
 //Tarea de grabación
 void taskRecording(void *param) {
   size_t bytesRead;
-  int16_t *buffer16; //Puntero a buffer donde se recogerá el bloque de muestras del micrófono
+  int16_t buffer16[samplesPerBlock]; //Buffer de muestras de micrófono
   while(1) { //Bucle infinito
-    buffer16=new int16_t[samplesPerBlock]; //Dimensionamos y reservamos memoria para el buffer
     i2s_read(I2S_NUM_0,(void*)buffer16,samplesPerBlock*2,&bytesRead,100); //Leemos bloque de muestras
-    //Añadimos un nodo a la cola (si no hemos llegado al máximo) con el puntero del buffer
-    //Una cola copia el contenido de la dirección indicada, por lo tanto debemos indicar el
-    //puntero del puntero del buffer!
-    xQueueSend(q,&buffer16,portMAX_DELAY);
+    //Añadimos un nuevo mensaje a la cola con una copia del buffer recogido del micrófono
+    //Si la cola está llena, perderemos el bloque
+    xQueueSend(q,buffer16,0);
   }
 }
 
 void setup() {
   led.begin(); //Inicialización de led
-  led.draw({200,0,0}); //Led en rojo mientras inicializa
+  led.draw({200,200,200}); //Led en blanco mientras inicializa
   configMic(); //Inicialización I2C de micrófono
   WiFi.mode(WIFI_STA); //Conectado como cliente a un punto de acceso
-  checkWifi(); //Conectar con el servidor
-  led.draw(); //Led apagado. Fin de inicialización
-  xTaskCreatePinnedToCore(taskSending,"",2000,NULL,1,NULL,0); //Tarea de envío en core 0
-  xTaskCreatePinnedToCore(taskRecording,"",2000,NULL,1,NULL,1); //Tarea de grabación en core 1
+  checkWifi(); //Conectar wifi ahora para no perder tiempo después
+  led.draw({0,50,0}); //Led verde. Running
+  xTaskCreatePinnedToCore(taskSending,"",6000,NULL,1,NULL,0); //Tarea de envío en core 0
+  xTaskCreatePinnedToCore(taskRecording,"",6000,NULL,1,NULL,1); //Tarea de grabación en core 1
   vTaskDelete(NULL); //Borramos la tarea del programa principal. Nunca se ejecutará loop()
 }
 
