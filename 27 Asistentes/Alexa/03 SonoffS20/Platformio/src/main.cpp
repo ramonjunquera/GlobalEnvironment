@@ -102,7 +102,7 @@ void setup() {
   readStatus();
   wifiSetup(); //Conectamos a wifi
 
-  alexa.addDevice("caldera",alexaSwitch); //Creamos el dispositivo
+  alexa.addDevice("Sonoff S20",alexaSwitch); //Creamos el dispositivo
   alexa.begin(); //Iniciamos la gestión de dispositivos
 }
 

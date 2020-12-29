@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201219
+  Fecha: 20201228
   Tema: Micrófono
   Objetivo: Demo de grabación/reproducción a través de I2S
   Material: M5Stack Atom Echo
@@ -33,24 +33,20 @@
 #include <driver/i2s.h> //Protocolo I2S para leer micrófono
 
 //Contantes globales
-const byte pinMicData=23;
-const byte pinMicClock=33;
-const byte pinSpeakerData=22;
-const byte pinSpeakerClock=19;
-const byte pinSpeakerChannel=33;
-//Las muestras se recogerán por bloques
-//Cada bloque será 1Kb de datos
-//Puesto que una muestra son 2 bytes, un bloque contiene 1024/2=512 muestras
-const uint32_t blocksMax=80; //Número máximo de bloques. 80 = 80Kb = 80*1024=81920bytes = 80*512=40960muestras
+const byte pinI2SdataMic=23;
+const byte pinI2Schannel=33;
+const byte pinI2SdataSpeaker=22;
+const byte pinI2Sclock=19;
+const uint32_t bytesPerBlock=1024;
+const uint32_t blocksMax=80;
 const uint32_t freq=10000; //Frecuencia de muestreo = 10KHz
-//40960 muestras a una frecuencia de 10KHz son: 40960/10000=4s
 
 //Creamos objetos de gestión
 RoJoNeoPixelAtomLite led;
 RoJoSwitch button(39);
 
 //Variables globales
-int16_t sampleBuffer[blocksMax*1024/2]; //Es la mitad de bloques, porque el tipo ocupa 2 bytes
+byte sampleBuffer[blocksMax*bytesPerBlock];
 uint32_t blocks=0; //Número actual de bloques
 
 //Deja parpadeando el led en azul
@@ -76,10 +72,10 @@ void configMic() {
     .dma_buf_len = 60
   };
   i2s_pin_config_t pin_config={ //Definición de configuración de pines
-    .bck_io_num = I2S_PIN_NO_CHANGE, //No tenemos pin para selector de canales (el micro es mono)
-    .ws_io_num = pinMicClock, //Pin de reloj de micro
-    .data_out_num = I2S_PIN_NO_CHANGE, //No hay pin de datos de salida
-    .data_in_num = pinMicData //Pin de datos de micro
+    .bck_io_num = I2S_PIN_NO_CHANGE, //Pin de reloj de bits
+    .ws_io_num = pinI2Schannel, //Pin de reloj de canal
+    .data_out_num = I2S_PIN_NO_CHANGE, //Pin de datos de speaker
+    .data_in_num = pinI2SdataMic //Pin de datos de micro
   };
   if(i2s_driver_install(I2S_NUM_0,&i2s_config,0,NULL)) error(); //Error instalando driver I2S
   if(i2s_set_pin(I2S_NUM_0,&pin_config)) error(); //Error asignando pines I2S
@@ -103,10 +99,10 @@ void configSpeaker() {
     .tx_desc_auto_clear=true
   };
   i2s_pin_config_t pin_config={ //Definición de configuración de pines
-    .bck_io_num = pinSpeakerClock, //Pin de reloj de speaker
-    .ws_io_num = pinSpeakerChannel, //Pin de selector de canales del speaker
-    .data_out_num = pinSpeakerData, //Pin de datos de salida
-    .data_in_num = I2S_PIN_NO_CHANGE //No hay pin de datos de entrada (micro)
+    .bck_io_num = pinI2Sclock, //Pin de reloj de bits
+    .ws_io_num = pinI2Schannel, //Pin de reloj de canal
+    .data_out_num = pinI2SdataSpeaker, //Pin de datos de speaker
+    .data_in_num = I2S_PIN_NO_CHANGE //Pin de datos de micro
   };
   if(i2s_driver_install(I2S_NUM_0,&i2s_config,0,NULL)) error(); //Error instalando driver I2S
   if(i2s_set_pin(I2S_NUM_0,&pin_config)) error(); //Error asignando pines I2S
@@ -134,7 +130,7 @@ void loop() {
       Serial.print("reproduciendo...");
       led.draw({0,255,0}); //Led en verde
       configSpeaker(); //Inicialización de speaker
-      i2s_write(I2S_NUM_0,sampleBuffer,blocks*1024,&bytesRead,100); //Escribimos buffer completo
+      i2s_write(I2S_NUM_0,sampleBuffer,blocks*bytesPerBlock,&bytesRead,100); //Escribimos buffer completo
       led.draw();//Led apagado
       i2s_driver_uninstall(I2S_NUM_0);
     } else { //Grabación...
@@ -148,7 +144,7 @@ void loop() {
         //original es de int16_t. Si fuese de bytes no haría falta.
         //Convertimos en uint32_t el puntero del array del buffer para poder operar con él.
         //Y al resultado final le aplicamos el tipo que espera la función (void*).
-        i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*1024),1024,&bytesRead,100);
+        i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*bytesPerBlock),bytesPerBlock,&bytesRead,100);
         blocks++; //Hemos recibido un bloque más
       }
       led.draw();//Led apagado

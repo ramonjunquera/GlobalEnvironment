@@ -1,0 +1,16 @@
+Autor: Ramón Junquera
+Tema: Características de micrófono SPM1423
+Fecha: 20201230
+
+Micrófono mono con protocolo I2C.
+Es el que incluye M5Stack en los modelos StickC, StickC+ y Atom Echo.
+M5Stack también ha creado la versión externa.
+
+Sólo necesita tierra y alimentación, y dos conexiones: dato y reloj de canal.
+Aunque devuelve la muestras en formato int16_t, sólo tiene una resolución de 12 bits.
+
+Es incompatible con M5Stack Fire.
+No puede conectarse a ninguno de los 3 puertos disponibles.
+  Port A (21,22)=(SDA,SCL) : interfiere con I2C
+  Port B (26,36) : el pin 36 se quiere utilizar para pinI2SchannelMic, pero sólo es de entrada!
+  Port C (16,17)=(Tx,Rx) : el pin 17 se quiere utilizar para pinI2SchannelMic, pero sólo es de entrada!

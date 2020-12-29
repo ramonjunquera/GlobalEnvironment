@@ -1,16 +1,15 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201228
+  Fecha: 20201230
   Tema: Micrófono
   Objetivo: Demo de grabación/reproducción con librería RoJoI2Sa
-  Material: M5Stack StickC+
+  Material: M5Stack StickC+, micrófono externo 
 
   Descripción:
-  Los modelos StickC y StickC+ de M5Stack incluyen un micrófono SPM1423.
-  La recuperación de datos de este dispositivo se hace a través del protocolo I2S.
-  Puesto que el micrófono es mono, se ha eliminado el pin del selector de canal
-  de audio en su conexión interna, quedando sólo el de datos y el de reloj.
-  Las muestras recibidas por I2S están en formato int16_t, con una precisión de 12bits.
+  Utilizamos el micrófono SPM1423 externo y lo conectamos al puerto groove del
+  StricC+.
+  Las características son idénticas que el que lleva integrado. Lo único que cambia
+  son los pines de conexión.
 
   En estos mismos modelos, el buzzer interno está conectado a un pin que no coincide
   con la salida de DAC, por lo tanto no puede ser utilizado para la reproducción de ondas.
@@ -37,12 +36,10 @@
 #include <RoJoI2Sa.h> //Gestión de dispositivos de audio analógicos
 
 //Contantes globales
-const byte pinMicSDA=34;
-const byte pinMICSCL=0;
+const byte pinI2SdataMic=32;
+const byte pinI2SchannelMic=33;
 const byte pinBuzzer=26; //Buzzer pasivo externo
-//Las muestras se recogerán por bloques
-//Cada bloque será 1Kb de datos
-//Puesto que una muestra son 2 bytes, un bloque contiene 1024/2=512 muestras
+const uint32_t samplesPerBlock=512;
 const uint32_t blocksMax=80; //Número máximo de bloques. 80 = 80Kb = 80*1024=81920bytes = 80*512=40960muestras
 const uint32_t freq=10000; //Frecuencia de muestreo = 10KHz
 
@@ -51,13 +48,10 @@ RoJoST7789V2 display;
 RoJoSwitch buttonM5(37),buttonSide(39); //Botones M5 y lateral
 
 //Variables globales
-int16_t sampleBuffer[blocksMax*1024/2]; //Es la mitad de bloques, porque el tipo ocupa 2 bytes
+int16_t sampleBuffer[blocksMax*samplesPerBlock];
 uint32_t blocks=0; //Número actual de bloques
 
-void setup() {
-  display.begin();
-  display.rotation(1); //Botón M5 a la derecha
-  
+void configMic() {
   i2s_config_t i2s_config={ //Definición de configuración de I2S para micrófono
     //Pedimos que se encargue de generar la señal de reloj = I2S_MODE_MASTER
     //La dirección de la comunicación será recepción = I2S_MODE_RX
@@ -71,10 +65,10 @@ void setup() {
     .dma_buf_len = 128
   };
   i2s_pin_config_t pin_config={ //Definición de configuración de pines
-    .bck_io_num = I2S_PIN_NO_CHANGE, //No tenemos pin para reloj de canales (el micro es mono)
-    .ws_io_num = pinMICSCL, //Pin de reloj de micro
+    .bck_io_num = I2S_PIN_NO_CHANGE, //No tenemos pin para reloj de bits
+    .ws_io_num = pinI2SchannelMic, //Pin de reloj de canales de micrófono
     .data_out_num = I2S_PIN_NO_CHANGE, //No hay pin de datos de salida
-    .data_in_num = pinMicSDA //Pin de datos de micro
+    .data_in_num = pinI2SdataMic //Pin de datos de micro
   };
   if(i2s_driver_install(I2S_NUM_0,&i2s_config,0,NULL)) {
     display.printOver("/7x11.fon","ERROR instalando driver I2S",{255,255,255});
@@ -88,12 +82,13 @@ void setup() {
     display.printOver("/7x11.fon","ERROR asignando reloj I2S",{255,255,255});
     vTaskDelete(NULL); //Eliminamos la tarea del programa principal. Fin
   }
+}
 
-  //Gestionaremos el speaker a través del driver RoJoI2Sa para simplificar la
-  //programación y no tener que trabajar con timers.
-  //Inficamos timer, pin analógico de salida y frecuencia.
-  RoJoI2Sa_begin(0,pinBuzzer,freq);
-  
+void setup() {
+  display.begin();
+  display.rotation(1); //Botón M5 a la derecha
+  configMic(); //Inicialización de micrófono
+  RoJoI2Sa_begin(0,pinBuzzer,freq); //Inicialización de speaker
   display.disk(225,67,10,{255,0,0}); //Label REC
   display.triangleFill(105,5,125,15,105,25,{0,255,0}); //Label PLAY
   display.printOver("/7x11.fon","Demo grabacion/reproduccion",{255,255,255},0,40);
@@ -105,21 +100,16 @@ void loop() {
     size_t bytesRead;
     display.disk(115,95,35,{255,0,0}); //Disco rojo
     while(buttonM5.pressing() && blocks<blocksMax) {
-      //Leemos el bloque
-      //Es muy importante la conversión de tipos en el puntero de buffer, porque el array
-      //original es de int16_t. Si fuese de bytes no haría falta.
-      //Convertimos en uint32_t el puntero del array del buffer para poder operar con él.
-      //Y al resultado final le aplicamos el tipo que espera la función (void*).
-      i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*1024),1024,&bytesRead,100);
+      i2s_read(I2S_NUM_0,(void*)((uint32_t)sampleBuffer+blocks*samplesPerBlock*2),samplesPerBlock*2,&bytesRead,100);
       blocks++; //Hemos recibido un bloque más
     }
     display.block(80,60,150,130,{0,0,0}); //Borramos disco rojo
     //Convirtiendo muestras de 16bits (int16_t) a 8bits (byte) con amplificación x32
-    RoJoI2Sa_convert16to8(sampleBuffer,(byte*)sampleBuffer,blocks*512,32);
+    RoJoI2Sa_convert16to8(sampleBuffer,(byte*)sampleBuffer,blocks*samplesPerBlock,32);
   }
   if(buttonSide.pressed() && blocks>0) { //Si se ha pulsado el botón lateral...
     display.triangleFill(80,60,150,95,80,130,{0,255,0}); //Triángulo verde
-    RoJoI2Sa_write(0,(byte*)sampleBuffer,blocks*512); //Reproducimos buffer en speaker
+    RoJoI2Sa_write(0,(byte*)sampleBuffer,blocks*samplesPerBlock); //Reproducimos buffer en speaker
     display.block(80,60,150,130,{0,0,0}); //Borramos triángulo verde
   }
   delay(10);

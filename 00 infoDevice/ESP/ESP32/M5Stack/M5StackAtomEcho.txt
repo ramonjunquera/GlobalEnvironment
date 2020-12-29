@@ -1,4 +1,5 @@
 Autor: Ramón Junquera
+Fecha: 20201228
 Tema: Descripción de placa M5Stack Atom Echo
 
 Dispositivo basado en placa ESP32 (ESP32-PICO-D4) de Espressif, con 4Mb de memoria.
@@ -23,14 +24,14 @@ Led IR
   
 Micrófono
   Modelo: SPM1423 PDM
-  Pin 23 : DATA
-  Pin 33 : CLK
+  Pin 23 : Datos
+  Pin 33 : Reloj de canal (clockWS)
 
 Speaker
   Modelo: NS4168 I2S 1W
-  Pin 33 : LRCK
-  Pin 19 : BCLK
-  Pin 22 : SADTA
+  Pin 33 : Reloj de canal (clockWS)
+  Pin 19 : Reloj de bits
+  Pin 22 : Datos
 
 I2C
   Pinout
@@ -55,3 +56,9 @@ Puerto
     pin 22
     pin GND
 
+Notas:
+- I2S
+  - Puesto que el micrófono y el speaker comparten algún pin de reloj, no pueden ser utilizados 
+    simultáneamente. Ni siquiera en canales I2S distintos, porque se interfieren.
+    Si se quiere grabar y reproducir al mismo tiempo, no hay más remedio que utilizar un micrófono
+    externo o un speakere externo.
