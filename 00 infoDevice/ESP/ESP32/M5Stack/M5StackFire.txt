@@ -1,4 +1,5 @@
 Autor: Ramón Junquera
+Fecha: 20210101
 Tema: Descripción de placa M5Stack Fire
 
 Dispositivo basado en placa ESP32 de Espressif, con 16Mb de memoria.
@@ -64,6 +65,10 @@ Speaker/Buzzer
   Modelo: NS4148
   Tipo: pasivo
   Pin 25
+  Notas:
+  - Genera ruido de fondo contínuo
+  - Imposible utilizar simultáneamente micrófono y speaker. El micrófono recoge el ruido generado por el speaker
+    que tiene más volumen que el sonido externo que se quiere grabar.
 
 Micrófono
   Modelo: MEMS Analog BSE3729
@@ -92,3 +97,5 @@ I2C
     0x68 : MPU6050 : acelerómetro + giróscopo (6DOF)
     0x0C : AK8963 : magnetómetro (3DOF) (oculto)
     0x75 : IP5306 : gestor de batería
+    
+

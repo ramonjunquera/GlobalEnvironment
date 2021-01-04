@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: PCM5102
-Fecha: 20201222
+Fecha: 20210101
 
 Descripción:
   Es una pequeña placa con un DAC (Digital to Analog Conversion) stereo con una salida de audio de jack 3.5 para auriculares,
@@ -19,7 +19,7 @@ Pinout:
     SCK : reloj de entrada. Conectado a GND.
     BCK : reloj I2S
     DIN : datos I2S
-    LRCK : selector de canal I2S
+    LRCK : reloj de canal I2S
     GND : tierra
     VIN : alimentación (3.3V)
   Pines longitudinales:

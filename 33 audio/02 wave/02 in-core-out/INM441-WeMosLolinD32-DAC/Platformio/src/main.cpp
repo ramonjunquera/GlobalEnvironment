@@ -28,9 +28,9 @@
 
 //Contantes globales
 const byte pinLed=22;
-const byte pinMicSDA=32;
-const byte pinMICSCL=14;
-const byte pinMICWS=15;
+const byte pinMicSDA=32; //Datos I2S
+const byte pinMICSCL=14; //Reloj I2S
+const byte pinMICWS=15; //Reloj de canal I2S
 const byte pinBuzzer=25;
 //Las muestras se recogerán por bloques
 //Cada bloque será 1Kb de datos

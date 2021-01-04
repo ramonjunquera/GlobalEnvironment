@@ -1,0 +1,43 @@
+Autor: Ramón Junquera
+Fecha: 20210104
+Tema: Interfono bidireccional
+
+Objetivo:
+  Crear dos dispositivos con micrófono y speaker que se comuniquen entre sí para poder
+  hablar como si fuese un teléfono (en tiempo real).
+
+Descripción:
+  Tenemos dos maneras de comunicarlos:
+  - Creando una red wifi desde uno de los dispositivos, quedando uno como cliente y otro como servidor.
+  - Utilizando una red wifi existente, quedando ambos dispositivos como clientes.
+  En cualquiera de los casos, es importante que los nombres de dispositivo local y remoto estén bien
+  especificados (en las constantes iniciales del desarrollo).
+  Las funcionalidades se separan en tareas independientes:
+  - Core 0:
+    - Proceso de recepción. Gestiona el servidor:
+      - Atiende las nuevas conexiones de clientes
+      - Cada conexión sólo envía un bloque de muestras
+      - El tamaño de un bloque de muestras es constante
+      - Recepciona las muestras del bloque
+      - Añade el bloque a una cola de reproducción
+    - Proceso de reproducción. Gestiona la cola de reproducción:
+      - Se activa cuando hay algún mensaje en la cola de reproducción
+      - Recupera el bloque de la cola
+      - Reproduce el bloque en el speaker
+    - Gestión de comunicaciones
+      - Mantiene la conexión wifi (sólo en dispositivos cliente)
+      - Refresca la dirección ip del otro dispositivo, por si se apaga
+  - Core 1:
+    - Proceso de grabación. Gestiona la grabación del micrófono:
+      - Graba contínuamente bloques con las muestras obtenidas del micrófono
+      - Añade cada bloque a la cola de envío
+    - Proceso de envío. Gestiona la cola de envíos:
+      - Se activa cuando hay algún mensaje en la cola de envíos
+      - Recupera el bloque de la cola
+      - Establece conexión con el servidor del otro dispositivo
+      - Envía el bloque
+  Aprovechamos las el led integrado (normal o RGB) para indicar si hay conexión establecida.
+  A diferencia de ejemplos anteriores, hemos optimizado el sistema de conexión.
+  Ya no se crea una nueva conexión por cada paquete enviado. Simplemente se establece una conexión
+  y se mantiene. Si en algún momento se pierde, automáticamente se intentará recuperarla.
+

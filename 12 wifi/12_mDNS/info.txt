@@ -1,0 +1,54 @@
+Autor: Ramón Junquera
+Fecha: 20201230
+Tema: Demo de protocolo mDNS
+
+Protocolo:
+  Es normal que en una red local nos encontremos con un proyecto en el que están involucrados
+  más de un dispositivo, se tengan que comunicar entre sí, y no tengamos más remedio que
+  utilizar directamente direcciones IP.
+  Aunque la situación anterior siempre es solventable incluyendo direcciones IP fijas en el
+  DHCP o directamente asignemos direciones fijas, siempre es más fácil trabajar con hostnames.
+  El protocolo mDNS (multicast Domain Names Server) solventa el problema de manera bastante
+  cómoda.
+  Nos permite asignar un nombre a nuestro dispositivo, aunque la dirección IP recibida sea
+  dinámica.
+  Después sólo tenemos que solicitar una búsqueda por nombre y nos devolverá una ip con la que 
+  podemos trabajar con normalidad.
+  Si no se consigue localizar el dispositivo buscado, se devuelve la ip 0.0.0.0.
+
+  Internamente el protocolo funciona porque se crea un servidor udp que escucha peticiones de
+  nombres y es capaz de responder con su ip.
+  Este comportamiento es totalmente transparente para el desarrollo.
+
+  Nota:
+    Para que un dispositivo pueda localizar a otro es necesario que se solicite la conversión de
+    nombre a ip al protocolo mDNS.
+    No ocurre lo mismo desde otros dispositivos con una definición más completa de la pila ip,
+    como puede ser un PC o un móvil.
+    En estos casos no se necesita solicitar conversión. Podemos referenciar el dispositivo como
+    nombre.local (añadiendo el sufijo .local al nombre asignado por mDNS).
+
+Desarrollo:
+  En la demostración adjunta se utilizarán dos dispositivos idénticos.
+  Concretamente son M5Stack Atom (no importa si son Lite o Echo).
+  Para no depender de redes wifi externas, se configura un dispositivo como cliente y otro como
+  servidor. El servidor creará un punto de acceso wifi al que se conectará el cliente.
+  Los nombres de los dispositivos será AtomClient y AtomServer.
+  Estas definiciones aparecerań en la sección inicial de constantes globales.
+  
+  La funcionalidad es que la pulsación del botón de uno de ellos cambie el estado del led del otro.
+  
+  Ambos dispositivos tendrán un control de la pulsación del botón para abrir conexión con el otro, y
+  un control de un servidor que escucha un puerto determinado.
+  Realmente no hay información que transmitir. Sería suficiente con que abramos conexión y la mantegamos
+  abierta el tiempo suficiente como para que sea detectada por el otro. Pero como este tiempo depende
+  del wifi (con un punto de acceso local sería suficiente con una centésima de segundo), lo más seguro es
+  abrir comunicación y enviar algo. En este caso será un simple byte.No importa el contenido, porque el
+  servidor lo leerá y no lo tendrá en cuenta. 
+  
+  Si no se completa correctamente la conversión de nombre a ip, o no se puede conectar con el servidor,
+  el led local se volverá rojo para indicar que hubo un error.
+
+Topología:
+  Si pretendemos utilizar una red wifi externa, sólo necesitaremos poner el desarrollo del cliente en
+  ambos dispositivos. Teniendo en cuenta los nombres!!.
