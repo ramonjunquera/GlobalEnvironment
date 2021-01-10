@@ -1,12 +1,16 @@
-Una vez instalado el sistema operativo es conveniente
-actualizarlo a la última versión disponible en Internet.
+Autor: Ramón Junquera
+Fecha: 20210109
+Tema: Actualización de sistema
 
-Actualizamos las librerías específicas de Rasberry Pi
-(sólo válido en Raspberry Pi):
+Se puede forzar la actualización de sistema operativo en Raspbian con:
   sudo rpi-update
+Nota: No es recomendable. No se considera versión estable. Podría dar problemas.
+
+Para cualquier otra versión de Linux.
 Actualizamos librerías y sistema operativo:
   sudo apt-get update
   sudo apt-get upgrade
 Es conveniente eliminar los paquetes no utilizados:
   sudo apt-get autoremove
-Es posible que se deba reiniciar tras las actualizaciones:
+
+Es posible que se deba reiniciar tras las actualizaciones

@@ -1,4 +1,6 @@
-Cambio de resolución de pantalla
+Autor: Ramón Junquera
+Fecha: 20210109
+Tema: Cambio de resolución de pantalla
 
 Es normal que al instalar Raspbian en un dispositivo detecte la resolución máxima de
 pantalla de manera automática.
@@ -11,3 +13,7 @@ Para cambiar a una resolución determinada: xrandr -s 1152x864
 Para que se fije un resolución determinada debemos incluir la línea en al final del archivo
 .profile que se encuentra en la home del usuario (pi).
 
+Hay otra manera de cambiar la resolución, pero es algo más peligrosa, porque si seleccionamos
+una resolución no soportada por el monitor, dejaremos de ver la imágen y no podremos
+recuperarlo.
+Es a través de menu/Preferences/Raspberry Pi Configuration/Display/Set Resolution.

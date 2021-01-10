@@ -1,12 +1,12 @@
 Autor: Ramón Junquera
-Fecha: 20210104
+Fecha: 20210108
 Tema: Interfono bidireccional
 
 Objetivo:
   Crear dos dispositivos con micrófono y speaker que se comuniquen entre sí para poder
   hablar como si fuese un teléfono (en tiempo real).
 
-Descripción:
+Descripción tcp:
   Tenemos dos maneras de comunicarlos:
   - Creando una red wifi desde uno de los dispositivos, quedando uno como cliente y otro como servidor.
   - Utilizando una red wifi existente, quedando ambos dispositivos como clientes.
@@ -41,3 +41,20 @@ Descripción:
   Ya no se crea una nueva conexión por cada paquete enviado. Simplemente se establece una conexión
   y se mantiene. Si en algún momento se pierde, automáticamente se intentará recuperarla.
 
+Descripción udp:
+  Puesto que despreciamos muestras si quedan caducas en el tiempo, simplificaremos el sistema
+  y mejoraremos su eficiencia.
+  En vez de utilizar el protocolo tcp y crear un servidor, usaremos udp.
+  Si hay paquetes que se pierden no nos preocuparemos por ello.
+  Las diferencias principales sobre el desarrollo tcp son:
+  - No tenemos un servidor. Simplemente comprobamos si tenemos nuevos paquetes udp.
+  - Puesto que es más rápido que tcp, se reduce el tamaño de bloque a 256 muestras (en vez de 512).
+    Esto hace que el delay entre grabación y reproducción se reduzca. Se puede reducir incluso más
+    (128 muestras), pero comenzamos a perder paquetes por no poder atenderlos.
+  - Como en tcp, es posible que no se reciba completamente el contenido de un paquete de una sóla vez.
+    También utiliza el buffer de recepción. Obtendremos toda la información del paquete, teniendo en
+    cuenta el timeout manualmente.
+  - Cuando un paquete no se recibe completamente NO lo damos por bueno, para evitar "chasquidos" por
+    los datos no recibidos (porque no perdemos el tiempo limpiando el buffer antes de reproducirlo).
+    
+  

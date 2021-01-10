@@ -1,0 +1,26 @@
+Tema: Preparación de una SD para instalar sistema operativo en Raspberry Pi
+Fecha: 20210110
+
+Necesitaremos una SD de al menos 4Gb.
+
+Utilizaremos la herramienta Paspberry Pi Imager, que se puede descargar desde:
+https://www.raspberrypi.org/software/
+En Ubuntu se puede instalar con el comando: sudo apt install rpi-imager
+Aparecerá un icono llamado "Imager".
+La herramienta nos permite seleccionar el sistema operativo y la SD en la que se
+escribirá.
+La recomendación es es seleccionar la primera opción: "Raspberry Pi OS (32-bit)".
+Contiene una versión de escritorio con las aplicaciones indispensables.
+
+Una vez generada la SD, ya podemos introducirla en la Raspberry, arrancarla y esperar a
+que finalice la instalación.
+Por defecto el usuario es pi y la contraseña raspberry
+
+Nota:
+- La herramienta permite instalar otras versiones de Raspbian (más pesada y más ligera) y
+  otros sistemas operativos como Ubuntu.
+  Es importante fijarse para qué versión de Raspberry están indicados.
+- La versión de escritorio de Ubuntu (y derivados como Mate, kUbuntu o lUbuntu), no está
+  recomendada para RPi3 debido a que sólo tiene 1Gb de RAM. Esto es insuficiente y dedica
+  demasiado tiempo a hacer swap con la SD. Demasiado lento.
+
