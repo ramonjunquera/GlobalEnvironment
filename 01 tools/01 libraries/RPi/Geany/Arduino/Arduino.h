@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3 con comandos de Arduino
- * Versión: 20191127
+ * Versión: 20210119
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -52,6 +52,8 @@
 #include <signal.h> //para signal
 #include <sys/time.h> //para itimerval
 #include <thread> //Para gestionar threads
+#include <string.h>  //Para memset
+#include <stdarg.h> //Para va_start
 using namespace std;
 
 //Constantes globales

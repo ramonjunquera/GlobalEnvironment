@@ -1,8 +1,8 @@
 Tema: Partición de memoria personalizada para ESP32
-Fecha: 20190923
+Fecha: 20210120
 
-Espressif permite en las tarjetas ESP32 crear particiones personalizadas de la memoria.
-La definición se incluye en un archivo .csv que el misma tanto para el IDE de Arduino 
+Espressif permite crear particiones personalizadas de memoria para ESP32.
+La definición se incluye en un archivo .csv que es el mismo tanto para el IDE de Arduino 
 como para Platformio.
 
 Por defecto la memoria tiene 7 particiones: base, nvs, otadata, app0, app1, eeprom y spiffs.
@@ -20,20 +20,81 @@ Comentamos las que tienen un tamaño más relevante:
     programa principal.
     Debido a este funcionamiento, app0 y app1 deben tener el mismo tamaño.
   eeprom
-    Es la memoria utilizada para emular las antiguas EEPROMs. Se mentiene por compatibilidad.
+    Es la memoria utilizada para emular las antiguas EEPROMs. Se mantiene por compatibilidad.
     Su tamaño por defecto es 8Kb.
     Si nuestro programa no utiliza funcionalidades de eeprom, podríamos eliminarla.
   spiffs
     Memoria reservada para almacenamiento de archivos que pueden ser accedidos desde el programa.
 
-Se incluyen varios ejemplos de particiones para una memoria de 16Mb, que se comentarán a continuación.
+Se incluyen varios ejemplos de particiones para memoria estándar (4Mb) y gran capacidad (16Mb),
+que se comentarán a continuación.
 16Mb en hexadecimal son 0x1000000 bytes
+ 4Mb en hexadecimal son 0x400000 bytes
 Esta es la cantidad de memoria que debemos distribuir en distintas particiones.
 En todos los esquemas se conservan las particiones de nvs y otadata en las mismas posiciones y con los
 mismos tamaños:
   # Name,   Type, SubType, Offset,  Size, Flags
   nvs,      data, nvs,     0x9000,  0x5000,
   otadata,  data, ota,     0xe000,  0x2000,
+
+Configuración: 4default
+  Esquema versátil. Debería servir para cualquier cosa. No debe estar limitado en nada.
+  Asignaremos 1.3Mb a la partición app0 para guardar el programa principal.
+  El mismo tamaño para app1 para tener la posibilidad de utilizar OTA.
+  Mantenemos la eeprom con 8Kb.
+  El espacio restante irá para spiffs (casi 1.5Mb).
+  El archivo 4default.csv debería contener el siguiente texto:
+----inicio de texto----
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x140000,
+app1,     app,  ota_1,   0x150000,0x140000,
+eeprom,   data, 0x99,    0x290000,0x2000,
+spiffs,   data, spiffs,  0x292000,0x16E000,
+
+----fin de texto----
+
+Configuración: 4min_spiffs
+  Esquema especialmente creado para trabajar con programas muy grandes que requieran OTA.
+  Se elimina la partición de eeprom.
+  La partición SPIFFS se reduce al máximo (60Kb) y el resto de memoria se divide por igual
+  entre app0 y app1 (casi 2Mb).
+  El archivo 4min_spiffs.csv debería contene el siguiente texto.
+----inicio de texto----
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x1F0800,
+app1,     app,  ota_1,   0x200800,0x1F0800,
+spiffs,   data, spiffs,  0x3F1000,0xF000,
+----fin de texto----
+
+Configuración: 4no_ota
+  Esquema que maximiza la partición spiffs (casi 2Mb), eliminando la posibilidad de usar OTA,
+  ni eeprom.
+  La partición de programa principal se mantiene en 2Mb.
+  El archivo 4no_ota.csv debería contener el siguiente texto.
+----inicio de texto----
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x200000,
+spiffs,   data, spiffs,  0x210000,0x1F0000,
+----fin de texto----
+
+Configuración: 4max_app
+  Esquema para trabajar con aplicaciones grandes o que necesitan mucha memoria.
+  Se eliminan las particiones de OTA y eeprom.
+  SPIFFS se reduce a 60Kb, quedando casi 4Mb para programa y variables.
+  El archivo 4max_app.csv debería contener el siguiente texto.
+----inicio de texto----
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x3E1000,
+spiffs,   data, spiffs,  0x3F1000,0xF000,
+----fin de texto----
 
 Configuración: 16default
   Esquema versátil. Debería servir para cualquier cosa. No debe estar limitado en nada.
@@ -84,9 +145,6 @@ Configuración: 16max_app
   Esquema para trabajar con aplicaciones grandes o que necesitan mucha memoria.
   Se eliminan las particiones de OTA y eeprom.
   SPIFFS se reduce a 1Mb, quedando casi 15Mb para programa y variables.
-  Atención: que el sistema devuelva una cantidad de memoria disponible no significa que podamos
-    solicitarla toda en una petición. Habitualmente la memoria queda distribuida en distintas
-    secciones que limitan el tamaño máximo (bytes contiguos) que puede entregar.
   El archivo 16max_app.csv debería contener el siguiente texto.
 ----inicio de texto----
 # Name,   Type, SubType, Offset,  Size, Flags
@@ -100,24 +158,30 @@ Resumimos los esquemas creados y memorias utilizadas:
 
 Partition Scheme        app0    app1 eeprom   spiffs
 ------------------- -------- ------- ------ --------
+ 4Mb Default         1310720 1310720   8192  1499136
+ 4Mb Minimal SPIFFS  2033664 2033664      0    61440
+ 4Mb No OTA          2097152       0      0  2031616
+ 4Mb Máx App         4067328       0      0    61440
 16Mb Default         2097152 2097152   8192 12509184
 16Mb Minimal SPIFFS  8325120 8325120      0    61440
 16Mb No OTA          2097152       0      0 14614528
 16Mb Máx App        15663104       0      0  1048576
 
-Nota:
-Cuando se utiliza el plugin de transferencia de datos a SPIFFS en el IDE de Arduino,
-al igual que con los programas, la información se comprime antes de tranferirla y en la placa
-se descomprime mientras se recibe.
-Si la partición spiffs es grande, es posible que aunque el tiempo de transferencia sea reducido,
-la placa necesite tiempo para llenar todas las posiciones de memoria de la partición.
-Esto podría llevar incluso más de un minuto.
-
+Notas:
+- Cuando se utiliza el plugin de transferencia de datos a SPIFFS en el IDE de Arduino,
+  al igual que con los programas, la información se comprime antes de tranferirla y en la placa
+  se descomprime mientras se recibe.
+  Si la partición spiffs es grande, es posible que aunque el tiempo de transferencia sea reducido,
+  la placa necesite tiempo para llenar todas las posiciones de memoria de la partición.
+  Esto podría llevar incluso más de un minuto.
+- Que el sistema devuelva una cantidad de memoria disponible no significa que podamos
+  solicitarla toda en una petición. Habitualmente la memoria queda distribuida en distintas
+  secciones que limitan el tamaño máximo (bytes contiguos) que puede entregar.
 
 Ubicación de archivos de particiones.
-  Arduino IDE
+  Arduino IDE Windows
     Los archivos de particiones se guardan en la carpeta:
-      arduino-1.8.9/hardware/espressif/esp32/tools/partitions
+      arduino-1.8.13/hardware/espressif/esp32/tools/partitions
     Además de copiar el archivo .csv a esta carpeta, en la definición de tarjetas (boards.txt) se tiene
     que hacer referencia a los distintos archivos que se pueden aplicar en los parámetros bajo el
     prefijo: <device>.menu.PartitionScheme
@@ -126,3 +190,4 @@ Ubicación de archivos de particiones.
     en la carpeta de proyecto (junto con platformio.ini).
     Dentro de platformio.ini referenciaremos el archivo con el parámetro: board_build.partitions
     Ejemplo: board_build.partitions = 16no_ota.csv
+

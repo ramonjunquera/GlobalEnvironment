@@ -2,7 +2,7 @@
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3. Emulación de
  *   librería SPI de Arduino
- * Versión: 20190617
+ * Versión: 20210119
  * 
  * Funciones SPI:
  *   void begin()
@@ -212,7 +212,7 @@ class SpiArduino
 		*paddr = (*paddr & ~0b11) | CS;
 	}
 	
-	void transfer(byte *buffer,uint32_t length,bool writeOnly)
+	void transfer(byte *buffer,uint32_t length,bool writeOnly=false)
 	{
 		//Envía y recibe un número determinado de bytes por SPI
 		//Si writeOnly == true, no se modificará la información del buffer

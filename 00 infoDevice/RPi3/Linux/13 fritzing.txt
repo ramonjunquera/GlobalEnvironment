@@ -1,5 +1,5 @@
 Tema: Cómo instalar Fritzing
-Fecha: 20191112
+Fecha: 20210119
 
 Nota.
 No utilizaremos la web oficial de Fritzing para la descarga.
@@ -12,7 +12,7 @@ Instrucciones:
   - Abrimos terminal e instalamos:
       sudo apt-get install fritzing-parts fritzing-data fritzing
   - Tras la instalación se crea un icono en la sección Programming.
-  - También se puede ejecutar desde la línea de comandos con: Fritzing (con F mayúscula).
+  - También se puede ejecutar desde la línea de comandos con: fritzing.
   Asociación de extensión.
     Raspbian
       - Hacemos click con el botón derecho sobre un archivo con extensión fzz
@@ -37,13 +37,12 @@ Instrucciones:
     con extensión fzz desde el explorador de archivos, se abre la aplicación, pero nunca
     el archivo indicado.
     Lo corregiremos con:
-      Raspbian: sudo leafpad /usr/bin/Fritzing
+      Raspbian: sudo mousepad /usr/bin/fritzing
       Ubuntu  : sudo gedit /usr/bin/fritzing
     En el script vemos que primero cambia a la carpeta de la aplicación y después lanza
-    la aplicación. En Raspbian es fritzing y en Ubuntu fritzing.real
+    la aplicación.
     Debemos añadir después del nombre del ejecutable el parámetro "$1" separado por un espacio.
-      Ejemplo Ubuntu: exec /usr/bin/fritzing.real "$1"
-      Ejemplo Raspbian: exec /usr/bin/fritzing "$1"
+      Ejemplo: exec /usr/bin/fritzing.real "$1"
     Guardamos y a partir de ahora no sólo podremos abrir archivos desde el explorador de archivos,
     sino que el path o nombre del archivo podrían contener espacios.
 

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20191007
+  Fecha: 20210119
   Tema: Gestión de pines digitales de salida
   Descripción:
     Hacemos parpadear el led integrado
@@ -12,7 +12,7 @@
 
 #include <Arduino.h>
 
-#ifdef __arm___ //Si es una Raspberri Pi
+#ifdef __arm__ //Si es una Raspberri Pi
   const byte pinLed=21;
 #elif defined(ARDUINO_AVR_ATTINYX5) //Si es una ATtiny85
   const byte pinLed=1;

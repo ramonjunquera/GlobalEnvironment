@@ -1,0 +1,8 @@
+Tema: Instalación de compresor zip
+Fecha: 20210119
+
+Por defecto en Raspbian se incluye el descompresor de zip (unzip), pero
+no el compresor.
+
+Instalación.
+sudo apt install zip

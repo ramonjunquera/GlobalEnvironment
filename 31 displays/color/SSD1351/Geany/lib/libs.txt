@@ -1,4 +1,7 @@
 Arduino
+FS
+SPI
+
 RoJoGraph
-RoJoILI9341
 RoJoSprite
+RoJoSSD1351
