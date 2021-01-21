@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: Protocolo I2S
-Fecha: 20201222
+Fecha: 20210121
 
 I2S
   I2S es un protocolo creado especialmente para la transmisión de sonido digitalizado entre dispositivos.
@@ -9,7 +9,7 @@ I2S
   - Datos (serial data)
   - Reloj (serial clock)
   - Canal (word select)
-  Cuando el pin del reloj se encuentre en estado HIGH se podrá leer es estado del pin de datos.
+  Cuando el pin del reloj se encuentre en estado HIGH se podrá leer el estado del pin de datos.
   Tanto el emisor como el receptor se pueden hacer cargo de la gestión del reloj. Aunque lo normal es que lo
   haga la parte que gestiona los dispositivos (el microprocesador). 
   El canal izquierdo se representa por el estado LOW y el derecho por el HIGH.
@@ -45,8 +45,7 @@ I2S en ESP32
   - lectura desde el dispositivo (micrófono) al buffer de memoria
   - escritura desde el buffer de memoria al dispositivo (buzzer/speaker)
   Una vez terminadas las comunicaciones, se desinstala el driver I2S.
-  Notas:
-  - El driver tiene un modo que permite enviar datos directamente a un pin DAC. Este modo no funciona a fecha de hoy.
+  Existe un modo especial en el que se pueden enviar las muestras a los DAC integrados.
 
 I2S en M5Stack
   Micrófono: StickC, StickC+ & Atom Echo
