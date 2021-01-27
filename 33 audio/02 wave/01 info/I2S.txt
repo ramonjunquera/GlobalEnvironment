@@ -1,6 +1,6 @@
 Autor: Ramón Junquera
 Tema: Protocolo I2S
-Fecha: 20210121
+Fecha: 20210122
 
 I2S
   I2S es un protocolo creado especialmente para la transmisión de sonido digitalizado entre dispositivos.
@@ -45,7 +45,8 @@ I2S en ESP32
   - lectura desde el dispositivo (micrófono) al buffer de memoria
   - escritura desde el buffer de memoria al dispositivo (buzzer/speaker)
   Una vez terminadas las comunicaciones, se desinstala el driver I2S.
-  Existe un modo especial en el que se pueden enviar las muestras a los DAC integrados.
+  Existen los modos de leer datos de un ADC integrado, así como enviarlos a un DAC, con la
+  restricción de que sólo puede utilizarse el canal 0.
 
 I2S en M5Stack
   Micrófono: StickC, StickC+ & Atom Echo

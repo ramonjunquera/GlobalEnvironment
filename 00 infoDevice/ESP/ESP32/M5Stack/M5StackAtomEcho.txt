@@ -62,3 +62,4 @@ Notas:
     simultáneamente. Ni siquiera en canales I2S distintos, porque se interfieren.
     Si se quiere grabar y reproducir al mismo tiempo, no hay más remedio que utilizar un micrófono
     externo o un speakere externo.
+

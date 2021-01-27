@@ -1,5 +1,5 @@
 Autor: Ramón Junquera
-Fecha: 20201226
+Fecha: 20210122
 Tema: Reproducción contínua remota
 
 Descripción:
@@ -8,4 +8,10 @@ y otro con speaker/buzzer para reproducir.
 Se comunicarán por wifi.
 El cliente graba continuamente y envía las muestras al servidor.
 El servidor recibe las muestras y las reproduce. Creará un punto de acceso wifi y un servidor.
+
+Como usaremos un M5Stack Fire como server/reproductor, sólo conseguiremos una calidad de 8 bits.
+Para ahorrar datos wifi, convertimos las muestras grabadas a 8 bits antes de enviarlas.
+Tenemos dos modalidades de servidor:
+- Utilizando la librería I2Sa.
+- Utilizando I2S que reproduce en DAC.
 
