@@ -9,4 +9,4 @@ ST7789V2    SI    240 x 135    SPI    M5Stack StickC+
 LCD1602A    NO     16 x   2    BUS
 LCD5110     NO     84 x  48    SPI
 SH1107      NO    128 x  64    SPI    M5Stack Watch
-SSD1306     NO    128 x  64    I2C
+SSD1306     NO    128 x  64    I2C    ESP32+OLED

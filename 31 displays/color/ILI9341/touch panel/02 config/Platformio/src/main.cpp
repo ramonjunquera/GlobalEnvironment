@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20210205
   Tema: Librería de touch screen para display ILI9341 SPI 240*320
   Objetivo: Calibración del touch screen
   Material: breadboard, cables, display ILI9341
@@ -66,23 +66,21 @@
 //Creamos objetos de gestión
 RoJoILI9341 display;
 RoJoXPT2046 ts;
+uint32_t colorWhite,colorYellow;
 
 //Parte de la rutina de calibración del touch screen
 //Dibuja una línea, recoge las medidas y devuelve la media
-void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,uint16_t *y) {
-  //Definimos colores
-  RoJoColor colorWhite={255,255,255}; //Cuando se dibuja
-  RoJoColor colorYellow={255,255,0}; //Cuando se muestra
+void configTSline(uint16_t x0,uint16_t y0,uint16_t width,uint16_t height,uint16_t *x,uint16_t *y) {
   //Definimos variables de sumatorios
   uint32_t xSum=0,ySum=0;
   //Definimos variable de número de muestras
   uint32_t items=0;
   //Dibujamos la línea en amarillo
-  display.block(x0,y0,x1,y1,colorYellow);
+  display.block(x0,y0,width,height,colorYellow);
   //Pedimos coordenadas hasta que se detecte una pulsación
   while(!ts.getRawXY(x,y)) delay(1);
   //Redibujamos la línea en otro color para que el usuario sepa que se ha detectado la pulsación
-  display.block(x0,y0,x1,y1,colorWhite);
+  display.block(x0,y0,width,height,colorWhite);
   //Recogemos todas las coordenadas hasta que se deje de pulsar
   while(ts.getRawXY(x,y)) {
     //Si las coordenadas son válidas...
@@ -107,14 +105,14 @@ void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,ui
   }
   
   //Borramos la línea
-  display.block(x0,y0,x1,y1,{0,0,0});
+  display.block(x0,y0,width,height,0);
 }
 
 //Ejemplo de calibración del touch screen
 void configTS() {
   //Tamaño de pantalla
-  const int32_t xMax=display.xMax();
-  const int32_t yMax=display.yMax();;
+  int32_t xMax=display.xMax();
+  int32_t yMax=display.yMax();
   //Coordenadas de hardware de los dos puntos de control
   int32_t x0,y0,x1,y1;
   //Coordenadas dummy
@@ -125,10 +123,10 @@ void configTS() {
   display.clear();
   //Solicitamos que se dibuje una línea que nos dará una coordenada de
   //hardware que se encuentra a 20 pixels del borde
-  configTSline(20,20,xMax-20,20,&xDummy,&yDummy); y0=yDummy; //Obtenemos y0
-  configTSline(20,yMax-20,xMax-20,yMax-20,&xDummy,&yDummy); y1=yDummy; //Obtenemos y1
-  configTSline(20,20,20,yMax-20,&xDummy,&yDummy); x0=xDummy; //Obtenemos x0
-  configTSline(xMax-20,20,xMax-20,yMax-20,&xDummy,&yDummy); x1=xDummy; //Obtenemos x1
+  configTSline(20,20,xMax-40,1,&xDummy,&yDummy); y0=yDummy; //Obtenemos y0
+  configTSline(20,yMax-20,xMax-40,1,&xDummy,&yDummy); y1=yDummy; //Obtenemos y1
+  configTSline(20,20,1,yMax-40,&xDummy,&yDummy); x0=xDummy; //Obtenemos x0
+  configTSline(xMax-20,20,1,yMax-40,&xDummy,&yDummy); x1=xDummy; //Obtenemos x1
   //Calculamos cuanto suponen 20 pixels de pantalla en coordenadas de hardware
   int32_t x20=((x1-x0)*20)/(xMax-40);
   int32_t y20=((y1-y0)*20)/(yMax-40);
@@ -138,9 +136,12 @@ void configTS() {
 }
 
 void setup() {
-  Serial.begin(115200);
+  //Serial.begin(115200);
   //Inicializamos el display
   display.begin(pinRES_display,pinDC_display,pinCS_display);
+  //Definición de colores
+  colorWhite=display.getColor(255,255,255);
+  colorYellow=display.getColor(255,255,0);
   //Inicializamos el touch screen
   ts.begin(pinCS_touchscreen,pinIRQ_touchscreen);
   //Calibramos el touch screen
@@ -152,7 +153,7 @@ void setup() {
 void loop() {
   int16_t x,y;
   //Si se detecta pulsación...dibujamos el pixel
-  if(ts.getXY(&x,&y)) display.drawPixel(x,y,{255,255,255});
+  if(ts.getXY(&x,&y)) display.drawPixel(x,y,colorWhite);
   #ifdef ESP8266
     yield();
   #endif

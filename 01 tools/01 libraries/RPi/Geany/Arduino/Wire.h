@@ -2,7 +2,7 @@
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3. Emulación de
  *   librería Wire de Arduino
- * Versión: 20191122
+ * Versión: 20210210
  * 
  * Funciones I2C:
  *   void begin(byte i2cPort)
@@ -10,12 +10,27 @@
  *   void beginTransmission(byte deviceId)
  *   byte endTransmission()
  *   uint32_t write(byte *buffer,uint32_t length)
+ *   bool writeBufferLen(uint32_t len)
+ *   bool writeBufferAdd(byte *source,uint32_t len)
+ *   bool writeBufferAdd(byte value)
+ *   void writeBufferReset()
+ *   bool writeBufferSend()
  *   byte requestFrom(byte deviceId,byte length)
  *   byte read()
  *   byte available()
  *   void end()
+ * 
+ * Notas:
+ *   RPi no permite pausar una comunicación I2C.
+ *   Dentro de un mismo beginTransmission-endTransmission, el segundo
+ *   write que se haga, se considerará una transmisión nueva.
+ *   No la continuación de la anterior.
+ *   Para paliear el inconveniente, se ha creado la famila de métodos
+ *     de writeBuffer* que permite crear un buffer de escritura en el
+ *     que se puede ir añadiendo información para después enviarlo
+ *     completo.
  */
-
+ 
 #ifndef RoJoArduinoWire_h
 #define RoJoArduinoWire_h
 
@@ -58,6 +73,9 @@ class WireArduino {
     byte *_readBuffer; //Array de buffer de lectura
     byte _pendingToRead=0; //Número de caracteres pendientes de leer del buffer de lectura
     byte _readBufferLen=0; //Tamaño del buffer de lectura
+    byte *_writeBuffer; //Array de buffer de escritura
+    uint32_t _writeBufferLen=0; //Tamaño del buffer de escritura
+    uint32_t _writeBufferPos=0; //Posición de inserción de buffer de escritura
     
     //Define el puerto I2C que se utilizará
     void setPort(byte i2cPort) {
@@ -185,6 +203,10 @@ class WireArduino {
 	//Envía un número determinado de bytes por i2c
 	//Devuelve el número de bytes enviados
 	uint32_t write(byte *buffer,uint32_t length) {
+		//Nota. En RPi no se puede pausar la transmisión.
+		//Esto significa que la segunda de dos llamadas consecutivas
+		//no será continuación de la primera.
+		
 		//Si no se ha inicializado el I2C...terminamos sin transmitir;
 		if(_i2cPort<0) return 0;
 		//I2C está inicializado
@@ -236,14 +258,53 @@ class WireArduino {
 		return length-remaining;
 	}
 	
+	//Define el tamaño del buffer de escritura
+	//Devuelve true si lo consigue
+	bool writeBufferLen(uint32_t len) {
+		if(!len) return 0;
+		if(_writeBuffer) free(_writeBuffer);
+		_writeBuffer=(byte*)malloc(len);
+		_writeBufferLen=0;
+		_writeBufferPos=0;
+		if(_writeBuffer) _writeBufferLen=len;
+		return _writeBufferLen>0;
+	}
+	
+	//Añade al buffer de escritura otro buffer
+	//Devuelve true si lo consigue
+	bool writeBufferAdd(byte *source,uint32_t len) {
+		if(_writeBufferPos+len>_writeBufferLen) return false;
+		memcpy(&_writeBuffer[_writeBufferPos],source,len);
+		_writeBufferPos+=len;
+		return true;
+	}
+	
+	//Añade un byte al buffer de escritura
+	//Devuelve true si lo consigue
+	bool writeBufferAdd(byte value) {
+		return writeBufferAdd(&value,1);
+	}
+	
+	//Borra el contenido del buffer de escritura
+	void writeBufferReset() {
+		_writeBufferPos=0;
+	}
+	
+	//Envía el buffer de escritura por I2C
+	//Devuelve true si lo consigue
+	bool writeBufferSend() {
+		return _writeBufferPos==write(_writeBuffer,_writeBufferPos);
+	}
+	
 	//Solicita un número de bytes determinados a un dispositivo
 	//que después serán leidos con read()
 	//Devuelve el número de bytes recibidos
 	byte requestFrom(byte deviceId,byte length) {
 		//Si aun quedaba algo por leer...borramos el buffer de lectura
-		if(_pendingToRead) delete[] _readBuffer;
+		if(_pendingToRead) free(_readBuffer);
 		//Creamos un nuevo buffer de lectura tan grande como el solicitado
-		_readBuffer = new byte[_readBufferLen];
+		_readBuffer=(byte*)malloc(_readBufferLen);
+		if(!_readBuffer) return 0; //Si no hay memoria...terminamos
 		//Anotamos que el nuevo tamaño del buffer de lectura y el
 		//número de caracteres pendientes por leer tiene el mismo valor
 		//que el número de caracteres solicitado
@@ -355,6 +416,15 @@ class WireArduino {
 		}
 		//I2C queda sin configurar
 		_i2cPort=-1;
+		
+		if(_readBuffer) {
+			free(_readBuffer);
+			_readBufferLen=0;
+		}
+		if(_writeBuffer) {
+			free(_writeBuffer);
+			_writeBufferLen=0;
+		}
 	}
 };
 

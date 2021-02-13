@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20210213
   Tema: Librería de touch screen para display RPI_ILI9486 SPI 3.5" 480*320
   Objetivo: Calibración del touch screen
   Material: breadboard, cables, display ILI9486, lector SD (obligatorio en
@@ -68,14 +68,12 @@
 RoJoILI9486 display;
 RoJoXPT2046 ts;
 
-void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,uint16_t *y)
-{
-  //Parte de la rutina de calibración del touch screen
-  //Dibuja una línea, recoge las medidas y devuelve la media
-
+//Parte de la rutina de calibración del touch screen
+//Dibuja una línea, recoge las medidas y devuelve la media
+void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,uint16_t *y) {
   //Definimos colores
-  RoJoColor colorWhite={255,255,255}; //Cuando se dibuja
-  RoJoColor colorYellow={255,255,0}; //Cuando se muestra
+  uint32_t colorWhite=display.getColor(255,255,255); //Cuando se dibuja
+  uint32_t colorYellow=display.getColor(255,255,0); //Cuando se muestra
 
   //Definimos variables de sumatorios
   uint32_t xSum,ySum;
@@ -84,17 +82,15 @@ void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,ui
   //Definimos variable de número de muestras
   uint32_t items=0;
   //Dibujamos la línea en amarillo
-  display.block(x0,y0,x1,y1,colorYellow);
+  display.block(x0,y0,x1-x0+1,y1-y0+1,colorYellow);
   //Pedimos coordenadas hasta que se detecte una pulsación
   while(!ts.getRawXY(x,y)) delay(1);
   //Redibujamos la línea en otro color para que el usuario sepa que se ha detectado la pulsación
   display.block(x0,y0,x1,y1,colorWhite);
   //Recogemos todas las coordenadas hasta que se deje de pulsar
-  while(ts.getRawXY(x,y))
-  {
+  while(ts.getRawXY(x,y)) {
     //Si las coordenadas son válidas...
-    if(*x)
-    {
+    if(*x) {
       //Tenemos una muestra más
       items++;
       //Añadimos a los sumatorios
@@ -108,19 +104,17 @@ void configTSline(uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t *x,ui
   //Se ha dejado de pulsar
   
   //Si hay alguna medida...
-  if(items)
-  {
+  if(items) {
     //...calculamos las medias y las guardamos
     *x=xSum/items;
     *y=ySum/items;
   }
   
   //Borramos la línea
-  display.block(x0,y0,x1,y1,{0,0,0});
+  display.block(x0,y0,x1-x0+1,y1-y0+1,0);
 }
 
-void configTS()
-{
+void configTS() {
   //Ejemplo de calibración del touch screen
 
   //Tamaño de pantalla
@@ -148,8 +142,7 @@ void configTS()
   ts.setConfig(xMax,yMax,x0-x20,y0-y20,x1+x20,y1+y20);
 }
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
   //Inicializamos el display
   display.begin(pinRES_display,pinDC_display,pinCS_display);
@@ -162,11 +155,10 @@ void setup()
   //ts.loadConfig();
 }
 
-void loop()
-{
+void loop() {
   int16_t x,y;
   //Si se detecta pulsación...dibujamos el pixel
-  if(ts.getXY(&x,&y)) display.drawPixel(x,y,{255,255,255});
+  if(ts.getXY(&x,&y)) display.drawPixel(x,y,display.getColor(255,255,255));
   #ifdef ESP8266
     yield();
   #endif

@@ -2,6 +2,6 @@ Arduino
 FS
 SPI
 
-RoJoGraph
+RoJoGraph2
 RoJoILI9341
-RoJoSprite
+RoJoSprite2

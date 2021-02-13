@@ -2,6 +2,6 @@ Arduino
 FS
 SPI
 
-RoJoGraph
-RoJoSprite
+RoJoGraph2
+RoJoSprite2
 RoJoSSD1351

@@ -24,7 +24,7 @@
 
   Estas dos funciones se han adaptado para que usen la librería TinyWireM.h
 
-  Las librerías originales jamás podrán utilzarse en esta placa porque necesitan una memoria
+  Las librerías originales jamás podrán utilizarse en esta placa porque necesitan una memoria
   de vídeo de 1Kb, pero ATtiny85 sólo tiene 0.5Kb para variables.
   Aunque se escriba directamente en la memoria de vídeo del display, también tenemos el
   problema de que no podemos leerla. Por lo tanto las escrituras serían a ciegas.

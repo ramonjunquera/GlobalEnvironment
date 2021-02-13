@@ -1,6 +1,6 @@
 /*
  * Autor: Ramón Junquera
- * Versión: 20190625
+ * Versión: 20210210
  * Descripción:
  *   Gestión chip BCM2835 de Raspberry Pi 3.
  *   Emulación de librería FS de familia ESP8266 (acceso a sistema de
@@ -86,9 +86,13 @@ class File
 	}
 	
 	//Escribe un número de bytes de un buffer
-	void write(byte *buffer,uint32_t len)
-	{
+	void write(byte *buffer,uint32_t len) {
 		fwrite(buffer,1,len,_f);
+	}
+	
+	//Escribe un byte 
+	void write(byte value) {
+		fputc(value,_f);
 	}
 	
 	//Definimos el offset de lectura de un archivo

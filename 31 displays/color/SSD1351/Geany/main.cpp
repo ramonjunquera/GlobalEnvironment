@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200217
+  Fecha: 20210213
   Tema: Librería para display OLED SPI 1.5" 128x128 SSD1351
   Objetivo: Demo de librería RoJoSSD1351
   Material: breadboard, cables, display OLED SSD1351, lector SD
@@ -42,7 +42,7 @@
 */
 
 #include <Arduino.h>
-#include <RoJoSprite.h> //Gestión de sprites color
+#include <RoJoSprite2.h> //Gestión de sprites color
 #include <RoJoSSD1351.h> //Librería de gestión del display SSD1351
 
 
@@ -73,14 +73,14 @@ void Test1() {
   //Dibujamos bloques (rectángulos rellenos) de distintos colores y los mostramos
   //en pantalla, formando una matriz de 3x3
   display.clear(); //Limpiamos pantalla
-  display.block(42,0,83,41,{127,127,127}); //Gris
-  display.block(84,0,125,41,{255,255,255}); //Blanco
-  display.block(0,42,41,83,{255,0,0}); //RoJo
-  display.block(42,42,83,83,{0,255,0}); //Verde
-  display.block(84,42,125,83,{0,0,255}); //Azul
-  display.block(0,84,41,125,{255,255,0}); //Amarillo
-  display.block(42,84,83,125,{255,0,255}); //Magenta
-  display.block(84,84,125,125,{0,255,255}); //Cyan
+  display.block(42,0,42,42,display.getColor(127,127,127)); //Gris
+  display.block(84,0,42,42,display.getColor(255,255,255)); //Blanco
+  display.block(0,42,42,42,display.getColor(255,0,0)); //RoJo
+  display.block(42,42,42,42,display.getColor(0,255,0)); //Verde
+  display.block(84,42,42,42,display.getColor(0,0,255)); //Azul
+  display.block(0,84,42,42,display.getColor(255,255,0)); //Amarillo
+  display.block(42,84,42,42,display.getColor(255,0,255)); //Magenta
+  display.block(84,84,42,42,display.getColor(0,255,255)); //Cyan
   delay(1000);
 }
 
@@ -92,7 +92,7 @@ void Test2() {
   //Dibujamos una matriz de puntos
   for(byte y=0;y<display.yMax();y+=10)
     for(byte x=0;x<display.xMax();x+=10)
-      display.drawPixel(x,y,{(byte)(x*2),(byte)(y*2),0});
+      display.drawPixel(x,y,display.getColor(x*2,y*2,0));
   delay(1000);
 }
 
@@ -102,10 +102,10 @@ void Test3() {
   //Limpiamos display
   display.clear();
   //Dibujamos líneas verdes
-  RoJoColor color={0,255,0}; //verde
+  uint32_t color=display.getColor(0,255,0); //verde
   for(int16_t x=0;x<display.xMax();x+=10) display.line(0,0,x,display.xMax()-1,color);
   //Dibujamos líneas azules
-  color={0,0,255}; //azul
+  color=display.getColor(0,0,255); //azul
   for(int16_t x=0;x<display.xMax();x+=10) display.line(0,display.xMax()-1,x,0,color);
   delay(1000);
 }
@@ -116,11 +116,11 @@ void Test4() {
   //Limpiamos display
   display.clear();
   //Dibujamos un rectángulo relleno rojo
-  display.block(10,10,80,80,{255,0,0});
+  display.block(10,10,70,70,display.getColor(255,0,0));
   //Dibujamos un rectángulo sin relleno verde
-  display.rect(50,50,100,100,{0,255,0});
+  display.rect(50,50,50,50,display.getColor(0,255,0));
   //Dibujamos un rectángulo relleno azul
-  display.block(70,70,120,120,{0,0,255});
+  display.block(70,70,50,50,display.getColor(0,0,255));
   delay(1000);
 }
 
@@ -130,11 +130,11 @@ void Test5() {
   //Limpiamos display
   display.clear();
   //Dibujamos un triángulo relleno rojo
-  display.triangleFill(40,0,50,100,0,30,{255,0,0});
+  display.triangleFill(40,0,50,100,0,30,display.getColor(255,0,0));
   //Dibujamos un triángulo sin relleno verde
-  display.triangle(80,10,120,110,60,120,{0,255,0});
+  display.triangle(80,10,120,110,60,120,display.getColor(0,255,0));
   //Dibujamos un triángulo relleno azul
-  display.triangleFill(110,20,127,80,10,70,{0,0,255});
+  display.triangleFill(110,20,127,80,10,70,display.getColor(0,0,255));
   delay(1000);
 }
 
@@ -142,14 +142,14 @@ void Test5() {
 //  RoJoSSD1351::circle,disk,ellipse,ellipseFill
 void Test6() {
   display.clear(); //Limpiamos display
-  display.circle(50,50,45,{255,0,0}); //Circunferencia
-  display.disk(70,70,30,{0,255,0}); //Círculo
-  display.circle(90,90,35,{0,0,255}); //Circunferencia
+  display.circle(50,50,45,display.getColor(255,0,0)); //Circunferencia
+  display.disk(70,70,30,display.getColor(0,255,0)); //Círculo
+  display.circle(90,90,35,display.getColor(0,0,255)); //Circunferencia
   delay(1000);
   display.clear(); //Limpiamos display
-  display.ellipse(55,40,45,30,{255,0,0});
-  display.ellipseFill(50,65,20,45,{0,255,0});
-  display.ellipse(70,100,50,20,{0,0,255});
+  display.ellipse(55,40,45,30,display.getColor(255,0,0));
+  display.ellipseFill(50,65,20,45,display.getColor(0,255,0));
+  display.ellipse(70,100,50,20,display.getColor(0,0,255));
   delay(1000);
 }
 
@@ -177,20 +177,20 @@ void Test8() {
   //Limpiamos pantalla
   display.clear();
   //Definimos color de texto
-  RoJoColor color={0,255,0}; //green
+  uint32_t color=display.getColor(0,255,0); //green
   //Escribimos un texto y lo mostramos
   display.printOver("/5x7d.fon","20190528",color);
   //Utilizaremos otra fuente más grande
   display.printOver("/10x15d.fon","20190530",color,0,8);
   //Cambiamos el color del texto
-  color={255,255,0}; //yellow
+  color=display.getColor(255,255,0); //yellow
   //Imprimimos fuera de pantalla
   display.printOver("/10x15d.fon","1234567890",color,-35,25); //No se ve el principio
   display.printOver("/10x15d.fon","1234567890",color,100,25); //No se ve el final
   //Fuente más grande
   display.printOver("/21x33d.fon","1234567890",color,0,45);
   //Cambiamos el color
-  color={255,0,0}; //red
+  color=display.getColor(255,0,0); //red
   display.printOver("/7x11.fon","Hola, esto es una prueba!",color,0,80);
   delay(2000);
 }
@@ -202,23 +202,23 @@ void Test9() {
   //Creamos un sprite. Lo vamos pintando de distintos colores y lo mostramos
   //en pantalla, formando una matriz de 3x3
   display.clear(); //Limpiamos pantalla
-  RoJoSprite sprite; //Creamos el sprite
+  RoJoSprite2 sprite; //Creamos el sprite
   sprite.setSize(42,42); //Lo dimensionamos
-  sprite.clear({127,127,127}); //Gris
+  sprite.clear(sprite.getColor(127,127,127)); //Gris
   display.drawSprite(&sprite,42,0);
-  sprite.clear({255,255,255}); //Blanco
+  sprite.clear(sprite.getColor(255,255,255)); //Blanco
   display.drawSprite(&sprite,84,0);
-  sprite.clear({255,0,0}); //Rojo
+  sprite.clear(sprite.getColor(255,0,0)); //Rojo
   display.drawSprite(&sprite,0,42);
-  sprite.clear({0,255,0}); //Verde
+  sprite.clear(sprite.getColor(0,255,0)); //Verde
   display.drawSprite(&sprite,42,42);
-  sprite.clear({0,0,255}); //Azul
+  sprite.clear(sprite.getColor(0,0,255)); //Azul
   display.drawSprite(&sprite,84,42);
-  sprite.clear({255,255,0}); //Amarillo
+  sprite.clear(sprite.getColor(255,255,0)); //Amarillo
   display.drawSprite(&sprite,0,84);
-  sprite.clear({255,0,255}); //Magenta
+  sprite.clear(sprite.getColor(255,0,255)); //Magenta
   display.drawSprite(&sprite,42,84);
-  sprite.clear({0,255,255}); //Cyan
+  sprite.clear(sprite.getColor(0,255,255)); //Cyan
   display.drawSprite(&sprite,84,84);
   sprite.end(); //Liberamos memoria del sprite
   delay(1000);
@@ -228,7 +228,7 @@ void Test9() {
 //  RoJoSprite::loadSprite,loadBMP
 void Test10() {
   //Creamos el sprite
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
 
   //Dibujamos dos líneas con una imágen de 32x32 tomada de un archivo de sprite
   sprite.loadSprite(F("/heart.spr"));
@@ -257,18 +257,18 @@ void Test11() {
   //Limpiamos pantalla
   display.clear();
   //Creamos un sprite
-  RoJoSprite sprite1;
+  RoJoSprite2 sprite1;
   //Tendrá un tamaño de 3x3
   sprite1.setSize(3,3);
   //Lo pintamos de rojo
-  sprite1.clear({255,0,0});
+  sprite1.clear(sprite1.getColor(255,0,0));
   //Pintamos un cuadrado verde de 2x2 en la parte inferior derecha
-  sprite1.block(1,1,2,2,{0,255,0});
+  sprite1.block(1,1,2,2,sprite1.getColor(0,255,0));
   //Lo guardamos en un archivo
   sprite1.save("/test.spr");
 
   //Creamos un nuevo sprite
-  RoJoSprite sprite2;
+  RoJoSprite2 sprite2;
   //Cargamos la imágen desde un archivo
   sprite2.loadSprite("/test.spr");
   //Lo redimensionamos para que se vea claro
@@ -294,12 +294,12 @@ void Test11() {
 //  RoJoSSD1351::drawSprite
 void Test12() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos una matriz de puntos
   for(byte y=0;y<display.yMax();y+=10)
     for(byte x=0;x<display.xMax();x+=10)
-      sprite.drawPixel(x,y,{(byte)(x*2),(byte)(y*2),0});
+      sprite.drawPixel(x,y,sprite.getColor(x*2,y*2,0));
   //Mostramos el sprite a pantalla completa
   display.drawSprite(&sprite);
   //Liberamos memoria del sprite
@@ -312,7 +312,7 @@ void Test12() {
 //  RoJoSprite::loadSprite,loadBMP
 void Test13() {
   //Creamos el sprite
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   //Utilizaremos sprites de tamaño 128x128, igual que las dimensiones del display
   sprite.loadSprite("/palmblue.spr");
   display.drawSprite(&sprite);
@@ -342,13 +342,13 @@ void Test13() {
 //  RoJoSprite::line
 void Test14() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos líneas verdes
-  RoJoColor color={0,255,0}; //Verde
+  uint32_t color=display.getColor(0,255,0); //Verde
   for(int16_t x=0;x<display.xMax();x+=10) sprite.line(0,0,x,display.xMax()-1,color);
   //Dibujamos líneas azules
-  color={0,0,255}; //azul
+  color=display.getColor(0,0,255); //azul
   for(int16_t x=0;x<display.xMax();x+=10) sprite.line(0,display.yMax()-1,x,0,color);
   //Mostramos el sprite que ocupa todo el display
   display.drawSprite(&sprite);
@@ -362,14 +362,14 @@ void Test14() {
 //  RoJoSprite::block,rect
 void Test15() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos un rectángulo relleno rojo
-  sprite.block(0,0,100,50,{255,0,0});
+  sprite.block(0,0,100,50,sprite.getColor(255,0,0));
   //Dibujamos un rectángulo sin relleno verde
-  sprite.rect(50,25,110,100,{0,255,0});
+  sprite.rect(50,25,60,75,sprite.getColor(0,255,0));
   //Dibujamos un rectángulo relleno azul
-  sprite.block(80,80,127,127,{0,0,255});
+  sprite.block(80,80,48,48,sprite.getColor(0,0,255));
   //Mostramos el sprite a pantalla completa
   display.drawSprite(&sprite);
   //Liberamos memoria del sprite
@@ -382,14 +382,14 @@ void Test15() {
 //  RoJoSprite::triangle,triangleFill
 void Test16() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos un triángulo relleno rojo
-  sprite.triangleFill(70,0,40,90,0,30,{255,0,0});
+  sprite.triangleFill(70,0,40,90,0,30,sprite.getColor(255,0,0));
   //Dibujamos un triángulo sin relleno verde
-  sprite.triangle(0,60,90,50,30,120,{0,255,0});
+  sprite.triangle(0,60,90,50,30,120,sprite.getColor(0,255,0));
   //Dibujamos un triángulo relleno azul
-  sprite.triangleFill(127,70,120,127,10,70,{0,0,255});
+  sprite.triangleFill(127,70,120,127,10,70,sprite.getColor(0,0,255));
   //Mostramos el sprite a pantalla completa
   display.drawSprite(&sprite);
   //Liberamos memoria del sprite
@@ -402,20 +402,20 @@ void Test16() {
 //  RoJoSprite::circle,disk
 void Test17() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   sprite.setSize(display.xMax(),display.yMax());
 
-  sprite.circle(50,50,45,{255,0,0}); //Circunferencia
-  sprite.disk(70,70,30,{0,255,0}); //Círculo
-  sprite.circle(90,90,35,{0,0,255}); //Circunferencia
+  sprite.circle(50,50,45,sprite.getColor(255,0,0)); //Circunferencia
+  sprite.disk(70,70,30,sprite.getColor(0,255,0)); //Círculo
+  sprite.circle(90,90,35,sprite.getColor(0,0,255)); //Circunferencia
   display.drawSprite(&sprite); //Mostramos el sprite a pantalla completa
 
   delay(1000);
 
   sprite.clear();
-  sprite.ellipse(55,40,45,30,{255,0,0}); //Circunferencia
-  sprite.ellipseFill(50,65,20,45,{0,255,0}); //Círculo
-  sprite.ellipse(70,100,50,20,{0,0,255}); //Circunferencia
+  sprite.ellipse(55,40,45,30,sprite.getColor(255,0,0)); //Circunferencia
+  sprite.ellipseFill(50,65,20,45,sprite.getColor(0,255,0)); //Círculo
+  sprite.ellipse(70,100,50,20,sprite.getColor(0,0,255)); //Circunferencia
   display.drawSprite(&sprite); //Mostramos el sprite a pantalla completa
 
   sprite.end(); //Liberamos memoria del sprite
@@ -429,11 +429,11 @@ void Test18() {
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite original
-  RoJoSprite spriteOri;
+  RoJoSprite2 spriteOri;
   //Lo llenamos con una imagen de 32x32
   spriteOri.loadSprite(F("/heart.spr"));
   //Creamos el sprite redimensionado
-  RoJoSprite spriteZoom;
+  RoJoSprite2 spriteZoom;
   for(byte z=32;z<128;z+=5) {
     //Redimensionamos el sprite
     spriteZoom.resize(&spriteOri,z,z);
@@ -454,9 +454,9 @@ void Test19() {
   //Limpiamos pantalla
   display.clear();
   //Definimos color de texto
-  RoJoColor color={0,255,0}; //green
+  uint32_t color=display.getColor(0,255,0); //green
   //Creamos un sprite para dibujar el texto
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   //Escribimos un texto y lo mostramos
   sprite.print("/5x7d.fon","20190528",color);
   display.drawSprite(&sprite);
@@ -464,7 +464,7 @@ void Test19() {
   sprite.print("/10x15d.fon","20190530",color);
   display.drawSprite(&sprite,0,8);
   //Cambiamos el color del texto
-  color={255,255,0}; //yellow
+  color=display.getColor(255,255,0); //yellow
   //Imprimimos fuera de pantalla
   sprite.print("/10x15d.fon","1234567890",color);
   display.drawSprite(&sprite,-35,25); //No se ve el principio
@@ -473,11 +473,11 @@ void Test19() {
   sprite.print("/21x33d.fon","1234567890",color);
   display.drawSprite(&sprite,0,45);
   //Cambiamos el color
-  color={255,0,0}; //red
+  color=display.getColor(255,0,0); //red
   sprite.print("/7x11.fon","Hola, esto es una prueba!",color);
   display.drawSprite(&sprite,0,80);
   //Texto con fondo negro y bordes blancos
-  sprite.print("/7x11.fon","Hola!",color,{0,0,0},{255,255,255});
+  sprite.print("/7x11.fon","Hola!",color,0,sprite.getColor(255,255,255));
   display.drawSprite(&sprite,0,100);
   //Liberamos memoria del sprite
   sprite.end();
@@ -490,10 +490,10 @@ void Test19() {
 void Test20() {
   //Crearemos un sprite de texto y lo rotaremos
   display.clear();
-  RoJoSprite sprite;
-  sprite.print(F("/10x15d.fon"),F("123"),{255,255,0}); //Texto en amarillo
+  RoJoSprite2 sprite;
+  sprite.print(F("/10x15d.fon"),F("123"),sprite.getColor(255,255,0)); //Texto en amarillo
   display.drawSprite(&sprite,30,0);
-  RoJoSprite spriteRotate;
+  RoJoSprite2 spriteRotate;
   spriteRotate.rotate(&sprite,90);
   display.drawSprite(&spriteRotate,60,16);
   spriteRotate.rotate(&sprite,180);
@@ -510,11 +510,11 @@ void Test20() {
 void Test21() {
   //Crearemos un sprite de texto y lo voltearemos
   display.clear();
-  RoJoSprite sprite;
-  sprite.print(F("/10x15d.fon"),F("123"),{255,255,0}); //Texto en amarillo
+  RoJoSprite2 sprite;
+  sprite.print(F("/10x15d.fon"),F("123"),sprite.getColor(255,255,0)); //Texto en amarillo
   display.drawSprite(&sprite);
-  sprite.replaceColor({255,255,0},{155,155,0}); //Amarillo más ocuro
-  RoJoSprite spriteFlip;
+  sprite.replaceColor(sprite.getColor(255,255,0),sprite.getColor(155,155,0)); //Amarillo más ocuro
+  RoJoSprite2 spriteFlip;
   spriteFlip.flipH(&sprite);
   display.drawSprite(&spriteFlip,33,0);
   spriteFlip.flipV(&sprite);
@@ -528,24 +528,24 @@ void Test21() {
 //  RoJoSprite::replaceColor,drawSprite
 void Test22() {
   //Creamos un sprite para el fondo
-  RoJoSprite spriteBack;
+  RoJoSprite2 spriteBack;
   //Cargamos una imágen tan grande como el display
   spriteBack.loadSprite("/palmyell.spr");
   //Creamos un sprite de 30x30
-  RoJoSprite sprite;
+  RoJoSprite2 sprite;
   sprite.setSize(30,30);
   //Lo pintamos de rojo
-  sprite.clear({255,0,0});
+  sprite.clear(sprite.getColor(255,0,0));
   //Pintamos un cuadrado verde en la parte inferior derecha
-  sprite.block(10,10,29,29,{0,255,0});
+  sprite.block(10,10,20,20,sprite.getColor(0,255,0));
   //Lo dibujamos sobre el otro sprite
   spriteBack.drawSprite(&sprite,10,10);
   //Sustituimos el color verde por azul
-  sprite.replaceColor({0,255,0},{0,0,255});
+  sprite.replaceColor(sprite.getColor(0,255,0),sprite.getColor(0,0,255));
   //Lo dibujamos sobre el otro sprite
   spriteBack.drawSprite(&sprite,50,10);
   //Lo volvemos a dibujar, pero tomaremos el azul como transparente
-  spriteBack.drawSprite(&sprite,90,10,{0,0,255});
+  spriteBack.drawSprite(&sprite,90,10,spriteBack.getColor(0,0,255));
   //Lo mostramos
   display.drawSprite(&spriteBack);
   //Liberamos memoria de los sprites
@@ -561,10 +561,10 @@ void Test23() {
   //Limpiamos display
   display.clear();
   //Creamos un sprite con una imágen del tamaño del display
-  RoJoSprite back;
+  RoJoSprite2 back;
   back.loadSprite("/sea.spr");
   //Creamos un sprite para guardar un recorte del primero
-  RoJoSprite half;
+  RoJoSprite2 half;
   //Copiamos al nuevo sprite sólo el cuarto superior izquierdo
   half.copy(&back,0,0,back.xMax()/2,back.yMax()/2);
   //Mostramos el sprite recortado
@@ -590,18 +590,18 @@ void Test24() {
   //que sólo se envíen las diferencias.
 
   //Creamos el sprite con la imágen de fondo
-  RoJoSprite back;
+  RoJoSprite2 back;
   back.loadSprite("/palmblue.spr");
   //Creamos sprite con el número
-  RoJoSprite num;
+  RoJoSprite2 num;
   //Color de texto: rojo. Fondo: negro. Borde: blanco
-  num.print("/21x33d.fon","3",{255,0,0},{0,0,0},{255,255,255});
+  num.print("/21x33d.fon","3",num.getColor(255,0,0),0,num.getColor(255,255,255));
   //Creamos sprite con memoria de vídeo de trabajo con el tamaño del display
-  RoJoSprite workMem;
+  RoJoSprite2 workMem;
   //Copiamos el sprite de fondo en la memoria de trabajo
   workMem.copy(&back);
   //Creamos sprite con memoria de vídeo de display
-  RoJoSprite displayMem;
+  RoJoSprite2 displayMem;
   //Copiamos el sprite de fondo en la memoria del display
   displayMem.copy(&back);
   //Para sincronizar todas la memorias, dibujamos el sprite de fondo en el display
@@ -623,7 +623,7 @@ void Test24() {
     //Dibujamos la imágen de fondo sobre el sprite de trabajo
     workMem.drawSprite(&back);
     //Añadimos el número sobre el fondo, haciendo su fondo negro transparente
-    workMem.drawSprite(&num,x,y,{0,0,0});
+    workMem.drawSprite(&num,x,y,0);
     //Sincronizamos los sprites con las memorias de vídeo y enviamos las
     //diferencias al display
     display.drawSpriteSync(&workMem,&displayMem);

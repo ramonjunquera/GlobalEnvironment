@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20210205
   Tema: Touch Screen XPT2046 de ILI9341
   Objetivo: Demo de detección de pulsaciones en botones
   Material: breadboard, cables, display ILI9341
@@ -73,26 +73,27 @@
 RoJoILI9341 display;
 RoJoXPT2046 ts;
 //Variables globales
-RoJoColor palette[]={ //Paleta de colores
-  {0,0,0}, //negro
-  {255,0,0}, //rojo
-  {0,255,0}, //verde
-  {0,0,255}, //azul
-  {255,255,0}, //amarillo
-  {255,0,255}, //magenta
-  {0,255,255}, //cyan
-  {255,255,255} //blanco
-};
-RoJoColor currentColor; //Color actual
+uint16_t palette[8]; //Paleta de colores
+uint16_t currentColor; //Color actual
 uint16_t currentColorIndex=7; //Índice de color seleccionado inicialmente
 int16_t x,y; //Coordenadas actuales
 int16_t xLast,yLast; //Últimas coordenadas
 bool last=false; //Existe una pulsación anterior?. Inicialmente no
 
 void setup() {
-  Serial.begin(115200);
+  //Serial.begin(115200);
   //Inicializamos el display
   display.begin(pinRES_display,pinDC_display,pinCS_display);
+
+  palette[0]=0; //negro
+  palette[1]=display.getColor(255,0,0); //rojo
+  palette[2]=display.getColor(0,255,0); //verde
+  palette[3]=display.getColor(0,0,255); //azul
+  palette[4]=display.getColor(255,255,0); //amarillo
+  palette[5]=display.getColor(255,0,255); //magenta
+  palette[6]=display.getColor(0,255,255); //cyan
+  palette[7]=display.getColor(255,255,255); //blanco
+
   //Inicializamos el touch screen
   ts.begin(pinCS_touchscreen,pinIRQ_touchscreen);
   //Cargamos configuración de touchscreen
@@ -101,7 +102,7 @@ void setup() {
   //Tienen un tamaño de 30x30, pero el perímetro que reservado para el recuadro de selección
   for(uint16_t i=0;i<8;i++) display.block(1+i*30,291,i*30+28,318,palette[i]);
   //Ponemos un recuadro blanco al color seleccionado
-  display.rect(currentColorIndex*30,290,currentColorIndex*30+29,319,{255,255,255});
+  display.rect(currentColorIndex*30,290,29,29,palette[7]);
   //Obtenemos el color actual seleccionado por defecto
   currentColor=palette[currentColorIndex];
 }
@@ -118,11 +119,11 @@ void loop() {
         //Si el índice de color seleccionado es distinto al actual...
         if(index!=currentColorIndex) {
           //Quitamos el recuadro de selección
-          display.rect(currentColorIndex*30,290,currentColorIndex*30+29,319,{0,0,0});
+          display.rect(currentColorIndex*30,290,29,29,0);
           //Tenemos un nuevo índice seleccionado
           currentColorIndex=index;
           //Dibujamos el recuadro de selección
-          display.rect(currentColorIndex*30,290,currentColorIndex*30+29,319,{255,255,255});
+          display.rect(currentColorIndex*30,290,29,29,palette[7]);
           //El nuevo color para dibujar ha cambiado
           currentColor=palette[currentColorIndex];
         }
