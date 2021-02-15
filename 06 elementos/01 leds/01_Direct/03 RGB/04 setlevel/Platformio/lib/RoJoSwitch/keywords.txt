@@ -1,0 +1,7 @@
+# RoJoSwitch Tipos de datos
+RoJoSwitch	KEYWORD1
+delayTime	KEYWORD1
+# RoJoSwitch Métodos de la librería
+pressed	KEYWORD2
+released	KEYWORD2
+pressing	KEYWORD2
