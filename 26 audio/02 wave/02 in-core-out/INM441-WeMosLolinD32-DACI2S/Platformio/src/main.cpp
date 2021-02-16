@@ -16,7 +16,7 @@
     Utilizaremos como DAC (decodificador digital analógico) un PCM5120 (DAC) o un
     Max98357A (DAC + amplificador).
     PCM5120 es mono y Max98357A stereo.
-    Puesto que las muestras obtenidas del micrófono son mono, en ambos caos configuraremos
+    Puesto que las muestras obtenidas del micrófono son mono, en ambos casos configuraremos
     la salida como mono.
     No necesitaremos hacer ninguna conversión de formatos.
     Utilizaremos la misma configuración y canal I2S para ambos.
