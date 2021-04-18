@@ -13,9 +13,8 @@
 
 #include <RoJoList.h> //Librería de gestión de listas
 
-//Definimos la escrutura de datos para el valor
-struct numberStruct
-{
+//Definimos la escructura de datos para el valor
+struct numberStruct {
   byte number;
   String numberString;
 };
@@ -23,8 +22,7 @@ struct numberStruct
 //Creamos el objeto de lista que utilizaremos
 RoJoList<numberStruct> myList;
 
-uint32_t freeMem()
-{
+uint32_t freeMem() {
   #ifdef ARDUINO_ARCH_AVR //Placas Arduino
     extern uint32_t __heap_start,*__brkval; 
     uint32_t v; 
@@ -40,16 +38,14 @@ uint32_t freeMem()
 }
 
 //Muestra en pantalla el contenido de la lista
-void list()
-{
+void list() {
   //Puntero a valor del nodo
   numberStruct *pValue;
 
   //Mostramos el número de nodos
   Serial.println("# nodos="+String(myList.count())+" : free memory="+String(freeMem()));
   //Recorremos todos los nodos de la lista
-  for(uint16_t i=0;i<myList.count();i++)
-  {
+  for(uint16_t i=0;i<myList.count();i++) {
     //Obtenemos el puntero del valor de una posición de la lista
     myList.index(&pValue,i);
     //Mostramos la información obtenida
@@ -57,8 +53,7 @@ void list()
   }
 }
 
-void setup()
-{
+void setup() {
   //Activamos la comunicación serie
   Serial.begin(115200);
   delay(3000);
@@ -133,7 +128,6 @@ void setup()
   list();
 }
 
-void loop()
-{
+void loop() {
   //Nada especial que hacer aquí
 }

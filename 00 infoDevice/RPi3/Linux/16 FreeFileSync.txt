@@ -1,5 +1,5 @@
 Tema: Cómo instalar Free File Sync
-Fecha: 20201214
+Fecha: 20210309
 
 Instrucciones:
 
@@ -7,36 +7,20 @@ Instrucciones:
     Instalación
     - Descargamos el paquete de instalación para Linux de la web oficial:
         https://freefilesync.org/download.php
-      El archivo descargado es FreeFileSync_11.4_Linux.tar.gz
+      El archivo descargado es FreeFileSync_11.8_Linux.tar.gz
       Suponemos que se ha descargado en la carpeta Downloads
       Abrimos una sesión de terminal y escribimos:
     - Cambiamos a la carpeta de Downloads:
         cd /home/pi/Downloads
     - Lo descomprimimos ahí mismo con:
-        tar -vxf FreeFileSync_11.4_Linux.tar.gz
-    - Movemos la carpeta descomprimida a /usr/share/FreeFileSync con:
-        sudo mv FreeFileSync /usr/share
-    - Ya podríamos ejecutarlo con:
-        /usr/share/FreeFileSync/FreeFileSync
-    Nota
-    - Si no ejecutamos freefilesync con permisos de root, no podrá asignar la fecha
-      correcta los archivos copiados.
-    Asociar extensión.
-    - Localizamos un archivo con extensión .ffs_gui (por ejemplo nas2docs.ffs_gui)
-    - Abrimos una sesión de terminal en esa carpeta
-    - Creamos una nueva asociación con:
-        mimeopen -d nas2docs.ffs_gui
-    - Pide seleccionar una opción. Seleccionamos la opción "Other..."
-    - Escribimos el comando de asociación:
-        /usr/share/FreeFileSync/FreeFileSync %f
-    - A partir de ahora se podrán abrir archivos con extensión ffs_gui desde el explorador de
-      archivos, haciendo doble click sobre ellos.
-    Errores:
-      - Si nos falta la librería libgtk-x11-2.0.so.0 la añadimos con:
-        sudo apt install libgtk2.0-0:i386
-      - Si falta la librería canberra-gtk-module la añadimos con:
-        sudo apt install libcanberra-gtk-module libcanberra-gtk3-module
-    Update:
-    - Antes de instalar la nueva aplicación es necesario eliminar la aplicación actual
-        sudo rm -rf /usr/share/FreeFileSync
+        tar -vxf FreeFileSync_11.8_Linux.tar.gz
+    - Ejecutamos el archivo FreeFileSync_11.8_Install.run hacendo doble click
+      sobre él desde el explorador.
+    - Aceptamos las opciones por defecto pulsando ENTER.
+    - Introducimos la clave del administrador.
+    - Tras unos instantes se completa la instalación
+    
+    La aplicación es accesible desde el Terminal con freefilesync
+    Se han asociado sus extensiones.
+    Se ha añadido un icono de aplicación.
 

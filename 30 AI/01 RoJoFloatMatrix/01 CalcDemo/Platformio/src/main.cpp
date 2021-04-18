@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200911
+  Fecha: 20210417
   Tema: Multitasking / FreeRTOS
   Objetivo: Demo de librería RoJoFloatMatrix
   Descripción:
@@ -89,6 +89,61 @@ void setup() {
   Serial.println("\nMatriz traspuesta");
   C.T(&A);
   showMatrix(&C);
+  
+  float d=0;
+  C.det(&d);
+  Serial.printf("\nDeterminante=%f\n",d);
+
+  Serial.println("\nCopiamos última columna de matriz reordenada a la primera de la traspuesta");
+  C.copyCols(&A,2,0,1);
+  showMatrix(&C);
+
+  Serial.println("\nResolución de sistemas de ecuaciones lineales");
+  Serial.println("x-y=2");
+  Serial.println("2x+y=19");
+  A.redim(2,3); //Redimensionamos matriz extendida
+  A.m[0][0]=1;
+  A.m[0][1]=-1;
+  A.m[0][2]=2;
+  A.m[1][0]=2;
+  A.m[1][1]=1;
+  A.m[1][2]=19;
+  Serial.println("Matriz extendida:");
+  showMatrix(&A);
+  B.linearEq(&A);
+  Serial.println("Soluciones:");
+  showMatrix(&B);
+
+  Serial.println("\nResolución de sistemas de ecuaciones lineales");
+  Serial.println("x+y-z=-1");
+  Serial.println("x+2y+2z=0");
+  Serial.println("2x+y-z=1");
+  A.redim(3,4); //Redimensionamos matriz extendida
+  A.m[0][0]=1;
+  A.m[0][1]=1;
+  A.m[0][2]=-1;
+  A.m[0][3]=-1;
+  A.m[1][0]=1;
+  A.m[1][1]=2;
+  A.m[1][2]=2;
+  A.m[1][3]=0;
+  A.m[2][0]=2;
+  A.m[2][1]=1;
+  A.m[2][2]=-1;
+  A.m[2][3]=1;
+  Serial.println("Matriz extendida:");
+  showMatrix(&A);
+  B.linearEq(&A);
+  Serial.println("Soluciones:");
+  showMatrix(&B);
+
+  Serial.println("\nSuma de columnas:");
+  B.sumCols(&A);
+  showMatrix(&B);
+
+  Serial.println("\nPromedio de columnas:");
+  B.meanCols(&A);
+  showMatrix(&B);
 }
 
 void loop() {
