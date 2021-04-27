@@ -2,7 +2,7 @@
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3. Emulación de
  *   librería Wire de Arduino
- * Versión: 20210210
+ * Versión: 20210426
  * 
  * Funciones I2C:
  *   void begin(byte i2cPort)
@@ -10,25 +10,11 @@
  *   void beginTransmission(byte deviceId)
  *   byte endTransmission()
  *   uint32_t write(byte *buffer,uint32_t length)
- *   bool writeBufferLen(uint32_t len)
- *   bool writeBufferAdd(byte *source,uint32_t len)
- *   bool writeBufferAdd(byte value)
- *   void writeBufferReset()
- *   bool writeBufferSend()
+ *   uint32_t write(byte value)
  *   byte requestFrom(byte deviceId,byte length)
  *   byte read()
  *   byte available()
  *   void end()
- * 
- * Notas:
- *   RPi no permite pausar una comunicación I2C.
- *   Dentro de un mismo beginTransmission-endTransmission, el segundo
- *   write que se haga, se considerará una transmisión nueva.
- *   No la continuación de la anterior.
- *   Para paliear el inconveniente, se ha creado la famila de métodos
- *     de writeBuffer* que permite crear un buffer de escritura en el
- *     que se puede ir añadiendo información para después enviarlo
- *     completo.
  */
  
 #ifndef RoJoArduinoWire_h
@@ -39,6 +25,8 @@ using namespace std;
 #include <Arduino.h>
 
 //Funciones I2C
+
+#define _bufferLen 128 //Tamaño del buffer. Igual que en ESP
 
 typedef enum {
 	CS0=0, //CS0
@@ -65,20 +53,20 @@ class WireArduino {
 	private:
 	
 	byte _i2cPort=-1; //Puerto I2C utilizado
+	byte _buffer[_bufferLen]; //Reservamos memoria para el buffer
+	byte _bufferPos=0; //Posición de escritura del buffer (llenado). Inicialmente 0
 	uint32_t cdiv; //Clock divider
 	volatile uint32_t* dlen; //Puntero a registro BSC Master Data Length
-    volatile uint32_t* fifo; //Puntero a registro BSC Master Data FIFO 
-    volatile uint32_t* status; //Puntero a registro BSC Master Status
-    volatile uint32_t* control; //Puntero a registro BSC Master Control
-    byte *_readBuffer; //Array de buffer de lectura
-    byte _pendingToRead=0; //Número de caracteres pendientes de leer del buffer de lectura
-    byte _readBufferLen=0; //Tamaño del buffer de lectura
-    byte *_writeBuffer; //Array de buffer de escritura
-    uint32_t _writeBufferLen=0; //Tamaño del buffer de escritura
-    uint32_t _writeBufferPos=0; //Posición de inserción de buffer de escritura
-    
-    //Define el puerto I2C que se utilizará
-    void setPort(byte i2cPort) {
+	volatile uint32_t* fifo; //Puntero a registro BSC Master Data FIFO 
+	volatile uint32_t* status; //Puntero a registro BSC Master Status
+	volatile uint32_t* control; //Puntero a registro BSC Master Control
+	byte *_readBuffer; //Array de buffer de lectura
+	byte _pendingToRead=0; //Número de caracteres pendientes de leer del buffer de lectura
+	byte _readBufferLen=0; //Tamaño del buffer de lectura
+	byte *_writeBuffer; //Array de buffer de escritura
+	
+	//Define el puerto I2C que se utilizará
+	void setPort(byte i2cPort) {
 		//Raspberry Pi tiene tres puertos I2C maestros.
 		//Estos son los pines y gpio utilizados para cada puerto y su uso:
 		
@@ -183,7 +171,9 @@ class WireArduino {
 		//Si no se ha inicializado el I2C...terminamos;
 		if(_i2cPort<0) return;
 		//i2c está inicializado
-		
+
+		_bufferPos=0; //Reseteamos el número de bytes que contiene el buffer
+
 		//Calculamos la dirección del registro que guarda el identificador
 		//del dispositivo, dependiendo del modo
 		volatile uint32_t* paddr = (volatile uint32_t *)((_i2cPort?bcm2835_bsc1:bcm2835_bsc0)+3);
@@ -191,18 +181,72 @@ class WireArduino {
 		*paddr = deviceId;
 	}
 	
-	//Cierra la transmisión I2C
-	//Devuelve el mensage de error. 0=sin error
+	//Enviamos el contenido del buffer acumulado desde el beginTransmision
+	//Devuelve 0 si no hubo errores
 	byte endTransmission() {
-		//Nada especial para cerrar una transmisión
-		//Se mantiene por compatibilidad con Arduino
-		//Todo correcto siempre
-		return 0;
+		if(_i2cPort<0) return 1; //Si no se ha inicializado el I2C...terminamos con error;
+		//i2c está inicializado
+
+		//Definición de variables
+		uint32_t remaining=_bufferPos; //Número de bytes pendientes de ser enviados
+		uint32_t nextPos=0; //Siguiente posición del buffer a enviar
+		
+		//Clear FIFO
+		//Informamos que queremos vaciar la cola FIFO.
+		//No utilizamos la nomenclatura *control!=0x20; porque sino da un
+		//warning diciendo que la variable no se utiliza
+		*control = *control | 0x20;
+		
+		*status = 0x00000302; //Clear Status
+		*dlen=_bufferPos; //Guardamos el tamaño de bytes a enviar en el registro
+		//Llenamos la cola con los primeros valores
+		//El tamaño del buffer de la cola FIFO de I2C es de 16 bytes
+		//Mientras haya bytes pendientes por enviar y no hayamos llenado
+		//la cola...
+		while(remaining && (nextPos<16)) {
+			//Añadimos el byte que corresponde a la cola FIFO
+			//Después aumentamos el índice del siguiente byte a enviar
+			*fifo = _buffer[nextPos++];
+			remaining--; //Ya queda un byte menos por enviar
+		}
+		*control = 0x00008080; //Activamos el dispositivo I2C y comenzamos a transferir
+		while(!(*status & 0x00000002)) { //Mientras no se haya completado la transferencia
+			//Mientras quede algo por transferir y la cola acepte más datos...
+			while (remaining && (*status & 0x00000010)) {
+				//Añadimos un nuevo byte a la cola FIFO
+				//Después aumentamos el índice del siguiente byte a enviar
+				*fifo = _buffer[nextPos++];
+				remaining--; //Ya queda un byte menos por enviar
+			}
+		}
+		//Hemos terminado la transferencia
+		//Es posible que hayamos tenido errores
+		*control|=0x00000002; //Indicamos que hemos terminado
+		return remaining>0; //Devolvemos 1 si no se envió todo
 	}
 	
+  //Añade un número determinado de bytes al buffer i2c
+	//Devuelve el número de bytes añadidos
+	uint32_t write(byte *buffer,uint32_t length) {
+		//Si nos piden añadir más bytes de los que tenemos libres en el buffer...
+		//...ajustamos la longitud para tomar sólo los que entren
+		if(_bufferPos+length>_bufferLen) length=_bufferLen-_bufferPos;
+	  if(length){ //Si hay algo que añadir...
+			memcpy((void*)&_buffer[_bufferPos],(void*)buffer,length); //Copiamos
+			_bufferPos+=length; //El buffer se ha llenado un poco más
+		} 
+		return length; //Devolvemos el número de bytes añadidos
+	}
+
+	//Añade un byte al buffer i2c
+	//Devuelve el número de bytes añadidos
+	uint32_t write(byte value) {
+		return write(&value,1);
+	} 
+
 	//Envía un número determinado de bytes por i2c
 	//Devuelve el número de bytes enviados
-	uint32_t write(byte *buffer,uint32_t length) {
+	uint32_t writeOri(byte *buffer,uint32_t length) {
 		//Nota. En RPi no se puede pausar la transmisión.
 		//Esto significa que la segunda de dos llamadas consecutivas
 		//no será continuación de la primera.
@@ -256,44 +300,6 @@ class WireArduino {
 		*control |= 0x00000002;
 		//Devolvemos el número de bytes enviados
 		return length-remaining;
-	}
-	
-	//Define el tamaño del buffer de escritura
-	//Devuelve true si lo consigue
-	bool writeBufferLen(uint32_t len) {
-		if(!len) return 0;
-		if(_writeBuffer) free(_writeBuffer);
-		_writeBuffer=(byte*)malloc(len);
-		_writeBufferLen=0;
-		_writeBufferPos=0;
-		if(_writeBuffer) _writeBufferLen=len;
-		return _writeBufferLen>0;
-	}
-	
-	//Añade al buffer de escritura otro buffer
-	//Devuelve true si lo consigue
-	bool writeBufferAdd(byte *source,uint32_t len) {
-		if(_writeBufferPos+len>_writeBufferLen) return false;
-		memcpy(&_writeBuffer[_writeBufferPos],source,len);
-		_writeBufferPos+=len;
-		return true;
-	}
-	
-	//Añade un byte al buffer de escritura
-	//Devuelve true si lo consigue
-	bool writeBufferAdd(byte value) {
-		return writeBufferAdd(&value,1);
-	}
-	
-	//Borra el contenido del buffer de escritura
-	void writeBufferReset() {
-		_writeBufferPos=0;
-	}
-	
-	//Envía el buffer de escritura por I2C
-	//Devuelve true si lo consigue
-	bool writeBufferSend() {
-		return _writeBufferPos==write(_writeBuffer,_writeBufferPos);
 	}
 	
 	//Solicita un número de bytes determinados a un dispositivo
@@ -420,10 +426,6 @@ class WireArduino {
 		if(_readBuffer) {
 			free(_readBuffer);
 			_readBufferLen=0;
-		}
-		if(_writeBuffer) {
-			free(_writeBuffer);
-			_writeBufferLen=0;
 		}
 	}
 };

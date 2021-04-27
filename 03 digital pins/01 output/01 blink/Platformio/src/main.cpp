@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210119
+  Fecha: 20210422
   Tema: Gestión de pines digitales de salida
   Descripción:
     Hacemos parpadear el led integrado
@@ -30,3 +30,13 @@ void loop() {
   digitalWrite(pinLed,HIGH); //Cambio a estado HIGH
   delay(200); //Esperamos 2 décimas de segundo
 }
+
+#ifdef __arm__ //Si es una Raspberri Pi
+  //Simulamos el comportamiento de Arduino
+  int main(int argc, char **argv) {
+    setup();
+    while(true) {
+      loop();
+    }
+  }
+#endif

@@ -1,11 +1,11 @@
 Tema: Cómo instalar Fritzing
-Fecha: 20210119
+Fecha: 20210419
 
 Nota.
 No utilizaremos la web oficial de Fritzing para la descarga.
 Usaremos paquetes instalables por apt-get.
 La razón es que la web oficial solicita registro para la descarga y además la aplicación
-requere de librerías obsoletas que no se incluyen.
+requiere de librerías obsoletas que no se incluyen.
 
 Instrucciones:
   Instalación.
@@ -18,10 +18,10 @@ Instrucciones:
       - Hacemos click con el botón derecho sobre un archivo con extensión fzz
       - Seleccionamos "Properties"
       - Desplegamos el campo "Open with:"
-      - Seleccionamos "Customize"
       - Seleccionamos Programming/Fritzing
+      - Marcamos el checkbox de "Set selected application as default..."
       - Pulsamos el botón OK
-      - Volvemos a pulsar el botón OK
+      - Fritzing se abre (pero no con el archivo indicado).
     Ubuntu
       - Localizamos un archivo con extensión .fzz (por ejemplo Mega.fzz)
       - Abrimos una sesión de terminal en esa carpeta

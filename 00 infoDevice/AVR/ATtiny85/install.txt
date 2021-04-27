@@ -19,7 +19,7 @@ Instalación de drivers de DigiStump
     No es necesario
   
 Imcompatibilidades con Windows 10 (no solventado).
-  En las últimas versiones de Windows 10 finaliza la instalación finaliza con un error en
+  En las últimas versiones de Windows 10 finaliza la instalación con un error en
   la instalación del controlador "Digistump LLC (usbser)".
   Esto es debido a que en Windows 10 se ha reescrito totalmente el driver Usbser.sys.
   Es necesaria la instalación de un driver compatible como LowCDC, descargable desde:

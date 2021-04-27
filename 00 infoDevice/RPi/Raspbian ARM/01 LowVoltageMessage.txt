@@ -1,5 +1,5 @@
 Autor:Ramón Junquera
-Fecha: 20210109
+Fecha: 20210419
 Tema: Mensaje "Under Voltage Warning"
 
 Es posible que aparezca repetidamente el mensaje de "under voltage
@@ -14,11 +14,10 @@ correspondan.
 Se puede configurar el sistema para que el mensaje no aparezca más,
 aunque no es lo aconsejable...
 - Abrimos el archivo de configuración del sistema:
-  sudo nano /boot/config.txt
+  sudo mousepad /boot/config.txt
 - Añadimos las siguientes líneas al final del archivo:
   # Disable under-voltage warning
-  avoid_warnings=1
-- Guardamos con CTRL+O
-- Salimos con CTRL+X
-- Reiniciamos con reboot
+  avoid_warnings=2
+- Salvamos
+- Reiniciamos
 

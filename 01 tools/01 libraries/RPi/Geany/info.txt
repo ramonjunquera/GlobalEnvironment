@@ -1,0 +1,38 @@
+﻿Título: Librerías para compatibilidad de Arduino en Raspberry Pi.
+Fecha: 20210422
+
+Estructura de archivos de proyecto Geany
+- Carpeta Geany. Es la carpeta principal del proyecto. Contiene los archivos:
+  - main.cpp archivo principal del proyecto
+  - ArduinoRunme.cpp archivo de inicio de compilación que emula comportamiento de Arduino
+- Carpeta lib. Está por debajo de la carpeta Geany. Contiene todas las librerías utilizadas en el proyecto.
+  Todos los archivos de las librerías se encuentran en la misma carpeta. No existen subcarpetas.
+  
+Conversión de Arduino IDE a Geany
+- El archivo principal del proyecto tiene extensión .ino y el mismo nombre que la carpeta que lo contiene.
+- El archivo .ino se debe copiar a la carpeta de proyecto Geany y renombrarlo a main.cpp
+
+Conversión de Platformio a Geany
+- Copiar el archivo principal del proyecto (main.cpp) de la carpeta src a la carpeta Geany
+
+Compilación
+- Siempre se comenzará la compilación del archivo ArduinoRunme.cpp, que a su vez llama a main.cpp.
+
+Librerías de emulación de Arduino
+- Es el conjunto de librerías que permiten ejecutar programas desarrollados para Arduino en Raspberry Pi:
+  Arduino.h, FS.h, SPI.h, Wire.h, ... Deben ser copiadas a la carpeta lib
+
+Programación
+Para guardar la compatibilidad, todos los archivos principales de proyecto proyectos deberán usar como primera línea:
+  #include <Arduino.h>
+
+Configuración de compilador en Geany
+- La línea de llamada de Build debe ser:
+  g++ -Wall -std=c++11 -o "%e" "%f" -lpigpio -lrt -lwiringPi -pthread -I"./lib/"
+- Las librerías -l que no se utilicen, pueden ser eliminadas.
+- La línea de llamada a Execute debe ser: sudo "./%e"
+  Esto es debido a que sólo se puede acceder al control del chip BCM2835 con permisos de root 
+
+Configuración de Raspbian
+- Para hacer uso de las comunicaciones I2C y SPI es necesario activarlos desde el panel de control:
+  menu/Preferences/Raspberry Pi Configuration/Interfaces/

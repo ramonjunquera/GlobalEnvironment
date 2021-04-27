@@ -1,7 +1,7 @@
 /*
- * Autor: RamÛn Junquera
- * DescripciÛn: GestiÛn chip BCM2835 de Raspberry Pi 3 con comandos de Arduino
- * VersiÛn: 20210119
+ * Autor: Ram√≥n Junquera
+ * Descripci√≥n: Gesti√≥n chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
+ * Versi√≥n: 20210426
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -31,12 +31,12 @@
  *   void print(String s);
  * 
  * Nota:
- * La librerÌa autom·ticamente inicializa la gestiÛn a los pines con la
- * instrucciÛn ArduinoBegin() al final.
+ * La librer√≠a autom√°ticamente inicializa la gesti√≥n a los pines con la
+ * instrucci√≥n ArduinoBegin() al final.
  * Devuelve el resultado en la variable _arduinoBeginAnswer sin
  * comprobarlo.
  * 
- * En teorÌa, Un programa siempre deberÌa finalizar con la instrucciÛn:
+ * En teor√≠a, Un programa siempre deber√≠a finalizar con la instrucci√≥n:
  *   ArduinoEnd()
  */
 
@@ -66,26 +66,24 @@ using namespace std;
 //Macros
 #define String(a) to_string(a)
 
-//DefiniciÛn de tipos de datos
+//Definici√≥n de tipos de datos
 typedef uint8_t byte;
 typedef string String;
-typedef enum
-{
+typedef enum {
   INPUT=0,
   OUTPUT=1,
   INPUT_PULLUP=2,
   INPUT_PULLDOWN=3
 } arduinoPinMode;
-typedef enum
-{
+typedef enum {
   MSBFIRST=true,
   LSBFIRST=false
 } arduinoOrder;
 
-//DefiniciÛn de variables globales
-uint32_t *bcm2835_peripherals_base; //DirecciÛn base de perifÈricos
-uint32_t bcm2835_peripherals_size; //TamaÒo de memoria de perifÈricos
-uint32_t *bcm2835_peripherals = (uint32_t *)MAP_FAILED; //Puntero a registros de perifÈricos
+//Definici√≥n de variables globales
+uint32_t *bcm2835_peripherals_base; //Direcci√≥n base de perif√©ricos
+uint32_t bcm2835_peripherals_size; //Tama√±o de memoria de perif√©ricos
+uint32_t *bcm2835_peripherals = (uint32_t *)MAP_FAILED; //Puntero a registros de perif√©ricos
 volatile uint32_t *bcm2835_gpio = (uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_pwm = (uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_clk = (uint32_t *)MAP_FAILED;
@@ -95,124 +93,112 @@ volatile uint32_t *bcm2835_bsc0 = (uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_bsc1 = (uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_st	= (uint32_t *)MAP_FAILED;
 
-//Clase para simulaciÛn de puerto serie
-class SerialClass
-{
+//Clase para simulaci√≥n de puerto serie
+class SerialClass {
   public:
   
-  //InicializaciÛn de puerto serie
-  void begin(uint32_t baud)
-  {
+  //Inicializaci√≥n de puerto serie
+  void begin(uint32_t baud) {
     //No te tiene en cuenta el valor de la velocidad
   }
   
-  //Enviar una lÌnea con marca de final
-  void println(uint64_t v)
-  {
+  //Enviar una l√≠nea con marca de final
+  void println(uint64_t v) {
     cout << v << endl;
   }
-  void println(int64_t v)
-  {
+  void println(int64_t v) {
     cout << v << endl;
   }
-  void println(String v="")
-  {
+  void println(String v="") {
     cout << v << endl;
   }
   
-  //Enviar una lÌnea sin marca de final
-  void print(uint64_t v)
-  {
+  //Enviar una l√≠nea sin marca de final
+  void print(uint64_t v) {
     cout << v;
   }
-  void print(int64_t v)
-  {
+  void print(int64_t v) {
     cout << v;
   }
-  void print(String v)
-  {
+  void print(String v) {
     cout << v;
   }
 };
 //Creamos el objeto Serial
 SerialClass Serial;
 
-//InicializaciÛn de acceso los registros del chip BCM2835
+//Inicializaci√≥n de acceso los registros del chip BCM2835
 //Devuelve false ante cualquier cualquier error
-bool ArduinoBegin()
-{
-  //DefiniciÛn de variables
-  FILE *fp; //Puntero de archivo (file pointer)
-  byte b[4]; //Buffer
-  int memfd; //Identificador de interface de acceso a memoria (file descriptor)
-
-  //Debemos averiguar la direcciÛn base de la memoria de perifÈricos y
-  //su tamaÒo. Esta informaciÛn se encuentra en el archivo binario
+bool ArduinoBegin() {
+  //Debemos averiguar la direcci√≥n base de la memoria de perif√©ricos y su tama√±o.
+  //La teor√≠a dice que esta informaci√≥n se encuentra en el archivo binario
   // /proc/device-tree/soc/ranges
-  //A partir del byte 4 tenemos la direcciÛn base y a continuaciÛn su
-  //tamaÒo. Ambos datos tienen una logitud de 4 bytes.
-  //Est·n escritos de mayor a menor peso, asÌ que no podemos leerlos
+  //A partir del byte 4 tenemos la direcci√≥n base y a continuaci√≥n su
+  //tama√±o. Ambos datos tienen una logitud de 4 bytes.
+  //Est√°n escritos de mayor a menor peso, as√≠ que no podemos leerlos
   //directamente a un uint32_t. Tenemos que invertir el orden de los
   //bytes.
+  //Esto se cumple en las RPi 2 y 3, pero no en la 4.
+  //Ejemplo de contenido del archivo a partir de byte 4
+  //  3F 00 00 00 01 00 00 00
+  //Por lo tanto tenemos que la direcci√≥n base es 0x3F000000 con una longitud de 0x01000000
+  //En la RPi4 encontramos lo siguiente a partir del byte 4:
+  //  00 00 00 00 FE 00 00 00
+  //Aunque sabemos que la direcci√≥n base es 0xFE000000 con la misma longitud: 0x01000000
+  //Para simplificar utilizaremos el archivo s√≥lo para diferenciar un modelo de otro.
+  //Concretamente con el byte 5: 3F para RPi3 y 00 para RPi4
+  //Despu√©s tomaremos las direcciones que correspondan sin mirar m√°s.
 
-  //Abrimos el archivo ranges en binario y como sÛlo lectura
+  //Definici√≥n de variables
+  FILE *fp; //Puntero de archivo (file pointer)
+  byte b; //Buffer
+  int memfd; //Identificador de interface de acceso a memoria (file descriptor)
+
+  //Abrimos el archivo ranges en binario y como s√≥lo lectura
   fp = fopen("/proc/device-tree/soc/ranges","rb");
   //Si no se ha podido abrir,,,terminamos con error
   if(fp==NULL) return false;
   //Hemos podido abrir el archivo
 
-  //Posicionamos el cursor en la cuarta posiciÛn: direcciÛn base de perifÈricos
+  //Posicionamos el cursor en el byte 4 (quinta posici√≥n)
   fseek(fp,4,SEEK_SET);
-  //Si no podemos leer 4 bytes...terminamos con error
-  if (fread(b,1,4,fp) != 4) return false;
-  //Hemos podido leer los 4 bytes
+  //Leemos el byte. Si no podemos...terminamos con error
+  if (fread(&b,1,1,fp) != 1) return false;
+  fclose(fp); //Hemos podido leer el byte. Hemos terminado con el archivo. Lo cerramos
 
-  //Invertimos el orden de los bytes leidos y guardamos el resultado
-  //en el puntero global definido previamente.
-  bcm2835_peripherals_base = (uint32_t *)(b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3] << 0);
-  //A continuaciÛn tenemos el tamaÒo de la memoria de perifÈricos
-  //tambiÈn con una longitud de 4 bytes. Reaprovechamos el buffer
-  //Si no podemos leer 4 bytes...terminamos con error
-  if (fread(b,1,4,fp) != 4) return false;
-  //Hemos podido leer los 4 bytes
+  //Identificamos el modelo y asignamos la direcci√≥n base
+  bcm2835_peripherals_base = (b>0)?(uint32_t *)0x3F000000:(uint32_t *)0xFE000000; 
+  bcm2835_peripherals_size = 0x01000000; //El tama√±o es constante
 
-  //Asignamos su valor al puntero de direcciÛn base de perifÈricos
-  //Como antes, invertimos el orden de los bytes y guardamos el tamaÒo
-  //en la variable global previamente definida
-  bcm2835_peripherals_size = (b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3] << 0);
-  //Hemos terminado con el archivo. Lo cerramos
-  fclose(fp);
-
-  //Para acceder a los registros de los perifÈricos podemos abrir la
+  //Para acceder a los registros de los perif√©ricos podemos abrir la
   //interface /dev/gpiomem o /dev/mem
-  //La primera sÛlo da acceso a los pines (gpio) y est· a disposiciÛn
+  //La primera s√≥lo da acceso a los pines (gpio) y est√° a disposici√≥n
   //de cualquier usuario. La segunda da acceso a toda la memoria
   //(gpio,spi,i2c,pwm, etc), pero se necesitan permisos de root.
   //Utilizaremos la segunda. Por lo tanto siempre ejecutaremos las
   //aplicaciones con permisos de root
 
   //Si no tenemos permisos de root...terminamos con error
-  //La funciÛn geteuid devuelve el identificador del usuario que est·
-  //ejecutando la aplicaciÛn. root siempre es 0
+  //La funci√≥n geteuid devuelve el identificador del usuario que est√°
+  //ejecutando la aplicaci√≥n. root siempre es 0
   if(geteuid()) return false;
   //Somos root
 
   //Abrimos la interface de acceso a los registros de memoria y
   //tomamos su descriptor
   memfd = open("/dev/mem", O_RDWR | O_SYNC);
-  //Si el descriptor no es v·lido... terminamos con error
+  //Si el descriptor no es v√°lido... terminamos con error
   if(memfd<0) return false;
   //Hemos podido abrir la interface de acceso a memoria
 
-  //Mapeamos los registros de los perifÈricos sobre bcm2835_peripherals
+  //Mapeamos los registros de los perif√©ricos sobre bcm2835_peripherals
   bcm2835_peripherals = (uint32_t *)mmap(NULL,bcm2835_peripherals_size,(PROT_READ | PROT_WRITE),MAP_SHARED,memfd,(uint32_t)bcm2835_peripherals_base);
-  //Ya no necesitamos el acceso a memoria
-  close(memfd);
+  close(memfd); //Ya no necesitamos el acceso a memoria
   //Si no se ha podido mapear... terminamos con error
   if(bcm2835_peripherals == MAP_FAILED) return false;
   //Hemos podido mapear la memoria
 
-  //Calculamos la direcciÛn de los distintos bloques de registros con
+  //Calculamos la direcci√≥n de los distintos bloques de registros con
   //los que trabajaremos
   bcm2835_gpio = bcm2835_peripherals + 0x80000;
   bcm2835_pwm  = bcm2835_peripherals + 0x83000;
@@ -228,21 +214,17 @@ bool ArduinoBegin()
 }
 
 //Finalizamos el acceso a memoria de chip BCM2835
-void ArduinoEnd()
-{
-  //Si ya estaba inicializado...
-  if(bcm2835_st != MAP_FAILED)
-  {
+void ArduinoEnd() {
+  if(bcm2835_st != MAP_FAILED) { //Si ya estaba inicializado...
     //Quitamos el mapeo
     munmap(&bcm2835_peripherals,bcm2835_peripherals_size);
-    //Eliminamos la ˙ltima referencia para que quede como seÒal
+    //Eliminamos la √∫ltima referencia para que quede como se√±al
     bcm2835_st = (uint32_t *)MAP_FAILED;
   }
 }
 
 //Devuelve el tiempo en microsegundos que lleva en marcha el procesador.
-uint64_t micros()
-{
+uint64_t micros() {
   //Si no se ha inicializado el chip BCM2835...devolvemos 0;
   if(bcm2835_st == MAP_FAILED) return 0;
   //El chip BCM2835 se ha inicializado
@@ -255,41 +237,35 @@ uint64_t micros()
   //ambos registros
   uint64_t lo,hi;
     
-  //Bloqueamos acceso a registros
-  __sync_synchronize();
+  __sync_synchronize(); //Bloqueamos acceso a registros
   //Leemos los valores de los registros
   hi = *paddr_st_HI;
   lo = *paddr_st_LO;
-  //Desbloqueamos acceso a registros
-  __sync_synchronize();
+  __sync_synchronize(); //Desbloqueamos acceso a registros
   //Componemos el valor completo de 64 bits con los 2 de 32 bits
   //y lo devolvemos
   return (hi<<32) + lo;
 }
 
 //Devuelve el tiempo en milisegundos que lleva en marcha el procesador.
-uint64_t millis()
-{
-  //Llamamos a la funcÛn micros() y pasamos los microsegundos a
+uint64_t millis() {
+  //Llamamos a la funci√≥n micros() y pasamos los microsegundos a
   //milisegundos
   return micros()/1000;
 }
 
-//Devuelve el control despuÈs de transcurridos los microsegundos indicados.
-void delayMicroseconds(uint64_t us)
-{
+//Devuelve el control despu√©s de transcurridos los microsegundos indicados.
+void delayMicroseconds(uint64_t us) {
   //Si no se ha inicializado el chip BCM2835...terminamos;
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  //Esperamos el n˙mero de microsegundos indicado
-  usleep(us);
+  usleep(us); //Esperamos el n√∫mero de microsegundos indicado
 }
 
-//Devuelve el control despuÈs de transcurridos los milisegundos indicados.
-void delay(uint64_t ms)
-{
-  //Llamamos a la funciÛn delayMicroseconds pasando los milisegundos a
+//Devuelve el control despu√©s de transcurridos los milisegundos indicados.
+void delay(uint64_t ms) {
+  //Llamamos a la funci√≥n delayMicroseconds pasando los milisegundos a
   //microsegundos
   delayMicroseconds(ms*1000);
 }
@@ -298,14 +274,13 @@ void delay(uint64_t ms)
 //Los valores para mode son:
 //  0 = INPUT
 //  1 = OUTPUT
-void _pinMode(byte pin,byte mode)
-{
+void _pinMode(byte pin,byte mode) {
   //El grupo de registros de pines (bcm2836_gpio) comienza con el modo
   //de cada pin.
   //Se necesitan 3 bits para guardar el modo de un pin.
   //Puesto que un registro tiene 4 bytes = 32 bits, se puede guardar
   //el modo de 10 pines en cada registro (10*3=30) despreciando los
-  //dos ˙ltimos bits.
+  //dos √∫ltimos bits.
 
   //Aparte de los modos INPUT y OUTPUT, hay otros modos adicionales 
   //para seleccionar que son pines reservados de comunicaciones
@@ -318,7 +293,7 @@ void _pinMode(byte pin,byte mode)
   //Calculamos el desplazamiento dentro del registro para 
   byte shift = (pin % 10) * 3;
   //Tomamos el valor actual del registro, borramos los 3 bits
-  //que corresponden a nuestro pin y en esa posiciÛn,
+  //que corresponden a nuestro pin y en esa posiciÔøΩn,
   //escribimos el valor del modo
   *pMode = (*pMode & ~(0b111 << shift)) | (mode << shift);
 }
@@ -328,12 +303,11 @@ void _pinMode(byte pin,byte mode)
 // 0 - sin resitencias
 // 1 - resistencias pull-down
 // 2 - resistencias pull-up
-void _pinResType(byte pin,byte resType)
-{
+void _pinResType(byte pin,byte resType) {
   //Para cambiar el estado de las resistencias debemos seguir los
   //siguientes pasos...
   //Escribimos el tipo de resistencia en el registro bcm2835_gpio+37
-  //Activamos los bits correspondiente a los pines a los que afectar·
+  //Activamos los bits correspondiente a los pines a los que afectarÔøΩ
   //en los relojes de resistencias.
   //Le damos tiempo (10 microsegundos)
   //Desactivamos todos los bits de los relojes de resistencias
@@ -343,7 +317,7 @@ void _pinResType(byte pin,byte resType)
   //aplica.
   //Por eso debemos esperar un momento. Para asegurarnos que ha tenido
   //tiempo de reaccionar.
-  //DespuÈs volvemos a desactivar la m·scara del reloj de resistencias.
+  //Despu√©s volvemos a desactivar la m√°scara del reloj de resistencias.
 
   //Raspberry Pi tiene 64 pines.
   //Para poder controlarlos todos necesitamos al menos un bit por pin.
@@ -359,7 +333,7 @@ void _pinResType(byte pin,byte resType)
   volatile uint32_t *pResClk = bcm2835_gpio + 38 + pin/32;
   //Anotamos el tipo de resistencia a aplicar
   *pResType = resType;
-  //Aplicamos la m·scara al reloj con el desplazamiento correcto
+  //Aplicamos la mÔøΩscara al reloj con el desplazamiento correcto
   *pResClk = 1 << (pin % 32);
   //Esperamos 10 microsegundos
   delayMicroseconds(10);
@@ -368,14 +342,12 @@ void _pinResType(byte pin,byte resType)
 }
 
 //Configura el modo de un pin
-void pinMode(byte pin,arduinoPinMode mode)
-{
+void pinMode(byte pin,arduinoPinMode mode) {
   //Si no se ha inicializado el chip BCM2835...terminamos
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  switch(mode)
-  {
+  switch(mode) {
     case INPUT:
       //Configuramos el pin como entrada (0=INPUT)
       _pinMode(pin,0);
@@ -406,31 +378,29 @@ void pinMode(byte pin,arduinoPinMode mode)
 //Los valores de value son:
 //  LOW = 0
 //  HIGH = 1
-void digitalWrite(byte pin,byte value)
-{
+void digitalWrite(byte pin,byte value) {
   //Los registros para asignar el estado a un pin digital dependen del
   //estado.
   //Si queremos asignar un estado LOW, comenzaremos en bcm2835_gpio+10
   //Y si queremos HIGH, comenzamos en bcm2835_gpio+7
-  //SÛlo tenemos que asignar al registro la m·scara de los pines
+  //S√≥lo tenemos que asignar al registro la m√°scara de los pines
   //afectados
 
   //Si no se ha inicializado el chip BCM2835...terminamos;
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  //Creamos el puntero con la direcciÛn del registro afectado
-  //teniendo en cuenta la acciÛn solicitada y el pin
+  //Creamos el puntero con la direcci√≥n del registro afectado
+  //teniendo en cuenta la acci√≥n solicitada y el pin
   volatile uint32_t* paddr = bcm2835_gpio + (value==LOW?10:7);
-  //Calculamos la m·scara del pin afectado y la aplicamos
+  //Calculamos la m√°scara del pin afectado y la aplicamos
   *paddr = (1 << pin);
 }
 
 //Lee el estado de un pin digital
-byte digitalRead(byte pin)
-{
+byte digitalRead(byte pin) {
   //Los estados de los pines digitales se son representados por bits
-  //en un par de registros consecutivos a partir de la direcciÛn
+  //en un par de registros consecutivos a partir de la direcci√≥n
   //  bcm2835_gpio+13
   //Cada uno de ellos muestra el estado de 32 pines.
 
@@ -438,9 +408,9 @@ byte digitalRead(byte pin)
   if(bcm2835_st == MAP_FAILED) return LOW;
   //El chip BCM2835 se ha inicializado
 
-  //Calculamos la direcciÛn del registro
+  //Calculamos la direcci√≥n del registro
   volatile uint32_t* paddr = bcm2835_gpio + 13;
-  //Calculamos la m·scara, comprobamos que tenemos alguna coincidencia
+  //Calculamos la m√°scara, comprobamos que tenemos alguna coincidencia
   //y devolvemos el valor correspondiente
   return (*paddr & (1 << pin))?HIGH:LOW;
 }
@@ -448,38 +418,33 @@ byte digitalRead(byte pin)
 //Lee el estado de todos los pines digitales
 uint32_t digitalRead()
 {
-  //Es suficiente con leer un registro. No tenemos m·s de 32 pines
-  //Esta instrucciÛn no pertenece al estandar de Arduino
+  //Es suficiente con leer un registro. No tenemos m√°s de 32 pines
+  //Esta instrucci√≥n no pertenece al estandar de Arduino
 
   //Si no se ha inicializado el chip BCM2835...devolvemos LOW;
   if(bcm2835_st == MAP_FAILED) return LOW;
   //El chip BCM2835 se ha inicializado
 
-  //Calculamos la direcciÛn del registro que corresponde a los pines
-  volatile uint32_t* paddr = bcm2835_gpio + 13;
+  //Calculamos la direcci√≥n del registro que corresponde a los pines
+  volatile uint32_t* paddr = bcm2835_gpio+13;
   //Devolvemos su contenido
   return *paddr;
 }
 
-void shiftOut(byte pinData,byte pinClock,arduinoOrder bitOrder,byte value)
-{
+void shiftOut(byte pinData,byte pinClock,arduinoOrder bitOrder,byte value) {
   //Si no se ha inicializado el chip BCM2835...terminamos;
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  if(bitOrder==MSBFIRST)
-  {
-    for(int i=7;i>=0;i--)
-    {
+  if(bitOrder==MSBFIRST) {
+    for(int i=7;i>=0;i--) {
       digitalWrite(pinData,value & (1 << i));
       digitalWrite(pinClock,HIGH);
       digitalWrite(pinClock,LOW);
     }
   }
-  else
-  {
-    for(int i=0;i<8;i++)
-    {
+  else {
+    for(int i=0;i<8;i++) {
       digitalWrite(pinData,value & (1 << i));
       digitalWrite(pinClock,HIGH);
       digitalWrite(pinClock,LOW);
@@ -487,93 +452,86 @@ void shiftOut(byte pinData,byte pinClock,arduinoOrder bitOrder,byte value)
   }
 }
 
-string F(string s)
-{
-  //En Arduino se utiliza la funciÛn F para incluir el texto constante
-  //del par·metro en la memoria del programa y no en la de variables
-  //En Linux no es necesario. La funciÛn sÛlo se define para guardar
+string F(string s) {
+  //En Arduino se utiliza la funci√≥n F para incluir el texto constante
+  //del par√°metro en la memoria del programa y no en la de variables
+  //En Linux no es necesario. La funci√≥n s√≥lo se define para guardar
   //compatibilidad.
   //Devolvemos el texto tal cual
   return s;
 }
 
-void yield()
-{
-  //En Arduino, la familia ESP8266 utiliza esta funciÛn para
+void yield() {
+  //En Arduino, la familia ESP8266 utiliza esta funci√≥n para
   //refrescar los procesos de fondo. Si no se hace se puede
   //bloquear el programa.
-  //En Linux no es necesario. La funciÛn sÛlo se define para guardar
+  //En Linux no es necesario. La funci√≥n s√≥lo se define para guardar
   //compatibilidad
 }
 
 //Funciones para interrupciones
 
 //Puesto que en Linux no se gestionan demasiado bien las interrupciones
-//por hardware, se ha optado por utilizar una funciÛn propia dentro de un 
-//thread que se encarga de comprobar contÌnuamente el estado de los 
+//por hardware, se ha optado por utilizar una funci√≥n propia dentro de un 
+//thread que se encarga de comprobar cont√≠nuamente el estado de los 
 //pines. Esto libera el timer para otros usos.
-//Si no se monitoriza ning˙n pin, el thread finaliza autom·ticamente.
-//Cuando se crea un nueva monitorizaciÛn de pin con attachInterrupt se
-//toma nota de la funciÛn a la que se llamar·.
-//La estructura que mantiene toda la informaciÛn de una interrupciÛn es
+//Si no se monitoriza ning√∫n pin, el thread finaliza autom√°ticamente.
+//Cuando se crea un nueva monitorizaci√≥n de pin con attachInterrupt se
+//toma nota de la funcion a la que se llamar√°.
+//La estructura que mantiene toda la informaci√≥n de una interrupci√≥n es
 //interruptionStruct.
-//Las m·scaras de los pines con interrupciÛn se guardan en
+//Las m√°scaras de los pines con interrupci√≥n se guardan en
 //edgeRisingMask y edgeFallingMask.
-//Desde el thread, cuando se lanza una funciÛn de interrupciÛn tambiÈn 
+//Desde el thread, cuando se lanza una funci√≥n de interrupci√≥n tambi√©n 
 //se usa otro thread.
 //Todos los threads se desvinculan (detach) para no tener que hacer join.
 
 //Tipos de interrupciones por hardware.
-typedef enum
-{
+typedef enum {
   CHANGE=3,
   RISING=2,
   FALLING=1
 } arduinoEdgeType;
 
-//Estructura con la informaciÛn de una interrupciÛn
-struct interruptionStruct
-{
-  //Puntero a funciÛn de interrupciÛn.
-  //Siempre tiene dos par·metros: el pin y el estado
+//Estructura con la informaci√≥n de una interrupci√≥n
+struct interruptionStruct {
+  //Puntero a funci√≥n de interrupci√≥n.
+  //Siempre tiene dos par√°metros: el pin y el estado
   //El estado es 0 o 1
   void (*f)(byte,byte); 
-  //La funciÛn se est· ejecutando?. Por defecto no.
+  //La funci√≥n se est√° ejecutando?. Por defecto no.
   bool running=false; 
 };
 
-//Estructura con la informaciÛn de todas las interrupciones
-struct interruptionsStruct
-{
+//Estructura con la informaci√≥n de todas las interrupciones
+struct interruptionsStruct {
   //Diccionario de interrupciones
   //La key es el pin
-  //El dato es la estructura de interrupciÛn
+  //El dato es la estructura de interrupci√≥n
   unordered_map<byte,interruptionStruct> interruptionDicc;
-  //M·scara de interrupciones RISING
-  uint32_t edgeRisingMask=0; //Inicialmente ning˙n pin con interrupciÛn
-  //M·scara de interrupciones FALLING
-  uint32_t edgeFallingMask=0; //Inicialmente ning˙n pin con interrupciÛn
+  //M√°scara de interrupciones RISING
+  uint32_t edgeRisingMask=0; //Inicialmente ning√∫n pin con interrupci√≥n
+  //M√°scara de interrupciones FALLING
+  uint32_t edgeFallingMask=0; //Inicialmente ning√∫n pin con interrupci√≥n
 };
 
 //Creamos un objeto para mantener todas la interrupciones
 interruptionsStruct myInterruptions;
 
-//FunciÛn que lanza la funciÛn f(pin,status) y anota en running cuando termina.
-void InterruptionFunctionLauncher(bool *running,void (*f)(byte,byte),byte pin,byte status)
-{
+//Funci√≥n que lanza la funci√≥n f(pin,status) y anota en running cuando termina.
+void InterruptionFunctionLauncher(bool *running,void (*f)(byte,byte),byte pin,byte status) {
   //Debe ser llamada como thread.
-  //Es obligatorio para poder controlar cu·ndo finaliza la funciÛn
+  //Es obligatorio para poder controlar cu√°ndo finaliza la funci√≥n
 
-  //Llamamos a la funciÛn
+  //Llamamos a la funci√≥n
   f(pin,status);
-  //Hemos terminado de ejecutar la funciÛn
-  //Ya no est· en ejecuciÛn
+  //Hemos terminado de ejecutar la funci√≥n
+  //Ya no est√° en ejecuci√≥n
   *running=false;
 }
 
-//FunciÛn para el bucle principal de ejecuciÛn
-void InterruptionThreadLoop()
-{
+//Funci√≥n para el bucle principal de ejecuci√≥n
+void InterruptionThreadLoop() {
   //Debe ser llamada como thread
   //Utiliza el objeto myInterruptions definido previamente
 
@@ -581,49 +539,43 @@ void InterruptionThreadLoop()
   uint32_t lastStatus=digitalRead();
   //Estado actual de los pines
   uint32_t currentStatus;
-  //M·scara de pines que han sufrido cambios
+  //M√°scara de pines que han sufrido cambios
   uint32_t changes;
-  //M·scara del pin procesado
+  //M√°scara del pin procesado
   uint32_t maskPin;
-  //M·scara de interrupciones
+  //M√°scara de interrupciones
   uint32_t maskInterrupt;
 
-  //Mientras haya alg˙n nodo en el diccionario...
-  while(myInterruptions.interruptionDicc.size()>0)
-  {
+  //Mientras haya alg√∫n nodo en el diccionario...
+  while(myInterruptions.interruptionDicc.size()>0) {
     //Leemos el estado actual de los pines
     currentStatus=digitalRead();
-    //Calculamos la m·scara de pines que han sufrido cambios
+    //Calculamos la m√°scara de pines que han sufrido cambios
     changes=currentStatus ^ lastStatus;
-    //Si hay alg˙n cambio...
-    if(changes)
-    {
-      //Calculamos la m·scara de pines que deben hacer saltar la interrupciÛn.
+    //Si hay alg√∫n cambio...
+    if(changes) {
+      //Calculamos la m√°scara de pines que deben hacer saltar la interrupci√≥n.
       //Los que:
-      //han sufrido cambios (changes) y adem·s han pasado a estado HIGH y tenÌan activo el edge RISING (currentStatus & edgeRising)
+      //han sufrido cambios (changes) y adem√°s han pasado a estado HIGH y ten√≠an activo el edge RISING (currentStatus & edgeRising)
       //o
-      //han sufrido cambios (changes) y adem·s han pasado a estado LOW y tenÌan activo el edge FALLING (~currentStatus & edgeFalling)
+      //han sufrido cambios (changes) y adem√°s han pasado a estado LOW y ten√≠an activo el edge FALLING (~currentStatus & edgeFalling)
       maskInterrupt = changes & ((currentStatus & myInterruptions.edgeRisingMask) | (~currentStatus & myInterruptions.edgeFallingMask));
-      //Si debe saltar alguna interrupciÛn...
-      if(maskInterrupt)
-      {
+      //Si debe saltar alguna interrupci√≥n...
+      if(maskInterrupt) {
         //Recorremos todas las entradas del diccionario con un iterator
-        for(auto &itr : myInterruptions.interruptionDicc)
-        {
-          //Calculamos la m·scara del pin
+        for(auto &itr : myInterruptions.interruptionDicc) {
+          //Calculamos la m√°scara del pin
           maskPin = 1 << itr.first;
-          //Si el pin actual debe hacer saltar la interrupciÛn...
-          if(maskInterrupt & maskPin)
-          {
-            //Si la funciÛn no est· en ejecuciÛn...
-            if(!itr.second.running)
-            {
-              //Anotamos que el thread ya est· en ejecuciÛn
+          //Si el pin actual debe hacer saltar la interrupci√≥n...
+          if(maskInterrupt & maskPin) {
+            //Si la funci√≥n no est√° en ejecuci√≥n...
+            if(!itr.second.running) {
+              //Anotamos que el thread ya est√° en ejecuci√≥n
               itr.second.running=true;
-              //Ejecutamos la funciÛn asociada con un thread
-              //Le enviamos como par·metros el puntero de la variable running del nodo,
-              //el puntero de la funciÛn del nodo, el pin procesado y su estado actual
-              //Ejecutamos la funciÛn pasando como par·metro sus datos
+              //Ejecutamos la funci√≥n asociada con un thread
+              //Le enviamos como par√°metros el puntero de la variable running del nodo,
+              //el puntero de la funci√≥n del nodo, el pin procesado y su estado actual
+              //Ejecutamos la funci√≥n pasando como par√°metro sus datos
               thread thread1(InterruptionFunctionLauncher,&(itr.second.running),itr.second.f,itr.first,(currentStatus & maskPin?HIGH:LOW)); 
               //Desvinculamos el thread del programa principal
               thread1.detach();
@@ -631,20 +583,18 @@ void InterruptionThreadLoop()
           }
         }
       }
-      //Consideramos el estado actual como ˙ltimo
+      //Consideramos el estado actual como √∫ltimo
       lastStatus=currentStatus;
     }
   }
 }
 
 //Elimina los eventos de un pin
-void detachInterrupt(byte pin)
-{
-  //Calculamos la m·scara
+void detachInterrupt(byte pin) {
+  //Calculamos la m√°scara
   uint32_t mask=(1<<pin);
   //Si ya existe un evento para este pin...
-  if(myInterruptions.interruptionDicc.count(pin))
-  {
+  if(myInterruptions.interruptionDicc.count(pin)) {
     //...lo eliminaremos
     //Eliminamos cualquier evento RISING
     myInterruptions.edgeRisingMask &= ~mask;
@@ -652,17 +602,16 @@ void detachInterrupt(byte pin)
     myInterruptions.edgeFallingMask &= ~mask;
     //Eliminamos el pin del diccionario
     myInterruptions.interruptionDicc.erase(pin);
-    //Si el diccionario ha quedado vacÌo, ya terminar· su ejecuciÛn
+    //Si el diccionario ha quedado vac√≠o, ya terminar√° su ejecuci√≥n
     //No nos preocupamos por ello
   }
 }
 
-//Define la funciÛn a la que se debe llamar ante un cambio de estado
-//de un pin mediante una interrupciÛn
-//El segundo par·metro espera una funciÛn que no devuelve nada y que
-//tiene dos par·metros: el pin y su estado actual
-void attachInterrupt(byte pin,void (*f)(byte,byte),arduinoEdgeType mode)
-{
+//Define la funci√≥n a la que se debe llamar ante un cambio de estado
+//de un pin mediante una interrupci√≥n
+//El segundo par√°metro espera una funci√≥n que no devuelve nada y que
+//tiene dos par√°metros: el pin y su estado actual
+void attachInterrupt(byte pin,void (*f)(byte,byte),arduinoEdgeType mode) {
   //Si no se ha inicializado el chip BCM2835...terminamos
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
@@ -670,184 +619,171 @@ void attachInterrupt(byte pin,void (*f)(byte,byte),arduinoEdgeType mode)
   //Eliminamos cualquier evento de este pin (si es que hay alguno)
   detachInterrupt(pin);
 
-  //Creamos una estructura de interrupciÛn
+  //Creamos una estructura de interrupci√≥n
   interruptionStruct i;
-  //Asignamos la funciÛn
+  //Asignamos la funci√≥n
   i.f = f;
   //Creamos un nuevo nodo en el diccionario con los datos de la 
-  //interrupciÛn
+  //interrupci√≥n
   myInterruptions.interruptionDicc.emplace(pin,i);
-  //Calculamos la m·scara
+  //Calculamos la m√°scara
   uint32_t mask= (1<<pin);
-  //Si es de FALLING (o CHANGE)...activamos el bit en la m·scara de FALLING
+  //Si es de FALLING (o CHANGE)...activamos el bit en la m√°scara de FALLING
   if(mode & FALLING) myInterruptions.edgeFallingMask |= mask;
-  //Si es de RISING (o CHANGE)...activamos el bit en la m·scara de RISING
+  //Si es de RISING (o CHANGE)...activamos el bit en la m√°scara de RISING
   if(mode & RISING) myInterruptions.edgeRisingMask |= mask;
-  //Si el diccionario sÛlo tiene el nodo que acabamos de crear...
-  if(myInterruptions.interruptionDicc.size()==1)
-  {
+  //Si el diccionario s√≥lo tiene el nodo que acabamos de crear...
+  if(myInterruptions.interruptionDicc.size()==1) {
     //...es que ha sido el primero. Tendremos que lanzar el thread
     //del loop ahora.
 
-    //Lanzamos el thread a la funciÛn principal de gestiÛn de
+    //Lanzamos el thread a la funci√≥n principal de gesti√≥n de
     //interrupciones
     thread thread1(InterruptionThreadLoop);
     //Desvinculamos el thread que controla el bucle principal para
     //no tener que preocuparnos por el join. Sabemos que cuando el
-    //diccionario estÈ vacÌo, finalizar· el thread
+    //diccionario est√° vac√≠o, finalizar√° el thread
     thread1.detach();
   }
 }
 
 //Funciones para PWM
 
-//Seg˙n las especificaciones del procesador BMC2835, es capaz de hacer PWM
+//Seg√∫n las especificaciones del procesador BMC2835, es capaz de hacer PWM
 //en uno de sus pines. Esta funcionalidad es bastante pobre comparada
 //con las prestaciones de cualquier placa Arduino o ESP.
 //Crearemos esta funcionalidad por software para poder ser aplicada a
 //cualquiera de los pines.
-//De la misma manera que se hace con las interrupciones, se crear· un
+//De la misma manera que se hace con las interrupciones, se crear√° un
 //thread para esto.
-//El thread sÛlo existir· mientras haya al menos un pin con PWM activo.
+//El thread s√≥lo existir√° mientras haya al menos un pin con PWM activo.
 
-//Estructura con la informaciÛn de la gestiÛn de PWMs
-struct pwmsStruct
-{
+//Estructura con la informaci√≥n de la gesti√≥n de PWMs
+struct pwmsStruct {
   //Diccionario de los pines y valores PWM
   //La key es el pin
   //El dato es el valor PWM asignado al pin
   unordered_map<byte,byte> pwmDicc;
   //Tiempo en microsegundos entre ticks (periodo)
-  //Est· relacionado con la frecuencia de PWM
+  //Est√° relacionado con la frecuencia de PWM
   //Puesto que estamos utilizando un utin16_t para mantener el periodo entre
-  //ticks, estamos limitando la frecuencia mÌnima a:
+  //ticks, estamos limitando la frecuencia m√≠nima a:
   //  1000000/256/65535=0.0596055~0.06Hz
-  uint16_t period=0; //Inicialmente utilizamos la m·xima frecuencia
+  uint16_t period=0; //Inicialmente utilizamos la m√°xima frecuencia
   //Listado de peticiones pendientes
   //Aunque es un uint16_t guarda dos valores de tipo byte:
   //- En el byte alto guarda el pin
   //- En el byte bajo garda el valor PWM
   list<uint16_t> pwmRequests;
-  //El thread est· en marcha?
+  //El thread est√° en marcha?
   bool running=false;
 };
 
-//Creamos un objeto para mantener la gestiÛn de PWM
+//Creamos un objeto para mantener la gesti√≥n de PWM
 pwmsStruct myPWMs;
 
 
 //Asigna una nueva frecuencia de PWM en Hz
 //Afecta a todos los pines
-void freqPWM(float freq)
-{
-  //La mÌnima frecuencia permitida es de 0.06Hz
-  //Esta funciÛn permitir· ajustar la frecuencia a la utilizada en servomotores
+void freqPWM(float freq) {
+  //La m√≠nima frecuencia permitida es de 0.06Hz
+  //Esta funci√≥n permitir√° ajustar la frecuencia a la utilizada en servomotores
 
   //Debemos calcular el periodo em microsegundos
   //El periodo es el inverso de la frecuencia
   //Puesto que nos dan la frecuencia en Hz el perido lo obtenemos en segundos
   //Debemos multiplicar por 1E6 para pasarlo a microsegundos
-  //Adem·s tenemos una resoluciÛn de 256 niveles de PWM asÌ que tendremos que
+  //Adem√°s tenemos una resoluci√≥n de 256 niveles de PWM as√≠ que tendremos que
   //dividirlo por 256 para calcular el periodo de un tick
   //period=1/freq*1000000/256;
   myPWMs.period=3906.25/freq;
 }
 
-//FunciÛn para el bucle principal de ejecuciÛn
-void pwmThreadLoop()
-{
+//Funci√≥n para el bucle principal de ejecuci√≥n
+void pwmThreadLoop() {
   //Debe ser llamada como thread
   //Utiliza el objeto myPWMs definido previamente
 
   //Mientras haya pines activos o peticiones pendientes...
-  while(myPWMs.pwmDicc.size()+myPWMs.pwmRequests.size()>0)
-  {
+  while(myPWMs.pwmDicc.size()+myPWMs.pwmRequests.size()>0) {
 	//...lanzaremos un ciclo completo
 	//Al comenzar un ciclo incluimos las peticiones pendientes
 	//Mientras haya peticiones pendientes  
-    while(myPWMs.pwmRequests.size())
-    {
-	  //Obtenemos la referencia al primer nodo con un iterator  
-	  list<uint16_t>::iterator itr = myPWMs.pwmRequests.begin();
-	  //Desglosamos su contenido
-	  byte pin=(*itr)>>8;
-	  byte value=(*itr)&0xFF;
-	  //Si ya existe el pin en el diccionario...
-	  if(myPWMs.pwmDicc.count(pin))
-      {
-	    //Si la peticiÛn tiene valor...simplemente lo actualizamos
-	    if(value) myPWMs.pwmDicc.at(pin)=value;
-	    //Si tiene un valor nulo...
-	    else
-	    {
-		  //Eliminamos el nodo del diccionario
-		  myPWMs.pwmDicc.erase(pin);
-		  //Ponemos el pin en estado LOW
-		  digitalWrite(pin,LOW);
-	    }
-	  }
-	  //Si el pin no existe en el diccionario...
-	  else
-      {
-	    //Configuramos el pin de salida
-	    pinMode(pin,OUTPUT);
-	    //Si el valor es mayor que cero...creamos un nuevo nodo en el diccionario
-	    if(value) myPWMs.pwmDicc.emplace(pin,value);
-	    //Si el valor en cero...simplemente apagamos el pin
-	    else digitalWrite(pin,LOW);
-	  }
-	  //Hemos terminado de procesar esta peticiÛn
-	  //La eliminamos de la lista de peticiones
-	  myPWMs.pwmRequests.erase(itr);
+    while(myPWMs.pwmRequests.size()) {
+      //Obtenemos la referencia al primer nodo con un iterator  
+      list<uint16_t>::iterator itr = myPWMs.pwmRequests.begin();
+      //Desglosamos su contenido
+      byte pin=(*itr)>>8;
+      byte value=(*itr)&0xFF;
+      //Si ya existe el pin en el diccionario...
+      if(myPWMs.pwmDicc.count(pin)) {
+        //Si la petici√≥n tiene valor...simplemente lo actualizamos
+        if(value) myPWMs.pwmDicc.at(pin)=value;
+        //Si tiene un valor nulo...
+        else {
+        //Eliminamos el nodo del diccionario
+        myPWMs.pwmDicc.erase(pin);
+        //Ponemos el pin en estado LOW
+        digitalWrite(pin,LOW);
+        }
+      }
+      //Si el pin no existe en el diccionario...
+      else {
+        //Configuramos el pin de salida
+        pinMode(pin,OUTPUT);
+        //Si el valor es mayor que cero...creamos un nuevo nodo en el diccionario
+        if(value) myPWMs.pwmDicc.emplace(pin,value);
+        //Si el valor en cero...simplemente apagamos el pin
+        else digitalWrite(pin,LOW);
+      }
+      //Hemos terminado de procesar esta petici√≥n
+      //La eliminamos de la lista de peticiones
+      myPWMs.pwmRequests.erase(itr);
     }
     //Hemos terminado de procesar todas las peticiones pendientes
     //Si hay pines activos...
-    if(myPWMs.pwmDicc.size()>0)
-    {
+    if(myPWMs.pwmDicc.size()>0) {
 	  //Al inicial un ciclo todos los pines se deben activar
       for(auto &itr : myPWMs.pwmDicc) digitalWrite(itr.first,HIGH);
       //Esperamos un periodo hasta el siguiente tick
       delayMicroseconds(myPWMs.period);
       //Haremos un ciclo completo (excepto el primer tick)
-      for(byte tick=1;tick>0;tick++)
-      {
+      for(byte tick=1;tick>0;tick++) {
 	    //Recorremos todos los nodos del diccionario con un iterator
         for(auto &itr : myPWMs.pwmDicc)
           //Si el tick actual coincide con el valor PWM del pin...
           //...el pin se debe apagar
           if(tick-1==itr.second) digitalWrite(itr.first,LOW); 
-        //Dormiremos hasta el prÛximo tick
+        //Dormiremos hasta el pr√≥ximo tick
         delayMicroseconds(myPWMs.period);
       }
 	}
   }
   //No hay pines activos ni peticiones pendientes
-  //El thread dejar· de estar en marcha
+  //El thread dejar√° de estar en marcha
   myPWMs.running=false;
 }
 
-//Define la funciÛn a la que se debe llamar para hacer cualquier cambio
+//Define la funci√≥n a la que se debe llamar para hacer cualquier cambio
 //de estado PWM a un pin
-void analogWrite(byte pin,byte value)
-{
+void analogWrite(byte pin,byte value) {
   //Si no se ha inicializado el chip BCM2835...terminamos
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  //AÒadimos un nuevo nodo al final de la lista de peticiones
-  //La peticiÛn ser· procesada en el propio thread al inicio de un ciclo
+  //A√±adimos un nuevo nodo al final de la lista de peticiones
+  //La petici√≥n ser√° procesada en el propio thread al inicio de un ciclo
   myPWMs.pwmRequests.push_back((pin<<8)|value);
   
-  //Si el thread no est· en marcha...
-  if(!myPWMs.running)
-  {
-	//Lo ponemos en marcha nosotros
-	myPWMs.running=true;
-    //Lanzamos el thread a la funciÛn principal de gestiÛn de PWM
+  //Si el thread no est√° en marcha...
+  if(!myPWMs.running) {
+    //Lo ponemos en marcha nosotros
+    myPWMs.running=true;
+    //Lanzamos el thread a la funci√≥n principal de gesti√≥n de PWM
     thread thread1(pwmThreadLoop);
     //Desvinculamos el thread que controla el bucle principal para
     //no tener que preocuparnos por el join. Sabemos que cuando el
-    //diccionario estÈ vacÌo, finalizar· el thread
+    //diccionario est√° vac√≠o, finalizar√° el thread
     thread1.detach();
   }
 }

@@ -1,0 +1,29 @@
+Tema: Redimensionamiento de archivo de intercambio de memoria (swap)
+Fecha: 202120423
+
+Raspbian
+Por defecto tiene un tamaño de 100Mb.
+Esto significa que en una RPi3 de 1Gb de RAM, tendremos un límite máximo de
+memoria de 1.1Gb. Si trabajamos con aplicaciones que necesitan más requerimientos
+(Ej: Visual Code + Platformio), el sistema se bloqueará.
+Ejemplo de ampliación del tamaño del archivo de swap a 1Gb:
+- Abrimos el archivo de configuración: sudo mousepad /etc/dphys-swapfile
+- Localizamos la línea que dimentiona el archivo: CONF_SWAPSIZE=100
+- La sustituimos por: CONF_SWAPSIZE=1024
+- Guardamos y salimos.
+- Aplicamos los cambios con: sudo /etc/init.d/dphys-swapfile restart
+
+Ubuntu
+Por defecto el archivo de swap se llama swapfile y se encuentra en raíz.
+Para conocer el tamaño actual del archivo de swap utilizamos el comando: swapon
+Este comando nos muestra el contenido del archivo de configuración /proc/swaps (cat /proc/swaps).
+Con el comando free podemos ver la cantidad de RAM, el tamaño del archivo swap y su uso actual.
+Ejemplo de ampliación del tamaño del archivo de swap a 4Gb:
+- Desactivamos el archivo de swap: sudo swapoff /swapfile
+- Borramos el archivo de swap actual: sudo rm /swapfile
+- Creamos archivo con el nuevo tamaño: sudo fallocate -l 4G /swapfile
+- Formateamos el archivo para que sea de swap: sudo mkswap /swapfile
+- Aplicamos permisos al archivo: sudo chmod 0600 /swapfile
+- Activamos el archivo de swap: sudo swapon /swapfile
+- Podemos comprobar el resultado con: swapon
+

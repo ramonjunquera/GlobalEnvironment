@@ -1,0 +1,25 @@
+Tema: ﻿Instalación de Platformio
+Fecha: 202100426
+
+Es requisito previo imprescindible la instalación de Visual Code, puesto que
+Platformio es un plugin.
+
+La instalación consiste simplemente en añadir el plugin de Platformio.
+En la instalación se pueden producir distintos errores:
+- Falta paquete distutils. Lo instalamos con:
+    sudo apt install python3-distutils
+
+Notas para Raspberry Pi.
+- Platformio sobre Visual Code necesita 2Gb de RAM para funcionar con soltura.
+  Raspberry Pi 3 sólo tiene 1Gb de RAM.
+  Por defecto tiene un archivo de swap de 100Mb.
+  Memoria total 1.1Gb
+  Será necesario ampliar el archivo de swap hasta 1Gb para que sumen 2Gb.
+- Recordar que los programas generados con las librerías de emulación de Arduino
+  necesitan permisos de root para ejecutarse.
+  Concretamente para acceder a los pines de chip BMC2835.
+- En RPi el dispositivo contiene al propio compilador al tener sistema operativo.
+  Una vez compilado el programa (Build), no se transfiere al dispositivo (Upload).
+  Para ejecutar el programa lo más sencillo es abrir una nueva terminal dentro del propio Platformio
+  y ejecutar: sudo ./.pio/build/raspberrypi_3b/program
+

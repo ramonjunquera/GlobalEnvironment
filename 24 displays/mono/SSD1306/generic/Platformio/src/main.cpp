@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210210
+  Fecha: 2021426
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
 
@@ -572,3 +572,13 @@ void loop() {
     test22(); //Test de triángulos
   #endif
 }
+
+#ifdef __arm__ //Si es una Raspberri Pi
+  //Simulamos el comportamiento de Arduino
+  int main(int argc, char **argv) {
+    setup();
+    while(true) {
+      loop();
+    }
+  }
+#endif

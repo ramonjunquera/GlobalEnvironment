@@ -1,0 +1,15 @@
+Tema: Instalación de RDP (Remote Desktop)
+Fecha: 202120422
+
+Servidor:
+  sudo apt install xrdp
+  
+Cliente:
+  Aplicación Remmina (sudo apt install reminna)
+Funcionamiento:
+- Si hacemos logout, se cerrará la sesión con todas las aplicaciones que haya abiertas.
+- Si hacemos desconexión, se mantendrá la sesión hasta la próxima hasta reconectar.
+Nota. Para mejorar la velocidad de refresco se recomienda:
+- Eliminar la imagen de fondeo dejando un color plano
+- Reducir la profundidad de color a 16 bits  
+
