@@ -1,5 +1,5 @@
 Tema: Cómo instalar Free File Sync
-Fecha: 20210309
+Fecha: 20210428
 
 Instrucciones:
 
@@ -7,14 +7,14 @@ Instrucciones:
     Instalación
     - Descargamos el paquete de instalación para Linux de la web oficial:
         https://freefilesync.org/download.php
-      El archivo descargado es FreeFileSync_11.8_Linux.tar.gz
+      El archivo descargado es FreeFileSync_11.9_Linux.tar.gz
       Suponemos que se ha descargado en la carpeta Downloads
       Abrimos una sesión de terminal y escribimos:
     - Cambiamos a la carpeta de Downloads:
         cd /home/pi/Downloads
     - Lo descomprimimos ahí mismo con:
-        tar -vxf FreeFileSync_11.8_Linux.tar.gz
-    - Ejecutamos el archivo FreeFileSync_11.8_Install.run hacendo doble click
+        tar -vxf FreeFileSync_11.9_Linux.tar.gz
+    - Ejecutamos el archivo FreeFileSync_11.9_Install.run hacendo doble click
       sobre él desde el explorador.
     - Aceptamos las opciones por defecto pulsando ENTER.
     - Introducimos la clave del administrador.
@@ -23,4 +23,11 @@ Instrucciones:
     La aplicación es accesible desde el Terminal con freefilesync
     Se han asociado sus extensiones.
     Se ha añadido un icono de aplicación.
+    
+    Nota
+    Hay algunos sistemas remotos que pueden dar problemas a la hora de sincronizar archivos
+    porque dan el error de que no pueden actualizar la hora del archivo.
+    Esto es debido a que se ha lanzado la aplicación de FreeFileSync sin permisos de root.
+    Para evitar el error simplemente ejecutamos la aplicación con permisos de root:
+      sudo freefilesync
 

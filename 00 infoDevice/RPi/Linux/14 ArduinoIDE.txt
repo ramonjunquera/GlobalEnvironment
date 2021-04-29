@@ -1,11 +1,11 @@
 Cómo instalar el IDE de Arduino en Raspbian ARM32 o x86
-Fecha:20191217
+Fecha:20210428
 
 Descargamos la última versión desde la página oficial:
 https://www.arduino.cc/en/Main/Software
 Suponemos que quedará en la carpeta Downloads del usuario pi (/home/pi/Downloads).
 
-Actualmente la última versión es la 1.8.10.
+Actualmente la última versión es la 1.8.13.
 Dependiendo del tipo de procesador obtenemos el archivo:
   ARM32  : arduino-1.8.13-linuxarm.tar.xz
   Linux64: arduino-1.8.13-linux64.tar.xz

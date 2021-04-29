@@ -5,7 +5,7 @@
 - Se ha creado un nuevo icono de aplicación
 - La abrimos
 Nota:
-  Si sólo podemos ver versiones de sistemas operativos de 32bits es porque_
+  Si sólo podemos ver versiones de sistemas operativos de 32bits es porque:
   - El sistema operativo que contiene VirtualBox es de 32bits
   - El sistema es de 64bits pero en la BIOS no está habilitada la opción de virtualización
 Consejo:
