@@ -23,4 +23,4 @@ RESOURCES += \
     images.qrc
 
 CONFIG += c++11
-INCLUDEPATH += /home/pi/prg
+INCLUDEPATH += lib

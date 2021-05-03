@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20210426
+ * Versión: 20210501
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -99,7 +99,10 @@ class SerialClass {
   
   //Inicialización de puerto serie
   void begin(uint32_t baud) {
-    //No te tiene en cuenta el valor de la velocidad
+    //No se tiene en cuenta el valor de la velocidad porque la salida
+    //del puerto serie está redirigida a la pantalla.
+    //Hacemos una operación para que no de error de variable no usada
+    baud++;
   }
   
   //Enviar una línea con marca de final

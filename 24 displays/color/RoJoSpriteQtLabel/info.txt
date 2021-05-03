@@ -1,0 +1,57 @@
+Proyecto: Demo de uso de librería RoJoSpriteQtLabel
+Fecha: 20210503
+
+Objetivo:
+  Utilizar un objeto Label de Qt como si fuese un display, en el que 
+  se puedan representar sprites.
+
+Creación del proyecto:
+- File/New File or Project...
+- Projects -> Application -> Qt Widgets Application
+- Name: RoJoSpriteQtLabelDemo
+
+Configuración de archivo .pro:
+- Suponemos que ya está añadida la referencia de: CONFIG += c++11
+- Añadimos referencia a la carpeta de librerías:
+  INCLUDEPATH += lib
+
+Librerías:
+- Creamos la carpeta lib en la raíz del proyecto
+- Añadimos las siguientes librerías a la carpeta (sin subcarpetas):
+  - Arduino.h
+  - FS.h
+  - RoJoSprite2.cpp y .h
+  - RoJoGraph2.cpp y .h
+  - RoJoSpriteQtLabel.h
+
+Almacenamiento de datos:
+- Creamos la carpeta data en la raíz del proyecto. En ella
+  guardaremos los archivos necesarios para la demo.
+
+Diseño:
+- Tenemos una única ventana llamada mainwindow.
+- Por defecto incluye un QWidget llamado centralWidget
+- Anadimos un Label
+- Necesitamos que el objeto se ajuste al área máxima visible
+- Para ello en el modo de diseño, hacemos click con el botón derecho
+  sobre MainWindow (arriba a la derecha) y seleccionamos:
+    Layout/Lay Out Horizontally
+  Con esto conseguimos que el label siempre sea visible completamente.
+  Si cambiamos el tamaño del Label a uno más grande, mayor que la ventana,
+  se ampliará hasta porder mostrarlo completamente.
+- Eliminamos el texto por defecto del Label
+- Cambiamos el título de la ventana
+- Cambiamos el color de fondo de la ventana
+
+Desarrollo:
+- Design
+  - Eliminamos las barras de menú, herramientas y estado.
+- mainwindow.cpp
+  - Añadimos includes de librerías a utilizar.
+
+Debug:
+- Recordar que la carpeta data contiene los datos del sistema de archivos.
+  Cuando estamos compilando, el ejecutable aparece en una carpeta
+  distinta a la de raiz del proyecto.
+  Se debe copiar la carpeta data a la carpeta en la que se realiza la
+  compilación para que encuentre los archivos.

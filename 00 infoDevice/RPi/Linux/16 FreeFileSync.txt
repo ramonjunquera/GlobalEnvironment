@@ -30,4 +30,10 @@ Instrucciones:
     Esto es debido a que se ha lanzado la aplicación de FreeFileSync sin permisos de root.
     Para evitar el error simplemente ejecutamos la aplicación con permisos de root:
       sudo freefilesync
+      
+    Nota
+    En ocasiones, cuando ejecutamos la aplicación desde la línea de comandos, puede aparecer
+    el mensaje: Failed to load module "canberra-gtk-module".
+    Para corregirlo debemos ejecutar:
+      sudo apt-get install libcanberra-gtk-module libcanberra-gtk0
 

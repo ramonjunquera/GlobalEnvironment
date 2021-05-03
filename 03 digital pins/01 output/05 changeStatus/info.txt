@@ -1,4 +1,5 @@
-button
+Proyecto: changeStatus
+Fecha: 20210501
 
 Novedades:
 - Primer desarrollo con librerías RoJoArduino
@@ -41,10 +42,12 @@ En este caso: button.pro.
 Añadiremos la siguiente línea:
   CONFIG += c++11
 
-Suponemos que tenemos las librerías en un carpeta externa
-llamada /home/pi/prg. Para indicar al compilador que debe
-buscar es ese path cualquier librería que desconozca, volvemos
-al archivo .pro y añadimos la siguiente línea:
+Suponemos que tenemos las librerías en la carpeta lib que cuelga
+de la raíz del proyecto.
+Esta carpeta tiene un archivo llamado libs.txt con el listado
+de librerías utilizadas para este proyecto.
+No se incluyen para que siempre se utilice la última versión.
+Añadimos también al archivo .pro la referencia:
   INCLUDEPATH += /home/pi/prg
 
 Ahora ya podríamos utilizar las librerías RoJoArduino si errores.

@@ -1,0 +1,6 @@
+Tema: Qt. Tamaño del texto visualizado
+Fecha: 20210501
+
+Se puede cambiar el tamaño y fuente utilizado en la visualización
+de los fuentes, a través del menú principal:
+  Tools/Options.../Text Editor/Font/Size
