@@ -1,5 +1,5 @@
 Autor: Ramón Junquera
-Fecha: 20191027
+Fecha: 20210504
 Tema: ATtiny85. Configuración de entorno y upload
 Descripción:
   La placa ATtiny85 tiene un sistema de transferencia/upload distinto al resto de placas.
@@ -54,7 +54,7 @@ Comportamiento en Windows:
   Esto es normal, porque esta placa no funciona como las que conocemos hasta ahora.
   En realidad esta placa debe estar desconectada mientras desarrollamos.
 
-Transferencia en el IDE de Arduino:
+Transferencia (IDE de Arduino/Platformio):
   El dispositivo debe mantenerse desconectado.
   Cuando tenemos una compilación correcta y queremos transferir el programa, pulsamos el botón
   de transferencia en el IDE de Arduino y nos aparecerá un mensaje en el panel inferior que
@@ -62,37 +62,3 @@ Transferencia en el IDE de Arduino:
   La conectamos y al momento es detectada y comienza la transferencia.
   Finaliza con un mensaje de confirmación.
   Si el dispositivo está conectado cuando iniciamos la transferencia, dará un error.
-
-Configuración en Platformio:
-  El archivo platformio.ini debe contener la siguiente configuración:
-    [env:attiny85]
-    platform = atmelavr
-    board = attiny85
-    framework = arduino
-  Desde Platformio sólo podremos desarrollar y compilar. La transferencia será manual.
-  Tomaremos como base la línea de comando utilizada en el IDE de Arduino para tranferir el
-  programa. Por ejemplo (Ubuntu):
-    /home/pi/.arduino15/packages/digistump/tools/micronucleus/2.0a4/launcher -cdigispark --timeout 60 -Uflash:w:/tmp/arduino_build_253034/Attiny85.ino.hex:i
-  En ella podemos identificar:
-    - El ejecutable que transfiere: launcher
-    - El path del ejecutable: /home/pi/.arduino15/packages/digistump/tools/micronucleus/2.0a4/
-    - Los parámetro utilizados: -cdigispark --timeout 60 -Uflash:w:
-    - El archivo hexadecimal que se ha generado en la compilación: Attiny85.ino.hex
-    - El path del archivo compilado: /tmp/arduino_build_253034/
-  Para transferir el archivo compilado en Platformio, lanzaremos esta misma línea, sustituyendo
-  solamente el nombre y path del archivo compilado.
-  Así que una vez que hemos compilado correctamente nuestro programa, miraremos el log en el panel inferior
-  buscando la línea que comienza por Building. Por ejemplo:
-    Building .pio/build/attiny85/firmware.hex
-  En ella nos está diciendo el nombre del archivo compilado (*.hex) y su ubicación.
-  Sustituyendo en la línea de comando utilizada en el IDE de Arduino tenemos:
-    /home/pi/.arduino15/packages/digistump/tools/micronucleus/2.0a4/launcher -cdigispark --timeout 60 -Uflash:w:.pio/build/attiny85/firmware.hex:i
-  Esta es la línea que debemos ejecutar. No hace falta salir de Platformio.
-  En la barra inferior, el último de los iconos permite abrir una sesión de terminal para lanzar nuestros comandos.
-  Por supuesto, el funcionamiento es el mismo que en el IDE de Arduino: tenemos 60 segundos para conectar el
-  dispositivo. En cuanto lo hagamos, comenzará la transferencia.
-
-  Conclusión:
-    Para poder transferir archivos compilados en Platformio, es necesaria la previa instalación y 
-    configuración del IDE de Arduino.
-

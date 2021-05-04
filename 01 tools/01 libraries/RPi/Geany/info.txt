@@ -1,5 +1,5 @@
 ﻿Título: Librerías para compatibilidad de Arduino en Raspberry Pi.
-Fecha: 20210422
+Fecha: 20210504
 
 Estructura de archivos de proyecto Geany
 - Carpeta Geany. Es la carpeta principal del proyecto. Contiene los archivos:
@@ -14,9 +14,6 @@ Conversión de Arduino IDE a Geany
 
 Conversión de Platformio a Geany
 - Copiar el archivo principal del proyecto (main.cpp) de la carpeta src a la carpeta Geany
-
-Compilación
-- Siempre se comenzará la compilación del archivo ArduinoRunme.cpp, que a su vez llama a main.cpp.
 
 Librerías de emulación de Arduino
 - Es el conjunto de librerías que permiten ejecutar programas desarrollados para Arduino en Raspberry Pi:

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210213
+  Fecha: 20210504
   Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
   Material: breadboard, cables, display OLED SSD1331
   Ejemplos: ESP32, ESP8266, Mega, UNO, Nano, Raspberry Pi
@@ -34,15 +34,10 @@
     Teniendo en cuenta que el dispositivo Lolin32Lite no tiene pin de
     5V, sólo podremos utilizar lectores SD de 3.3V
   Nota 3:
-    Configuración de Build de Geany para Raspberry Pi:
-      Compile: g++ -Wall -std=c++11 -c "%f" -pthread -I"lib"
-      Build: g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"lib"
-      Execute: sudo "./%e"
-  Nota 4:
     Con Lolin32 es obligatorio añadir al circuito una resistencia de 
     10 Kohm entre el pin 2 y GND, para poder transferir datos (programa
     o SPIFFS).
-  Nota 5:
+  Nota 4:
     No todos los lectores SD son compatibles.
 
   Resultado:

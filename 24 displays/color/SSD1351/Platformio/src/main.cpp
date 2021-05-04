@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210213
+  Fecha: 20210504
   Tema: Librería para display OLED SPI 1.5" 128x128 SSD1351
   Objetivo: Demo de librería RoJoSSD1351
   Material: breadboard, cables, display OLED SSD1351, lector SD
@@ -31,11 +31,6 @@
     carpeta data para su correcto funcionamiento.
     Para SPIFFS se pueden transferir con la tarea:
       PlatformIO: Upload File System image
-  Nota 2:
-    Configuración de Build de Geany para Raspberry Pi:
-      Compile: g++ -Wall -std=c++11 -c "%f" -pthread -I"lib"
-      Build: g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"lib"
-      Execute: sudo "./%e"
  
   Resultado:
   Realizamos varios tests cíclicos
