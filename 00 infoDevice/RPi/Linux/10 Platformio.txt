@@ -1,5 +1,5 @@
 Tema: ﻿Instalación de Platformio
-Fecha: 202100426
+Fecha: 20210511
 
 Es requisito previo imprescindible la instalación de Visual Code, puesto que
 Platformio es un plugin.
@@ -8,6 +8,10 @@ La instalación consiste simplemente en añadir el plugin de Platformio.
 En la instalación se pueden producir distintos errores:
 - Falta paquete distutils. Lo instalamos con:
     sudo apt install python3-distutils
+- Falta de permisos para trabajar con el puerto USB (ttyUSB0).
+  Se corrige añadiendo nuestro usuario al grupo "dialout" con:
+    sudo usermod -a -G dialout $USER
+  Es necesario reiniciar después
 
 Notas para Raspberry Pi.
 - Platformio sobre Visual Code necesita 2Gb de RAM para funcionar con soltura.

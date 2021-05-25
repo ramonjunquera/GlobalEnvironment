@@ -1,0 +1,15 @@
+Tema: Modificación de la aplicación Hello world!
+Fecha: 20200505
+
+Retomaremos la aplicación por defecto que se crea con una plantilla vacía.
+
+En el centro de la Activity tenemos el texto Hello world!.
+Si hacemos click sobre él, aparecen en el panel derecho las propiedades del objeto gráfico seleccionado.
+Podemos comprobar que el objeto gráfico es del tipo TextView.
+En la sección de "Common Attributes" encontramos el campo "text" que contiene el texto.
+Lo cambiaremos a "Hola mundo!" y haremos click fuera de eses campo.
+En el editor gráfico menos como cámbia el texto.
+Si volvemos a ejecutar, la aplicación se recompila, se transfiere al dispositivo sobreescribiendo la
+aplicación existente y ejecutándola de nuevo.
+Vemos que en el dispositivo también cambia el texto.
+

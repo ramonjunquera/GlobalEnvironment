@@ -1,0 +1,8 @@
+Tema: Problemas con bluetooth en Ubuntu 21.04
+Fecha: 20210510
+
+La versión 21.04 de Ubuntu puede presentar problemas para reconocer los dispositivos bluetooth.
+Si es el caso, se puede reparar con las siguientes líneas:
+  sudo rmmod btusb
+  sudo modprobe btusb
+Los cambios no son permanentes. Se tendrán que volver a implementar tras el siguiente arranque

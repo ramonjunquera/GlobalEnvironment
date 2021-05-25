@@ -1,0 +1,27 @@
+Tema: Definición de funciones
+Fecha: 20200506
+
+Kotlin sigue agrupando los objetos en clases.
+Las clases siguen teniendo métodos privados y públicos.
+Los métodos de las clases se consideran funciones.
+Una función se declara con la palabra clave "fun".
+
+En este ejercicio crearemos una nueva función/método de la clase de la Activity.
+La función simplemente enviará un mensaje a la consola.
+Nuestra función será llamada antes de finalizar la función onCreate.
+Como resultado, cuando se ejecute, deberíamos ver en la consola el mensaje
+
+Reemplazamos la definción de la clase de nuestra Activity del archivo MainActivity.kt con:
+class MainActivity : AppCompatActivity() {
+  private fun showInConsole() {
+    println("Estoy en la función showInConsole")
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    showInConsole()
+  }
+}
+
+Hemos definido nuestra función como privada, porque tampoco necesitamos que se utilice desde el exterior.
+

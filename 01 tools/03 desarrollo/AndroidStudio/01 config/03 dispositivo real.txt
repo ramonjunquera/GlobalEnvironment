@@ -1,0 +1,42 @@
+Tema: Configuración de dispositivo real
+Fecha: 20200505
+
+Los emuladores de dispositivos nor permiten mucha flexibilidad porque podemos elegir versión de sistema
+operativo, memoria, tamaño de pantalla, etc.
+Pero la emulación es bastante lenta.
+Podríamos utilizar un dispositivo antiguo que no utilicemos para probar nuestras aplicaciones.
+
+Lo primero que debemos mirar es la versión de Android que tiene para no compilar con versiones superiores
+que hagan la aplicación incompatible.
+
+La manera más sencilla de transferir una aplicación recien compilada es a través de un cable contando el
+ordenador de desarrollo con el dispositivo.
+Para ello debemos desbloquear las opciones de desarrollador, pulsando repetidas veces en la opción de:
+Acerca del dispositivo/Número de compilación.
+Entramos en "Opiones del desarrollador" y activamos la depuración USB.
+
+En Ubuntu debemos jhacer algún cambio:
+- Añadir el usuario actual al grupo plugdev con:
+  sudo usermod -aG plugdev $LOGNAME
+- Instalar el paquete de reglas udev para sispositivos Android con:
+  sudo apt-get install android-sdk-platform-tools-common
+- Instalar la aplicación adb con:
+  sudo apt install adb
+  
+Ahora el dispositivo debería ser reconocido por el ordenador de desarrollo.
+Para comprobarlo abrimos una terminal y ejecutamos: adb devices
+Nos debería aparecer el listado de dispositivos conectados. No importa si sin dispositivos reales o virtuales.
+
+Si el dispositivo tiene un versión de android igual o superior a la 4.2.2, nos pregunta en el móvil si aceptamos
+la conexión actual. Si respondemos que sí, se guardará y la recordará para futuras conexiones.
+
+A partir de ahora, podemos comprobar que en el IDE, además de los dispositivos virtuales que podamos configurar,
+también aparece el real conectado.
+
+Sólo tenemos que seleccionarlo y se comportará como el virtual, pero mucho más rápido.
+
+
+Nota:
+También podríamos utilizar wifi para transferir la aplicación. Para configurar esto, de deben seguir las
+instrucciones del siguiente enlace: https://developer.android.com/studio/run/device
+

@@ -1,0 +1,214 @@
+Tema: Thread
+Fecha: 20200513
+
+Es normal que los dispositivos en los que se ejecuta Android tengan varios procesadores.
+Es muy habitual que un programa que se ejecuta en un hilo principal abra hilos secundarios
+que corren en otros procesadores de manera simultánea.
+
+Hay veces que el uso de hilos secundarios es obligatorio porque Android no permite lanzar
+cierto tipo de tareas en el hilo principal, como pueden ser las de comunicaciones: conexión,
+envío, desconexión, etc...
+
+El objeto Thread nos permite crear estos hilos secundarios.
+
+El ejemplo más sencillo (y util) es pedir que la ejecución del programa se detenga durante
+un tiempo determinado. La sintaxis es:
+  Thread.sleep(ms)
+Donde ms es un valor numérico que representa el tiempo en milisegundos.
+Relamente lo que ocurre es que se crea una alarma de un sólo uno y el programa queda
+hibernado hasta que la alarma salta. Esto no afecta para nada a otros Threads.
+Cuando el programa está esperando la alarma no consume CPU, que puede ser utilizada por
+otros Threads.
+
+Ejemplo de creación simple de un Thread:
+
+package com.rojo.app02
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.rojo.app02.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    println("begin main Thread")
+    val secThread=Thread{ //Creamos un Thread secundario
+      println("begin secondary Thread")
+      Thread.sleep(4000)
+      println("end secondary Thread")
+    }
+    secThread.start() //Ejecutamos el Thread secundario
+    println("end main Thread")
+  }
+}
+
+El programa principal se ejecuta con la función onCreate de MainActivity.
+Se muestra el mensaje de que hemos comenzado el Thread principal.
+Definimos un Tread secundario que muestra un mensaje al comenzar y finalizar.
+Realmente no hace nada. Sólo espera unos segundos.
+Finalmente lanzamos el Thread secundario y mostramos el mensaje de que se ha
+finalizado el Thread principal.
+
+El primer mensaje que aparece es el de que ha comenzado el Thread principal.
+Después el de que el Thread principal ha finalizado.
+Ni siquiera le ha dado tiempo al Thread secundario a mostrar su mensaje de
+inicio, aunque está lanzado.
+Después aparecen los mensajes de inicio y final del Thread secundario.
+
+Otra segunda manera de trabajar con Threads es creando nuestra propia clase heredada
+de Thread.
+Ejemplo con la misma funcionalidad y mensajes que el anterior:
+
+package com.rojo.app02
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.rojo.app02.databinding.ActivityMainBinding
+
+//Clase propia privada derivada de Thread
+internal class MyThread:Thread() {
+  override fun run() { //Sobreescribimos el método run original
+    println("begin secondary Thread")
+    sleep(4000)
+    //Nota. No utilizamos Thread.sleep porque sleep es un método de la clase Thread
+    //y estamos creando una clase heredada de Thread. Ya tenemos disponible el
+    //método sleep es esta misma clase!
+    println("end secondary Thread")
+  }
+}
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    println("begin main Thread")
+    val secThread=MyThread() //Instanciamos nuestra clase heredada de Thread
+    secThread.start() //Ejecutamos el Thread secundario
+    println("end main Thread")
+  }
+}
+
+Tenemos una forma más de crear un Thread secundario.
+En vez de definir el código del Thread secundario en el momento en el que instanciamos
+el objeto Thread (ejemplo 1), o sobreescribiendo el método run (ejemplo 2), podemos
+crear una clase propia de tipo Runnable.
+Este tipo de clses está preparado para que sean llamadas por Threads.
+Ejemplo con la misma funcionalidad y salidas que los anteriores:
+
+package com.rojo.app02
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.rojo.app02.databinding.ActivityMainBinding
+
+//Definición de clase propia de tipo Runnable
+internal class MyRunnable : Runnable {
+  override fun run() { //Sobreescribimos el método run original
+    println("begin secondary Thread")
+    Thread.sleep(4000)
+    println("end secondary Thread")
+  }
+}
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    println("begin main Thread")
+    val myRunnable=MyRunnable() //Instanciamos nuestra clase Runnable
+    val secThread=Thread(myRunnable) //Creamos un Thread con nuestro objeto Runnable
+    secThread.start() //Ejecutamos el Thread secundario
+    println("end main Thread")
+  }
+}
+
+El inconveniente de este método es que tenemos que crear nosotros el objeto Thread
+y asignarle una instancia de nuestra clase Runnable. Un poco más largo.
+
+Pregunta. Podemos pasar parámetros a un Thread?
+Respuesta. No. A un Thread no. Pero sí a la clase Runnable que podamos definir.
+Ejemplo:
+
+package com.rojo.app02
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.rojo.app02.databinding.ActivityMainBinding
+
+//Definición de clase propia de tipo Runnable
+//La clase tiene un parámetro que guarda como constante interna y es utilizada para identificar
+//la clase en los mensajes que muestra
+internal class MyRunnable(val nombre: String) : Runnable {
+  override fun run() { //Sobreescribimos el método run original
+    println("begin Thread $nombre")
+    Thread.sleep(4000)
+    println("end Thread $nombre")
+  }
+}
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    println("begin main Thread")
+    //Instanciamos nuestra clase Runnable pasando el nombre de la clase
+    val myRunnable=MyRunnable("HOLA!")
+    val secThread=Thread(myRunnable) //Creamos un Thread con nuestro objeto Runnable
+    secThread.start() //Ejecutamos el Thread secundario
+    println("end main Thread")
+  }
+}
+
+De la misma manera, podríamos añadir el parámetro cuando creamos una clase heredada de Thread.
+Ejemplo:
+
+package com.rojo.app02
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.rojo.app02.databinding.ActivityMainBinding
+
+//Clase propia privada derivada de Thread con parámetro que se toma como constante privada
+internal class MyThread(val nombre:String):Thread() {
+  override fun run() { //Sobreescribimos el método run original
+    println("begin Thread $nombre")
+    sleep(4000)
+    //Nota. No utilizamos Thread.sleep porque sleep es un método de la clase Thread
+    //y estamos creando una clase heredada de Thread. Ya tenemos disponible el
+    //método sleep es esta misma clase!
+    println("end Thread $nombre")
+  }
+}
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    println("begin main Thread")
+    //Instanciamos nuestra clase heredada de Thread que tiene un parámetro con el nombre de la clase
+    val secThread=MyThread("Hola!")
+    secThread.start() //Ejecutamos el Thread secundario
+    println("end main Thread")
+  }
+}
+
+Nota.
+Definimos un Thread y tenemos intención de lanzarlo a continuación y no se lanzará desde ningún otro
+punto, no es necesario que creemos una variable para instanciarlo. Podríamos comenzar con Thread {
+y terminar con }.start() para lanzarlo inmediatamente.

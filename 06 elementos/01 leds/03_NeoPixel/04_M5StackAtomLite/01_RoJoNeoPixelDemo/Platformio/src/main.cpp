@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20201204
+  Fecha: 20210525
   Tema: M5Stack Atom Lite led
   Objetivo: Demo de gestión de led
   Material: M5Stack Atom Lite o M5Stack Atom Echo
@@ -20,25 +20,25 @@ void setup() {
 
 //Colores planos
 void test1() {
-  leds.v->clear({255,0,0}); //Rojo
+  leds.v->clear(leds.v->getColor(255,0,0)); //Rojo
   leds.draw();
   delay(1000);
-  leds.v->clear({0,255,0}); //Verde
+  leds.v->clear(leds.v->getColor(0,255,0)); //Verde
   leds.draw();
   delay(1000);
-  leds.v->clear({0,0,255}); //Azul
+  leds.v->clear(leds.v->getColor(0,0,255)); //Azul
   leds.draw();
   delay(1000);
-  leds.v->clear({255,255,0}); //Amarillo
+  leds.v->clear(leds.v->getColor(255,255,0)); //Amarillo
   leds.draw();
   delay(1000);
-  leds.v->clear({255,0,255}); //Magenta
+  leds.v->clear(leds.v->getColor(255,0,255)); //Magenta
   leds.draw();
   delay(1000);
-  leds.v->clear({0,255,255}); //Cyan
+  leds.v->clear(leds.v->getColor(0,255,255)); //Cyan
   leds.draw();
   delay(1000);
-  leds.v->clear({255,255,255}); //Blanco
+  leds.v->clear(leds.v->getColor(255,255,255)); //Blanco
   leds.draw();
   delay(1000);
   leds.v->clear(); //Negro

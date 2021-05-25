@@ -1,0 +1,54 @@
+Tema: Listas
+Fecha: 20200509
+
+La lista se considera una variante del Array. El tipo es ArrayList o List
+La única restricción que tenemos es que todos los nodos deben ser del mismo tipo.
+Al igual que la estructura Array también se considera ordenado, porque se accede
+a los valores por posición.
+Ejemplo:
+class MainActivity : AppCompatActivity() {
+  private fun tests() {
+    var miLista=arrayListOf<String>() //Creamos una lista vacía
+    //También se puede definir como : var miLista=listOf<String>()
+    miLista.add("uno") //Añadimos un primer elemento al final
+    miLista.add("dos") //Añadimos un segundo elemento al final
+    println(miLista) //Se muestran todos los valores de los nodos "uno","dos"
+
+    miLista.add(1,"tres") //Añadimos un tercer nodo en la segunda posición
+    println(miLista) //Se muestran todos los valores de los nodos "uno","tres","dos"
+
+    var miLista1= listOf("cuatro","cinco") //Creamos una nueva lista. El tipo String se infiere
+    miLista.addAll(miLista1) //Añadimos los nodos de una a la otra
+    println(miLista) //Mostramos todos los nodos: uno,tres,dos,cuatro,cinco
+
+    miLista.addAll(listOf("seis","siete")) //Añadimos dos nodos más
+    println(miLista) //Mostramos todos los nodos: uno,tres,dos,cuatro,cinco,seis,siete
+
+    println(miLista[1]) //Mostramos contenido del segundo nodo
+    miLista[1]="3" //Cambiamos el contenido del segundo nodo
+    println(miLista) //Mostramos todos los nodos: uno,3,dos,cuatro,cinco,seis,siete
+
+    miLista.removeAt(1) //Eliminamos el segundo nodo
+    println(miLista) //Mostramos todos los nodos: uno,dos,cuatro,cinco,seis,siete
+
+    println(miLista.first()) //Mostramos el primer nodo de la lista
+    println(miLista.last()) //Mostramos el último nodo de la lista
+
+    miLista.forEach { //Recorremos todos los nodos de la lista
+      //Se irán asignando a la variable it (iterator)
+      println(it) //Mostramos los nodos de uno en uno
+    }
+
+    //El método count devuelve el número de nodos de la lista
+    println("La lista tiene ${miLista.count()} nodos")
+
+    miLista.clear() //Borramos todos los nodos de la lista
+    println("La lista tiene ${miLista.count()} nodos")
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    tests()
+  }
+}
+

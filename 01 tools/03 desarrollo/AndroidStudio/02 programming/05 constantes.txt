@@ -1,0 +1,29 @@
+Tema: Constantes en Kotlin
+Fecha: 20200506
+
+El funcionamiento es idéntico al de las variables, excepto que en la definición se
+utiliza la palabra reservada "val" en vez de "var".
+
+Editamos la clase de MainActivity.kt:
+class MainActivity : AppCompatActivity() {
+  private fun showInConsole() {
+    val nombre="Pedro"
+    println(nombre)
+
+    val edad:Int=35
+    println(edad)
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    showInConsole()
+  }
+}
+
+Se declara la constante nombre y se le asigna el valor Pedro, por lo que se asume que es de tipo String.
+Se declara la constante edad y se indica el tipo. A continuación se le asigna valor.
+En este último case nos aparece un warning indicando que no es necesario que indiquemos el tipo, porque
+el sistema es capar de inferirlo en tiempo de ejecución.
+
+Nota. No hay ninguna restricción para asignar a una constante el valor de una variable.
+Lo único que ocurre es que no se podrá modificar su contenido.

@@ -1,0 +1,42 @@
+Tema: Diccionarios
+Fecha: 20200509
+
+Un diccionario es una lista en la que sus nodos no son localizables por su índice/posición
+sino por una clave que asignamos nosotros manualmente junto con el dato.
+En un diccionario no podemos tener nodos con claves repetidas.
+Un diccionario es una estructura NO ordenada. Los datos se seleccionan por clave, no por posición.
+
+En Kotlin el objeto diccionario se denomina Map.
+
+Los nodos deben ser todos del mismo tipo.
+Las claves deben ser todas del mismo tipo.
+El tipo de los nodos no tiene porqué ser igual que el tipo de las claves.
+
+class MainActivity : AppCompatActivity() {
+  private fun tests() {
+    //Creamos un diccionario constante y lo inicializamos con dos nodos
+    //El diccionario usa el tipo String para las claves y Byte para los valores
+    var miDicc=mapOf<String,Byte>("Jesús" to 33,"Marcos" to 27)
+    println(miDicc) //Mostramos los nodos del diccionario
+    //Podríamos hacer lo mismo dejando que Kotlin infiera los tipos, pero tomará
+    //String para las claves & Int para los valores
+    var miDicc2=mapOf("Jesús" to 33,"Marcos" to 27)
+    //A un diccionario constante no se le pueden añadir, modificar o quitar nodos.
+    //Crearemos un diccionario mutable con las mismas características
+    var miMDicc=mutableMapOf<String,Byte>("Jesús" to 33,"Marcos" to 27)
+    miMDicc["Juan"]=23 //Añadimos un nuevo nodo
+    miMDicc.put("Santiago",34) //Añadimos un nuevo nodo (otra manera)
+    println(miMDicc) //Mostramos su contenido
+    miMDicc["Juan"]=22 //Actualizamos el valor del nodo Juan
+    //También serviría: miMDicc.put("Juan",22)
+    println(miMDicc) //Mostramos el contenido del diccionario
+    println(miMDicc["Juan"]) //Mostramos el valor del nodo con la clave Juan
+    miMDicc.remove("Juan") //Eliminamos el nodo Juan
+    println(miMDicc) //Mostramos el contenido del diccionario
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    tests()
+  }
+}

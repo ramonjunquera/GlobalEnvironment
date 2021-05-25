@@ -1,0 +1,71 @@
+Tema: Bucles
+Fecha: 20200509
+
+Veremos los bucle for y while.
+A continuación se incluye ejemplo auto explicativo:
+
+class MainActivity : AppCompatActivity() {
+  private fun tests() {
+    //Creamos un array de Bytes
+    var miArray=arrayOf<Byte>(11,22,33)
+    //Creamos una lista de Strings
+    var miLista=listOf("uno","dos","tres")
+    //Creamos un diccionario de Bytes con claves de String
+    var miDicc=mutableMapOf<String,Byte>("Jesús" to 33,"Marcos" to 27,"Santiago" to 34)
+
+    //Asignaremos a la variable i los valores del rango 0 a 2 (ambos incluidos).
+    //El autotipado infiere que i es Int
+    //Es obligatorio que sea Int porque es el tipo utilizado para los índices
+    //No podríamos utilziar una variable de tipo Byte para ahorrar memoria
+    for(i in 0..2) {
+      //Mostramos el índice y el contenido de la posición del Array que corresponde
+      println("miArray[$i]=${miArray[i]}")
+    }
+
+    //Utilizamos la palabra until al definir el rango de números a recorrer
+    //Until NO incluye el último número
+    //El resultado es el mismo que en el caso anterior
+    for(i in 0 until 3) {
+      println("miArray[$i]=${miArray[i]}")
+    }
+
+    //Introducimos en el bucle el paso de salto
+    //Mostraremos todos los números pares hasta el 20
+    for(i in 2..20 step 2) print("$i ")
+    println()
+
+    //Para bucles descendentes utilizamos la palabra downTo
+    for(i in 20 downTo 2 step 2) print("$i ") //Números pares descendentes desde el 20
+    println()
+
+    var miArray1=(1..5) //Creamos un Array de Int con 5 posiciones y asignamos los valores del 1 al 5
+    for(v in miArray1) print("$v ") //Mostramos todos los valores del array
+    println()
+
+    for(miNodo in miLista) { //Recorremos todos los nodos de la lista guardando el valor en miNodo
+      println(miNodo) //Mostramos el contenido del nodo
+    }
+
+    //Recorremos todos los nodos del diccionario guardando la clave y su valor en miNodo
+    for(miNodo in miDicc) {
+      //Mostramos los dos campos del nodo por separado
+      println("Clave:${miNodo.key}, Valor:${miNodo.value}")
+    }
+
+    println("Ejemplo de bucle while")
+    var i=0 //Inicialmente el índice vale cero
+    while(i<miArray.count()) { //Mientras el indice sea inferior al número de elementos...
+      print("${miArray[i]} ") //Mostramos el elemento correspondiente al índice
+      i++
+    }
+    println()
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    tests()
+  }
+}
+
+
+

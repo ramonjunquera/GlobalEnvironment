@@ -1,0 +1,8 @@
+Tema: Ejemplo de uso de TextView
+Fecha: 20210510
+
+El widget TestView se puede considerar un Label. Muestra un texto no editable.
+
+La aplicación consta de un Button y un TextView.
+Al pulsar el botón se actualiza el texto que muestra el TextView.
+

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20210524
   Tema: M5Stack Fire. Leds NeoPixel
   Objetivo: Demo de gestión de leds
   Material: M5Stack Fire
@@ -20,9 +20,9 @@ void Test1() {
   for(byte turnCount=0;turnCount<3;turnCount++) { //Damos 3 vueltas
     for(byte y=0;y<2;y++) { //Recorremos todos los leds
       for(byte x=0;x<5;x++) { //Recorremos todos los leds
-        leds.v->drawPixel(x,y,{0,255,0}); //Encendemos el led procesado. Sólo canal verde
+        leds.v->drawPixel(x,y,leds.v->getColor(0,255,0)); //Encendemos el led procesado. Sólo canal verde
         leds.draw(); //Mostramos la configuración actual
-        leds.v->drawPixel(x,y,{0,0,0}); //Apagamos el led procesado para que no aparezca en el siguiente ciclo
+        leds.v->drawPixel(x,y,0); //Apagamos el led procesado para que no aparezca en el siguiente ciclo
         delay(100); //Esperamos un momento
       }
     }
@@ -33,12 +33,12 @@ void Test1() {
 void Test2() {
   int8_t x=0; //Posición del led procesado
   int8_t delta=1; //Dirección
-  RoJoColor color;
+  uint32_t color;
 
   leds.v->clear(); //Apagamos todos los leds
   for(byte i=0;i<100;i++) { //Hacemos 100 cambios de led
     for(byte y=0;y<2;y++) { //Recorremos ambos lados
-      leds.v->drawPixel(x,y,{255,0,0}); //Encendemos el led en rojo
+      leds.v->drawPixel(x,y,leds.v->getColor(255,0,0)); //Encendemos el led en rojo
     }
     leds.draw(); //Mostramos la configuración actual
     x+=delta; //Calculamos la siguiente posición
@@ -47,7 +47,9 @@ void Test2() {
     for(byte dimY=0;dimY<2;dimY++) {
       for(byte dimX=0;dimX<5;dimX++) {
         color=leds.v->getPixel(dimX,dimY); //Obtenemos el color
-        color.channels[0]/=2; //Reducimos el nivel de rojo a la mitad
+        byte r,g,b; //Canales de color
+        leds.v->getColor(color,&r,&g,&b); //Descomponemos en canales
+        color=leds.v->getColor(r/2,0,0); //Reducimos a la mitad el canal rojo
         leds.v->drawPixel(dimX,dimY,color); //Dibujamos de nuevo el pixel
       }
     }

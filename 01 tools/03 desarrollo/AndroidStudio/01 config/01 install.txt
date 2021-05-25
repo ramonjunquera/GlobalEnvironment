@@ -1,0 +1,5 @@
+Tema: Instalación de Android Studio en Ubuntu 64bits
+Fecha: 20200505
+
+La opción más sencilla es a partir del gestor de aplicaciones incluido en Ubuntu.
+

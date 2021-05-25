@@ -1,0 +1,83 @@
+Tema: Funciones con parámetros
+Fecha: 20200506
+
+En Kotlin también se pueden pasar parámetros a una función.
+Pero todos los parámetros se pasan por valor. Nunca por referencia.
+Dentro de la propia función, los parámetros se consideran constantes (están
+definidos como val, no como var).
+Es obligatorio definir el tipo de los parámetros.
+
+Una función puede devolver un valor.
+Si se devuelve, es obligatorio definir el tipo.
+
+Veamos algún ejemplo en la clase de clase de MainActivity.kt:
+class MainActivity : AppCompatActivity() {
+  private fun sumar(a:Int,b:Int):Int {
+    return a+b
+  }
+  private fun sumar2(a:Int,b:Int):Int=a+b
+  private fun sumar3(a:Int,b:Int=5):Int=a+b
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    println(sumar(3,2))
+    println(sumar2(4,3))
+    println(sumar3(6))
+  }
+}
+
+Definimos la función sumar, que admite dos parámetros de tipo Int llamados a y b.
+También indicamos que la función devolverá un valor de tipo Int.
+Con el comando return asignamos el valor a devolver.
+La llamada es simple. sumar (3,2).
+Si no indicamos nada más, el IDE incluye el nombre de los parámetros en la llamada
+a la función: sumar(a:3,b:2).
+Realmente podríamos especificar en la llamada a qué parámetros estamos asignando el valor.
+
+La definición de sumar2 es idéntica a sumar, excepto que utilizamos una forma reducida
+de definición. Sólo podemos usarlo con funciones sencillas.
+
+Por último vemos cómo se pueden asignar valores por defecto a los parámetros en la
+definición de la función y cómo podemos llamarla sólo con los parámetros obligatorios.
+
+
+No poder pasar valores por referencia es un gran problema.
+Existe una manera sencilla de solventarlo.
+Es cierto que los parámetros son considerados constantes, pero si el parámetro es la
+instancia de una clase, se considera constante el tipo. No podríamos cambiarle de
+tipo al parámetro, pero sí podemos cambiar los valores de las variables públicas de la
+clase.
+Lo vemos con un ejemplo:
+class MyClass { //Definimos una clase propia
+  public var a:Int=33 //Variable pública con valor predeterminado
+}
+class MainActivity : AppCompatActivity() {
+  //Función que cambia el contenido de una clase
+  private fun changeA(cl:MyClass) {
+    cl.a+=2 //Modificamos la variable pública a
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+
+    var c=MyClass() //Instanciamos la clase en la variable c
+    println(c.a) //Mostramos el actual valor de a. Debería tener el valor por defecto: 33
+    changeA(c) //Llamamos a una función en la que pasamos como parámetro la instancia de la clase
+    println(c.a) //Mostramos el actual valor de a. Debería haber cambiado a 35
+  }
+}
+
+Comenzamos definiendo nuestra propia clase. Es muy sencilla porque sólo tiene una variable
+pública con un valor predeterminado.
+Ya dentro de la calse de la Activity, creamos una función que tiene como parámetro una instancia de la
+clase que acabamos de definir.
+Lo único que hace es alterar el valor de la variable pública.
+En el constructor instanciamos nuestra clase en la variable c.
+Mostramos el valor de la variable pública, que es el valor por defecto.
+Llamamos a la función pasando la instancia como parámetro.
+La función modifica la variable pública de la clase y devuelve el control.
+Mostramos el valor de la variable pública y comprobamos como efectívamente se ha modificado.
+
+Una clase es la manera más sencilla de agrupar variables cuando debemos entregar o recibir varios
+datos a una función.
+

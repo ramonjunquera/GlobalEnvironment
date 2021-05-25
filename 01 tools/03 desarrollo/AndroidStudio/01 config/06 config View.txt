@@ -1,0 +1,49 @@
+Tema: Configuración del entorno para trabajar con vistas
+Fecha: 20210511
+
+Con el ejemplo de la plantilla Empty Activity tenemos el siguiente MainActivity.kt por defecto:
+
+package com.rojo.app02
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+
+class MainActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+  }
+}
+
+Lo que nos interesa es introducir objetos gráficos en la vista y poder interactuar con ellos en
+la sección de código.
+A continuación se indican los pasos recomendados para versiones de Android Studio 4.0 y superiores.
+
+Abrimos el archivo /Gradle Scripts/build.gradle (Module)
+Localizamos la sección android
+Después de la última entrada (normalmente kotlinOptions) creamos una nueva con el siguiente texto:
+    buildFeatures {
+        viewBinding=true
+    }
+Y sincronizamos pulsando el enlace de la barra superior a la derecha (Sync Now), o con el botón de la
+barra de herramientas en forma de elefante (Sync Project with Gradle Files)
+
+Sustituimos el código de MainActivity.kt por este:
+
+package com.rojo.app02
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.rojo.app02.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+  }
+}
+
+A partir de ahora ya se puede hacer referencia a los objetos de la vista a través de la variable ui.
+

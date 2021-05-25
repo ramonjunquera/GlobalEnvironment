@@ -1,0 +1,88 @@
+Tema: OnTouchListener
+Fecha: 20200525
+
+View.OnTouchListener es la clase encargada de gestionar la interacción de pulsaciones con un objeto gráfico.
+Todos los objetos gráficos derivan de View, por lo tanto está disponible para cualquiera.
+Sólo tiene el método onTouch.
+
+
+Desarrollamos un ejemplo simple.
+En la parte gráfica sólo tenemos un objeto View llamado view que ocupa todo el área visible de la Activity.
+En la rutina de inicialización de la Activity, instanciamos una clase customizada que se encargará de
+gestionar la interacción de pulsaciones:
+  ui.view.setOnTouchListener(MyOnTouchListener())
+Nuestra clase hereda sus propiedades de View.OnTouchListener.
+Sobreescribimos el único método que tiene.
+El método tiene dos parámetros:
+- El objeto View al que afecta
+- El evento de la pulsación (con sus propiedades)
+Siempre es muy conveniente que llamemos al método performClick del objeto View para informar que tenemos un
+evento de pulsación.
+Nos aseguramos que la vista no es nula con el operador !!.
+Tomamos las coordenadas del evento de pulsación.
+Dependiendo del tipo de evento (event.action) mostraremos un mensaje distinto.
+El resultado es que podemos ver en la consola de ejecución las coordenadas del Canvas en la que se ha
+producido el evento y de qué tipo era.
+
+class MyOnTouchListener:View.OnTouchListener {
+  override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+    v!!.performClick()
+    val x=event!!.x
+    val y=event.y
+    print("($x,$y) ")
+    when(event.action) {
+      MotionEvent.ACTION_DOWN->{
+        println("botón pulsado")
+      }
+      MotionEvent.ACTION_UP->{
+        println("botón soltado")
+      }
+      MotionEvent.ACTION_MOVE->{
+        println("nueva posición")
+      }
+    }
+    return true
+  }
+}
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui: ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    ui.view.setOnTouchListener(MyOnTouchListener())
+  }
+}
+
+Podríamos definir la gestión de la pulsación en el mismo punto de llamada con
+una función Lambda, para no llamar funciones externas nidefinir clases:
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui: ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    ui.view.setOnTouchListener { v, event ->
+      v.performClick()
+      val x=event.x
+      val y=event.y
+      print("($x,$y) ")
+      when(event.action) {
+        MotionEvent.ACTION_DOWN->{
+          println("botón pulsado")
+        }
+        MotionEvent.ACTION_UP->{
+          println("botón soltado")
+        }
+        MotionEvent.ACTION_MOVE->{
+          println("nueva posición")
+        }
+      }
+      true
+    }
+  }
+}

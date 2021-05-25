@@ -1,0 +1,79 @@
+Tema: Primera aplicación
+Fecha: 20200509
+
+Cuando abrimos la aplicación de Android Studio, aparece una ventana llamada "Welcopme to Android Studio"
+que nos da las opciones básicas para trabajar en proyectos: crear, abrir, importar, ...
+
+Seleccionaremos la opción "Create New Project".
+
+Nos pide el tipo de dispositivo para el que será la aplicación: un móvil o un tablet, un wearable (reloj),
+una televisión, un coche, un dispositivo IoT, ...
+En nuestro caso seleccionaremos un móvil "Phone asn Tablet".
+
+En la parte derecha aparecen las distintas plantillas de aplicaciones.
+Para este ejemplo básico seleccionaremos "Empty Activity".
+
+Una Activity es una pantalla de una aplicación. Una aplicación puede tener más de una pantalla/Activity.
+
+A continuación nos pide algunos datos básicos de la aplicación:
+- Name. Puede tener varias palabras separadas por espacios, pero su primer carácter debe ser una letra mayúscula.
+  En nuestro caso la llamaremos App01
+- Package name. Es un nombre único que identifica esta aplicación. Normalmente compuesto por el dominio de la
+  empresa desarrolladora y el nombre de la aplicación sin espacios y en minúsculas.
+  En nuestro caso será: com.rojo.app01
+- Save location. Carpeta en la que se guardará el proyecto.
+- Language. Podemos elegir entre Java y Kotlin. Siempre seleccionaremos Kotlin. Google está dejando de lado Java
+  y apuesta por Kotlin por ser un lenguaje más moderno. De todas maneras, existe traductor automático de código
+  entre Java y Kotlin.
+- Minimum SDK. Es el sistema operativo base que se utilizará. Las versiones anteriores no serán compatibles.
+  Al seleccionar el API nos indica el % de compatibilidad que conseguiremos.
+  Es más que sificiente comenzar con la versión 5.0 de Android, correspondiente al API21.
+  A fecha de hoy nos da un 94.1% de compatibilidad.
+
+Una vez seleccionado, se abre el IDE con la aplicación básica y se parsea el código.
+Por defecto podemos ver el contenido del archivo MainActivity.kt. Correspondiente a la única Activity de la
+aplicación. Llamada MainActivity.
+En el panél izquierdo podemos ver el árbol de paquete de la aplicación y la ubicación del archivo que
+se está mostrando. Concretamente es: App01/app/src/main/java/com/rojo/app01/MainActivity
+
+Podría aparecer algún error del tipo "Could not resolve org.jetbrains.kotlin-gradle-plugin:1.5.0-release-764
+Si abrimos File/Project Structure.../Suggestions/app podemos ver que nos hace una sugerencia de actualización.
+Pulsamos el botón "Update Variable" y aceptamos con "OK".
+Ahora el error ha desaparecido, pero nos aparece un mensaje nuevo. Esta vez un warning con el texto: "Please remove
+usages of 'jcenter()' Maven repository from your build scripts and ...".
+Esto es debido a que el repositorio de JCenter se considera obsoleto y se descontinuará en futuras versiones.
+La referencia a jcenter está incluida en uno de los scripts de Gradle.
+En el panel izquierdo, debajo del nodo raíz "app" en el que se encuentra el árbol de archivos de nuestra aplicación,
+tenemos el nodo "Gradle Scripts". Lo desplegamos y el primero de los subnodes es "build.gradle (Project: App01)".
+Hacemos doble click sobre él y vemos su contenido en el panel central.
+Localizamos la línea que hace referencia a jcenter. La sección es la siguiente:
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+Hace referencia a 3 repositorios distintos. Eliminamos la línea de jcenter, dejando los otros dos y guardamos.
+Si en el panel izquierdo inferior, en el que tenemos el mensaje de warning, pulsamos en el icono del martillo (restart)
+para que lo vuelva a procesar y desaparecerán todos los mensajes.
+
+Todas las Activity tienes dos archivos: la definición del código (nuestro MainActivity.kt) y la definición gráfica.
+Este siemrpe es un .xml que se encuentra en la rama App01/app/src/main/res/layout/activity_main.xml.
+Si hacemos doble click sobre él, se abrirá el editor gráfico que nos mostrará el aspecto.
+Normalmente no trabajaremos editanto el texto del archivo .xml. Es más sencillo trabajar gráficamente.
+
+En la parte derecha de la barra superior, encontraremos las herramientas de compilación.
+El martillo para compilar (Build).
+El el dispositivo virtual que emularemos para cargar la aplicación y mostrar su funcionamiento.
+El play para ejecutar la aplicación en el dispositivo.
+...
+
+Simplemente pulsaremos el play para que compile y lo cargue en el dispositivo virtual.
+
+Se carga un emulador de un móvil, se transfiere la aplicación compilada y se ejecuta.
+Podemos ver una aplicación que sólo muestra el texto "Hello world" centrado en la única Activity que tiene.
+
+Para detener la ejecución, pulsamos el cuadrado rojo (botón de stop) de la botonera de la izquierda de la barra superior.
+
+

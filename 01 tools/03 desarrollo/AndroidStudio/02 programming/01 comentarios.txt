@@ -1,0 +1,13 @@
+Tema: Sintaxis y comentarios
+Fecha: 20200506
+
+Como hemos comentado anteriormente, utilizaremos sólo el lenguaje de programación Kotlin
+para el desarrollo de aplicaciones Android.
+
+Damos las primeras pautas de sintaxis.
+
+Kotlin no necesita el ; de final de línea típico de C o Java.
+Si lo dejamos, sólo nos dará un warning, pero la aplicación compilará sin problemas.
+
+Los comentarios se hacen como en C. // y /* */
+

@@ -1,0 +1,96 @@
+Tema: Variables en Kotlin
+Fecha: 20200509
+
+Kotlin es un lenguaje de programación con tipado estático.
+Totas las variables tienen tipo definido desde su creación y no puede cambiarse
+en la ejecución.
+Kotlin tiene inferencia de tipos. Es capaz de detectarlos automáticamente. Pero
+también se pueden indicar manualmente.
+Una variable se define con la palabra clave "var".
+
+Comenzamos editando el contenido original de MainActivity.kt y reemplazándolo por:
+class MainActivity : AppCompatActivity() {
+  private fun showInConsole() {
+    var nombre="Pedro"
+    println(nombre)
+    nombre="Juan"
+    println(nombre)
+    nombre+=" Sinmiedo"
+    println(nombre)
+
+    var edad=70
+    println(edad)
+    edad*=2
+    println(edad)
+    edad/=3
+    println(edad)
+
+    var peso=70.0
+    println(peso)
+    peso/=3
+    println(peso)
+
+    var nombre1:String="Pedro1"
+    println(nombre1)
+
+    var nombre2:String?=null
+    nombre2="Pedro2"
+    println(nombre2)
+
+    var nombre3:String?
+    nombre3="Pedro3"
+    println(nombre3)
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    showInConsole()
+  }
+}
+
+Aprovechando que sabemos definir nuevas funciones para una clase, creamos una privada para
+no ensuciar con nuestras pruebas el constructor.
+
+Definimos una variable llamada nombre y le asignamos el texto "Pedro".
+Cuando se ejecute se le asignará el tipo String.
+A continuación se asignamos otro valor de cadena y finalmente le concatenamos un apellido.
+
+Con variables numéricas hacemos algo parecido.
+Creamos la variable edad a la que asignamos un número entero. Al ejecutarse será de tipo Int.
+La multiplicamos por dos y la dividimos por 3.
+La división es entera. No se tienen en cuenta decimales.
+
+Repetimos con una variable con decimales.
+Creamos la variable peso y le asignamos un valor con decimales. Aunque la parte decimal sea nula.
+La variable es del tipo Double.
+Cuando la dividimos por 3 y la mostramos vemos que se muestran los decimales.
+
+Declaramos la variable nombre1, pero no dejamos dudas acerca de qué tipo es.
+La tipificamos como String y le asignamos un valor.
+
+Declaramos una variable de tipo String pero no queremos asignarle un valor (asignamos el valor null).
+Para ello debemos añadir al tipo un ? al final para que la variable pueda ser nula.
+Esto provoca un warning indicando que no es necesario asignal el valor null a una variable con un
+tipo anulable.
+
+Comprobamos que si es así. Declaramos una variable de tipo String anulable y no le asignamos valor.
+Por defecto ya toma el valor null. Más adelante le asignamos valor.
+
+Conclusión. Por defecto, las variables no son anulables. Si queremos permitirlo, tendremos que
+especificarlo explícitamente en su declaración, añadiendo una ? tras el tipo.
+
+Nota.
+Un valor anulable no es el mismo tipo que uno anulable.
+Float? no es lo mismo que Float.
+Y no se pueden asignar valores de uno a otro sin más.
+Si estamos seguros que tenemos un Float anulable (Float?) que no contiene un valor nulo, podemos
+convertirlo en valor no anulable aññadiendo !! al final del nombre del la variable/constante.
+Si nos confundimos y el valor es nulo, dará un error en tiempo de ejecución.
+Ejemplo:
+  val anul:Float?=23
+  val noAnul:Float=34
+  println(anul!!+noAnul) //Se pueden sumar porque ahora son del mismo tipo
+  
+  
+

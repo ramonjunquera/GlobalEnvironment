@@ -1,16 +1,18 @@
-Cómo instalar el entorno gráfico de desarrollo QT
+Tema: Instalación de Qt en Ubuntu  
+Fecha: 20210505
 
-La página oficial es:
-https://www.qt.io/ide/
+Descargar la última versión oficial completa de la página oficial:
+  https://download.qt.io/official_releases/qt/
+Actualmente, la última es:
+  https://download.qt.io/official_releases/qt/5.12/5.12.10/
+La versión para Linux es:
+  https://download.qt.io/official_releases/qt/5.12/5.12.10/qt-opensource-linux-x64-5.12.10.run
 
-Es conveniente tener actualizado el sistema.
+Le proporcionamos permisos de ejecución.
+  Mediante línea de comandos: chmod +x ~/Downloads/qt-opensource-*
+  O a través del explorador,. propiedades y marcando el check de hacer el archivo ejecutable.
+Lo ejecutamos desde el explorador con doble click.
 
-A fecha actual (1-abr-2017), la última versión es la 5.
+Para instalarlo necesitaremos una cuenta válida de Qt. Son gratuitas.
 
-Instalamos los dos paquetes necesarios:
-  sudo apt-get install qt5-default
-  sudo apt-get install qtcreator
-
-Esto creará un nuevo icono en la sección de programación.
-Pero también puede llamarse desde la línea de comandos con:
-  qtcreator
+Marcamos todos los componentes que queramos utilizar.

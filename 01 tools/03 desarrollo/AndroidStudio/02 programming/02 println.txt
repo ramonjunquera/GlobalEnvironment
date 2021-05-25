@@ -1,0 +1,44 @@
+Tema: Salida por consola
+Fecha: 20200506
+
+Además de la pantalla del dispositivo, tenemos la consola de ejecución por la cual podemos
+enviar mensajes de texto desde la aplicación.
+
+Esta consola la podemos ver a través del enlace "4:Run" de la barra inferior.
+
+La instrucción para enviar texto a la consola es la función println()
+
+Haremos un ejemplo sencillo.
+
+Localizamos el archivo MainActivity.kt. Contiene la calse por defecto:
+class MainActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+  }
+}
+
+Se sobreescribe la funcion/método onCreate que se llama cuando se crea la clase (un
+constructor).
+Que lo único que hace es llamar a la mismo método (onCreate) de la clase superior
+(o super clase).
+Además muestra la parte gráfica de la Activity.
+
+Los sustituimos por:
+class MainActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    println("He terminado de arrancar")
+  }
+}
+
+Lo único que hemos hecho es añadir una línea después de la inicialización que envía 
+un mensaje a la consola.
+
+Cuando ejecutamos el programa y miramos el resutlado de la consola, encontramos una
+línea que comienza por "I/System.out: " seguida por el texto de nuestro mensaje.
+
+Esta no es la única línea que muestra la consola, pero se cunmple el cometido del
+ejercicio.
+

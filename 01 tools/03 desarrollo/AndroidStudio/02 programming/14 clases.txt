@@ -1,0 +1,28 @@
+Tema: Clases
+Fecha: 20200510
+
+Los nombres de las clases comienzan siempre por mayúscula.
+Las clases permiten parámetros que se tendrán en cuenta en el momento de instanciarla.
+Si se omite la clasificación de constante o variable en los parámetros, se tomarán
+como valores privados de la clase, no accesibles desde el exterior.
+Pueden ser consultadas por cualquier método.
+
+Definición de clase simple:
+class MiClase {
+}
+
+Definición de clase con parámetros privador:
+class MiClase (nombre:String,edad:Int) {
+}
+
+Definición de clase con parámetros públicos como constantes:
+class MiClase (val nombre:String,val edad:Int) {
+}
+
+Se instancia:
+val miInstancia=MiClase("Juan",23)
+
+Se consume:
+println(miInstancia.edad)
+
+

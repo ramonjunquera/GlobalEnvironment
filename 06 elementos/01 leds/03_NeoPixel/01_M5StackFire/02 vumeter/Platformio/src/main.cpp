@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200216
+  Fecha: 20210524
   Tema: M5Stack Fire. Leds NeoPixel
   Objetivo: VU meter
   Material: M5Stack Fire
@@ -52,7 +52,7 @@ void loop() {
   
   leds.v->clear(); //Apagamos todos los leds
   for(byte n=0;n<10;n++) { //Recorremos todos los leds
-    if (power>threshold) leds.v->drawPixel(n,0,{100,0,0}); //Rojo oscuro
+    if (power>threshold) leds.v->drawPixel(n,0,leds.v->getColor(100,0,0)); //Rojo oscuro
     threshold*=3;
   }
   leds.draw();

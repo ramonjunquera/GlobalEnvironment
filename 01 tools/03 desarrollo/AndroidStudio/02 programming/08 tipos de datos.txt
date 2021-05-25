@@ -1,0 +1,122 @@
+Tema: Tipos de datos
+Fecha: 20200510
+
+Kotlin utiliza los mismo tipos de datos que cualquier otro lenguaje.
+Los podemos agrupar así:
+- Cadenas de texto
+  - String [Tipo por defecto]
+  - Char
+- Números enteros (valores con signo)
+  - Byte (tamaño: 1 byte) [-128,127]
+  - Short (tamaño 2 bytes) [-32768,32767]
+  - Int (tamaño 4 bytes) [-2147483648,2147482647] Tipo por defecto
+  - Long (tamaño 8 bytes) [-9223372036854775808,9223372036854775807]
+Fuente: https://bitcu.co/tipos-de-datos-en-java/
+- Números decimales (o de coma flotante)
+  - Float (tamaño 4 bytes) [-3.402823e38,3.402823e38]
+  - Double (tamaño 8 bytes) [-1.79769313486232e308,1.79769313486232e308] Tipo por defecto
+- Valores lógicos
+  - Boolean [tipo por defecto]
+
+Los tipos por defecto son los que toma si no se indica nada.
+Lo veremos con un ejemplo:
+class MainActivity : AppCompatActivity() {
+  private fun tests() {
+    val nombre="Pedro"
+    val letra='f'
+    val letraString=Character.toString(letra)
+    var palabra=letraString+letraString
+    println(palabra)
+
+    val myByte:Byte=34
+    val myShort:Short=34
+    val myInt=34
+    val myLong=34L
+    val myLong2:Long=34
+    val res=myByte+myShort+myInt+myLong
+    println(res)
+
+    val myFloat=34.56f
+    val myDouble=34.56
+    val res2=myFloat+myDouble+myByte
+    println(res2)
+
+    val myBool=true
+    println(!myBool)
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    tests()
+  }
+}
+
+Se crea una constante de String llamada nombre y se le asigna un valor.
+Los valores String se reconocen porque contienen un texto entre dos comillas.
+Se asigna una variable Char llamada letra y se le asigna un valor.
+Los valores Char se reconocen porque contienen un sólo carácter entre dos apóstrofes.
+No podemos concatenar dos Char porque el intérprete supone que el resultado debería ser también un Char.
+Pero no puede contener dos caracteres. Sabemos que el resultado es un String. Popr eso nunca se
+concatenan dos Char. Antes de hacer se convierten a String con la función Character.toString().
+Después ya podemos concatenarlos.
+
+Se declara una constante Byte y una Short. Al no ser el tipo por defecto, debemos especificarlo.
+Declaramos una constante Int sin especificaciones especiales por ser el tipo por defecto.
+Podemos declarar una constante de tipo Long de dos maneras. O indicando el tipo, o añadiendo el sufijo L
+al valor asignado.
+No hay problema en operar con valores enteros de distintos tipos. Siempre se tomará el tipo más amplio.
+
+Declaramos una constante de tipo Float añadiendo el sufijo f al valor.
+Declaramos una constante Double sin especificaciones especiales por ser el tipo por defecto.
+No hay problema en operar con valores de distintos tipos, ya sean decimales o no.
+Se tomará el tipo más amplio.
+
+Finalmente se declara una constante de tipo Boolean y se muestra su inverso.
+
+Como siempre, se recomienda utilizar el tipo de dato que menos memoria consuma y cubra nuestras necesidades.
+
+Aparte de la nomenclatura decimal clásica también se permite la hexadecimal (0xFF) y la binaria (0b11110000).
+
+String con plantilla.
+En los valores String el carácter $ tiene un significado especial. Se toma como plantilla.
+El texto que sigue a $ lo toma como código ejecutable.
+Podemos utilizar esta característica para concatenar valores.
+Ejemplo. El siguiente código muestra en la consola el mismo texto 3 veces:
+  var edad=33
+  println("Tengo "+edad+" años")
+  println("Tengo $edad años")
+  println("Tengo ${edad} años")
+Y si añadimos llaves, podemos escribir código complejo.
+Por ejemplo. Metemos una condicional en un String:
+  val edad=33
+  println("Tienes $edad años y eres ${if(edad>60) "mayor" else "joven"}")
+
+String con formato.
+Podemos crear un string que formatee valores numéricos con el simbolo %
+Ejemplo. Mostrar un valor numérico flotante con 2 decimales
+  val num=3.456f //Creamos una constante numérica de valor flotante
+  println("El valor redondeado es %.2f".format(num)
+
+Si queremos asignar un texto con más de una línea a una variable String podemos escribirlo directamente.
+Comenzamos y finalizamos el párrafo con comillas triples.
+Por ejemplo:
+val parrafo="""
+primera línea
+segunda línea
+tercera línea
+"""
+
+Conversión de tipos.
+Tenemos una colección de funciones que nos permiten la conversión entre tipos:
+  toByte(): Byte
+  toShort(): Short
+  toInt(): Int
+  toLong(): Long
+  toFloat(): Float
+  toDouble(): Double
+  toChar(): Char
+Por ejemplo:
+  val myByte:Byte=33 //Declaramos una constante de tipo Byte y le asignamos el valor 33
+  val myInt:Int=myByte.toInt() //Declaramos una constante de tipo Int y le asignamos la constante Byte convertida a Int
+
+

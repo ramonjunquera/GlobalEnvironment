@@ -1,0 +1,82 @@
+Tema: Handler/Looper
+Fecha: 20200512
+
+Como comentado en la sección de Threads, sólo el Thread principal puede hacer cambios en los elementos
+gráficos. Desde cualquier Thread secundario se producirá una excepción.
+
+Si estamos obligados a utilizar Thread secundarios porque necesitamos ejecutar tareas de comunicaciones
+y desde alguna de ella se necesita modificarf algún elemento gráfico, no podremos.
+Por ejemplo, tenemos un objeto gráfico de tipo switch que servirá para establecer conexión con un
+sistema remoto.
+Cuando se activa lanzamos un Thread secundario que intenta conectar. Si lo consigue, no tenemos que hacer
+nada especial, porque el switch se habrá quedado en la posición de conectado. Pero si no consigue
+conectar, necesitamos cambiarlo de nuevo al estado desconectado.
+
+Para solventar este tipo de problemas se han creado los Loopers/Handlers.
+
+En la clase de una Activity declaramos distintos métodos/funciones para que se hagan cargo de los eventos
+que se generan por la interacción de los objetos gráficos, timers, comunicaciones, etc.
+Todos estos métodos se ejecutan en el Thread principal de la Activity.
+Pero no significa que siempre se esté ejecutando alguno de ellos.
+Hay tiempos muertos en los que la Activity no está ejecutando ninguno de los métodos definidos.
+Esos momentos son los que toma el objeto Looper para atender una cola de tareas y ejecutarlas secuencialmente.
+Cada Thread tiene su propio Looper.
+Lo importante es el Looper se ejecuta en el Thread.
+Nosotros podemos añadir tareas a la cola del Looper, para que las atienda cuando pueda.
+Las tareas las añadimos con un Handler.
+
+Veamos un ejemplo.
+En la parte gráfica tenemos 3 objetos:
+- Un EditText llamado editText
+- Un Button llamado button
+- Un TextVier llamado textView
+En el EditText se le permite al usuario escribir cualquier texto.
+Cuando se pulsa el botón el texto del EditText se copia en el TextView.
+Simularremos que necesitamos lanzar un Thread secundario cuando se pulsa el botón.
+Lo que hará será esperar unos segundos, hacer los cambios gráficos y esperar un poco más.
+Para realizar los cambios gráficos se crea un Handler de Looper del Thread actual.
+A continuación añadimos una nueva tarea al Handler.
+Veamos el ejemplo:
+
+package com.rojo.app02
+
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
+import com.rojo.app02.databinding.ActivityMainBinding
+
+
+class MainActivity : AppCompatActivity() {
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    ui.button.setOnClickListener { //Se ha pulsado el botón
+      println("begin main Thread")
+      val secThread=Thread { //Creamos un Thread secundario
+        println("begin secondary Thread")
+        Thread.sleep(3000)
+        println("request UI change") //Solicitamos actualización de elementos gráficos
+        //Creamos un Handler del Looper principal
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.post { //Añadimos la rutina a ejecutar por el Handler
+          println("posting UI change") //Actualizamos elementos gráficos
+          ui.textView.text=ui.editText.text //Copiamos el texto
+        }
+        Thread.sleep(3000)
+        println("end secondary Thread")
+      }
+      secThread.start() //Lanzamos el Thread secundario
+      println("end main Thread")
+    }
+  }
+}
+
+El método post del Handler admitiría un parámetro después del código a ejecutar con el
+número de milisegundos que debe esperar antes de ser añadido al Looper.
+
+El código que se añade podría haberse definido en una clase aparte del tipo Runnable.
+

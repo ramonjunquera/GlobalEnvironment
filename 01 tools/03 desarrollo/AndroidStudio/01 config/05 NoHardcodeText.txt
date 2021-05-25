@@ -1,0 +1,49 @@
+Tema: Eliminación de warning por texto hardcoded
+Fecha: 20200506
+
+Las aplicaciones de Android deben estar preparadas para poder ser utilziadas en varios idiomas.
+Por lo tanto, los textos utilizados pueden cambiar dependiendo del país en el que se utilicen.
+Por esta razón no está bien visto asignar un texto fijo a ninguna variable ni objeto gráfico.
+
+En el ejemplo anterior hemos cambiado el texto del objeto TextView que se muestra centrado en
+la única Activity. Esto provoca un warning que nos recuerda que esto no se debe hacer.
+
+La solución pasa por el apartado de recursos.
+Dentro del árbol de carpetas que componen el paquete de la aplicación, aparte de la rama del
+código (java), tenemos la rama de los recursos (res).
+En la rama de recursos se guardará toda la documentación necesaria para que la aplicación pueda
+funcionar correctamente: imágenes, textos, colores, estilos, temas, etc...
+En el código de la aplicación, ya no utilizaremos asignaciones fijas para las variables, sino que
+serán referencias a objetos de recursos, con la ventaja de que podemos crear un paquete de
+recursos distinto por idioma, pero la referencia será la misma.
+
+Solventaremos el warting que tenemos ahora.
+Abriremos el archivo App01/app/res/values/strings.xml
+Estois son todos los textos fijos que tenemos por ahora.
+Su contenido es:
+<resources>
+    <string name="app_name">App01</string>
+</resources>
+
+Está definido un sólo string con nombre "app_name" y valor App01.
+Añadiremos uno nuevo de nombre saludo y texto Hola mundo!.
+El contenido del archivo quedaría como:
+<resources>
+    <string name="app_name">App01</string>
+    <string name="saludo">Hola mundo"</string>
+</resources>
+Guardamos.
+
+Regresamos al editor gráfico.
+Hacemos click sobre el objeto TextView y localizamos su propiedad text.
+Sustituiremos el texto fijo que provoca el warning.
+Todas las referencias a variables de recursos vienen precedidas por el carácter @.
+Si comenzamos a escribir con @ se depliega un menú contextual con las sugenrencias.
+Aquí podemos comprobar como aparece la entrada @string/saludo que acabamos de crear.
+La seleccionamos.
+Volvemos a compilar y vemos que el warning a desaparecido.
+
+Sólo recordar que esto es sólo una buena práctica. No es obligatorio.
+Si dejamos conscientemente texto fijo, no tendrá mayor consecuencia en el funcionamiento
+de la aplicación.
+

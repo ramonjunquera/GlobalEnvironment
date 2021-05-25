@@ -1,0 +1,49 @@
+Tema: Arrays
+Fecha: 20200507
+
+Los tipos de los arrays también se pueden inferir por Kotlin.
+Por ejemplo, definimos un array con 5 valores enteros.
+  val edades=arrayOf(14,17,20,24,27)
+O de Strings:
+  val numeros=arrayOf("uno","dos","tres","cuatro")
+O de caracteres:
+  val letras=arrayOf('K','O','T','L','I','N')
+Incluso podemos crear un  array mixto:
+  val deTodo=arrayOf(5,4.3,"Hola",false)
+
+También podemos declarar un array vacío. Por ejemplo un array de String de 7 posiciones:
+  var nombres=arrayOfNulls<String>(7)
+  
+En Kotlin se pueden añadir nuevos elementos al final del array en tiempo de ejecución
+  var nombres=arrayOf<String>() //Creamos un array de Strings vacío
+  nombres+="uno" //Ya tenemos un elemento
+  nombres+="dos" //Ya tenemos dos elementos
+  println(nombres[1]) //Muestra 'dos'
+  
+Podemos forzar el tipo del array. Dos ejemplos iguales:
+  val edades=arrayOf<Int>(14,17,20,24,27)
+  val edades=intArrayOf(14,17,20,24,27)
+  
+Los arrays, como en C, comienzan desde el índice 0.
+Se consultan con el índice entre corchetes. Ejemplo:
+  var edades=arrayOf(14,17,20,24,27)
+  println(edades[2]) //Muestra el valor 20
+  edades[2]=34
+  println(edades[2]) //Muestra el valor 34
+
+Arrays multidimensionales.
+Kotlin no admite arrays multidimensionales, pero sí arrays de arrays.
+Ejemplo:
+  var tabla=arrayOf(
+     arrayOf(1,2) //Fila 0
+    ,arrayOf(3,4) //Fila 1
+  )
+  println(tabla[0][1]) //Mostrará el valor 2, de la fila 0 columna 1
+Podemos dimensionar un array bidimensional vacío, para llenarlo después
+  var tabla=arrayOf<Array<Int>>() //Array bidimensional vacío
+  var fila=arrayOf(1,2,3,4) //Creamos un array de Int
+  tabla+=fila //Lo añadimos al array bidimensional
+  //Ahora "tabla" tiene una fila y 4 columnas
+  println(tabla[0][1]) //Mostrará el valor 2, de la fila 0 columna 1
+
+

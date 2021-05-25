@@ -21,20 +21,20 @@ void setup() {
 }
 
 void loop() {
-  led.draw({255,0,0}); //Rojo
+  led.draw(255,0,0); //Rojo
   while(!button.pressed()); //Esperar pulsación
-  led.draw({0,255,0}); //Verde
+  led.draw(0,255,0); //Verde
   while(!button.pressed()); //Esperar pulsación
-  led.draw({0,0,255}); //Azul
+  led.draw(0,0,255); //Azul
   while(!button.pressed()); //Esperar pulsación
-  led.draw({255,255,0}); //Amarillo
+  led.draw(255,255,0); //Amarillo
   while(!button.pressed()); //Esperar pulsación
-  led.draw({255,0,255}); //Magenta
+  led.draw(255,0,255); //Magenta
   while(!button.pressed()); //Esperar pulsación
-  led.draw({0,255,255}); //Cyan
+  led.draw(0,255,255); //Cyan
   while(!button.pressed()); //Esperar pulsación
-  led.draw({255,255,255}); //Blanco
+  led.draw(255,255,255); //Blanco
   while(!button.pressed()); //Esperar pulsación
-  led.draw(); //Negro
+  led.draw(0,0,0); //Negro
   while(!button.pressed()); //Esperar pulsación
 }

@@ -1,0 +1,53 @@
+Tema: Condicionales
+Fecha: 20200509
+
+El funcionamiento es similar a C.
+
+Editamos la clase de MainActivity.kt:
+class MainActivity : AppCompatActivity() {
+  private fun showInConsole() {
+    val edad=35
+
+    if(edad>30) println("mayor")
+    else println("pequeño")
+
+    var comentario="No es 32"
+    if(edad==32) comentario="Sí es 32!"
+    println(comentario)
+
+    val comentario1=if(edad==32) "Sí es 32!" else  "No es 32"
+    println(comentario1)
+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    showInConsole()
+  }
+}
+
+Declaramos una constante que asumimos como Int.
+Hacemos una condicional de carácter de comparación simple (>)
+Hacemos una condicional de carácter de comparación doble (== o >= ...)
+Declaramos una constante de String cuyo valor depende de la constante edad.
+En C se podría escribir como comentario1=(edad==32)?"Sí es 32!":"No es 32";
+Otra manera de hacer lo mismo es con el comando when.
+
+La sentencia switch case de C, aquí se llama when.
+Ejemplo:
+  val pais="España"
+  when(pais) {
+    "Portugal" -> {
+      println("El idioma es portugués")
+    }
+    "España" -> {
+      println("El idioma es español")
+    }
+    "Inglaterra" -> println("El idioma es inglés")
+    else-> println("El idioma es desconocido")
+  }
+Se puede utilizar para asignar un valor inicial:
+val comentario2=when {
+  edad==32 -> "Si es 32!"
+  edad>32 -> "Mayor que 32"
+  else -> "Menor de 32"
+}

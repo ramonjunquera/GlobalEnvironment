@@ -1,0 +1,10 @@
+Tema: Ejemplo de uso de EditText
+Fecha: 20210510
+
+La aplicación pide un nombre y al pulsar un botón saluda con un texto personalizado.
+Consta de:
+- Un TextView para hacer la pregunta
+- Un EditText para recoger el nombre
+- Un botón para crear el saludo
+- Un TextView para mostrar el saludo
+

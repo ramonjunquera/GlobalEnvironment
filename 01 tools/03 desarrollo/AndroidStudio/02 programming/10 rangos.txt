@@ -1,0 +1,15 @@
+Tema: Rangos
+Fecha: 20200507
+
+Nos ayudan a acotar límites numéricos.
+Aplicados en un when nos ahorran tener que escribir todos los valores uno a uno:
+  val edad=25
+  when(edad) {
+    in 0..13 -> println("niño")
+    in 13..18 -> println("adolescente")
+    in 19..29 -> println("joven")
+    30 -> println("ya tienes 30!")
+    else -> println("senior")
+  }
+  
+  
