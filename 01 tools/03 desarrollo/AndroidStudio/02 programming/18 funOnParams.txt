@@ -1,0 +1,122 @@
+Tema: Pasar funciones en parámetros
+Fecha: 20210530
+
+Como primer ejemplo, crearemos nuestra propia clase.
+Contiene una variable privada donde guardaremos una función.
+Tenemos un método que actualiza esa función.
+Y tenemos otro método que utiliza la función con los parámetros que le pasamos
+
+class MainActivity : AppCompatActivity() {
+  //Definimos nuestra propia clase
+  inner class MyClass {
+    //Definimos una variable privada que se definirá más tarde que contiene una función con dos
+    //parámetros Int y devuelve un Int
+    private lateinit var f:(Int, Int)->Int
+
+    //Método de inicialización
+    //Se le pasa como parámetro una función con la misma estructura de la variable privada
+    fun begin(f:(Int,Int)->Int) {
+      //Guardamos la función del parámetro en la variable privada
+      this.f=f
+    }
+
+    //Creamos un método con dos parámetros Int que devuelve un Int
+    //El método sólo llama a la función de la variable privada entrega el resultado
+    fun calculate(a:Int,b:Int):Int {
+      return f(a,b)
+    }
+  }
+
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    val myClass=MyClass() //Instanciamos la clase
+    //Inicializamos la clase con una función que suma los parámetros
+    myClass.begin(fun(a:Int,b:Int):Int {
+      return a+b
+    })
+    //Solicitamos el cálculo y lo mostramos
+    println("Calcula suma=${myClass.calculate(3,2)}")
+    //Volvemos a inicializar la clase con la función resta
+    myClass.begin(fun(a:Int,b:Int):Int {
+      return a-b
+    })
+    //Solicitamos el cálculo y lo mostramos
+    println("Calcula resta=${myClass.calculate(3,2)}")
+
+    //No es obligatorio definir las funciones en el envío de parámetros
+    //En esta ocasión definiremos una función producto con la estructura del parámetro
+    val prod:(Int,Int)->Int = {x,y->
+      x*y
+    }
+    //Inicializamos la clase con la función producto que acabamos de definir
+    myClass.begin(prod)
+    //Solicitamos el cálculo y lo mostramos
+    println("Calcula pruducto=${myClass.calculate(3,2)}")
+  }
+}
+
+Nota:
+- La ventaja de pasar como parámetro la función es puede pertenecer a contextos distintos.
+  Por ejemplo: pedimos a una clase que cuando ocurra un evento, ejecute una función local
+  que puede acceder a todos los objetos locales. Aunque la clase no tenga acceso a ello.
+
+Desarrollaremos un segundo ejemplo con la misma estructura. El único cambio es que la función
+no tendrá parámetros ni devolverá nada.
+
+class MainActivity : AppCompatActivity() {
+  //Definimos nuestra propia clase
+  inner class MyClass {
+    //Definimos una variable privada que se definirá más tarde que contiene una función sin
+    //parámetros que no devuelve nada
+    private lateinit var f:(()->Unit)
+
+    //Método de inicialización
+    //Se le pasa como parámetro una función con la misma estructura de la variable privada
+    fun begin(f:(()->Unit)) {
+      //Guardamos la función del parámetro en la variable privada
+      this.f=f
+    }
+
+    //Creamos un método sin parámetros que no devuelve nada
+    //El método sólo llama a la función de la variable privada
+    fun calculate() {
+      f()
+    }
+  }
+
+  private lateinit var ui:ActivityMainBinding
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ui=ActivityMainBinding.inflate(layoutInflater)
+    setContentView(ui.root)
+
+    val myClass=MyClass() //Instanciamos la clase
+    //Inicializamos la clase con una función que suma los parámetros
+    myClass.begin(fun() {
+      println("Función 1 calculada")
+    })
+    //Solicitamos el cálculo y lo mostramos
+    println("Calcula primera función")
+    myClass.calculate()
+    //Volvemos a inicializar la clase con la función resta
+    myClass.begin(fun() {
+      println("Función 2 calculada")
+    })
+    //Solicitamos el cálculo y lo mostramos
+    println("Calcula segunda función")
+    myClass.calculate()
+
+    //Definimos una función en una variable con la misma estructura que el parámetro
+    val fun3:()->Unit = {
+      println("Función 3 calculada")
+    }
+    //La asignamos
+    myClass.begin(fun3)
+    println("Calcula tercera función")
+    myClass.calculate()
+  }
+}

@@ -1,5 +1,5 @@
 Tema: Primera aplicación
-Fecha: 20200509
+Fecha: 20200530
 
 Cuando abrimos la aplicación de Android Studio, aparece una ventana llamada "Welcopme to Android Studio"
 que nos da las opciones básicas para trabajar en proyectos: crear, abrir, importar, ...
@@ -36,7 +36,7 @@ aplicación. Llamada MainActivity.
 En el panél izquierdo podemos ver el árbol de paquete de la aplicación y la ubicación del archivo que
 se está mostrando. Concretamente es: App01/app/src/main/java/com/rojo/app01/MainActivity
 
-Podría aparecer algún error del tipo "Could not resolve org.jetbrains.kotlin-gradle-plugin:1.5.0-release-764
+Podría aparecer algún error del tipo "Could not find org.jetbrains.kotlin-gradle-plugin:1.5.10-release-894
 Si abrimos File/Project Structure.../Suggestions/app podemos ver que nos hace una sugerencia de actualización.
 Pulsamos el botón "Update Variable" y aceptamos con "OK".
 Ahora el error ha desaparecido, pero nos aparece un mensaje nuevo. Esta vez un warning con el texto: "Please remove
