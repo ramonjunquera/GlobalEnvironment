@@ -1,5 +1,5 @@
 Tema: Pasar funciones en parámetros
-Fecha: 20210530
+Fecha: 20210531
 
 Como primer ejemplo, crearemos nuestra propia clase.
 Contiene una variable privada donde guardaremos una función.
@@ -119,4 +119,47 @@ class MainActivity : AppCompatActivity() {
     println("Calcula tercera función")
     myClass.calculate()
   }
+}
+
+De todas maneras, aunque se puedan pasar funciones como parámetros, nunca se debe descartar utilizar la herencia
+para la modificación parcial de una clase. Esto evita el paso de parámetros.
+Ejemplo:
+
+class MainActivity : AppCompatActivity() {
+    //Definimos nuestra propia clase
+    open inner class MyClass { //Es una clase heredable (open)
+        //Creamos un método con dos parámetros Int que devuelve un Int
+        open fun calculate(a:Int,b:Int):Int { //Es un método heredable (open)
+            return 0 //Respuesta dummy
+        }
+    }
+
+    private lateinit var ui:ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        //Creamos una nueva clase heredada
+        class MyClassAdd: MyClass() {
+            //Sobreescribimos el método que nos interesa con la fórmula correcta
+            override fun calculate(a:Int,b:Int):Int {
+                return a+b
+            }
+        }
+        val myClassAdd=MyClassAdd() //Instanciamos la clase Add
+        //Solicitamos el cálculo y lo mostramos
+        println("Calcula suma=${myClassAdd.calculate(3,2)}")
+
+        //Si queremos otra operación, repetimos la secuencia creando una nueva clase heredada
+        class MyClassSubs: MyClass() {
+            //Sobreescribimos el método que nos interesa con la fórmula correcta
+            override fun calculate(a:Int,b:Int):Int {
+                return a-b
+            }
+        }
+        val myClassSubs=MyClassSubs() //Instanciamos la clase Subs
+        //Solicitamos el cálculo y lo mostramos
+        println("Calcula resta=${myClassSubs.calculate(3,2)}")
+    }
 }

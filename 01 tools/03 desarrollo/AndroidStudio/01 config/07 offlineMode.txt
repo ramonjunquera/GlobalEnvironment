@@ -1,0 +1,12 @@
+Tema: Configuración del modo offline
+Fecha: 20210531
+
+Por defecto el IDE requiere la conexión a INternet para la actualización de las librerías.
+Si estamos trabajando desde una máquina desconectada de Internet, no podremos cargar un proyecto
+previo para continuar con el desarrollo porque se quedará esperando las comprobar las actualizaciones.
+
+Podemos activar el modo offline para que no lo haga.
+Desde el menú principal: View/Tool Windows/Gradle
+En el nuevo panel que se ha abiarto, tenemos una barra de botones. El cuarto botón se llama "Toggle Offline Mode".
+Si lo hacemos click sobre él, se quedará pulsado.
+

@@ -1,14 +1,14 @@
 /*
   Tema: Envío de texto a un socket tcp
   Autor: Ramón Junquera
-  Fecha: 20210511
+  Fecha: 20210603
   Funcionamiento:
     Conecta con un socket tcp a una dirección y puerto seleccionable y envía un String
   Requerimientos:
   - Es necesario indicar que la aplicación necesitará permisos para conectarte con el exterior.
     Esto se hace en el archivo app/manifest/AndroidManifest.xml
-    Incluiremos al final del archivo, bajo la sección manifest, y después de la sección application
-    la siguiente línea:
+    Incluiremos al final del archivo, dentro de la sección manifest, y después de la sección
+    application la siguiente línea:
       <uses-permission android:name="android.permission.INTERNET" />
   Política de procesos de comunicaciones
     La política de Threads de Android no permite que se lancen procesos de comunicaciones en el
@@ -27,7 +27,6 @@
     - Tras enviar el mensaje, nos aseguramos que se vacía el buffer de salida con flush()
     - Esperamos un momento para que la información llegue al servidor y pueda ser leida y procesada.
 */
-
 
 package com.rojo.app02
 
