@@ -1,0 +1,34 @@
+Tema: Crear una SD en un dispositivo virtual
+Fecha: 20210607
+
+A un dispositivo SD se le asigna una SD virtual. Una imágen (archivo .img).
+Lo primero que debemos hacer es crear la imágen de la SD.
+
+Versión Windows:
+  Abrimos una sesión de línea de comandos con CMD
+  Nos pasamos a la carpeta donde tengamos instalado el emulador de dispositivos.
+  Normalmente está aquí: cd %localappdata%\Android\Sdk\emulator
+  Un ejemplo sería: C:\Users\usgblv0\AppData\Local\Android\Sdk\emulator
+  Aquí tenemos el ejecutable que permite generar las imágenes: mksdcard.exe
+  Podemos crear una carpeta aquí mismo para guardar las distintas imágenes que creemos con: md imageSD
+  Creamos una imágen.
+  Por ejemplo de un tamaño de 256Mb, con nombre de volumen mySD y nombre de archivo sdcard256.img
+  mksdcard -l mySD 256M imageSD/sdcard256.img
+Versión Ubuntu:
+  Abrimos una terminal
+  Nos pasamos a la carpeta donde tengamos instalado el emulador de dispositivos.
+  Normalmente está aquí: cd ~/Android/Sdk/emulator
+  Aquí tenemos el ejecutable que permite generar las imágenes: mksdcard
+  Podemos crear una carpeta aquí mismo para guardar las distintas imágenes que creemos con: mkdir imageSD
+  Creamos una imágen.
+  Por ejemplo de un tamaño de 256Mb, con nombre de volumen mySD y nombre de archivo sdcard256.img
+  ./mksdcard -l mySD 256M imageSD/sdcard256.img
+
+Ahora sólo queda asignar la SD virtual:
+- Abrimos el IDE
+- Abrimos el AVD Manager
+- Editamos el dispositivo al que queremos asignar la SD virtual
+- Mostramos la configuración avanzada
+- Localizamos la sección "Memory and Storage"
+- Seleccionamos la opción "External File" y en ella localizamos el archivo de la imágen que hemos creado.
+- Reiniciamos el dispositivo virtual

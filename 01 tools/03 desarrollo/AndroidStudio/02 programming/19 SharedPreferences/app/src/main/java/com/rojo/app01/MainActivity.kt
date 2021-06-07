@@ -1,7 +1,7 @@
 /*
   Tema: Almacenamiento permanente con SharedPreferences
   Autor: Ramón Junquera
-  Fecha: 20210603
+  Fecha: 20210606
   - Objeto EditText
   - Botón guardar
   Funcionamiento:
@@ -10,9 +10,9 @@
   - Al abrir la aplicación, recupera el valor almacenado y lo deja como texto por defecto en el
     EditText
   Notas:
-  - Android permite almacenar información permanente por tres métodos distintos:
+  - Android permite almacenar información permanente por distintos métodos:
     - En las preferencias de la aplicación
-    - En archivos de texto
+    - En archivos
     - En una base de datos local
   - Las preferencias de la aplicación permiten almacenar algunos datos. No es el lugar adecuado para
     almacenamiento masivo. Habitualmente utilizado para configuración de la aplicación.
