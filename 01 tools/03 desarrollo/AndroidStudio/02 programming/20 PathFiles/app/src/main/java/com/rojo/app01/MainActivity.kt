@@ -1,7 +1,7 @@
 /*
   Tema: Almacenamiento permanente en archivos
   Autor: Ramón Junquera
-  Fecha: 20210607
+  Fecha: 20210622
   - RadioGroup con 3 opciones para selecionar la ubicación de guardado
   - Objeto EditText multilínea
   - Botón guardar
@@ -45,12 +45,14 @@
     Incluiremos al final del archivo, dentro de la sección manifest, y después de la sección
     application la siguiente línea:
       <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  - Si sólo necesitásemos leer podemos utilizar el siguiente permiso:
+      <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   - En este ejemplo se utilizan archivos de texto, pero se podrían generar archivos binarios.
   - El objeto EditText es multi línea. Se han cambiado sus propiedades en inputType/textMultiLine
   - El objeto EditText por defecto centra verticalmente el texto. Lo podemos cambiar en gravity/top
   - Definimos el nombre del archivo como constante privada de la clase de la Activity
-  - Cuando se elimina la aplicación, también se eliminan las distintas carpetas repartidas por
-    todas las ubicaciones.
+  - Cuando se elimina la aplicación, también se eliminan las distintas carpetas de la aplicación
+    repartidas por todas las ubicaciones, con los archivos que contengan.
 */
 
 package com.rojo.app01
@@ -124,13 +126,6 @@ class MainActivity : AppCompatActivity() {
                 ui.editText.setText("") //El EditText se quedará vacío
             }
         }
-
-        for(i in 0..2) println("paths[$i]=${paths[i]}")
-        //paths[2]=/storage/extSdCard/Android/data/com.rojo.app01/files
-        //paths[2]=/storage/extSdCard/Download
-        //paths[2]="/storage/extSdCard/Android/data/com.milink.service/files"
-        paths[2]="/storage/extSdCard/Android/data/com.rojo.app01/files"
-        for(i in 0..2) println("paths[$i]=${paths[i]}")
 
         ui.buttonSave.setOnClickListener { //Se ha pulsado el botón de guardar
             //Utilizamos try/catch para evitar excepciones al guardar

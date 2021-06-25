@@ -1,0 +1,12 @@
+Android            Versión API
+------------------ ------- ---
+Ice Cream Sandwich     4.0  14
+Jelly Bean             4.1  16
+KitKat                 4.4  19
+Lollipop               5.0  21
+Marshmallow            6.0  23
+Nougat                 7.0  24
+Oreo                   8.0  26
+Pie                    9.0  28
+Android 10            10.0  29
+Android 11            11.0  30
