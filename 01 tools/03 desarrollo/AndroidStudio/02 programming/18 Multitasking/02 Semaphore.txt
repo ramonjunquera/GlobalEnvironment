@@ -1,0 +1,277 @@
+Tema: Semaphore
+Fecha: 20210707
+
+Mismo funcionamiento que en C++.
+Objeto de sincronización de Threads.
+
+Problema:
+  Hemos lanzado varios Threads, pero necesitamos que finalicen todos ellos para poder continuar
+  con el programa principal.
+  Cómo sabemos que todos ellos han terminado?
+Solución:
+  Creamos un semáforo vacío (con valor 0).
+  A cada Thread lanza le pedimos que antes de terminar entregue un permits/token al semáforo.
+  En el hilo principal, esperaremos hasta obtener del semáforo tantos permits/tokens como
+  Threads lanzados.
+Ejemplo:
+
+package com.rojo.app01
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.Semaphore
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui:ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        val sema=Semaphore(0) //Creamos un semáforo vacío
+        println("Tokens/Permits iniciales=${sema.availablePermits()}")
+        Thread {
+            println("Thread 1 start")
+            Thread.sleep(1000)
+            sema.release() //Soltamos un un token/permit (incrementamos el semáforo)
+            println("Thread 1 end")
+        }.start()
+        Thread {
+            println("Thread 2 start")
+            Thread.sleep(1000)
+            sema.release() //Soltamos un un token/permit (incrementamos el semáforo)
+            println("Thread 2 end")
+        }.start()
+        println("Esperando a que terminen los Threads")
+        sema.acquire(2) //Esperamos hasta adquirir 2 tokens/permits
+        println("Threads finalizados")
+    }
+}
+
+Cuando solicitamos un token (acquire), si el semáforo no lo tiene, el flujo quedará
+detenido sin consumo de recursos en ese punto, hasta que otro Thread le entregue el
+token que espera.
+
+El programa tiene la siguiente secuencia:
+- Muestra el número de tokens disponibles del semáforo = 0
+- Se lanza el primer Thread que muestra su mensaje de inicio.
+- Se lanza el segundo Thread que muestra su mensaje de inicio.
+- El hilo principal queda detenido a la espera de recibir 2 tokens.
+- El primer Thread entrega un token al semáforo.
+- El primer Thread finaliza y muestra su mensaje de fin.
+- El segundo Thread entrega un token al semáforo.
+- El hilo principal acaba de conseguir los dos tokens que esperaba y continua.
+- El hilo principal muestra el mensaje de fin.
+- El segundo Thread finaliza y muestra el mensaje de fin.
+
+En el ejemplo definimos el semáfono como variable local y como definimos los Threads dentro de la misma
+función, nos aseguramos que tienen acceso al semáforo.
+No siempre podemos hacerlo así. Habitualmente la definición del Thread no puede acceder al semáforo.
+En estos casos informamos del semáforo a través de uno de los parámetros de la llamada al Thread.
+Puesto que no se le pueden pasar parámetros a un Thread, creamos nuestra propia versión heredada.
+Aquí tenemos un ejemplo con la misma funcionalidad.
+La definición del Thread es independiente del semáforo. Además aprovechamos para pasarle un número que
+nos servirá para identificar al Thread.
+Antes de finalizar el Thread entregamos un token al semáfono del parámetro.
+
+package com.rojo.app01
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.Semaphore
+
+//Clase heredada de Thread, pero que admite parámetros
+class MyThread(var sema:Semaphore,var id:Int): Thread() {
+    override fun run() { //Sobreescribimos la función que lanza el Thread
+        super.run() //Llamamos a la función original del padre
+        println("Thread $id start")
+        sleep(1000) //No utilizamos Thread.sleep porque ya estamos en la clase Thread!
+        sema.release() //Añadimos un token al semáforo
+        println("Thread $id end")
+    }
+}
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        val sema=Semaphore(0) //Creamos un semáforo vacío
+        println("Tokens/Permits iniciales=${sema.availablePermits()}")
+        MyThread(sema,1).start() //Creamos y lanzamos el Thread 1
+        MyThread(sema,2).start() //Creamos y lanzamos el Thread 2
+        println("Esperando a que terminen los Threads")
+        sema.acquire(2) //Esperamos hasta adquirir 2 tokens/permits
+        println("Threads finalizados")
+    }
+}
+
+El funcionamiento es similar al ejemplo anterior. La única diferencia es que en el flujo de ejecución, al 
+segundo Thread le da tiempo a mostrar su mensaje de fin antes de que el hilo principal pueda mostrar el suyo.
+
+Desarrollaremos otro ejemplo.
+El problema es el siguiente...Tenemos una aplicación con un sólo botón. Cuando se pulsa se debe enviar una
+señal a otra máquina. No podemos lanzar más de una comunicación simultánea porque se interferirán entre ellas.
+En el Listener del botón no podemos incluir la rutina de comunicaciones porque ralentizaría el flujo del
+hilo principal.
+La primera solución sería lanzar un Thread que se encargue de la comunicación en base a una variable que
+contendrá el número de pulsaciones pendientes por procesar.
+El problema es que este Thread tendrá que hacer polling continuo sobre el contador de pulsaciones para
+detectar cuándo hay alguna.
+La solución correcta es sustituir el contador de pulsaciones por un simple semáforo.
+El Thread quedará sin consumir recursos, esperando a recuperar un token del semáforo.
+El Listener del botón sólo se encargará de aumentar el contador del semáforo.
+Simularemos la rutina de comunicaciones con un sleep de 2 segundos.
+Este es el código:
+
+package com.rojo.app01
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.Semaphore
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        val sema=Semaphore(0) //Creamos un semáforo vacío
+
+        //Lanzamos un Thread para que se encargue de gestionar el semáforo
+        Thread {
+            while(true) { //Bucle infinito
+                sema.acquire() //Esperamos a que haya un token en el semáforo
+                var id=System.currentTimeMillis() //Obtenemos un id para este Thread
+                println("Thread $id start")
+                Thread.sleep(2000) //Esperamos dos segundos. Simulación de proceso de comunicación
+                println("Thread $id end")
+            }
+        }.start()
+
+        ui.button.setOnClickListener { //Se ha pulsado el botón...
+            sema.release() //Añadimos un token al semáforo
+        }
+    }
+}
+
+Para poder distingir las distintas ejecuciones del Thread, creamos un identificador basado en el
+número de milisegundos de la hora actual (desde 01/01/1970).
+Cuando pulsamos varias veces el botón, recuerda el número de pulsaciones y las va procesando
+de una en una.
+
+Nuevo ejemplo.
+Cuando el contador de un semáforo es 0 y algún Thread solicita un token y queda en espera, el semáforo
+toma nota de quién se lo ha pedido y lo anota para poder entregárselo cuando alguien le entregue algún
+token.
+Por defecto, esta lista de solicitudes no mantiene ningún orden. Lo controla la propiedad fair del
+semáfono que por defecto es false. Pero si la activamos, mantendrá un orden FIFO de peticiones.
+En el ejemplo crearemos el semáforo con el parámetro fair activado.
+El método queueLength nos indica el número de Thread pendientes de atender.
+Desarrollaremos un ejemplo para demostrarlo.
+Para simplificar crearemos una clase heredada de Thread con parámetros de semáforo & id, como ya
+hemos hecho anteriormente.
+Este Thread customizado sólo espera un segundo y después solicita un token al semáforo.
+Suponemos que la aplicación tiene un botón que lanza la batería de pruebas.
+Estamos incluyendo retrasos en el hilo principal (en el Listener del botón) para sincronizar la
+ejecución con los Threads secundarios. Esta práctica NUNCA debe hacerse en un programa final.
+El hilo principal no se puede detener con subtareas.
+Haremos varias pruebas:
+1. Añadimos un token al semáforo y lanzamos el Thead, que lo consume inmediatamente.
+2. Lanzamos el Thread, esperamos a que quede dormido e incrementamos el contador del semáforo que
+   hace continuar al Thread.
+3. Lanzamos 2 Threads en orden, que quedan dormidos en el mismo orden tras solicitar un token al
+   semáforo. Entregamos los tokens al semáforo y descubrimos que se despiertan en el mismo orden.
+
+package com.rojo.app01
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.Semaphore
+
+//Clase heredada de Thread, pero que admite parámetros
+class MyThread(private var sema:Semaphore, private var id:Int): Thread() {
+    override fun run() { //Sobreescribimos la función que lanza el Thread
+        super.run() //Llamamos a la función original del padre
+        println("Thread $id: Start")
+        sleep(1000) //Esperamos un segundo
+        println("Thread $id: Request token (sleeping)")
+        sema.acquire() //Reducimos el contador del semáforo
+        println("Thread $id: Token received. End")
+    }
+}
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        ui.button.setOnClickListener { //Se ha pulsado el botón...
+            //Creamos un semáforo vacío e indicamos que mantenga el orden de solicitud
+            val sema=Semaphore(0,true)
+            println("Thread main: Empty semaphore created")
+
+            println("Thread main: Test 1 Start")
+            //Inicialmente no tenemos a nadie esperando un token. Resultado = 0
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            sema.release() //Incrementamos el contador del semáforo
+            println("Thread main: Released a token")
+            //Aunque contador del semáforo en 1, nadie lo ha solicitado. Resultado = 0
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            MyThread(sema,1).start() //Lanzamos Thread 1
+            Thread.sleep(2000) //Esperamos 2 segundos. Ya habrá terminado el Thread
+            //El Thread ha tomado el token del semáforo instantáneamente.
+            //Por lo tanto, ahora no hay nadie esperando. Resultado = 0
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            println("Thread main: Test 1 End")
+
+            println("Thread main: Test 2 Start")
+            MyThread(sema,2).start() //Lanzamos Thread 2
+            Thread.sleep(2000) //Esperamos 2 segundos. El Thread 2 estará esperando al semáforo
+            //Tenemos al Thread 2 esperando al semáforo. Resultado = 1
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            println("Thread main: Released a token")
+            sema.release() //Incrementamos el contador del semáforo
+            //En este instante el Thread 2 ha tomado el token del semáforo y está finalizando
+            Thread.sleep(1000) //Esperamos 1 segundo. El Thread 2 habrá terminado
+            //No hay nadie esperando. Resultado = 0
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            println("Thread main: Test 2 End")
+
+            println("Thread main: Test 3 Start")
+            MyThread(sema,3).start() //Lanzamos Thread 3
+            Thread.sleep(100) //Esperamos un momento
+            MyThread(sema,4).start() //Lanzamos Thread 4
+            Thread.sleep(2000) //Esperamos 2 segundos
+            //Los 2 Thread están esperando al semáforo
+            //El primero que lo ha pedido es el 3, después el 4. Respuesta = 2
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            println("Thread main: Released 2 tokens")
+            sema.release(2) //Incrementamos el contador del semáforo en 2 unidades
+            //Deberían desbloquearse los Threads en el mismo orden que han hecho la solicitud
+            //Primero el 3 y después el 4
+            Thread.sleep(1000) //Esperamos a que los Threads terminen
+            //Ya no hay nadie esperando. Respuesta = 0
+            println("Thread main: Semaphore pending Threads = ${sema.queueLength}")
+            println("Thread main: Test 3 End")
+        }
+    }
+}
+
+Además tenemos otros métodos que nos pueden ser útiles:
+- tryAcquire: igual que acquire, pero si no tenemos tokens en el semáforo, no entra en hibernación.
+  Simplemente devuelve un false. Las versiones con parámetros permiten indicar un tiempo de espera
+  máximo (timeout) en milisegundos para que consiga un token.
+- hasQueueThreads: devuelve en un booleano si tiene algún Thread esperando un token.
+- drainPermits: pone el contador del semáforo a cero (elimina todos los tokens pendientes).
+- isFair: informa de si el parámetro fair está activo. Cuando este parámetro está activo, el
+  semáforo atiende las peticiones pendientes en orden FIFO.

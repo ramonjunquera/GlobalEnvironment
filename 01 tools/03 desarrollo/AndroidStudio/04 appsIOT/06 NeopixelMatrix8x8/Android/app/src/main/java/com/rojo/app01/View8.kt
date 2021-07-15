@@ -1,11 +1,14 @@
 /*
   Tema: Objeto View8
   Autor: Ramón Junquera
-  Fecha: 20210528
+  Fecha: 20210713
   Herencias: Derivado de View.
   Objetivo:
-    Muestra una rejilla de 8x8 círculos que permiten pulsaciones que los pintan del color
-    seleccionado.
+    Muestra una rejilla de 8x8 círculos/pixels.
+    Tiene métodos que nos permiten asignar un color a unas coordenadas o recuperar un color de unas
+    coordenadas.
+    También tiene un método para definir la función a la que de debe llamar cuando se detecte un
+    click sobre un pixel. Como parámetros le pasa las coordenadas.
   Notas:
   - Clase heredada de View
   - No necesita compartir ui con la clase principal porque no accede a objetos gráficos que no
@@ -13,15 +16,10 @@
   - Necesitaremos un objeto Paint que defina la manera de dibujar en el Canvas y como no es una
     buena idea instanciarlo en el propio método onDraw cada vez que se utilice, lo haremos como
     variable privada.
-  - Guardamos el tamaño del Canvas,el color seleccionado y el flag de si se debe informar del color
-    de la siguiente pulsación, en variables privadas globales
-  - Tenemos una variable global privada especial. Guarda la función a la que se debe llamar cuando
-    el flag de solicitud de color se active. Es una función con un sólo parámetro: el color de la
-    pulsación. Las coordenadas no nos importan.
-  - Definimos el Socket de comunicación como variable global pública. Además es nullable, para
-    poder diferenciar cuando tenemos conexión.
-  - La función begin nos sirve para inicializar la clase. Admite como parámetro la función a la que
-    se llamará cuando se haya solicitado el color de la siguiente pulsación.
+  - Guardamos el tamaño del Canvas en variables privadas globales
+  - La función a la que debemos llamar cuando se haga click será nullable. No es obligatorio
+    definir esta función. Por defecto es null. Gracias a esto podremos distinguir si la función
+    ha sido definida o no.
   - Antes de dibujar nada con onDraw, siempre se inicializa con un cambio de tamaño. Sobreescribimos
     este método y aprovechamos para tomar nota de las nuevas dimensiones.
   - Sobreescribimos el método onDraw en el que dibujaremos la rejilla y los puntos en el Canvas
@@ -35,86 +33,46 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import java.net.Socket
 
-//Objeto View customizado para que represente una matriz de 8x8
-class View8 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr){
-
+class View8 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
     //Variables globales
-    private var paint=Paint()
     private var videoMem=arrayOf<Array<Int>>() //Memoria de vídeo
     private var canvasWidth=0.0f //Anchura del canvas
     private var canvasHeight=0.0f //Altura del canvas
-    private var ink:Int=Color.BLACK
-    private lateinit var touchFun:((Int)->Unit) //Función a llamar cuando se detecta pulsación
-    private var pickColor=false //Se quiere recuperar un color?
-    var client:Socket?=null //Declaramos el objeto de gestión del Socket
+    //Instanciamos la clase Paint para utilizar su variable color
+    //Lo hacemos aquí para evitar hacerlo en la rutina onDraw en la que no se debería perder el
+    //tiempo inicializando variables
+    private var paint= Paint()
+    //Función a llamar cuando se detecta pulsación. Inicialmente no hay ninguna
+    private var clickFun: ((Int, Int) -> Unit)? =null
 
-    //Se solicita recuperar el color de la siguiente pulsación
-    fun getColorNextTouch() {
-        pickColor=true //Activamos el flag
-    }
-
-    //Envía memoria de vídeo actual
-    fun send() {
-        val out= client!!.getOutputStream() //Anotamos el OutputStream para enviar por el cliente
-        //No es obligatorio, pero sí conveniente lanzar la operación de envío en segundo plano
-        //Las posibles esperas no afectarán a la fluidez de la aplicación
-        Thread {
-            try {
-                out.write(255) //Index channel reset (nuevo color)
-                for(row in 0..7) { //Recorremos todas las filas
-                    for(col in 0..7) { //Recorremos todas las columnas
-                        val color=videoMem[row][col] //Anotamos el color
-                        out.write(Color.red(color)) //Enviamos canal R
-                        out.write(Color.green(color)) //Enviamos canal G
-                        out.write(Color.blue(color)) //Enviamos canal B
-                    }
-                }
-            } catch (e: Exception) { //Si tenemos algún un problema...
-                //...el envío se pierde
-            }
-        }.start() //Y lo lanzamos inmediatamente
-    }
-
-    //Inicialización
-    //El parámetro es la función a la que se llamará cuando se haga una pulsación válida y estemos
-    //pendientes de recibir el color
-    fun begin(f: (Int)->Unit) {
-        touchFun=f //Guardamos la función en la variable privada
+    //Constructor
+    //Lo definimos aparte para poder inicializar los parámetros del objeto.
+    init {
+        val c=Color.BLACK //Inicialmente los pixels son negros
         //Creamos memoria de vídeo. Añadimos 8 filas de 8 elementos
-        for(row in 0..7) videoMem+=arrayOf(ink,ink,ink,ink,ink,ink,ink,ink)
-        setOnTouchListener { v, event -> //Gestor de pulsaciones
+        for(row in 0..7) videoMem+=arrayOf(c,c,c,c,c,c,c,c)
+
+        setOnTouchListener { v,event-> //Gestor de pulsaciones
             v.performClick() //Informamos de un click a la clase padre
             //No filtraremos por tipo de evento, por lo tanto aceptaremos los eventos de pulsación,
             //soltado y movimiento.
             //Tomamos las coordenadas de la pulsación
             //Calculamos las coordenadas del Array
-            val x=(event.x * 8/canvasWidth).toInt()
-            val y=(event.y * 8/canvasHeight).toInt()
-            if(x<8 && y<8) { //Si las coordenadas son válidas...
-                if(pickColor) { //Si se quiere recuperar un color...
-                    pickColor=false //Borramos el flag
-                    touchFun(videoMem[y][x]) //Informamos del color de la pulsación
-                } else { //Si se quiere pintar del color seleccionado...
-                    if(ink!=videoMem[y][x]) { //Si el color es distinto...
-                        videoMem[y][x]=ink //Copiamos el color seleccionado al Array
-                        invalidate() //Fuerza a redibujar el Canvas (llama a onDraw)
-                        //Si estamos conectados...enviamos la memoria de vídeo
-                        if(client!=null) send()
-                    }
-                }
+            val col=(event.x*8/canvasWidth).toInt()
+            val row=(event.y*8/canvasHeight).toInt()
+            //Si las coordenadas son válidas y tenemos definida la función a llamar...
+            if(col<8 && row<8 && clickFun!=null) {
+                //Nos aseguramos que la función no es nula y la llamamos (invocamos) con sus
+                //parámetros (row,col)
+                clickFun?.invoke(row,col)
             }
             true //Hemos terminado de procesar la pulsación correctamente
         }
     }
 
-    //Asigna nuevo color seleccionado
-    fun setInkColor(color:Int) {
-        ink=color //Guardamos parámetro en variable privada
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) { //Si cambia de tamaño
+    //Gestión de cambio de tamaño
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         //Guardamos el tamaño del canvas en variables globales
         canvasWidth=width.toFloat()
@@ -124,9 +82,8 @@ class View8 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = n
     //Llamada cada vez que se deba redibujar el objeto gráfico
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas) //Llamamos al constructor de la clase padre
-
         //Dibujamos el fondo
-        paint.color=Color.parseColor("#222222") //Gris oscuro
+        paint.color= Color.parseColor("#222222") //Gris oscuro
         canvas?.drawRect(0f,0f, canvasWidth, canvasHeight,paint) //Fondo
 
         //Dibujamos la rejilla
@@ -152,4 +109,29 @@ class View8 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = n
             }
         }
     }
+
+    //Actualiza el color de un pixel y lo muestra
+    //Devuelve true si lo consigue
+    fun drawPixel(row:Int,col:Int,color:Int):Boolean {
+        if(row>7 || col>7) return false //Si las coordenadas están fuera de rango...error
+        videoMem[row][col]=color //Guardamos el color en la memoria de vídeo
+        invalidate() //Fuerza a redibujar el Canvas (llama a onDraw)
+        return true //Todo Ok
+    }
+
+    //Devuelve el color de un pixel
+    //Si las coordenadas están fuera de rango devuelve 0
+    fun getPixel(row:Int,col:Int):Int {
+        if(row>7 || col>7) return 0 //Si las coordenadas están fuera de rango...error
+        return videoMem[row][col]
+    }
+
+    //Definición de función que gestionará las pulsaciones de los pixels
+    //La función a la que se llamará debe tener los siguientes parámetros:
+    //- row:Int
+    //- col:Int
+    fun onClickListener(f:(Int,Int)->Unit) {
+        clickFun=f //Guardamos función en variable privada
+    }
+
 }

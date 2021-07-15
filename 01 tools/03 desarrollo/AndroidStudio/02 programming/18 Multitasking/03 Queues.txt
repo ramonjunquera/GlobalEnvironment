@@ -1,0 +1,186 @@
+Tema: LinkedBlockingQueue
+Fecha: 20210711
+
+Android dispone de varias colas para ser utilizadas con multitarea, pero la clase que nos interesa por poder
+bloquear Threads como en FreeRTOS es LinkedBlockingQueue.
+
+Mismo funcionamiento que en C++.
+Objeto de sincronización de Threads.
+
+Ejemplo simple de uso.
+Suponemos que la aplicación tiene un botón.
+Crearemos el programa en el Listener del botón.
+Se crea una cola de Int.
+Se añaden 10 nodos. Para diferenciarlos cada nodo tendrá un valor del 1 al 10.
+A continuación recuperamos los nodos y mostramos su contenido.
+Comprobamos que se recuperan en el mismo orden en el que los hemos creado.
+
+package com.rojo.app01
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.LinkedBlockingQueue
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        ui.button.setOnClickListener { //Se ha pulsado el botón...
+            //Creamos una cola que guardará valores enteros
+            val queue=LinkedBlockingQueue<Int>()
+            println("Cola creada")
+            println("Número de nodos = ${queue.size}")
+            //Añadimos 10 nodos a la cola con los valores del 1 al 10. Siempre al final.
+            for(i in 1..10) queue.add(i)
+            println("Añadidos 10 nodos a la cola")
+            println("Número de nodos = ${queue.size}")
+            for(i in 1..10) {
+                val v=queue.poll() //Recuperamos el primero de los nodos
+                println("Recuperado nodo $v")
+            }
+            println("Número de nodos = ${queue.size}")
+        }
+    }
+}
+
+Ejemplo.
+Objetivo: Calcular la suma de los 100 primeros números
+Procedimiento:
+  Aunque tenemos la posibilidad de lanzar un simple bucle para calcular el sumatorio, queremos
+  aprovechar la multitarea. Crearemos un par de Threads. Cada uno calculará la suma de 50 números.
+  El tiempo de cálculo total será la mitad.
+  Comenzaremos creando un Thread propio que admita algunos parámetros:
+  - La cola en la que se informará del sumatorio calculado
+  - El valor inicial del rango
+  - El valor final del rango
+  Este Tread calcula el sumatorio del rango indicado y al finalizar añadirá un nodo a la cola de Int
+  con el resultado obtenido.
+  Suponemos que la aplicación tiene un botón. El hilo principal está incluiodo en el Listener del
+  botón. 
+  En el hilo principal comenzamos creando la cola de enteros.
+  Lanzamos los 2 Threads con los parámetros de cada uno de sus rangos.
+  Recuperamos los valores de dos nodos de la cola.
+  Como en este momento no habrán terminado su cálculo, nos quedaremos hibernando, sin consumir
+  recursos, hasta que los Threads incluyen los nodos esperados.
+  Cuando el último Thread incluye el valor a la cola, se desbloquea y mostramos la suma total.
+
+package com.rojo.app01
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.LinkedBlockingQueue
+
+//Clase heredada de Thread, pero que admite parámetros
+//El objetivo es calcular el sumatorio de un rango de valores
+//Los parámetros son:
+//- La cola a la que añadir el resultado
+//- El valor inicial del rango
+//- EL valor final del rango
+class MyThread(private var queue:LinkedBlockingQueue<Int>, private var valueFrom:Int, private var valueTo:Int): Thread() {
+    override fun run() { //Sobreescribimos la función que lanza el Thread
+        super.run() //Llamamos a la función original del padre
+        println("Thread $valueFrom-$valueTo start")
+        var sum=0 //Valor de la suma total. Incialmente cero
+        for(i in valueFrom..valueTo) sum+=i //Calculamos el sumatorio
+        queue.add(sum) //Añadimos el valor de la suma a la cola
+        println("Thread $valueFrom-$valueTo end")
+    }
+}
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        ui.button.setOnClickListener { //Se ha pulsado el botón...
+            //Creamos una cola que guardará valores enteros
+            val queue=LinkedBlockingQueue<Int>()
+            println("Cola creada")
+            //Lanzamos el Thread para calcular la suma de los 50 primeros números
+            MyThread(queue,1,50).start()
+            //Lanzamos el Thread para calcular la suma de los 50 últimos números
+            MyThread(queue,51,100).start()
+            var sum=0 //Total del sumatorio. Inicialmente cero
+            println("Esperando a que los Threads finalicen")
+            for(i in 1..2) sum+=queue.take() //Calculamos el total de los resultados de los Threads
+            println("Suma total = $sum")
+        }
+    }
+}
+
+Ejemplo.
+Problema:
+  Suponemos que tenemos establecida una conexión con otro sistema.
+  Cada vez que se pulsa un botón se sebe enviar una comunicación por la conexión con ciertos
+  parámetros.
+  No se puede realizar un envío desde el hilo principal para evitar bloqueos, debemos utilizar
+  Threads.
+  No podemos utilizar la conexión para envíos concurrentes porque se interfieren entre sí.
+Solución:
+  Utilizaremos una cola de valores Long.
+  Cada vez que se pulse el botón añadiremos un nodo con los parámetros que correspondan.
+  Para simplificar, supondremos que sólo es un parámetro llamado id.
+  Este id lo obtendremos del número de milisegundo de la hora actual.
+  Por otra parte, un Thread se encarga de gestional la cola.
+  Mientras no haya nodos, queda hibernada sin consumir recursos.
+  Al detectar un nodo, mostrará el id recibido y simula su proceso.
+Notas:
+  Si pulsamos varias veces el botón antes de que finalice la primera conexión, las peticiones
+  se acumularán en la cola. Cada una con su propio identificador.
+  Las peticiones se procesarán secuencialmente por el Thread.
+
+package com.rojo.app01
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.rojo.app01.databinding.ActivityMainBinding
+import java.util.concurrent.LinkedBlockingQueue
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var ui: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ui=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(ui.root)
+
+        //Creamos una cola que guardará valores enteros largos
+        val queue=LinkedBlockingQueue<Long>()
+        Thread { //Thread para que gestione la cola
+            while(true) { //Bucle infinito
+                println("Esperando a obtener un nodo")
+                val id=queue.take() //Hibernamos si no hay nodos
+                println("Obtenido nodo $id. Procesando")
+                Thread.sleep(2000) //Simulamos tiempo de proceso
+                println("Nodo $id procesado")
+            }
+        }.start()
+
+        ui.button.setOnClickListener { //Se ha pulsado el botón...
+            val id=System.currentTimeMillis() //Calculamos el identificador del Thread
+            println("Añadiendo nodo $id")
+            queue.add(id)
+        }
+    }
+}
+
+Notas:
+- En Kotlin no existen las estructuras (struct) de C, pero en su logar podemos utilizar clases.
+  Gracias a ello, podríamos crear una cola con tipo de valor la clase definida, que contendrá
+  todos los parámetros que queramos.
+
+Funcionalidades adicionales (métodos) de una cola:
+- clear() : Borra todos los nodos de la cola
+- contains : Devuelve true si la cola contiene algún nodo con el valor indicado
+- offer : Añade un nodo al final de la cola, como add
+- peek : Devuelve el primer elemento de la cola. Si no existe devuelve null. Pero NO lo elimina de la cola
+- pool : Devuelve el primer elemento de la cola. Si no existe devuelve null. Como take pero sin esperas.
+- put : Igual que add
+- removes: Elimina el primer elemento que tenga el valor indicado.
+

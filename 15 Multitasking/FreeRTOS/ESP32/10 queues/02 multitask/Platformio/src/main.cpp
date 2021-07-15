@@ -44,7 +44,7 @@ struct sumParam {
 void sum(void *param) {
   sumParam *p=(sumParam*)param; //Sabemos que es una estructura sumParam
   uint16_t total=0; //Cramos e inicializamos variable para guardar el total
-  //Recorremos todos los valores del ranindicado y los añadimos a total
+  //Recorremos todos los valores indicados y los añadimos a total
   for(uint16_t i=p->startValue;i<=p->endValue;i++) total+=i;
   xQueueSend(p->queue,&total,portMAX_DELAY); //Guardamos el total en la cola indicada
   delete p; //Eliminamos la estructura de parámetros de la memoria

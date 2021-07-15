@@ -59,7 +59,7 @@ Si en el panel izquierdo inferior, en el que tenemos el mensaje de warning, puls
 para que lo vuelva a procesar y desaparecerán todos los mensajes.
 
 Todas las Activity tienes dos archivos: la definición del código (nuestro MainActivity.kt) y la definición gráfica.
-Este siemrpe es un .xml que se encuentra en la rama App01/app/src/main/res/layout/activity_main.xml.
+Este siempre es un .xml que se encuentra en la rama App01/app/src/main/res/layout/activity_main.xml.
 Si hacemos doble click sobre él, se abrirá el editor gráfico que nos mostrará el aspecto.
 Normalmente no trabajaremos editanto el texto del archivo .xml. Es más sencillo trabajar gráficamente.
 

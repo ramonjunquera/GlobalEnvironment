@@ -86,7 +86,7 @@
                     android:id="@+id/seekBarR"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="254"
+                    android:max="255"
                     android:progressTint="#FF0000"
                     android:thumbTint="#FF0000" />
 
@@ -94,7 +94,7 @@
                     android:id="@+id/seekBarG"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="254"
+                    android:max="255"
                     android:progressTint="#00FF00"
                     android:thumbTint="#2C612C" />
 
@@ -102,7 +102,7 @@
                     android:id="@+id/seekBarB"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="254"
+                    android:max="255"
                     android:progressTint="#0000FF"
                     android:thumbTint="#0000FF" />
 

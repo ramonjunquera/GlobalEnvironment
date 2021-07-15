@@ -1,5 +1,5 @@
 Tema: Thread
-Fecha: 20200513
+Fecha: 20210513
 
 Es normal que los dispositivos en los que se ejecuta Android tengan varios procesadores.
 Es muy habitual que un programa que se ejecuta en un hilo principal abra hilos secundarios
@@ -15,7 +15,7 @@ El ejemplo más sencillo (y util) es pedir que la ejecución del programa se det
 un tiempo determinado. La sintaxis es:
   Thread.sleep(ms)
 Donde ms es un valor numérico que representa el tiempo en milisegundos.
-Relamente lo que ocurre es que se crea una alarma de un sólo uno y el programa queda
+Realmente lo que ocurre es que se crea una alarma de un sólo uso y el programa queda
 hibernado hasta que la alarma salta. Esto no afecta para nada a otros Threads.
 Cuando el programa está esperando la alarma no consume CPU, que puede ser utilizada por
 otros Threads.
@@ -99,7 +99,7 @@ Tenemos una forma más de crear un Thread secundario.
 En vez de definir el código del Thread secundario en el momento en el que instanciamos
 el objeto Thread (ejemplo 1), o sobreescribiendo el método run (ejemplo 2), podemos
 crear una clase propia de tipo Runnable.
-Este tipo de clses está preparado para que sean llamadas por Threads.
+Este tipo de clases está preparado para que sean llamadas por Threads.
 Ejemplo con la misma funcionalidad y salidas que los anteriores:
 
 package com.rojo.app02
@@ -209,6 +209,6 @@ class MainActivity : AppCompatActivity() {
 }
 
 Nota.
-Definimos un Thread y tenemos intención de lanzarlo a continuación y no se lanzará desde ningún otro
+Si definimos un Thread y tenemos intención de lanzarlo a continuación y no se lanzará desde ningún otro
 punto, no es necesario que creemos una variable para instanciarlo. Podríamos comenzar con Thread {
 y terminar con }.start() para lanzarlo inmediatamente.

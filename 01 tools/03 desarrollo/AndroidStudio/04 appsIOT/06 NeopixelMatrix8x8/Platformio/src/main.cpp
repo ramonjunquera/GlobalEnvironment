@@ -1,17 +1,29 @@
 /*
   Tema: Servidor socket tcp con matriz de leds NeoPixel 8x8
   Autor: Ramón Junquera
-  Fecha: 202105124
+  Fecha: 20210711
 
-  Se crea un servidor socket para la recepción de colores que se
-  aplicarán a la matriz de leds NeoPixel.
-  Se recibirán los colores de todos los pixels por filas, por columnas y
-  por canales (RGB).
-  El valor 255 se considera el comando para resetear los contadores
-  El cliente (Android) es el encargado de abrir y cerrar la comunicación.
-  Mientras la comunicación se mantiene abierta se pueden recibir comandos.
-  Se crea un punto de acceso WiFi.
-  Por defecto la ip del servidor es 192.168.4.1
+  Objetivo:
+    Se crea un servidor socket para la recepción de colores que se
+    aplicarán a la matriz de leds NeoPixel.
+  Funcionamiento:
+    La conexión permanece abierta aunque no se genera tráfico.
+    La información se recibe en paquetes.
+    Un paquete consta de 4 bytes.
+    El primero contiene las coordenadas del pixel a mopificar em formato ..xxxyyy
+    Los 3 siguientes bytes corresponden a los canales de color (RGB).
+    El cliente (Android) es el encargado de abrir y cerrar la comunicación.
+    Se crea un punto de acceso WiFi.
+    Por defecto la ip del servidor es 192.168.4.1
+  Notas:
+  - A veces, tras un tiempo sin tráfico, se recibe como primer byte del paquete 255.
+    No sé porqué.
+  - La alimentación que puede dar el dispositivo a la matriz de leds es insuficiente como
+    para utilizar alta intensidad en cada led. Concretamente no es capaz de mantener los
+    colores cuando tenemos más de 16 leds con blanco puro. Si seguimos aumentando el consumo
+    incluso se reseteará el dispositivo. Si queremos utilizarlo con toda su potencia, es
+    recomendable alimentar la matriz con una fuente de alimentación externa (siempre
+    compartiendo el pin de tierra).
 */
 
 #include <Arduino.h>
@@ -53,38 +65,33 @@ void loop() {
   WiFiClient client=server.available(); //Anotamos si hay algún cliente
   if(client) { //Si hay alguno...
     Serial.println(String(millis())+" Cliente conectado");
-    byte rowIndex=0; //Índice de la fila del byte recibido
-    byte colIndex=0; //Índice de la columna del byte recibido
-    byte channelIndex=0; //Índice del canal de color del byte recibido
-    byte color[3]; //Canales de color del color recibido
+    byte buffer[4]; //Buffer de recepción. 4 bytes=1 para coordenadas y 3 para canales de color
+    byte bufferIndex=0; //Posición a llenar en el buffer de recepción
     while(client.connected()) { //Mientras tengamos el cliente conectado...
       if(client.available()) { //Si tenemos información pendiente...
         byte b=client.read(); //Leemos el siguiente byte
-        if(b==255) { //Si es un comando reset...
-          rowIndex=colIndex=channelIndex=0; //Reset de índices
-          Serial.print("R "); //Indicamos que hemos recibido un reset
-        } else { //No es un comando reset
+        if(bufferIndex==0 && b==255) { //Si el primer byte es 255...
+          //no lo tenemos en cuenta
+          //No se porqué, a veces, aparece un 255 despues de un tiempo sin enviar
+          Serial.println("Info. 255 eliminado como primer byte");
+        } else { //El primer byte no es 255
           //Mostramos un punto por cada byte recibido
-          //Una imágen completa tiene 5x5x3=75 bytes
           Serial.print(".");
-          //Guardamos el byte leido en el canal que corresponde
-          //Aumentamos el índice de canal para el siguiente ciclo
-          color[channelIndex++]=b; 
-          if(channelIndex==3) { //Si hemos completado el color...
+          //Guardamos el byte leido en buffer de entrada
+          //Aumentamos el índice de la posición de entrada del buffer
+          buffer[bufferIndex++]=b;
+          if(bufferIndex==4) { //Si ya hemos recibido 4 bytes (paquete completo)...
+            //Decodificamos coordenadas
+            //Formato del byte de coordenadas: ..xxxyyy
+            byte y=buffer[0] & 0b00000111;
+            byte x=(buffer[0] >> 3) & 0b00000111;
             //Dibujamos el pixel en la memoria de vídeo
-            leds.v->drawPixel(colIndex,rowIndex,leds.v->getColor(color[0],color[1],color[2]));
-            channelIndex=0; //Reseteamos el canal de color
-            //Tenemos que pasar a la siguiente columna
-            if(++colIndex>7) { //Si hemos terminado todas las columnas...
-              colIndex=0; //Reseteamos el índice de columna
-              //Tenemos que pasar a la siguiente fila
-              if(++rowIndex>7) { //Si hemos terminado todas las filas...
-                rowIndex=0; //Reseteamos el índice de fila
-                //Hemos recibido la imágen completamente
-                leds.draw(); //La dibujamos
-                Serial.println(" ok"); //Informamos que hemos completado la imágen
-              }
-            }
+            leds.v->drawPixel(x,y,leds.v->getColor(buffer[1],buffer[2],buffer[3]));
+            leds.draw(); //La dibujamos
+            Serial.print(" "+String(x)+","+String(y)); //Informamos de las coordenadas
+            for(byte i=1;i<4;i++) Serial.print(" "+String(buffer[i])); //Informamos de los canales de color
+            Serial.println(" ok");
+            bufferIndex=0; //Reseteamos el índice del buffer
           }
         }
       }

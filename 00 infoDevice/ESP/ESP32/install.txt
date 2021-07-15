@@ -1,5 +1,5 @@
 Instalación y configuración placas ESP32 con Arduino IDE
-Fecha: 20190703
+Fecha: 20210704
 
 Instalación del driver USB.
 Siempre se puede descargar la última versión desde la URL:
@@ -11,6 +11,15 @@ CP210xVCPInstaller_x64.exe
 Pero no termina de funcionar porque no permite pasar de página.
 En su lugar podemos hacer clic con el botón derecho sobre slabvcp.inf
 y seleccionar "Instalar".
+
+Instalación de Serial Driver
+Una vez que conectamos el dispositivo al PC, no spuede aparecer en el administrador de dispositivos como
+no detectado o sin drivers. Puede aparecer como M5 Serial Converter.
+Se soluciona intalando los drivers de FTDI, que se pueden descargar de la página https://ftdichip.com/drivers/vcp-drivers/
+Concretamente el archivo CDM v2.12.36.2 WHQL Certified.zip
+Al descomprimirlo debemos instalar (con el botón derecho) los archivos:
+- ftdibus.inf
+- ftdiport.inf
 
 Configuración en Arduino IDE.
 Seleccionamos File\Preferences

@@ -1,7 +1,7 @@
 /*
   Tema: Control remoto de una matriz de leds RGN Neopixel 5x5
   Autor: Ramón Junquera
-  Fecha: 20210517
+  Fecha: 20210710
   Controles:
   - Dirección ip y puerto para que el usuario defina el servidor.
   - Switch para establecer conexión
@@ -9,15 +9,19 @@
   - Botón con el color seleccionado
   - Matriz de 5x5 botones para poder asignar el color seleccionado y dibujar
   Protocolo:
-  - El valor 255 se considera un comando. Servirá para indicar que se envía un color nuevo.
-  - Una imágen consta de 5 filas, 5 columnas y 3 canales de color.
-  - La imágen se envía por filas, columnas y canales de color.
-  - Los canales de color tienen como valor máximo 254, para no ser confundidos con el comando reset.
-  - Cada vez que se vaya a enviar un nuevo color, se enviará primero el código reset. Esto
-    asegurará la correcta sincronización de canales, aunque se produzcan errores de comunicación.
+  - Una imágen consta de 5 filas, 5 columnas y 3 canales de color por pixel.
+  - Una vez establecida la conexión con el servidor, se mantiene abierta, aunque no se transmita nada.
+  - La transmisión es unidireccional. Desdel el cliente al servidor.
+  - Un envío consta lo forma un sólo paquete con la información de un pixel. Su tamaño es de 4 bytes.
+    el primero contiene las coordenadas con la codificación..xxxyyy, los tres siguientes
+    corresponden con los canales de color del pixel.
+  - Cuando se establece conexión, se envía el contenido de la imagen completa a base de paquetes.
   Funcionamiento:
   - La conexión es algo que se debe poder utilizar en cualquiera de las clases que definamos,
     por eso se declara como variable global.
+  - Cuando se establece conexión se da valor a la variable clientOutputStream que contiene el
+    OutputStream por el cual podemos enviar datos en la conexión.
+  - Las tres SeekBar tienen un rango de byte [0,255] para que coincida con al canal de color.
   - Puesto que el color debe recalcularse con la modificación de cualquiera de las SeekBar, creamos
     un Listener único para todas las SeekBar.
   - El Listener admite como parámetro un Binding que nos permite acceder a los objetos gráficos.
@@ -25,14 +29,12 @@
     aunque no lo vayamos a utilizar.
   - Cuando se modifica cualquiera de las SeekBar, tomamos el progreso de cada una, pintamos el
     fondo del botón de selección.
-  - Para evitar que las SeekBar generen el código reset, se limitan a 254.
   - Cuando solicita conexión con el control Switch, lanzamos un Thread para que gestione las
     operaciones de conexión y desconexión sin que afecte al hilo principal.
   - Si queremos conectar, desactivamos los controles de ip y puerto, tomamos sus valores e
     intentamos la conexión con el socket.
-    Si no lo conseguimos, volveremos adejar los controles como al principio.
-    Si conectamos llámamos al método de nuestro Listener que gestiona los cambios en las SeekBar.
-    Así forzamos a que se envíe una actualización del color actual al servidor.
+    Si no lo conseguimos, volveremos a dejar los controles como al principio.
+    Si lo conseguimos, enviamos todos los pixels de la imágen.
   Requerimientos:
   - Es necesario indicar que la aplicación necesitará permisos para conectarte con el exterior.
     Esto se hace en el archivo app/manifest/AndroidManifest.xml
@@ -45,6 +47,8 @@
   - Las actualizaciones de objetos gráficos desde Thread secundarios no está permitida. Siempre
     de debe hacer desde el Thread principal. Por eso se utiliza el Looper. Se añaden tareas mediante
     un Handler
+  - Cuando se mantiene la conexión, pero no se transmite nada, a veces se envía un primer byte
+    adicional con el valor 255. No sé porqué.
 */
 
 package com.rojo.app02
@@ -58,14 +62,35 @@ import android.widget.Button
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import com.rojo.app02.databinding.ActivityMainBinding
+import java.io.OutputStream
 import java.net.Socket
+import java.util.concurrent.LinkedBlockingQueue
 
+//Definimos clase para guardar los parámetros de una solicitud de cambio de color
+//No necesitamos métodos. Sólo queremos que los parámetros del constructor sean públicos
+//para poder acceder a ellos.
+//El problema es que pretendemos utilizar la clase como estructura para recoger toda la información
+//necesaria para incluirla en un nodo de la cola de peticiones.
+//Una de las funciones que permite una cola es la comparación. Es capaz de eliminar cierto nodo si
+//descubre que es igual que otro dado. Para ello necesita una función que compare dos valores.
+//En este caso, dos clases.
+//Para cumplir con este requisito (aunque no se utilice nunca) debemos heredar la clase de
+//Comparable con el tipo de objeto a comparar. En este caso sería otra clase igual.
+//Ya que es una clase comparable, tiene la obligación de sobreescribir el método compareTo
+//Lo hacemos, pero lo dejamos vacío porque nunca pediremos a la cola acciones de comparación
+//Al menos en este ejemplo. Lo único que hacemos es devolver el valor 0 como constante.
+class ChangeRequest(var col:Int,var row:Int,var color:Int) : Comparable<ChangeRequest> {
+  override operator fun compareTo(other: ChangeRequest): Int { return 0 }
+}
 
 //Variable globales
 private lateinit var client: Socket //Declaramos el objeto de gestión del Socket
+private lateinit var clientOutputStream:OutputStream //OutputStream del cliente para poder enviar
 private var selectedColor:Int=0 //Color del botón de selección
 private var buttonsColor=arrayOf<Array<Int>>() //Array bidimensional de colores
 private var pickColor=false //Se quiere tomar un color?
+private var queue= LinkedBlockingQueue<ChangeRequest>() //Creamos cola de peticiones
+
 
 //Definimos una clase heredada del Listener de SeekBar
 //Tiene un parámetro con el Binding que nos permite el acceso a los objetos gráficos
@@ -113,29 +138,10 @@ class MyClickListener(private val ui:ActivityMainBinding,private val mainHandler
       v.setBackgroundColor(selectedColor) //Copiamos el color del botón selector al actual
       buttonsColor[buttonRow][buttonCol]= selectedColor //Lo anotamos en el Array
       if(ui.switchConectar.isChecked) { //Si tenemos conexión...
-        send() //...enviamos la imágen actual
+        //...enviamos el pixel que se ha actualizado
+        queue.add(ChangeRequest(buttonCol,buttonRow,selectedColor))
       }
     }
-  }
-  fun send() { //Envía la imágen actual
-    val out=client.getOutputStream() //Anotamos el OutputStream para enviar por el cliente
-    //No es obligatorio, pero sí conveniente lanzar la operación de envío en segundo plano
-    //Las posibles esperas no afectarán a la fluidez de la aplicación
-    Thread {
-      try {
-        out.write(255) //Index channel reset (nuevo color)
-        for(row in 0..4) { //Recorremos todas las filas
-          for(col in 0..4) { //Recorremos todas las columnas
-            val color=buttonsColor[row][col] //Anotamos el color
-            out.write(Color.red(color)) //Enviamos canal R
-            out.write(Color.green(color)) //Enviamos canal G
-            out.write(Color.blue(color)) //Enviamos canal B
-          }
-        }
-      } catch (e: Exception) { //Si tenemos algún un problema...
-        //...el envío se pierde
-      }
-    }.start() //Y lo lanzamos inmediatamente
   }
 }
 
@@ -146,6 +152,19 @@ class MainActivity : AppCompatActivity() {
     ui=ActivityMainBinding.inflate(layoutInflater)
     setContentView(ui.root)
     val mainHandler=Handler(Looper.getMainLooper()) //Handle de la Activity
+
+    Thread { //Thread de gestión de cola de peticiones
+      val pack=ByteArray(4) //Paquete de datos a enviar
+      while(true) { //bucle infinito
+        val changeRequest=queue.take() //Recibimos una nueva solicitud
+        //Creamos contenido de paquete
+        pack[0]=(changeRequest.col*8+changeRequest.row).toByte() //Coordenadas
+        pack[1]=Color.red(changeRequest.color).toByte() //Canal R
+        pack[2]=Color.green(changeRequest.color).toByte() //Canal G
+        pack[3]=Color.blue(changeRequest.color).toByte()  //Canal B
+        clientOutputStream.write(pack) //Enviamos paquete
+      }
+    }.start()
 
     //Rellenamos los colores de todos los botones a negro
     for(row in 0..4) { //Recorremos todas las filas
@@ -161,7 +180,7 @@ class MainActivity : AppCompatActivity() {
 
     //Instanciamos un único Listener para todos los Button
     val myClickListener=MyClickListener(ui,mainHandler)
-    //Recorremos todos los botones por filas y columnas
+    //Recorremos todos los botones
     for(row in 0..4) {
       for (col in 0..4) {
         //Obtenemos el id del Button por el nombre
@@ -187,9 +206,16 @@ class MainActivity : AppCompatActivity() {
             //Intentamos conectar
             client=Socket(ui.editTextIP.text.toString(),ui.editTextPort.text.toString().toInt())
             //No ha dado error. Hemos conectado!
-            //Pedimos al Listener de los botones que envíe la imágen actual
-            myClickListener.send()
+            clientOutputStream=client.getOutputStream() //Anotamos el OutputStream para poder enviar
+            //Enviamos la imágen actual (todos los pixels)
+            for(row in 0..4) {
+              for(col in 0..4) {
+                val changeRequest=ChangeRequest(col,row,buttonsColor[row][col])
+                queue.add(changeRequest)
+              }
+            }
           } catch (e: Exception) { //Si ocurre cualquier problema (no hemos podido conectar)...
+            println("Error conectando: ${e.message}")
             //Solicitamos dejar los controles como al principio
             mainHandler.post { //Añadimos la rutina a ejecutar por el Handler
               ui.switchConectar.isChecked=false //No estamos conectados
