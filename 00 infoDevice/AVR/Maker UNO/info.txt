@@ -12,7 +12,7 @@ siguientes modificaciones:
 - Se incluye un interruptor de pulsador asignado al pin 2
 - Se sustituye la conexión USB por un micro USB
 - La alimentación de 3.3V sube su intensidad de 50mA a 500mA
-- El chip que controla el USB es un CH340G
+- El chip que controla el USB es un CH340G (necesario instalar el driver)
 
 La web oficial es:
 https://www.cytron.io/p-maker-uno

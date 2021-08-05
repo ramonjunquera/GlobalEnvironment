@@ -1,0 +1,49 @@
+Tema: Sensor de distancia por láser (LIDAR) VL53L1X
+Fecha: 20210730
+Autor: Ramón Junquera
+
+Características:
+- Fabricado por ST con tecnología FlightSense
+- Web oficial: https://www.st.com/en/imaging-and-photonics-solutions/vl53l1x.html
+- Rango: de 5cm a 400cm
+- Resolución: 1mm
+- Máxima frecuencia de muestreo: 50Hz
+- No le afecta ni el color ni la reflectancia.
+- Emisor láser de 940nm (infrarrojo). Clase 1.
+- Campo de visión por defecto (FoV): 27 grados.
+- Interfaz I2C hasta 400KHz
+- Alimentación: de 2.6V a 3.5V
+- Identificador I2C por defecto: 0x29 (41)
+- Última versión de librería de gestión oficial: https://github.com/pololu/vl53l1x-arduino
+
+Notas:
+- Internamente funciona a 2.8V, pero tiene un regulador interno que permite el rango de voltajes de entrada de 2.6V a 3.5V
+- El ángulo del campo de visión es programable entre 17 y 27 grados.
+- El identificador I2C es programable.
+- Una vez cambiado el identificador I2C, no siempre se conserva al cortar la alimentación.
+- Para aumentar su estabilidad se recomienda poner lo más cerca posible del dispositivo en su salida de tierra dos condensadores
+  en paralelo de 100nF y 4.7uF.
+- La cantidad de luz en el ambiente afecta negativamente a la distancia máxima.
+- Disponemos de 3 modos de medida. Seleccionaremos el que más se ajuste al rango que necesitamos para mejorar su precisión.
+  Cuanto mayor sea la distancia máxima, mayor número de interferencias tendremos.
+  Estos son los modos, la máxima distancia alcanzada en condiciones ideales (oscuridad absoluta) y la máxima distancia en
+  condiciones de mucha luz ambiental:
+  - Corto : 136cm : 135cm
+  - Media : 290cm : 76cm
+  - Largo : 360cm : 73cm
+- El máximo tiempo de espera para recibir el eco es configurable entre los 20ms y 1000ms.
+  Con 140ms tenemos suficiente para obtener sin problemas el eco a 400cm.
+  El mínimo tiempo permitido para una medición es de 20ms. Por lo tanto en un segundo podríamos hacer 1000/20=50.
+  De aquí sale la máxima frecuencia de muestreo.
+
+Pinout:
+- VIN: alimentación
+- GND: tierra
+- SCL: I2C clock
+- SDA: I2C data
+- GPIO1: Salida digital
+- XSHUT: Entrada digital. Hibernación. LOW = desactivado. HIGH o no conectado = activado
+
+Funcionamiento:
+  Como cualquier otro sistema de medida, se calcula la distancia teniendo en cuenta el tiempo que tarda un pulso
+  desde que se emite hasta que se recibe su eco.

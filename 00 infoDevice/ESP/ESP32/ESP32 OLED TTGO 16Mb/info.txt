@@ -79,6 +79,13 @@ Mantienen el estandar de ESP32.
    18 SCLK
     5 CS
 
+I2C.
+Pines por defecto
+  pin SPI
+  --- ---
+   22 SCL
+   21 SDA
+
 Vin.
 La placa se puede alimentar tanto por USB como por los pines de 5V.
 Funciona perfectamente con alimentación externa de 9V.

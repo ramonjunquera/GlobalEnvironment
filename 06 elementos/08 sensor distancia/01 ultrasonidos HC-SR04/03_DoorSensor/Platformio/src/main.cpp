@@ -1,11 +1,11 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20200218
+  Fecha: 20210717
   Componentes: ESP32 OLED TTGO 16Mb, HC-SR04, buzzer activo
   Descripción:
     Ejemplo de detector de puerta abierta.
     Utilizamos este modelo de placa porque ya tiene integrado el display.
-    El dispositivo se pode deelante de una puerta.
+    El dispositivo se pode delante de una puerta.
     Con el sensor de proximidad se controla si la puerta está abierta o cerrada.
     El sensor de limita a detectar objetos a una distancia máxima de 26cm.
     Esto o hacemos fijando un timeout de 2ms como tiempo que tarda el sonido en
@@ -34,7 +34,7 @@ const byte displaySDA=4,displaySCL=15,displayRES=16; //Pinout de display integra
 
 //Declaración de variable globales
 RoJoSSD1306 display; //Objeto de gestión de display
-RoJoSprite v(1); //Sprite monocromo que utilizaremos como memoria de vídeo
+RoJoSprite2 v(0); //Sprite monocromo que utilizaremos como memoria de vídeo
 uint16_t alertCount=0; //Número de alertas (más de 30 seg)
 uint16_t openCount=0; //Número de veces que se ha abierto la puerta
 uint16_t openTime=0; //Tiempo total de puerta abierta en segundos
@@ -78,7 +78,7 @@ void showOK() {
 
   //Dibujamos el texto informativo en formato hh:mm:ss a/o
   String info=twoDigits(openTime/3600)+":"+twoDigits((openTime/60)%60)+":"+twoDigits(openTime%60)+" "+String(alertCount)+"/"+String(openCount);
-  v.printOver("/10x15.fon",info,{0,0,1},0,48);
+  v.printOver("/10x15.fon",info,1,0,48);
   display.drawSprite(&v);
 
   //El último valor mostrado no es 0
@@ -90,7 +90,7 @@ void showOK() {
 //Muestra el contador hacia atrás con el último valor
 void showTimer() {
   v.clear();
-  v.printOver("/21x31d.fon",String(lastValue),{0,0,1},50,10);
+  v.printOver("/21x31d.fon",String(lastValue),1,50,10);
   display.drawSprite(&v);
 }
 

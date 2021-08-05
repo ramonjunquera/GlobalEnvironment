@@ -18,7 +18,7 @@ RoJoSprite spr;
 void setup() {
   display.begin(); //Inicialización por defecto de display para M5StickC
   tof.begin(); //Inicializamos el sensor de distancia
-  spr.setSize(64,23); //Dimensionamos el sprite que contendrá la distancia
+  spr.setSize(64,23); //Dimensionamos el sprite que contendrá el texto de la distancia
 }
 
 void loop() {
