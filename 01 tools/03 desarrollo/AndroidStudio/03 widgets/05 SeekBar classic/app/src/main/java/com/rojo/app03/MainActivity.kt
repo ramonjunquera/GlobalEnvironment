@@ -1,7 +1,7 @@
 /*
   Tema: Gestión clásica de un SeekBar
   Autor: Ramón Junquera
-  Fecha: 20210512
+  Fecha: 20210815
   Funcionamiento:
     Tenemos un SeekBar que al manipularlo muestra su valor en un TextView.
   Notas:
@@ -9,8 +9,20 @@
   - Tenemos que asignar al SeekBar una clase que gestione los eventos que genera el objeto gráfico.
     Para ello instanciamos en el mismo punto en el que hacemos la llamada un objeto heredado de
     la clase del Listener (SeekBar.OnSeekBarChangeListener) que además también definimos.
-  - Sobreescribimos los métodos de la clase original con la funcionalidad que nos interesa.
-  - Es obligatorio sobreescribir todos los métodos de la clase original.
+  - Es obligatorio sobreescribir todos los métodos de la clase original, aunque no utilicemos todos.
+    A continuación describimos los métodos y sus parámetros:
+    - onProgressChanged. El el método más importante. Se llama cuando cambia el progreso, ya sea por
+      interacción del usuario o por programa. Tiene los siguientes parámetros:
+      - seekBar. Es el propio objeto a partir del cual podemos acceder a todas sus propiedades.
+      - progress. Es el progreso que ha quedado después de haber sido actualizado.
+      - fromUser. Es un booleano que indica si la actualización de progreso es debida a una
+        interacción con el usuario o por programa.
+    - onStartTrackingTouch. Se llama cuando comienza la interacción con el usuario. Su único parámetro
+      es el propio objeto.
+    - onStopTrackingTouch. Se llama cuando finaliza la interacción con el usuario. Su único parámetro
+      es el propio objeto.
+  - En este ejemplo sólo necesitamos conocer las variaciones en el progreso por parte delk usuario, por
+    lo tanto, sólo escribiremos código en el método onProgressChanged. Los otros dos métodos se quedarán vacíos.
   - El TextView sólo tiene las siguientes modificaciones:
     - Texto centrado
     - Tamaño de fuente a 20

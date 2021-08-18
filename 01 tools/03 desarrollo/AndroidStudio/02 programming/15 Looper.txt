@@ -1,16 +1,12 @@
 Tema: Handler/Looper
-Fecha: 20200512
+Fecha: 2020808
 
 Como comentado en la sección de Threads, sólo el Thread principal puede hacer cambios en los elementos
 gráficos. Desde cualquier Thread secundario se producirá una excepción.
 
-Si estamos obligados a utilizar Thread secundarios porque necesitamos ejecutar tareas de comunicaciones
-y desde alguna de ella se necesita modificarf algún elemento gráfico, no podremos.
-Por ejemplo, tenemos un objeto gráfico de tipo switch que servirá para establecer conexión con un
-sistema remoto.
-Cuando se activa lanzamos un Thread secundario que intenta conectar. Si lo consigue, no tenemos que hacer
-nada especial, porque el switch se habrá quedado en la posición de conectado. Pero si no consigue
-conectar, necesitamos cambiarlo de nuevo al estado desconectado.
+Si nuestra aplicación utiliza Threads para no detener el flujo principal o porque estamos obligados
+a ello (por ejemplo para gestionar tareas de comunicaciones) y desde alguna de ellas se necesita
+modificar elgún elemento gráfico, no podremos.
 
 Para solventar este tipo de problemas se han creado los Loopers/Handlers.
 
@@ -31,7 +27,7 @@ En la parte gráfica tenemos 3 objetos:
 - Un Button llamado button
 - Un TextVier llamado textView
 En el EditText se le permite al usuario escribir cualquier texto.
-Cuando se pulsa el botón el texto del EditText se copia en el TextView.
+Cuando se pulsa el botón el EditText se copia en el TextView.
 Simularremos que necesitamos lanzar un Thread secundario cuando se pulsa el botón.
 Lo que hará será esperar unos segundos, hacer los cambios gráficos y esperar un poco más.
 Para realizar los cambios gráficos se crea un Handler de Looper del Thread actual.
@@ -77,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
 El método post del Handler admitiría un parámetro después del código a ejecutar con el
 número de milisegundos que debe esperar antes de ser añadido al Looper.
+No se utiliza en este ejemplo.
 
 El código que se añade podría haberse definido en una clase aparte del tipo Runnable.
 
