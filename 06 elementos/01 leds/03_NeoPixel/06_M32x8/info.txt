@@ -1,0 +1,13 @@
+Autor: Ramón Junquera
+Tema: Matriz de leds de 32x8 WS2812b
+
+Tipo: NeoPixel WS2812b
+Dimensiones: 32x8
+Voltaje: 3.3-5.0
+Orden:
+  Realmente se trata de una matriz de 8x32, con una sola tira que comienza en la esquina
+  superior derecha, de dirige a la izquierda y cuando llega a la primera columna, pasa a
+  la siguiente fila y se desplaza hacia la derecha.
+  La tira va bajando filas haciendo zigzag.
+Notas:
+- Se utiliza la disposición en apaisado por ser más común

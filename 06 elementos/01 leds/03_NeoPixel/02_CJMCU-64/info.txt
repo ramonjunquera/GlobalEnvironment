@@ -1,0 +1,8 @@
+Autor: Ramón Junquera
+Tema: Matriz de leds de CJMCU-64
+
+Tipo: NeoPixel WS2812
+Dimensiones: 8x8
+Voltaje: 3.3-5.0
+Orden:
+  Las filas de arriba a abajo y las columnas de izquierda a derecha.
