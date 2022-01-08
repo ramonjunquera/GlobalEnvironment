@@ -1,0 +1,36 @@
+Tema: Intalación y configuración de Geany
+Fecha: 20211016
+Autor: Ramón Junquera
+
+Instalación.
+sudo apt-get install geany
+
+Configuración.
+Habitualmente guardemos las librerías necesarias en la carpeta lib dentro de la carpeta del proyecto.
+Es necesario indicar al compilador que busque en esa carpeta las librerías que no encuentre.
+Para ello añadimos la directiva -I con el path, quedando la línea de llamada al Build:
+  g++ -Wall -std=c++11 -o "%e" "%f" -lbcm2835 -lpigpio -lrt -lwiringPi -pthread -I"lib"
+Los parámetros -l podrían ser eliminados si no se utilizan. Por ejemplo:
+  g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"lib"
+También se debe incluir el parámetro del path en la sección Compile. Por ejemplo:
+  g++ -Wall -std=c++11 -c "%f" -pthread -I"lib"
+Para que la ejecución se haga con permisos de root, la línea del run quedaría:
+  sudo "./%e"
+Para hacer uso de las comunicaciones I2C y SPI es necesario activarlos desde el panel de control
+de la Raspberry:
+  menu/Preferences/Raspberry Pi Configuration/Interfaces/
+Nota:
+  Las librerías se encontrarán todas en la misma carpeta. No se debe crear una subcarpeta por cada
+  grupo de librerías.
+  
+Errores.
+- No se ven los underscores
+  Por defecto el tipo de letra es monospace Regular de 10 puntos.
+  Si aumentamos el tamaño de la letra, los underscores (_) desaparecen y se convierten 
+  en espacios. Que provoca que aparezcan errores de sintaxis al compilar.
+  Para evitarlo, debemos ir dentro del menú de Geany:
+    Tools/Configuration Files/filetypes.common
+  Se abre un documento que tiene todas sus líneas comentadas.
+  Vamos el final y añadimos las dos siguientes líneas y guardamos:
+    [styling]
+    line_height=0;2;

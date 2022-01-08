@@ -1,0 +1,56 @@
+Autor: Ramón Junquera
+Fecha: 20211008
+Tema: Display de segmentos de led de un dígito
+
+Un display de un digito es un componente que agrupa 8 pequeños leds dispuestos
+de tal manera que puedan formar todos los números.
+La nomenclatura estándar de los segmentos es:
+
+        a
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  f ¦¦      ¦¦ b
+    ¦¦  g   ¦¦
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  e ¦¦      ¦¦ c
+    ¦¦      ¦¦
+      ¦¦¦¦¦¦     ¦¦ h
+        d
+
+
+Tienen 10 pines. Su distribución depende del modelo.
+Se dividen en dos grandes tipos: de ánodo (+) común y de cátodo (-) común.
+Ningún display tiene resistencias incluidas y son muy sensibles a los voltajes altos.
+
+Modelo SMA42056.
+Es bastante grande. Se puede pinchar en una breadboard sin problema.
+Los pines están dispuestos en dos hileras de 5. Una arriba y otra abajo.
+Los leds son rojos.
+Es de cátodo (-) común.
+  
+  g f - a b
+  ¦ ¦ ¦ ¦ ¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦
+  ¦ ¦ ¦ ¦ ¦
+  e d - c h
+  
+Modelo 3161AS.
+Es muy pequeño. No se puede pinchar en una breadboard.
+Los pines están dispuestos en dos hileras de 5 en los laterales.
+Los leds son rojos.
+Es de cátodo (-) común.
+
+  - --  -----  -- a
+     - ¦     ¦ -
+  f -- ¦     ¦ -- b
+     - ¦     ¦ -
+  g --  -----  -- c
+     - ¦     ¦ -
+  e -- ¦     ¦ -- h
+     - ¦     ¦ -
+  d --  -----  -- -

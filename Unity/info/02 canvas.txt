@@ -1,0 +1,8 @@
+Tema: Canvas
+Fecha: 20211019
+Autor: Ramón Junquera
+
+- El Canvas siempre ocupa toda la pantalla visible
+- Por defecto su fondo es invisible para que podamos ver la escena a través
+- Es conveniente que el canvas se ajuste a la pantalla del usuario para que no dependa de una
+  resolución fija. Seleccionar Canvas y en la pestaña Inspector/Canvas Scaler/UI Scale Mode/Scale With Screen Size

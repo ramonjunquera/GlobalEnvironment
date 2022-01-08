@@ -1,0 +1,18 @@
+﻿<Window x:Class="DelegateDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DelegateDemo"
+        mc:Ignorable="d"
+        Title="DelegateDemo" Height="264" Width="249" ResizeMode="NoResize">
+    <Grid>
+        <Button Content="+" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Height="55" Width="65" FontSize="36" Click="ButtonPlus_Click"/>
+        <TextBox x:Name="textbox1" HorizontalAlignment="Left" Margin="10,10,0,0" Text="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" Height="64" FontSize="36" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="textbox2" HorizontalAlignment="Left" Margin="115,10,0,0" Text="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" Height="64" FontSize="36" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button Content="-" HorizontalAlignment="Left" Margin="80,79,0,0" VerticalAlignment="Top" Height="55" Width="65" FontSize="36" Click="ButtonMinus_Click"/>
+        <Button Content="*" HorizontalAlignment="Left" Margin="150,79,0,0" VerticalAlignment="Top" Height="55" Width="65" FontSize="36" Click="ButtonStar_Click"/>
+        <Label x:Name="labelRes" Content="0" HorizontalAlignment="Left" Margin="10,139,0,0" VerticalAlignment="Top" Height="65" Width="205" FontSize="36" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFDADBF0"/>
+
+    </Grid>
+</Window>

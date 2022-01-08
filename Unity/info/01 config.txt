@@ -1,0 +1,12 @@
+Tema: Configuración de Unity
+Fecha: 20211019
+Autor: Ramón Junquera
+
+Problema.
+Al editar un script en Visual Studio no detecta los objetos
+
+Causa.
+Visual Studio no es el editor predeterminado de Unity
+
+Solución.
+En Unity seleccionar en menú: Edit/Preferences.../External Tools/External Script Editor/Visual Studio

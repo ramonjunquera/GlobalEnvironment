@@ -1,0 +1,43 @@
+Tema: Demo de socket IP de recpción de archivos
+Autor: Ramón Junquera
+Fecha: 20211005
+
+Estructura.
+La solución es cliente/servidor.
+
+Servidor.
+Es una aplicación. Con ejecutarla es suficiente como para arrancarlo.
+Muestra el hostname, las distintas direcciones IP de la máquina y el puerto de conexión.
+Podremos conectar con cualquiera de ellas.
+También muestra un semáforo son el siguiente significado:
+- Amarillo: servidor en espera e inactivo
+- Verde: servidor procesando una petición
+Por cada nueva solicitud de conexión se crea un nuevo Thread. Por lo tanto es capaz de
+procesar varias peticiones sumultáneas.
+El puerto no es configurable por el usuario, pero es una simple constante en el código.
+Los archivos recibidos se guardan en una carpeta definida en la constante receivedFolder
+bajo la carpeta de la aplicación.
+Todas las acciones del servidor se reflejan en un archivo de log, en la misma carpeta
+que la aplicación. El nombre del archivo de log está definido en la constante logFilename.
+Dentro de lacarpeta de log se creará una carpeta por día.
+El archivo de log no se bloquea en la ejecución del servidor para que pueda ser consultado
+en cualquier momento.
+Si se recibe un archivo con un nombre igual a unos de los archivos existentes, se sobreescribe.
+
+Cliente.
+Solicita el servidor (ip o hostname), puerto y archivo. Cuando se pulsa el botón de enviar
+se lanza un Thread que se encarga de todo:
+- Comprobación de sintaxis del puerto
+- Establecimiento de conexión
+- Apertura del archivo
+- Envío al servidor
+- Gestión de errores
+- Barra de prograso de envío
+
+Protocolo (desde el punto de vista del cliente).
+- Establecer conexión
+- Envío de longitud de nombre de archivo en formato int (4 bytes)
+- Envío de nombre de archivo
+- Envío de longitud de archivo en formato int (4 bytes)
+- Envío de contenido de archivo en bloques de 1Kb
+- Recepción de código de verificación (127). Timeout = 2.5s

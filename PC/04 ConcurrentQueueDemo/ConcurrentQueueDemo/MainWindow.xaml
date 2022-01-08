@@ -1,0 +1,19 @@
+﻿<Window x:Class="ConcurrentQueueDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ConcurrentQueueDemo"
+        mc:Ignorable="d"
+        Title="ConcurrentQueueDemo" Height="166" Width="424" ResizeMode="NoResize">
+    <Grid>
+        <Button Content="A" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="ButtonA_Click" Height="70" FontSize="36"/>
+        <Button Content="B" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="ButtonB_Click" Height="70" FontSize="36"/>
+        <Button Content="C" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75" Click="ButtonC_Click" Height="70" FontSize="36"/>
+        <Label x:Name="labelPending" Content="0" HorizontalAlignment="Left" Margin="330,10,0,0" VerticalAlignment="Top" Height="70" Width="70" FontSize="36" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFBFBFF1"/>
+        <Label x:Name="labelProcessed" Content="" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="315" Background="#FFBFBFF1"/>
+        <Button Content="D" HorizontalAlignment="Left" Margin="250,10,0,0" VerticalAlignment="Top" Width="75" Click="ButtonD_Click" Height="70" FontSize="36"/>
+        <Button Content="clear" HorizontalAlignment="Left" Margin="330,85,0,0" VerticalAlignment="Top" Width="70" Height="26" Click="ButtonClear_Click"/>
+
+    </Grid>
+</Window>

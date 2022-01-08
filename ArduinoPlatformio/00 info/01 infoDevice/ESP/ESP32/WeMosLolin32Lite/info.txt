@@ -1,0 +1,151 @@
+Autor: Ramón Junquera
+Fecha: 20211019
+Tema: Descripción de placa
+Objetivo: Descripción de placa WeMos Lolin Lite / WeMos Lolin D32
+
+Título del fabricante:
+  Wemos® LOLIN32 Lite V1.0.0 Wifi & Bluetooth Board Based ESP-32 Rev1 MicroPython 4MB FLASH
+
+Descripción del fabricante:
+  Lastest ESP32 Version: REV1
+  WIFI
+  bluetooth 
+  4MB Flash
+  Lithium battery interface, 500mA Max charging current
+  Default firmware: Lastest MicroPython firmware
+  Max serial baud rate: 256000bps
+
+URL de compra:
+  https://www.banggood.com/Wemos-LOLIN32-Lite-V1_0_0-Wifi-Bluetooth-Board-Based-ESP-32-Rev1-MicroPython-4MB-FLASH-p-1237861.html?rmmds=myorder&cur_warehouse=CN
+  
+Web oficial:
+  https://www.wemos.cc/en/latest/d32/d32.html
+
+Placa.
+En el IDE de Arduino se debe seleccionar:
+  Placa: ESP32 Dev Module
+  Flash mode: QIO
+  Flash size: 4MB (32Mb)
+  Partition Scheme: Por defecto
+  Upload speed: 921600
+Nota:
+  He detectado que en equipos lentos con linux no soportan 921600 baudios y dan errores del tipo:
+  "A fatal error occurred: Invalid head of packet ('\xe0')".
+  Para evitarlo, es suficiente con reducir la velocidad a 460800 baudios.
+
+Características.
+  Microcontroller: ESP32-WROOM-32 (TensilicaXtensa LX6 dual core processor)
+  SoC: Espressive ESP32-DOWD6Q Rev 1.0
+  Operating Voltage: 3.3V
+  Digital I/O Pins: 19
+  Analog Input Pins: 6
+  Clock Speed(Max): 240Mhz
+  Flash: 4Mb
+  Length: 5mm
+  Width: 2.54mm
+  Weight: 4g
+
+Wifi.
+  Soporta protocolos 801.11 b/g/n
+
+Bluetooth.
+  Soporta Bluetooth LE
+
+LED integrado.
+  Esta placa tiene dos leds integrados en placa:
+  - ROJO
+    Se enciende cuando se está cargando la batería externa.
+    Con alimentación por USB se enciende con un brillo muy tenue.
+    No se puede controlar por software.
+  - AZUL
+    Asociado al pin 22.
+    Los estados del led son inversos a los del pin:
+      HIGH = apagado
+      LOW = encendido
+    Este led no permite PWM. Es digital (encendido o apagado)
+    Atención. La constante LED_BUILTIN tiene es valor 5, no el 22. Está mal!!!
+
+Botones.
+  Tiene integrado un sólo botón de reset.
+
+USB.
+  Conexión microUSB para alimentación y comunicación.
+  Necesario driver CH340G (incluido por defecto en últimas versiones de Windows).
+
+Gestión de batería.
+  En la parte superior de la placa se incluye un conector para una batería externa
+  del tipo "PG-2.2 2.0mm" o "Micro Mini JST 2.0 PH".
+  La placa incluye el circuto de gestión de recarga de la batería (chip TP4054).
+  El máximo amperaje que puede cargar a una batería es de 500mA.
+
+Alimentación.
+- La placa trabaja a 3.3V.
+- Se puede alimentar con un voltaje entre 2.4 y 6V.
+- No necesita más de 500mA.
+- No tiene pin para alimentar a 5V.
+
+Alimentación con batería externa.
+  Ninguno de los pines disponibles accede directamente al voltaje de la batería.
+  Tenemos que crearlo nosotros soldando un cable al ánodo (+) del conector de batería.
+  El objetivo es conectarlo a una entrada ADC, pero no directamente.
+  El ánodo del conector de batería nos entrega el voltaje de alimentación real, con
+  independencia de donde proceda (USB o batería).
+  Aunque en las especificaciones se indica que el voltaje máximo de alimentación son 6V,
+  tomaremos un teórico de 5V, que es el que da la conexión USB.
+  El máximo voltaje que podemos meter a un pin ADC es de 3.3V. Así que no podemos conectar
+  el ánodo de la batería directamente. Debemos reducir su tensión añadiendo resistencias.
+  Sabemos que una resistencia de 20KOhmios reduce la tensión 0.1V.
+  Necesitamos reducir el voltaje en 5.0-3.3=1.7V.
+  Esto significa una resistencia de al menos 1.7*20/0.1=340KOhmios.
+  Estamos considerando el peor de los casos, porque la batería externa que vamos a utilizar
+  nunca superará los 5.0V. Probablemente sea de 3.7V.
+  Imaginemos que la batería es de 3.7V y que el dispositivo sólo está alimentado por batería
+  externa. Eso significa que el voltaje a reducir es de 3.7-3.3=0.4V, que corresponde a una
+  resistencia de 0.4*20/0.1=80KOhmios. Esta configuración funcionaría, pero en el momento que
+  conectemos el USB se quemaría. Por esta razón no es conveniente reducir las resistencias
+  del caso más desfavorable.
+
+  Pinout
+  ------
+                                         ---------------
+                                         |             |
+                                         |             |
+                ADC1-0/RTCIO0/VP/GPIO36 -|             |- 3V3
+                ADC1-3/RTCIO3/VN/GPIO39 -|             |- GPIO22/LED
+                                     EN -|             |- GPIO19/V_SPI_MISO
+                   ADC1-6/RTCIO4/GPIO34 -|             |- GPIO23/V_SPI_MOSI
+                   ADC1-7/RTCIO5/GPIO35 -|             |- GPIO18/V_SPI_CLK
+            Touch8/ADC1-4/RTCIO9/GPIO32 -|             |- GPIO05/V_SPI_CS
+            Touch9/ADC1-5/RTCIO8/GPIO33 -|             |- GPIO17/U2_TX
+              DAC1/ADC2-8/RTCIO6/GPIO25 -|             |- GPIO16/U2_RX
+              DAC2/ADC2-9/RTCIO7/GPIO26 -|             |- GPIO04/ADC2-0/RTCIO10/Touch0/SCL2
+                   Touch7/ADC2-7/GPIO27 -|             |- GPIO00/ADC2-1/RTCIO11/Boot/SDA2
+ H_SPI_CLK/Touch6/ADC2-6/RTCIO16/GPIO14 -|             |- GPIO02/ADC2-2/RTCIO12/Boot/Touch2/SCL1
+H_SPI_MISO/Touch5/ADC2-5/RTCIO15/GPIO12 -|             |- GPIO15/ADC2-3/RTCIO13/Touch3/H_SPI_CS/SDA1
+                                    GND -|             |- GPIO13/ADC2-4/RTCIO14/Touch4/H_SPI_MOSI
+                                         |             |
+                                         | |||  O  ||| |
+                                         ---------------
+
+I2C.
+  Por defecto los pines de I2C son 22-SCL y 21-SDA.
+  Esta placa carece del pin 21, por lo tanto no podemos utilizar el estandar.
+  Lo que hacemos es definir dos nuevos pines:
+    pin I2C
+    --- ---
+     15 SCL
+      4 SDA
+  Podríamos haber tomado cualquier otra pareja, pero estos son los utilizados
+  en las placas que incluyen un display I2C. Así no tendremos que redefinirlos
+  si las usamos.
+  La función Wire.begin de ESP32 permite pasar como parámetros estos pines:
+    Wire.begin(4,15)
+
+SPI.
+  Mantienen el estandar de ESP32.
+    pin SPI
+    --- ---
+     19 MISO
+   23 MOSI
+   18 SCLK
+    5 CS

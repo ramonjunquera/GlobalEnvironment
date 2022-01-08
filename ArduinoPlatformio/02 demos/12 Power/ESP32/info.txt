@@ -1,0 +1,48 @@
+Tema: Modos de bajo consumo en ESP32
+Fecha: 20211117
+Autor: Ramón Junquera
+
+Habitualmente un ESP32 consume unos 75mA. Y si hacemos uso del WiFi, subimos hasta 240mA.
+Esto no representa un problema cuando tenemos asegurada la alimentación, pero si pretendemos
+que nuestro proyecto se alimente de baterías, su vida será bastante corta si no utilizamos los
+modos de bajo consumo.
+
+Modos
+ESP32 facilita varios modos de bajo consumo:
+- Modem Sleep (entre 3mA y 20mA)
+- Light Sleep (unos 0.8mA)
+- Deep Sleep (unos 10µA)
+- Hibernation (2.5µA)
+Podemos encontrar una buena explicación de los módulos activos en cada modo en:
+https://lastminuteengineers.com/esp32-sleep-modes-power-consumption/
+Nos centraremos sólo en los modos que menos consumen: Deep Sleep y Hibernation.
+
+Deep Sleep
+En Deep Sleep se desactivan la mayor parte de los módulos del dispositivo.
+Sólo quedan encendidos el RTC y el ULP:
+- RTC: Real Time Clock
+- ULP: Ultra Low Powe Coprocessor
+Perdemos el control de las CPUs (ambos cores), de la memoria principal, de las comunicaciones de
+radio (WiFi y BT), perdemos comunicación por las interfases de los periféricos (puertos serie,
+I2C, infrarojo, SPI, I2S, etc).
+Mediante el RTC podemos hacer comprobaciones de estado en algunos pines para despertar.
+Podemos despertar debido a una señal externa.
+
+Hibernation
+Es igual que Deep Sleep. La única diferencia es que también se desactiva la comprobación de señales
+externas. La única manera de salir de este modo es programando el tiempo de sueño (Timer).
+
+RTC
+Es un módulo de muy bajo consumo. Tiene su propia memoria independiente de la memoria principal.
+Puede acceder a algunos pines directamente o puede acceder a cualquier pin si sólo es uno.
+Tiene un reloj mediante el cual se le pueden pedir algunas tareas sencillas:
+- Cuenta ciclos de reloj hasta llegar a un valor determinado antes de despertar (Timer)
+- Comprueba periodicamente si cierto pin digital se encuentra a un estado determinado (ext0)
+- Comprueba periodicamente si ciertos pines accesibles al RTC cumplen una condición de estado (ext1)
+- Comprueba periodicamente si cierto pin de TouchPad ha sido activado (TouchPad)
+
+Funcionamiento
+Cuando se entra en Deep Sleep, el flujo del programa queda detenido.
+Al salir del modo de bajo consumo, el flujo no reanuda en el punto donde se quedó, sino que
+el dispositivo reinicia de nuevo. Esto es debido a que no se ha alimentado la memoria principal y
+no tenemos referencia del estado del programa anterior al sueño.

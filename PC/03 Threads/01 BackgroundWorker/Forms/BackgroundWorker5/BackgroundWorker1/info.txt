@@ -1,0 +1,7 @@
+﻿Ejemplo de uso de la clase BackgroundWorker
+Con detección de finalización
+Con detección de cancelación
+
+Como en el ejemplo anterior, pero ya no mostramos mensajes cuando se lanza.
+Simplemente activamos o deactivamos lo botones de ejecución o cancelación, aprovechando
+que nos avisan cuando finaliza el proceso.

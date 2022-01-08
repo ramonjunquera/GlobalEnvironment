@@ -1,0 +1,18 @@
+﻿<Window x:Class="RoJoBluetoothChat.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RoJoBluetoothChat"
+        mc:Ignorable="d"
+        Title="Bluetooth chat" Height="506" Width="875" Closing="Window_Closing">
+    <Grid>
+        <Button x:Name="buttonDisconnect" Content="Desconectar" Margin="10,0,0,10" IsEnabled="False" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="202" Click="buttonDisconnect_Click"/>
+        <ListBox x:Name="listBoxDevices" Margin="10,35,0,89" HorizontalAlignment="Left" Width="202" SelectionChanged="listBoxDevices_SelectionChanged"/>
+        <Button x:Name="buttonConnect" Content="Conectar" Margin="10,0,0,36" IsEnabled="False" RenderTransformOrigin="2.029,2.65" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="202" Click="buttonConnect_Click"/>
+        <TextBox x:Name="textBoxMessage" Margin="217,0,10,10" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" KeyDown="textBoxMessage_KeyDown"/>
+        <Button x:Name="buttonScan" Content="Scan" Margin="10,10,0,0" IsEnabled="False" HorizontalAlignment="Left" Width="200" Height="20" VerticalAlignment="Top" Click="buttonScan_Click"/>
+        <TextBox x:Name="textBoxDeviceId" HorizontalAlignment="Left" Margin="10,0,0,61" TextWrapping="Wrap" Width="200" Height="23" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="textBoxInfo" Margin="217,10,10,38" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+    </Grid>
+</Window>

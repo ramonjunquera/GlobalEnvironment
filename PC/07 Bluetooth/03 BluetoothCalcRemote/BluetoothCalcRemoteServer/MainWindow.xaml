@@ -1,0 +1,21 @@
+﻿<Window x:Class="BluetoothCalcRemoteServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BluetoothCalcRemoteServer"
+        mc:Ignorable="d"
+        Title="CalcServer" Height="178.99" Width="173.294" ResizeMode="NoResize" WindowStyle="ToolWindow" Closing="Window_Closing">
+    <Grid>
+        <TextBox x:Name="TextBoxDeviceId" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" FontSize="18" TextAlignment="Center" IsReadOnly="True"/>
+        <Rectangle x:Name="RectangleSemaphore" Fill="Red" HorizontalAlignment="Left" Height="73" Margin="93,54,0,0" Stroke="Black" VerticalAlignment="Top" Width="53"/>
+        <GroupBox Header="Language" HorizontalAlignment="Left" Height="83" Margin="10,44,0,0" VerticalAlignment="Top" Width="78">
+            <StackPanel Margin="10,10,9,5">
+                <RadioButton x:Name="RadioButtonENG" Content="ENG" IsChecked="True" Checked="RadioButtonENG_Checked"/>
+                <RadioButton x:Name="RadioButtonESP" Content="ESP" Checked="RadioButtonESP_Checked"/>
+                <RadioButton x:Name="RadioButtonTablet" Content="FIS" Checked="RadioButtonTablet_Checked"/>
+            </StackPanel>
+        </GroupBox>
+
+    </Grid>
+</Window>

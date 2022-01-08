@@ -1,0 +1,34 @@
+Tema: Ejemplo de socket seguro para ESP32
+Fecha: 20211021
+Autor: Ramón Junquera
+
+Utilizaremos dos dispositivos ESP32 iguales. Una hará de cliente y otra de servidor.
+El dispositivo servidor creará su propio punto de acceso y en él un servidor.
+No será un servidor web, porque no atiende comandos html. Es un simple socket.
+Recibirá texto que enviará automáticamente al puerto serie.
+El dispositivo cliente una vez conectado al punto de acceso y al servidor
+se encargará de transferir el texto recibido por el puerto serie al servidor.
+
+Para el correcto funcionamiento, es importante que primero se inicie el 
+servidor y a continuación el cliente.
+
+Cliente
+  No necesita las librerías customizadas de servidor seguro. Es suficiente con la librería
+  estándar de WiFiClientSecure.h.
+  Al pulsar el botón, intenta abrir conexión con el servidor.
+  Si lo consigue, envía en formato texto el valor de millis().
+  Tras dos segundos, cierra la conexión.
+
+Servidor
+  Es necesario tener los archivos de certificado y clave privada en SPIFFS, como cualquier otro
+  servidor seguro.
+  Acepta conexiones segura, pero no las trata como web, sino como socket.
+  Toda la información recibida la enviará al puerto serie.
+  Al crear el servidor se define un timeout de 10 segundos.
+  Esto significa que cuando le pidamos leer un byte del cliente, esperará un máximo de 10 segundos
+  antes de indicar que no ha podido.
+  Si mientras está esperando la recepción, se pierde la conexión, para instantáneamente e indica
+  que no ha podido obtener nada.
+  Cuando el servidor detecta un cliente, lee datos hasta obtener un timeout.
+  Como el cliente sólo mantiene una demora de 2 segundos antes de desconectar, todo funciona bien.
+  El servidor crea un punto de acceso propio para no depender de otras redes.

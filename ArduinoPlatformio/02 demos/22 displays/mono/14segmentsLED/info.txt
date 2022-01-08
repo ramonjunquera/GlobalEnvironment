@@ -1,0 +1,45 @@
+Tema: Display 0.54" 14 segmentos LED HT16K33 Backpack
+Fecha: 20211217
+Autor: Ramón Junquera
+
+Descripción:
+Display LED de 14 segmentos de 0.54", controlado por chip HT16K33 con conexión I2C
+
+Identificador I2C: 0x70
+
+Pinout:
+- SCL : I2C reloj
+- SDA : I2C datos
+- GND : tierra
+- VCC : alimentación de los leds
+- VI2C: alimentación I2C
+El pin VI2C debe tener el mismo voltaje que el máximo utilizado por los pines I2C.
+Habitualmente conectamos VCC & VI2C juntos
+
+Alimentación
+Tanto 3.3 como 5V
+
+Identificación de segmentos
+
+        A
+   -------------
+  |\     |     /|
+  | \    |J   / |
+ F|  \   |   /  |B
+  |  H\  |  /K  |
+  |    \ | /    |
+  |     \|/     |
+   ------ ------
+  | G1  /|\  G2 |
+  |    / | \    |
+ E|  L/  |  \N  |C
+  |  /   |   \  |
+  | /    |M   \ |
+  |/     |     \|
+   -------------  o
+        D         DP
+
+Codificación de segmentos
+Cada segmento representa un bit en un uint16_ten el siguiente orden:
+  pos  15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 00
+  seg  -- DP  N  M  L  K  J  H G2 G1  F  E  D  C  B  A

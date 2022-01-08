@@ -1,5 +1,0 @@
-Comportamiento de PROGMEM en placas Arduino.
-
-- El comando PROGMEM no tiene efecto en datos definidos dentro del programa principal
-- Los datos que sólo se encuentran en memoria de programa no pueden ser procesados 
-  directamente. Deben ser copiados previamente a memoria de datos.

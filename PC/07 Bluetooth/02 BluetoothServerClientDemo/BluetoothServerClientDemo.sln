@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluetoothServerDemo", "BluetoothServerDemo\BluetoothServerDemo.csproj", "{E29580B7-2D0E-4CDF-8216-F53898627827}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluetoothClientDemo", "BluetoothClientDemo\BluetoothClientDemo.csproj", "{CD115D15-200F-410A-80D5-987CE9726888}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{75AF62E1-1316-4B06-986A-7B2446C83023}"
+	ProjectSection(SolutionItems) = preProject
+		Info.txt = Info.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E29580B7-2D0E-4CDF-8216-F53898627827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29580B7-2D0E-4CDF-8216-F53898627827}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29580B7-2D0E-4CDF-8216-F53898627827}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29580B7-2D0E-4CDF-8216-F53898627827}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD115D15-200F-410A-80D5-987CE9726888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD115D15-200F-410A-80D5-987CE9726888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD115D15-200F-410A-80D5-987CE9726888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD115D15-200F-410A-80D5-987CE9726888}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4117E4F8-F0F8-443F-9A41-9D7D75087851}
+	EndGlobalSection
+EndGlobal

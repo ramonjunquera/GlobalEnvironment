@@ -1,0 +1,25 @@
+ Tema: Bluetooth
+ Fecha: 20210923
+ Autor: Ramón Junquera
+ 
+ Descripción.
+ Prueba de concepto de estructura cliente/servidor en comunicaciones bidireccionales por Bluetooth.
+
+ Servidor.
+ El servidor aceptará solicitudes de conexión remotas.
+ Tiene una colección de comandos (API) de un sólo byte.
+ Reflejará en sus elementos gráficos el resultado de los comandos (grupo de RadioButton).
+ Tiene un comando para devolver el contenido de un TextBox.
+ Uno de los elementos gráficos es un rectángulo que se usa a modo de semáforo:
+ - Rojo: No se ha encontrado el dispositivo local Bluetooth
+ - Amarillo: Sin conexión activa
+ - Verde: Conectado
+ Para facilitar la identificación del dispositivo, se muestra en el TextBox el DeviceId para poder
+ usarlo con el cliente.
+
+ Cliente.
+ Todos los controles gráficos son interactivos. Se activan y desactivan automáticamente en función del estado.
+ Al ser cliente no admite conexiones remotas.
+ Para conectar es necesario indicar el identificador del dispositivo del servidor.
+ Una vez conectado se recogen las interacciones con los controles gráficos y se envían al servidor utilizando
+ su API.

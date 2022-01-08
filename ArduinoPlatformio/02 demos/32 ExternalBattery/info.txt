@@ -1,0 +1,102 @@
+Tema: Uso de batería externa
+Fecha: 20211122
+Autor: Ramón Junquera
+
+Definición del escenario
+- Utilizanmos dispositivos de la famila ESP que trabajan a una tensión nominal de 3.3V.
+- Batería externa de 3.7V, que según el fabricante puede alcanzar un voltaje de 4.2V con carga completa.
+  Según pruebas reales 4.08V el el máximo.
+- Para medir el voltaje utilizamos un pin de entrada analógica (ADC).
+
+El problema de la sobretensión
+Un pin ADC sólo admite voltajes de entrada iguales o inferiores a su tensión nominal.
+No podemos medir 4V cuando nuestro máximo es de 3.3V, necesitamos reducirla.
+La manera más sencilla es un divisor de tensión. El pin ADC se divide en dos resistencias, una hacia tierra y
+la otra hacia el ánodo de la batería.
+Si utilizamos resistencias iguales, reduciremos el voltaje a la mitad. Si la máxima entrada es de 5V (cuando está
+cargando la batería), quedará en 2.5V.
+Pero sabemos que podemos soportar hasta 3.3V.
+Estamos desperdiciando un rango de 3.3-2.5=0.8V que podríamos aprovechar para tener más precisión.
+El objetivo es calcular las resistencias que consigan reducir la tensión desde 5 a 3.3V.
+Pondemos nombre a los valores:
+- RBAT : resistencia que va al ánodo de la batería
+- RGND : resistencia que va a tierra
+- VMAX : máximo voltaje de entrada (5V cuando la batería está cargando)
+- VADC : voltaje de entrada del pin ADC (3.3V que conincide con el voltaje de trabajo del dispositivo)
+La fórmula es la siguiente: VADC/VMAX=1-RBAT/RGND
+Sustituyendo los valores conocidos y desarrollando tenemos:
+  3.3/5=1-RBAT/RGND ; 0.66=1-RBAT/RGND ; 0.66-1=-RBAT/RGND ; -0.34=-RBAT/RGND ; 0.34=RBAT/RGND ; 0.34*RGND=RBAT ; RGND=3*RBAT
+Por lo tanto, para aprovechar al máximo el rango disponible y mejorar la precisión, necesitaremos que la resistencia que
+va a la batería sea el triple que la que va al ánodo de la batería.
+
+Correlación de voltajes
+Si el rango de un pin ADC en un ESP32 va de 0 a 4095, el valor 4095 coincide con 3.3V.
+Si utilizamos resistencias de las proporciones calculadas, 5V de batería corresponderían a 3.3V de ADC = 4095 de valor ADC
+Gracias a esta igualdad podremos convertir los valores de ADC a voltios de batería sin problema con: VBAT=ADC/4095*5=ADC/819
+Las fórmulas de conversión serían:
+  VBAT=ADC/819
+  ADC=819*VBAT
+
+El problema de las resistencias
+La teoría nos dice que si la batería siempre está conectada a GND a través de las dos resistencias, por ahí perderá progresivamente
+la carga. Por lo tanto, cuando mayor sea la resistencia, menos pérdida tendremos.
+En la práctica encontramos que no es así exactamente.
+Si utilizamos resistencias de 10Mohm & 3300Kohm tenemos una gran variabilidad de la señal y una buena duración.
+Pero con resistencias de 10Kohm & 3600ohm, la variabilidad de la señal analógica es menor y la duración es de algo más
+de un 25%.
+Conclusión: usaremos resistencias de 10Kohm & 3600ohm.
+
+El problema del pin conectado
+El pin ADC diempre estará conectado a la batería (aunque sea a través de una resistencia). Esto significa que también se
+deriva carga a este pin.
+Para evitarlo deberíamos desconectar ese pin cuando no lo utilicemos para tomar el valor del voltaje de la batería.
+El código de ejemplo sería:
+  #include <driver/rtc_io.h>
+  ...
+  void loop() {
+    uint16_t a=analogRead(pinADC); //Leemos el pinADC
+    Serial.println(a); //Mostramos su valor
+    rtc_gpio_isolate((gpio_num_t)pinADC); //Desactivamos pinADC
+    delay(300000); //Esperamos o dormimos
+  }
+En la práctica, esta acción no aporta ahorro apreciable a la duración de la batería.
+
+Evitando dispersión
+Las lecturas de un pin ADC tienen cierta dispersión. Para intentar reducirla se recomienda tomas varias medidas y
+calcular su promedio.
+También es aconsejable esperar un momento entre lectura y lectura.
+Puesto que el valor máximo es de 4095 y el tipo de uint16_t podríamos utilizar el suguiente desarrollo:
+  uint16_t analog=0;
+  for(byte i=16;i>0;i--) {
+    analog+=analogRead(pinADC);
+    delay(1);
+  }
+  analog/=16;
+
+Comportamiento de la batería
+Si hacemos estadísticas de la descarga de la batería comprobaremos que descarga linealmente sobre el tiempo, pero
+sólo hasta el valor ADC de 3070 (aprox.).
+  VBAT = ADC/819 = 3070/819 = 3.75V
+A partir de este punto desciende rápidamente y podemos decir que es un buen momento para alertar de una recarga
+inminente de la batería.
+Este punto corresponde aproximadamente con el 75% de la duración total de la batería.
+
+Alimentación mínima
+Si analizamos el consumo de batería podemos calcular el mínimo valor ADC leido antes de que el dispositivo haya dejado de funcionar.
+Este valor es 2592 (aprox.) que corresponde con VBAT = ADC/819 = 2592/819 = 3.16V
+Según el fabricante, este valor es de 2.4V. Vemos que en la práctica no coincide.
+
+Porcentajes
+Suponiendo que los valores ADC de la batería son:
+- 4001 máximo en carga
+- 3449 máximo
+- 3070 comienzo de descarga rápida
+- 2592 mínimo para que funcion
+
+La fórmula del % es 100*(ADC-2592)/(3449-2592)
+Que da los siguientes %:
+- 4001 -> 164%
+- 3449 -> 100%
+- 3070 -> 56%
+- 2592 -> 0%
+

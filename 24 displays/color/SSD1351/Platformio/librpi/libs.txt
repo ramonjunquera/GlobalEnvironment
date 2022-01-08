@@ -1,4 +1,0 @@
-Arduino
-  Arduino.h
-  FS.h
-  SPI.h

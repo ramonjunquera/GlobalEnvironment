@@ -1,0 +1,8 @@
+ Tema: Bluetooth y control remoto de aplicaciones
+ Fecha: 20210924
+ Autor: Ramón Junquera
+ 
+ Descripción.
+ Aplicación con estructura cliente/servidor con comunicación bidireccional por Bluetooth.
+ El servidor es capaz de controlar una aplicación de ejecución local (Calculadora).
+ El cliente indica al servidor las pulsaciones de debe aplicar en la calculadora.

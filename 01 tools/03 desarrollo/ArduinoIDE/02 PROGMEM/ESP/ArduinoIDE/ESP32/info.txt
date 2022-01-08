@@ -1,5 +1,0 @@
-Comportamiento de PROGMEM en placas ESP32.
-
-- Se acepta el uso del comando PROGMEM. No produce fallos de compilación ni ejecución.
-- No es necesario el uso del comando PROGMEM porque los datos siempre se guardan por
-  defecto en memoria de programa y no de datos.

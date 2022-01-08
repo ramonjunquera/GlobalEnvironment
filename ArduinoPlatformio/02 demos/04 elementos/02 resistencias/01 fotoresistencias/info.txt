@@ -1,0 +1,15 @@
+Tema: Fotoresistencias
+Fecha: 20211020
+Autor: Ramón Junquera
+
+Una fotorresistencia, fotorresistor, fotoconductor, célula fotoeléctrica o LDR (Light Dependent Resistor)
+es un componente que varía sus resistencia en función de la intensidad de luz que recibe. Cuanta más
+luz, menos resistencia ofrece.
+No tiene polaridad, como cualquier otra resistencia.
+La gama de valores que se ofrecen en el mercado es muy amplia. Desde 50 ohmios a varios megaohmios.
+La variación de resistencia no es instantánea con el cambio de intensidad luminosa. Tiene un retardo
+aproximado de una décima de segundo. Por lo tanto no puede ser utilizada aplicaciones que requieran
+cambios de luz con alta frecuencia.
+  
+El fotorresistor se comportará como una resitencia variable (potenciómetro) o como un interruptor 
+analógico, dependiendo si lo conectamos a un pin analógico o digital.

@@ -1,0 +1,9 @@
+﻿Ejemplo de uso de la clase BackgroundWorker
+Con detección de finalización
+Con detección de cancelación
+Con detección de progreso
+
+Como en el ejemplo anterior, pero definiremos una función que es llamada en cada actualización
+de progreso.
+
+Esta función actualiza una barra de progreso que hemos incluido en la botonera

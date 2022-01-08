@@ -1,0 +1,31 @@
+﻿Tema: Threads en C#. BackgroundWorker.
+Fecha: 20210929
+Autor: Ramón Junquera
+
+En C#, como en cualquier otro lenguaje avanzado, tenemos la posibilidad de utilizar Threads.
+Recordemos que un Thread (hilo de ejecución), permite ejecutar código (una función) de manera
+paralela al hilo principal.
+La teoría nos dice que el hilo principal, que es el que controla la actualización de los
+elementos gráficos de la aplicación, no debería detenerse nunca para que la experiencia de
+usuarios sea fluida.
+Por lo tanto, cuando necesitemos hacer una tarea pesada, pensaremos si puede ser asíncrona y
+lanzarse en un Thread secundario.
+El ejemplo típico es cuando tenemos un servidor que atiende solicitudes en background, o cuando
+queremos conectar son un equipo remoto. Estas acciones nunca deberían afectar al hilo principal.
+
+La teoría nos dice que un Thread secundario tiene su propio entorno de datos.
+Esto es un problema, porque es normal que desde el hilo secundario queramos informar al principal
+del progreso, del resultado final, o actualizar controles gráficos.
+
+En los siguientes ejemplo utilziaremos la clase BackgroundWorker.
+Es un tipo de Thread bastante cómodo. Algunas de sus características son:
+- Definición de una función de progreso que se ejecuta en el hilo inicial.
+- Definición de una función de finalización que se ejecuta en el hilo principal.
+- Posibilidad de cancelar su ejecución de manera controlada.
+
+Si lanzamos el BackgroundWorker desde el hilo principal (que es el que tiene acceso a los controles
+gráficos), podremos utilizar las funciones de progreso y finalización para actualizar el UI.
+Por el contrario, si lanzamos un BackgroundWorker dentro de otro, ya no podremos hacerlo.
+
+Se incluye una colección de ejemplos para Forms con complejidad creciente.
+También se incluye algún ejemplo completo para WPF en NET50

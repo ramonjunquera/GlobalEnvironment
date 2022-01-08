@@ -1,0 +1,23 @@
+Tema: Descripción de placa M5Stack Stamp C3
+Fecha: 20211127
+Autor: Ramón Junquera
+
+Dispositivo basado en el procesador ESP32-C3 de Espressif.
+Conexión USB-C para puerto serie y alimentación.
+Con 4Mb de memoria.
+
+Led
+  Tipo: Neopixel (SK6812)
+  Pin: 2
+
+Botones
+  Pin: 3
+
+Puerto serie:
+  UART0 (USB-C) : Velocidad máxima 750000 baudios
+    pin 21 : TX
+    pin 20 : RX
+
+
+Notas:
+- A fecha actual, Platformio no soporta oficialmente el ESP32-C3 en framework de Arduino.

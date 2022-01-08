@@ -1,0 +1,4 @@
+﻿Ejemplo de uso de la clase BackgroundWorker
+Cuando se informa del progreso, además de entregar el porcentaje, se añade un objeto definido
+por el usuario (userState).
+En este ejemplo es un String que se añade en tiempo real al labelInfo.

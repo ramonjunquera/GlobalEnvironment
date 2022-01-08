@@ -1,0 +1,12 @@
+﻿Tema: Editor nano
+Fecha: 20211016
+Autor: Ramón Junquera
+
+Es un editor de texto incluido en todos los sistemas operativos Linux.
+Funciona en modo carácter (no es gráfico).
+Se invoca con nano. Aunque habitualmente se llame con sudo (sudo nano).
+Ejemplo: sudo nano /etc/stab
+
+Comandos:
+  Guardar: CRTL+O
+  Salir:   CTRL+X

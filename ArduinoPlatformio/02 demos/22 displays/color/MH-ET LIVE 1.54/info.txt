@@ -1,0 +1,87 @@
+Tema: Display MH-ET LIVE E-paper 1.54"
+Fecha: 20211210
+Autor: Ramón Junquera
+
+Principio del papel electrónico
+Se trata de una placa blanca con microperforaciones que encima tiene aceite transparente.
+Pode debajo tiene unos depósitos con pigmentos líquidos que reaccionan con la electricidad (electroforésis).
+A aplicarle una carga eléctrica a un lado u otro de la placa blanca podemos hacer que el líquido del pigmento
+pase de un lado a otro. Quedando visible u oculto.
+La gran ventaja es que tras el movimiento del pigmento, no es necesaria energía para mantenerlo así.
+La imagen puede quedar hasta 6 meses sin cambios.
+Puesto que no emite luz, tiene una gran visiblidad a plena luz del día.
+
+Descripción general.
+Es una pequeña pantalla de 1.54 pulgadas de diagonal diseñada por MH-ET LIVE de papel/tinta electrónica.
+Resolución: 200x200
+Colores: 3 = blanco, negro y rojo
+Conectividad: SPI
+Alimentación: desde 1.8V hasta 5.3V
+Chip: Basado en el chip SSD1618
+
+Pinout:
+- VCC : Alimentación
+- GND : Tierra
+- SDI : Entrada de datos de SPI (MOSI)
+- SCLK : Reloj de SPI
+- CS : Chipset de SPI. HIGH = dispositivo NO seleccionado. LOW = dispositivo seleccionado
+- D/C : Data/Command. HIGH = envío de datos. LOW = envío de comando
+- Reset : Hardreset. HIGH = normal. LOW = reinicio
+- Busy : Dispositivo ocupado resfrescando display. HIGH = ocupado. LOW = disponible para nuevos comandos
+
+Comandos
+Todos los comandos de este dispositivo tienen un tamaño de un byte.
+Si algún comando necesita parámetros, se enviarán como si fuesen datos.
+
+Interface BS1
+En la parte trasera tiene un switch con dos posiciones H y L.
+El pin D/C permite indicar al display si el siguiente dato que se envía corresponde a un dato o a un comando.
+Es la manera más sencilla. Corresponde a la posición L (4-Line).
+Existe el modo H (3-Line) que permite ahorrar el pin de D/C, que quedaría conectado a GND.
+En este caso los todos los bytes enviados deberían tener 9 bits. El primer es el que determina si los
+8 siguiente bits corresponden a un dato o a un comando.
+Este método consume mucho más tráfico y no está soportado por el driver.
+Siempre debemos asegurarnos de tener el switch BS1 en la posición L (4-Line).
+
+Funcionamiento
+Los displays de tinta tinta electrónica más simples sólo tienen dos colores.
+En este caso tenemos un tercero.
+Se ha modificado un display de dos colores para añadir un tercero.
+La solución ha sido la implementación de 2 capas de monocromas separadas, una sobre otra.
+El fondo se considera de color negro.
+Sobre él tenemos la capa de color blanco. Un bit activo en esta capa se verá de color blanco. Un bit a 0 será transparente
+y dejará ver el negro de fondo.
+Sobre la capa blanca tenemos la capa roja que tiene el mismo funcionamiento.
+Al estar por encima del fondo y de la capa blanca, si se activa un bit en esta capa se verá de color rojo
+con independencia de lo que tenga por debajo. Si lo dejamos a 0 dejará ver el color de debajo, que depanderá de la capa
+blanca.
+
+Memoria
+El display tiene memorias separadas para cada capa.
+Con un comando determinado se puede elegir la capa a la que se envían los datos gráficos.
+Puesto que las capas son monocromas, los gráficos se guardan en formato de bits.
+Concretamente tenemos 200 líneas distribuidas de arriba a abajo (configurable).
+Cada fila se dibuja de izquierda a derecha con bytes de columnas. Puesto que la resolución horizontal es de 200 pixels,
+tenemos 200/8=25 bytes de columna.
+Cada byte muestra sus bits de mayor a menor peso de izquierda a derecha.
+El primer byte enviado correspondería a la esquina superior izquierda. El bit de mayor peso (bit7) corresponde con el
+primer pixel. El de menor peso (pit0) con el pixel de coordenadas (7,0).
+El siguiente byte irá a su derecha.
+Al finalizar la línea, salta automáticamente a la siguiente.
+Mientras se transfiere la información gráfica NO se muestra automáticamente. Es necesario indicarle que refresque
+la pantalla con los datos gráficos transferidos.
+
+Actualización parcial
+Permite restingir el envío de datos a un área más pequeña que el total del área del display.
+La selección de área de dibujo afecta a ambas capas, pero cada una de ellas guarda su propio puntero de coordenada
+del siguiente pixel a dibujar.
+Podemos cambiar la capa a la que se envían los datos gráficos sin perder las últimas coordenadas dibujadas en
+cada una de ellas.
+Que podamos actualizar parte de la memoria de video, no significa que también se actualziará sólo ese área en el
+refresco de la imagen. El refresco siempre será de la pantalla completa.
+Aunque he encontrado cómo hacer refrescos parciales de la imágen en displays monocromáticos, no existe ningún caso
+con 3 colores. Tampoco está documentado. Consideraremos que no se puede.
+
+Frecuencia SPI
+No es conveniente superar los 80MHz
+

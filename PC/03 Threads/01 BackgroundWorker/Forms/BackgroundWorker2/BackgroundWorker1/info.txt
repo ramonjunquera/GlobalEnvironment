@@ -1,0 +1,9 @@
+﻿Ejemplo de uso de la clase BackgroundWorker
+Con detección de finalización
+
+Igual que el ejemplo anterior, pero esta vez cuando finaliza la función de background, llamamos
+a una función que permite recoger el resultado.
+
+En nuestro caso, el resultado es la cadena concatenada.
+Para comprobar que es correcto, la función a la que llamamos al completar el proceso mostrará
+en un TextBox la cadena concatenada.

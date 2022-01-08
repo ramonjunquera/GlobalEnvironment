@@ -1,0 +1,59 @@
+Autor: Ramón Junquera
+Fecha: 20211008
+Tema: Display de segmentos de led de 4 dígitos
+
+Es similar a 4 displays de un dígito unidos.
+Todos los pines de los segmentos son comunes para cada dígito.
+Recordemos la nomenclatura de los segmentos:
+
+        a
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  f ¦¦      ¦¦ b
+    ¦¦  g   ¦¦
+      ¦¦¦¦¦¦
+    ¦¦      ¦¦
+  e ¦¦      ¦¦ c
+    ¦¦      ¦¦
+      ¦¦¦¦¦¦     ¦¦ h
+        d
+
+Tienen 12 pines. 6 arriba y 6 abajo.
+Se dividen en dos grandes tipos: de ánodo (+) común y de cátodo (-) común.
+Ningún display tiene resistencias incluidas y son muy sensibles a los voltajes altos.
+La distribución de los pines es:
+
+       12 11 10  9  8  7
+       D0  a  f D1 D2  b
+        ¦  ¦  ¦  ¦  ¦  ¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+        ¦  ¦  ¦  ¦  ¦  ¦
+        e  d  h  c  g D3
+        1  2  3  4  5  6
+
+D0 representa el pin común a los segmentos del dígito 0.
+
+Modelo SMA420564.
+Es bastante grande. Se puede pinchar en una breadboard sin problema.
+Los leds son rojos.
+Es de cátodo (-) común.
+
+Modelo 3461AS-1.
+Es pequeño. Se puede pinchar en una breadboard sin problema.
+Los leds son rojos.
+Es de cátodo (-) común.
+
+Modelo 3461BS-1.
+Es pequeño. Se puede pinchar en una breadboard sin problema.
+Los leds son rojos.
+Es de ánodo (-) común.
+
+
+
+
+
+  
+
+

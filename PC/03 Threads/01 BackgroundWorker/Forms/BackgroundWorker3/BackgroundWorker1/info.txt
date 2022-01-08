@@ -1,0 +1,14 @@
+﻿Ejemplo de uso de la clase BackgroundWorker
+Con detección de finalización
+Con varios procesos de findo simultáneos
+
+Igual que el ejemplo anterior, pero esta vez podemos lanzar 2 procesos de fondo simultáneos.
+Cada uno con un botón distinto.
+
+Una instancia de la clase BackgroundWorker sólo permite gestionar un proceso de fondo.
+Si queremos gestionar más necesitaremos una instancia para cada uno de ellos.
+
+Los objetos de las instancias no podemos destruirlos mientras están en ejecución, porque 
+la dentendríamos.
+
+En este caso, hemos indicado que ambas instancias utilicen la misma función de ejecución y finalización.

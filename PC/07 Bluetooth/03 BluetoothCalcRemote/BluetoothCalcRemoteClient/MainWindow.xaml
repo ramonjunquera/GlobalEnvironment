@@ -1,0 +1,40 @@
+﻿<Window x:Class="BluetoothCalcRemoteClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BluetoothCalcRemoteClient"
+        mc:Ignorable="d"
+        Title="CalcClient" Height="438.369" Width="220.278" ResizeMode="NoResize" WindowStyle="ToolWindow" Closing="Window_Closing">
+    <Grid>
+        <TextBox x:Name="TextBoxDeviceId" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="183" ToolTip="DeviceId" IsEnabled="False" Text="3C6AA7845A66"/>
+        <Button x:Name="ButtonConnect" Content="Conectar" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="87" IsEnabled="False" Click="ButtonConnect_Click"/>
+        <Button x:Name="ButtonDisconnect" Content="Desconectar" HorizontalAlignment="Left" Margin="106,38,0,0" VerticalAlignment="Top" Width="87" IsEnabled="False" Click="ButtonDisconnect_Click"/>
+        <GroupBox x:Name="GroupBoxCalc" Header="Calc" HorizontalAlignment="Left" Height="328" Margin="10,63,0,0" VerticalAlignment="Top" Width="183" IsEnabled="False">
+            <Grid Margin="0,0,0,1">
+                <TextBox x:Name="TextBoxResult" HorizontalAlignment="Left" Height="32" Margin="4,96,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="167" FontSize="18" RenderTransformOrigin="0.521,0.906" TextAlignment="Right"/>
+                <Button x:Name="Button7" Content="7" HorizontalAlignment="Left" Margin="4,133,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button7_Click"/>
+                <Button x:Name="Button8" Content="8" HorizontalAlignment="Left" Margin="47,133,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button8_Click"/>
+                <Button x:Name="Button9" Content="9" HorizontalAlignment="Left" Margin="90,133,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button9_Click"/>
+                <Button x:Name="ButtonMultiply" Content="*" HorizontalAlignment="Left" Margin="133,133,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="ButtonMultiply_Click"/>
+                <Button x:Name="Button4" Content="4" HorizontalAlignment="Left" Margin="4,176,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button4_Click"/>
+                <Button x:Name="Button5" Content="5" HorizontalAlignment="Left" Margin="47,176,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button5_Click"/>
+                <Button x:Name="Button6" Content="6" HorizontalAlignment="Left" Margin="90,176,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button6_Click"/>
+                <Button x:Name="ButtonMinus" Content="-" HorizontalAlignment="Left" Margin="133,176,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="ButtonMinus_Click"/>
+                <Button x:Name="Button1" Content="1" HorizontalAlignment="Left" Margin="4,219,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button1_Click"/>
+                <Button x:Name="Button2" Content="2" HorizontalAlignment="Left" Margin="47,219,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button2_Click"/>
+                <Button x:Name="Button3" Content="3" HorizontalAlignment="Left" Margin="90,219,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button3_Click"/>
+                <Button x:Name="ButtonPlus" Content="+" HorizontalAlignment="Left" Margin="133,219,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="ButtonPlus_Click"/>
+                <Button x:Name="ButtonBackSpace" Content="←" HorizontalAlignment="Left" Margin="4,262,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="ButtonBackSpace_Click"/>
+                <Button x:Name="Button0" Content="0" HorizontalAlignment="Left" Margin="47,262,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="Button0_Click"/>
+                <Button x:Name="ButtonDecimal" Content="," HorizontalAlignment="Left" Margin="90,262,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="ButtonDecimal_Click"/>
+                <Button x:Name="ButtonEqual" Content="=" HorizontalAlignment="Left" Margin="133,262,0,0" VerticalAlignment="Top" Width="38" Height="38" FontSize="18" Click="ButtonEqual_Click"/>
+                <Button x:Name="ButtonGetResult" Content="get result" HorizontalAlignment="Left" Margin="4,53,0,0" VerticalAlignment="Top" Width="167" Height="38" FontSize="18" Click="ButtonGetResult_Click"/>
+                <Button x:Name="ButtonOpen" Content="open" HorizontalAlignment="Left" Margin="4,10,0,0" VerticalAlignment="Top" Width="81" Height="38" FontSize="18" Click="ButtonOpen_Click"/>
+                <Button x:Name="ButtonClose" Content="close" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="81" Height="38" FontSize="18" Click="ButtonClose_Click"/>
+
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</Window>

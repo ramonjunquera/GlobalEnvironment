@@ -1,0 +1,8 @@
+﻿Ejemplo de uso de la clase BackgroundWorker
+Con detección de finalización
+Con detección de cancelación
+
+Como en el ejemplo2, excepto que le añadimos la posibilidad de cancelar el proceso sin haber terminado.
+La función de ejecución comprobará periódicamente si se ha solicitado la cancelación
+
+Añadimos el botón de cancelación.

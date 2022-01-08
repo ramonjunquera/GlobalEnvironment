@@ -1,0 +1,52 @@
+Tema: Librerías de conexión segura (SSL) para ESP32
+Fecha: 20211026
+Autor: Ramón Junquera
+
+Descripción:
+
+Colección de librerías para crear servidores con conexiones seguras.
+Están basadas en SSL (base de https).
+Para crear una conexión segura es necesario que la parte servidor
+contenga un clave privada y su correspondiente certificado.
+En todos los ejemplos se tiene en cuenta sólo certificados autofirmados.
+Son aquellos que no están avalados por ninguna entidad certificadora (CA)
+conocida. Por esto, cuando utilizamos un navegador para acceder, siempre
+se mostrará el certificado como no confiable.
+
+Tanto la clave privada como el certificado se guardan en sendos archivos
+en SPIFFS.
+Una de las librerías está concebida específicamente para generar estos
+archivos desde el propio ESP32.
+De todas maneras, explicaremos cómo generarlos con la aplicación clásica
+(openssl).
+Esta aplicación está disponible tanto para Linux como para Windows.
+Un ejemplo de línea de comando sería:
+  openssl req -new -x509 -sha256 -days 365 -newkey rsa:1024 -nodes -subj "/C=SP/O=RoJo/CN=miservidor.dominio.com" -out autocert.crt -keyout private.key
+El ejemplo genera una clave privada en private.key y un certificado
+autofirmado autocert.crt.
+Con una longitud de clave de encriptación de 1024 bits.
+Con una validez de un año (365 días).
+
+Cuando un cliente seguro se encuentra con un certificado autofirmado, no verifica
+por defecto si los datos de host coinciden con la realidad.
+El nombre de un certificado no tiene porqué ser real.
+
+Una vez generados los archivos, se pueden guardar dentro de la carpeta "data"
+para transferirlos a SPIFFS a través de la tarea (task) "Upload File System image" de Platformio.
+
+Aunque ESP32 tiene hardware específico para la gestión de las conexiones
+seguras, la longitud de la clave de encriptación influye mucho en el 
+tiempo de establecimiento de conexión, momento en el que se hace el intercambio
+de claves y se crea el entorno de desencriptación.
+Ejemplos:
+
+  bits tiempo
+  4096  15s
+  1024   3s
+
+Las librerías son capaces de gestionar claves privadas de distintas longitudes: 512, 1024,
+2048 o 4096 bits. Cuanto más larga es la clave, más segura, más tiempo de proceso
+de desencriptación y más memoria utilizada.
+Para este tipo de dispositivos podemos considerar normal el uso de claves cortas (1024 bits).
+
+

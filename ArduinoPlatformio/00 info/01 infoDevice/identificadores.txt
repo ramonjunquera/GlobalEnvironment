@@ -1,0 +1,40 @@
+Listado de definiciones de directivas de preprocesador para identificación
+de placas:
+
+Arduino Mega          ARDUINO_AVR_MEGA2560                  ARDUINO_ARCH_AVR
+Arduino UNO           ARDUINO_AVR_UNO                       ARDUINO_ARCH_AVR
+Ardunio Nano          ARDUINO_AVR_NANO                      ARDUINO_ARCH_AVR
+ATtiny85 (Platformio) ARDUINO_AVR_ATTINYX5                  ARDUINO_ARCH_AVR
+ATtiny85 (ArduinoIDE) ARDUINO_AVR_DIGISPARK                 ARDUINO_ARCH_AVR
+ESP-12E               ARDUINO_ESP8266_NODEMCU       ESP8266 ARDUINO_ARCH_ESP8266
+WeMos D1              ARDUINO_ESP8266_WEMOS_D1MINI  ESP8266 ARDUINO_ARCH_ESP8266
+ESP01 (generic)       ARDUINO_ESP8266_ESP01         ESP8266 ARDUINO_ARCH_ESP8266
+SonoffS20             ARDUINO_ESP8266_SONOFF_S20    ESP8266 ARDUINO_ARCH_ESP8266
+ESP32 DOIT            ARDUINO_ESP32_DEV             ESP32   ARDUINO_ARCH_ESP32
+ESP32 OLED TTGO 16Mb  ARDUINO_ESP32_DEV             ESP32   ARDUINO_ARCH_ESP32
+WeMosLolinLite        ARDUINO_LOLIN32LITE           ESP32   ARDUINO_ARCH_ESP32
+Lolin32               ARDUINO_LOLIN32               ESP32   ARDUINO_ARCH_ESP32
+TTGO_T18              ARDUINO_ESP32_TTGO_T18        ESP32   ARDUINO_ARCH_ESP32
+M5Stack-Fire          ARDUINO_M5STACK_FIRE          ESP32   ARDUINO_ARCH_ESP32
+M5Stack-Core-ESP32    ARDUINO_M5Stack_Core_ESP32    ESP32   ARDUINO_ARCH_ESP32
+M5Stick-C             ARDUINO_M5Stick_C             ESP32   ARDUINO_ARCH_ESP32
+M5Stick-C+            ARDUINO_M5Stick_C             ESP32   ARDUINO_ARCH_ESP32
+M5Stack Watch         ARDUINO_M5Stick_Watch         ESP32   ARDUINO_ARCH_ESP32
+M5Stack Atom Matrix   ARDUINO_M5Stick_Atom_Matrix   ESP32   ARDUINO_ARCH_ESP32
+M5Stack Atom Echo     ARDUINO_M5Stick_Atom_Echo     ESP32   ARDUINO_ARCH_ESP32
+M5Stack Atom Lite     ARDUINO_M5Stick_Atom_Lite     ESP32   ARDUINO_ARCH_ESP32
+
+RaspberryPi           __arm__
+
+#ifdef ESP8266
+  #include <myLib1.h>
+#elif defined(ARDUINO_LOLIN32)
+  #include <myLib2.h>
+#elif defined(ARDUINO_ESP8266_NODEMCU)
+  #include <myLib3.h>
+#else
+  #error Device unknown
+#endif
+
+Estos valores se ha obtenido aumentando el nivel de información para la
+compilación.

@@ -1,0 +1,18 @@
+﻿<Window x:Class="ThreadUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ThreadUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="231" Width="369">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="ButtonLaunch" Content="Launch Thread" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="238" Click="ButtonLaunch_Click"/>
+        <Button x:Name="ButtonRefresh" Content="Refresh Label" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="238" Click="ButtonRefresh_Click"/>
+        <Label x:Name="LabelInfo" Content="Label" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="238" HorizontalContentAlignment="Center"/>
+
+    </Grid>
+</Window>

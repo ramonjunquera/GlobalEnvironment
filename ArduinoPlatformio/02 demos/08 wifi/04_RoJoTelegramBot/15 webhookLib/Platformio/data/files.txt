@@ -1,0 +1,2 @@
+autocert.crt
+private.key

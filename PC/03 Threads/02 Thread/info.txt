@@ -1,0 +1,18 @@
+﻿Tema: Threads en C#
+Fecha: 20210929
+Autor: Ramón Junquera
+
+En C#, como en cualquier otro lenguaje avanzado, tenemos la posibilidad de utilizar Threads.
+Recordemos que un Thread (hilo de ejecución), permite ejecutar código (una función) de manera
+paralela al hilo principal.
+La teoría nos dice que el hilo principal, que es el que controla la actualización de los
+elementos gráficos de la aplicación, no debería detenerse nunca para que la experiencia de
+usuarios sea fluida.
+Por lo tanto, cuando necesitemos hacer una tarea pesada, pensaremos si puede ser asíncrona y
+lanzarse en un Thread secundario.
+El ejemplo típico es cuando tenemos un servidor que atiende solicitudes en background, o cuando
+queremos conectar son un equipo remoto. Estas acciones nunca deberían afectar al hilo principal.
+
+La teoría nos dice que un Thread secundario tiene su propio entorno de datos.
+Esto es un problema, porque es normal que desde el hilo secundario queramos informar al principal
+del progreso, del resultado final, o actualizar controles gráficos.

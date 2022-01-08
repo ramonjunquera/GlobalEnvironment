@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluetoothCalcRemoteClient", "BluetoothCalcRemoteClient\BluetoothCalcRemoteClient.csproj", "{BA43D360-148F-47EF-BA6B-58E6ED8D441E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluetoothCalcRemoteServer", "BluetoothCalcRemoteServer\BluetoothCalcRemoteServer.csproj", "{D9F59D9D-4232-41BA-8155-16CD7CE21606}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA43D360-148F-47EF-BA6B-58E6ED8D441E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA43D360-148F-47EF-BA6B-58E6ED8D441E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA43D360-148F-47EF-BA6B-58E6ED8D441E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA43D360-148F-47EF-BA6B-58E6ED8D441E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9F59D9D-4232-41BA-8155-16CD7CE21606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9F59D9D-4232-41BA-8155-16CD7CE21606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F59D9D-4232-41BA-8155-16CD7CE21606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9F59D9D-4232-41BA-8155-16CD7CE21606}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6480C436-2E9E-48A5-A318-DB43CC44E1C1}
+	EndGlobalSection
+EndGlobal

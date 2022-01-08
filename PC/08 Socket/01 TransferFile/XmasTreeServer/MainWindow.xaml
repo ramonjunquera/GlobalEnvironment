@@ -1,0 +1,13 @@
+﻿<Window x:Class="XmasTreeServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XmasTreeServer"
+        mc:Ignorable="d"
+        Title="XmasTreeServer" Height="92.069" Width="592.07" ResizeMode="NoResize" WindowStyle="ToolWindow" Closing="Window_Closing">
+    <Grid>
+        <TextBox x:Name="TextBoxIP" HorizontalAlignment="Left" Height="32" Margin="10,10,0,0" TextWrapping="Wrap" Text="ip:port" VerticalAlignment="Top" Width="517" FontSize="18" HorizontalContentAlignment="Center" IsReadOnly="True"/>
+        <Rectangle x:Name="RectangleSemaphore" Fill="Yellow" HorizontalAlignment="Left" Height="32" Margin="532,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="32"/>
+    </Grid>
+</Window>

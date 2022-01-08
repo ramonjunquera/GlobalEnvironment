@@ -1,0 +1,15 @@
+modelo     color resolución interface contenido
+---------- ----- ---------- --------- ---------------
+ILI9341     SI    320 x 240    SPI    M5Stack Fire
+ILI9486RPi  SI    480 x 320    SPI
+SSD1331     SI     96 x  64    SPI
+SSD1351     SI    128 x 128    SPI
+ST7735S     SI    160 x  80    SPI    M5Stack StickC
+ST7789V2    SI    240 x 135    SPI    M5Stack StickC+
+SSD1681     SI    200 x 200    SPI    E-paper black/white/red 1.54
+IL0373      SI    104 x 212    SPI    E-paper black/white/red 2.13
+LCD1602A    NO     16 x   2    BUS
+LCD5110     NO     84 x  48    SPI
+SH1107      NO    128 x  64    SPI    M5Stack Watch
+SSD1306     NO    128 x  64    I2C    ESP32+OLED
+HT16K33     NO                 I2C    LED 4 dígitos 15 segmentos

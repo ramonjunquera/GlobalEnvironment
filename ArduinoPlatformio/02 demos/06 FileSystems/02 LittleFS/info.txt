@@ -1,0 +1,45 @@
+Tema: File System LittleFS
+Autor: Ramón Junquera
+Fecha: 20211113
+
+Características.
+El sistema de archivos original de ESP (SPIFFS) queda en deshuso y se sustituye por LittleFS.
+Ofrece ciertas ventajas:
+- Permite guardar archivos en carpetas anidadas
+- Es mucho más rápido
+
+Librerías.
+A fecha actual LittleFS ha sido implementado en ESP8266 pero no en ESP32.
+Para este último serán necesarias librerías adicionales.
+Existen librerías no oficiales, como las de Lorol (https://github.com/lorol/LITTLEFS).
+El problema es que no mantienen la misma sintaxis ni funcionalidad que las de ESP8266.
+El paquete de librerías RoJoLittleFS32 resuelve este problema.
+Son las librerías de Lorol modificadas para que todo sea igual que en ESP8266.
+
+Migración.
+Para simplificar la actualización, la sintaxis de LittleFS es idéntica a SPIFFS.
+
+Platformio Upload Filesystem image ESP32
+Se mantiene el sistema, pero se cambian sus ejecutables.
+Esto se hace desde el archivo Platformio.ini.
+Añadimos a nuestra configuración la línea:
+  extra_scripts = ./UpdateLittleFSESP32.py
+Con ello obligamos a que se lea y ejecute el archivo UpdateLittleFSESP32.py que se encuentra en la
+carpeta que contiene nuestro proyecto (misma que Platformio.ini).
+Este script de Python sustituye la referencia del ejecutable que se encarga de crear el
+archivo imágen y subirlo al dispositivo.
+Concretamente lo referencia al archivo UpdateLittleFSESP32.exe que también se encuentra en la 
+carpeta raíz del proyecto.
+Conclusión. Para que la herramienta de subida de una imágen de archivos en LittleFS es necesario:
+- Copiar los archivos UpdateLittleFSESP32.exe y UpdateLittleFSESP32.py en la carpeta raíz del proyecto
+- Añadir a la configuración de Platformio.ini la línea: extra_scripts = ./UpdateLittleFSESP32.py
+
+Platformio Upload Filesystem image ESP8266
+Se mantiene el sistema, pero cambia la configuración de Platformio.ini.
+Ahora debemos especificar el sistema de archivos con el que trabajamos, añadiendo a nuestra
+configuración la línea:
+  board_build.filesystem = littlefs
+
+Incompatibilidades de Upload Filesystem image.
+- No es capaz de detectar las 16Mb de memoria "Wemos D1 mini pro", pero funciona bien con las
+  4Mb de un "Wemos D1 mini".
