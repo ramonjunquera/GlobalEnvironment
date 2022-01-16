@@ -1,5 +1,5 @@
 Tema: Configuración de Unity
-Fecha: 20211019
+Fecha: 20220112
 Autor: Ramón Junquera
 
 Problema.
@@ -10,3 +10,7 @@ Visual Studio no es el editor predeterminado de Unity
 
 Solución.
 En Unity seleccionar en menú: Edit/Preferences.../External Tools/External Script Editor/Visual Studio
+
+Nota:
+A fecha actual, aunque ya ha salido el Visual Studio 2021, no permite editar scripts de Unity.
+Se debe seguir utilizando el Visual Studio 2019.

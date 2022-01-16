@@ -24,7 +24,7 @@ comunes.
 Después de reiniciar, ya tenemos asociadas las extensiones con la aplicación.
 
 Nota.
-En Ubuntu, si utilizamos puertos de conexión especiales (/dev/ttyACM0 o /dev/ttyACM0), ya
+En Ubuntu, si utilizamos puertos de conexión especiales (/dev/ttyACM0 o /dev/ttyS0), ya
 sea porque usamos placas que lo necesitan o porque tenemos la máquina virtualizada, es
 posible que nos encontremos
 con errores a la hora de transferir el compilado por falta de permisos.

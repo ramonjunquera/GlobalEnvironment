@@ -1,0 +1,60 @@
+Tema: Instalación y configuración del IDE de Espressif: ESP-IDF
+Fecha: 20220115
+Autor: Ramón Junquera
+
+A fecha actual sólo existe compatibilidad con el framework de Arduino desde el IDE de Arduino y con los paquetes
+que están en desarrollo (beta). No hay paquetes estables.
+
+Para aceptar la recepción de un programa es necesario que el dispositivo mantenga el pin 9 a LOW.
+Esta acción es totalmente manual.
+Una vez que se haya completado la transferencia, se debe desconectar.
+
+Variable de entorno IDF_PATH
+Puesto que los programas desarrollados en framework IDF utilizan los archivos CMakeList.txt
+que a su vez utilizan por defecto la variable de entorno IDF_PATH para localizar las
+librerías, es muy conveniente definirla.
+Para no afectar a más usuarios se puede definir dentro del usuario de trabajo.
+Habitualmente el path es: C:/Users/%username%/.platformio/packages/framework-espidf
+
+En Platformio el archivo de inicio ya no es main.cpp sino main.c.
+No tiene mayor importancia poque es compatible con el resto de dispositivos y configuraciones.
+
+
+
+
+------Notas antiguas----
+
+El entorno de desarrollo se puede instalar como un plugin de VS CODE: ESP-IDF
+Una vez instalado se debe configurar: Ver/Paleta de comandos.../ESP-IDF: Configurar la extensión ESP-IDF.
+
+A fecha actual, la última versión tiene un error que impide la configuración y siempre muestra un mensaje
+pidiendo que se reinicie VS Code y se vuelva a intentar.
+Para evitarlo, haremos la instalación del IDE manualmente, tal y como se explica en:
+  https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/windows-setup.html#esp-idf-tools-installer
+Se debe descargar e instalar el paquete de la URL: https://dl.espressif.com/dl/esp-idf/?idf=4.4
+Después de finalizar la descarga, instalación y configuración, podemos volver a VS Code y la pantalla habrá cambiado
+a un Welcome con tres opciones de configuración: EXPRESS, ADVANCED y USE EXISTING SETUP.
+
+Seleccionamos la opción EXPRESS y aceptamos todas las configuraciones por defecto.
+Se descargará desde GitHub la última versión del IDE (v4.3.2 a fecha actual).
+Se instala el IDE, las Tools y Python.
+Finalmente se muestra un mensaje indicando que la extensión ESP-IDF para Visual Studio Code ha sido configurada.
+
+La última versión de ESP-IDF se encuentra publicada en:
+  https://github.com/espressif/esp-idf/tree/0132079fa51f2c130513dd634e97ef9726f00e85
+Para la instalación la hemos descargado en la carpeta %userprofile%\esp\esp-idf
+Encontraremos los ejemplos básicos en: .\examples\
+  
+
+
+
+Arduino IDE
+Documentación oficial de Espressif para la compatibilidad con Arduino:
+  https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html
+La compatibilidad con Arduino para ESP32-S2 y ESP32-C3 están en desarrollo, así que utilizaremos el
+enlace de desarrollo.
+Lo añadimos en Archivo/Preferencias/Gestor de URLs Adicionales de Tarjetas
+Vamos al gestor de tarjetas en: Herramientas/Placa "xxx"/Gestor de tarjetas...
+Buscamos por esp32 e instalamos el paquete "esp32 by Espressif Systems".
+
+

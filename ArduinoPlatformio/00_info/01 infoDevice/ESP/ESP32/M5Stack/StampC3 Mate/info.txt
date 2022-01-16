@@ -1,0 +1,54 @@
+Tema: Descripción de placa M5Stack M5Stamp C3 Mate
+Fecha: 20220116
+Autor: Ramón Junquera
+
+Incluye el procesador ESP32-C3 de Espressif.
+No tiene arquitectura Extensa sino RISC-V de 32bits.
+Sólo tiene un core.
+Tiene capacidades WiFi (2.4GHz) y Bluetooth 5 (LE).
+Funciona a una frecuencia de 160MHz.
+Tiene 400Kb de memoria RAM y 4Mb de memoria Flash.
+El voltaje de entrada es de 5V a través de una conexión USB-C.
+Tiene un consumo medio de 500mA.
+El driver USB es el CH9102.
+URL de la página oficial: https://docs.m5stack.com/en/core/stamp_c3
+
+A fecha actual sólo existe compatibilidad con el framework de Arduino desde el IDE de Arduino y con los paquetes
+que están en desarrollo (beta). No hay paquetes estables.
+
+Para cargar los programas es necesario puentear el pin 9 con GND manualmente.
+
+Variable de entorno IDF_PATH
+Puesto que los programas desarrollados en framework IDF utilizan los archivos CMakeList.txt
+que a su vez utilizan por defecto la variable de entorno IDF_PATH para localizar las
+librerías, es muy conveniente definirla.
+Para no afectar a más usuarios se puede definir dentro del usuario de trabajo.
+Habitualmente el path es: C:/Users/%username%/.platformio/packages/framework-espidf
+
+En Platformio el archivo de inicio ya no es main.cpp sino main.c.
+No tiene mayor importancia poque es compatible con el resto de dispositivos y configuraciones.
+
+
+Botón:
+  pin 3
+
+NeoPixel:
+  pin 2
+
+  
+  Pinout
+  ------
+          --------------
+     GND -|            |
+  ADC/G4 -|            |
+  ADC/G5 -|            |- 3V3
+      G6 -|            |- G21/Tx0
+      G7 -|            |- G20/Rx0
+      G8 -|            |- EN
+     G10 -|            |- G9
+      5V -|            |- GND 
+     GND -|            |- G18/D-
+      5V -|            |- G19/D+
+  ADC/G1 -|            |- 5V
+  ADC/G0 -|            |- GND
+          --------------
