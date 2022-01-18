@@ -1,0 +1,38 @@
+Tema: Adaptador I2C para display LCD
+Fecha: 20220118
+Autor: Ramón Junquera
+
+Las pantallas de la familia LCD (Ej. LCD1602) se conectan por bus.
+Esto significa que cada bit está representado por un pin (o cable de conexión).
+Así que necesitamos 8 cables para datos, sin contar el resto de funcionalidades (alimentación, luz de
+fondo, reloj, ...).
+Aunque se puede conseguir, son demasiadas conexiones para controlar una pantalla.
+El display puede trabajar en modo de medio byte. Con solo 4 pines. La información se envía como dos medios
+bytes. Aun así son demasiados.
+Para resolver el problema se ha creado un adaptado que encaja perfectamente con todos los pines del display
+y que conecta con el microcontrolador a través de I2C. Sólo 2 pines.
+Puesto que la tasa de refresco del display es bastante baja, I2C es una solución perfecta.
+
+El adaptador tiene como nombre: "LCM 1602 IIC".
+Internamente tiene un chip PCF8574. Un expansor de puertos.
+Cada byte enviado corresponde con un pin con la siguiente distribución:
+  bit
+   7 - D4
+   6 - D5
+   5 - D6
+   4 - D7
+   3 - A/LED+. Backlight power supply
+   2 - E. Operation Enable. LOW=disabled, HIGH=enabled
+   1 - RW. Read/Write. LOW=Write, HIGH=Read
+   0 - RS. Register Select. LOW=command, HIGH=character
+Estos son los mismos pines que utilizamos en una conexión directa y son suficientes
+para poder controlar el display.
+
+Además de los pines de conexión tenemos:
+- Un jumper para alimentar la luz de fondo
+- Una resistencia regulable para el contraste
+
+La alimentación debe ser de 5V.
+Con 3.3V apenas se pueden ver los caracteres con el contraste al máximo.
+
+Identificador I2C: 0x27

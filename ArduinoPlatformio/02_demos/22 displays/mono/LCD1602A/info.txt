@@ -1,5 +1,8 @@
-Display LCD 1602A
+Tema: Display LCD 1602A
+Fecha: 20220117
+Autor: Ramón Junquera
 
+Descripción
 Es un display LCD de caracteres alfanuméricos.
 Tiene 2 filas y 16 columnas.
 Aunque sólo se muestren 16 caracteres por fila, tiene una memoria interna de 64 caracteres
@@ -9,20 +12,26 @@ Los caracteres se muestran en un array de puntos monocromáticos de 5x8.
 El tamaño del array/carácter es de 5.23x3 mm
 Tiene un luz de fondo (backlight) de color azul que permite controlar su intensidad.
 La tabla de caracteres es fija, pero los 8 primeros pueden ser definidos por el usuario.
-La interface de conexión es paralela. Permite conectar 8 pines (del D0 al D7) para transferir bytes completos.
-También permite utilizar sólo 4 pines (del D4 al D7) para ahorrar pines a la placa. En este caso, un byte se
-envía como dos medios bytes.
+Utiliza un controlador KS0066U, cuyas características son equivalentes al Hitachi HD44780.
+
+Conexión
+- 8 bits: La interface de conexión es paralela. Permite conectar 8 pines (del D0 al D7) para transferir bytes completos.
+- 4 bits: También permite utilizar sólo 4 pines (del D4 al D7) para ahorrar pines a la placa. En este caso, un byte se
+  envía como dos medios bytes.
+- I2C: Mediante un adaptador podemos conctarlo por I2C.
+
+Alimentación
 Según el manual, el voltaje mínimo es de 3V, por lo tanto debería funcionar perfectamente tanto a 3.3V como
 a 5V. En la práctica no es así. Se necesitan 5V para que funcione correctamente.
 Los pines de datos pueden ser a 3.3V. Pero la alimentación principal, no.
-Utiliza un controlador KS0066U, cuyas características son equivalentes al Hitachi HD44780.
+Con 3.3V el contraste es tan bajo que apenas se pueden leer los dígitos.
 
 Pinout:
 
 pin etiqueta función
 --- -------- -------
- 1    Vss    GND
- 2    Vdd    5V
+ 1    VSS    GND
+ 2    VDD    5V
  3    V0     Contrast
  4    RS     Register Select. LOW=command, HIGH=character
  5    RW     Read/Write. LOW=Write, HIGH=Read
@@ -35,12 +44,12 @@ pin etiqueta función
 12    D5
 13    D6
 14    D7
-15    LED+   Backlight power supply 5V
-16    LED-   Backlight power supply GND
+15    A/LED+   Backlight power supply 5V
+16    K/LED-   Backlight power supply GND
 
 
 Notas.
-Pin 2. Vdd. Es conveniente utilizar una resistencia de 220ohmios para asegurarnos que no superará lo 5V. No podemos
+Pin 2. Vdd. Es conveniente utilizar una resistencia de 220ohmios para asegurarnos que no superará los 5V. No podemos
   conectarlo a 3.3V porque no es suficiente para que funcione correctamente.
 Pin 3. V0. Aunque el contraste es regulable, se puede simplificar el circuito con una resistencia de 1 Kohmios.
 Pin 5. RW. Habitualmente lo que se quiere es escribir en el display. No leer su contenido. Por eso se suele conectar

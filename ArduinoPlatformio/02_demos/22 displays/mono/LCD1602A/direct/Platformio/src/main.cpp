@@ -1,17 +1,16 @@
 /*
+  Tema: Display LCD 1602A con conexión directa
+  Fecha: 20220118
   Autor: Ramón Junquera
-  Tema: Display LCD 1602A
-  Fecha: 20180627
-  Objetivo: Demostración de la clase de gestión
-  Material: breadboard, cables, display 1602A, resistencia de 220 ohmios, resistencia de 1 Kohmios, Cualquier placa
 
   Descripción:
-  El display LCD modelo 1602A es capaz de mostrar 2 líneas de 16 caracteres cada una.
-  El 1602A normalmente viene sin patas. Es muy aconsejable soldarle un "peine" de patas rectas (pines macho de 2,54mm).
-  Esto hace más cómo su manejo, porque puede ser pinchada a la breadboard sin problema.
+    El display LCD modelo 1602A es capaz de mostrar 2 líneas de 16 caracteres cada una.
+    El 1602A normalmente viene sin patas. Es muy aconsejable soldarle un "peine" de patas
+    rectas (pines macho de 2,54mm).
+    Esto hace más cómodo su manejo, porque puede ser pinchada a la breadboard sin problema.
 
   Resultado:
-  Vemos las capacidades de la librería en funcionamiento.
+    Vemos las capacidades de la librería en funcionamiento.
 */
 
 #include <Arduino.h>
@@ -22,23 +21,21 @@ RoJoLCD1602A lcd; //Objeto de gestión del display
 
 void setup() {
   //Definimos pines e inicializamos
-  //begin(RS,E,D0,D1,D2,D3)
+  //begin(D4,D5,D6,D7,RS,E,A)
   #ifdef ARDUINO_ARCH_AVR //Si es una placa Arduino
-    lcd.begin(7,8,9,10,11,12);
+    lcd.begin(9,10,11,12,7,8,13);
   #elif defined(ESP8266) //Si es una placa ESP8266
-    lcd.begin(D5,D6,D4,D3,D2,D1);
+    lcd.begin(D4,D3,D2,D1,D5,D6,D7);
   #elif defined(ESP32) //Si es una placa ESP32
-    lcd.begin(32,33,25,26,27,14);
+    lcd.begin(25,26,27,14,32,33,12);
+  #elif defined(__arm__) //Si es una Raspberry Pi
+    lcd.begin(25,24,23,18,7,8,15);
   #endif
-  
-  //Posicionamos el cursor en la columna 7 y primera fila
-  lcd.pos(6,0);
-  //Escribimos el texto a mostrar a partir de la posición del cursor
-  lcd.print("Hola");
-  //Posicionamos el cursor en la columna 6 y segunda fila
-  lcd.pos(5,1);
-  //Escribimos el texto a mostrar a partir de la posición del cursor
-  lcd.print("mundo!");
+
+  lcd.pos(6,0); //Posicionamos el cursor en la columna 7 y primera fila
+  lcd.print("Hola"); //Escribimos el texto a mostrar a partir de la posición del cursor
+  lcd.pos(5,1); //Posicionamos el cursor en la columna 6 y segunda fila
+  lcd.print("mundo!"); //Escribimos el texto a mostrar a partir de la posición del cursor
   delay(500);
   lcd.enable(false); //Apagamos la pantalla (sin perder su contenido)
   delay(500);
@@ -148,12 +145,13 @@ void setup() {
   //Mostramos el carácter 0. Sólo podemos hacerlo así, puesto que el 0 indica el final de 
   //un String en C
   lcd.printChar(0);
-  //Mostramos el resto de caracteres definidos
-  lcd.print("\1\2\3\4\5\6\7");
-  //Esperamos un momento
-  delay(5000);
-  //Borramos pantalla
-  lcd.clear();
+  lcd.print("\1\2\3\4\5\6\7"); //Mostramos el resto de caracteres definidos
+  delay(2000);
+  lcd.backlight(LOW); //Luz de fondo apagada
+  delay(2000);
+  lcd.backlight(HIGH); //Luz de fondo encendida
+  delay(1000);
+  lcd.clear(); //Borramos pantalla
 }
 
 void loop() {
