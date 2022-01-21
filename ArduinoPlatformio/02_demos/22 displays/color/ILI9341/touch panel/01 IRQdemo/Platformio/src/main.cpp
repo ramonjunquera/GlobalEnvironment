@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190830
+  Fecha: 20220121
   Tema: Touch Panel de ILI9341
   Objetivo: Prueba de concepto del funcionamiento del pinIRQ
   Material: display ILI9341
@@ -42,6 +42,6 @@ void setup() {
 
 void loop() {
   //Mostramos por el puerto serie el estado de pin IRQ contínuamente
-  Serial.println(digitalRead(pinIRQ));
+  Serial.println(String(digitalRead(pinIRQ)));
   delay(10);
 }

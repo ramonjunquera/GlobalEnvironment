@@ -1,6 +1,6 @@
 /*
   Tema: Gestión de display MH-ET LIVE E-paper 1.54"
-  Fecha: 20211210
+  Fecha: 20220121
   Autor: Ramón Junquera
 
   Descripción:
@@ -8,7 +8,7 @@
 */
 #include <Arduino.h>
 #include <RoJoSSD1681.h>
-#include <RoJoSprite2.h>
+#include <RoJoSprite3.h>
 
 #ifdef ESP8266
   byte pinRES=D4;
@@ -54,7 +54,7 @@ void test02() {
   //disco a 1 para que sea rojo
   //El sprite de la capa roja lo desplazaremos 8 pixels en horizontal y
   //verical para que aparezca con la sobra de la otra capa
-  RoJoSprite2 sprite(0); //Sprite de capa
+  RoJoSprite3 sprite(0); //Sprite de capa
   sprite.begin(); //Inicializamos sprite
   sprite.setSize(200,200); //Dimensionamos sprite con tamaño de display
   display.clear(); //Borramos cualquier imagen. Dejamos todo en blanco
@@ -80,7 +80,7 @@ void test03() {
   //Dibujaremos unas líneas, circulos y texto en ellos
   //Enviaremos primero una capa, después la otra y finalmente ambas a la vez.
 
-  RoJoSprite2 spriteW(0),spriteR(0); //Sprites para cada capa
+  RoJoSprite3 spriteW(0),spriteR(0); //Sprites para cada capa
   spriteW.begin(); spriteR.begin(); //Inicializamos sprites
   spriteW.setSize(200,200); spriteR.setSize(200,200); //Dimensionamos sprites como display
 
@@ -113,7 +113,7 @@ void test03() {
 void test04() {
   Serial.println("test04. begin");
   //Cargaremos un bmp color en un sprite gris y lo enviaremos al display
-  RoJoSprite2 sprite(1); //Sprite de tonos de gris
+  RoJoSprite3 sprite(1); //Sprite de tonos de gris
   sprite.begin(); //Inicialización
   byte errorCode=sprite.loadBMP("/betty.bmp"); //Cargamos un bmp color que se transforma a grises
   Serial.println("test04. errorCode="+String((int)errorCode));

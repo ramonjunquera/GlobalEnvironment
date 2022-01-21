@@ -1,0 +1,119 @@
+Tema: Identificación de los componentes del IDE
+Fecha: 20220120
+Autor: Ramón Junquera
+
+Panel Hierarchy (vista de jerarquía).
+Normalmente es el panel superior izquierdo.
+Muestra todos los elementos que tenemos definidos en la escena: luces, terrenos, jugadores, límites,
+elementos de control, ...
+Desde este mismo panel podemos crear objetos nuevos o cambiar su jerarquía.
+Los objetos que visualizamos siempre son "GameObject/3D Object".
+La jerarquía nos permite unir objetos entre sí con distintos grados de libertad.
+
+Panel Scene.
+Se muestran los objetos de la escena.
+Inicialmente sólo tenemos una cámara.
+Si añadimos algún otro objeto a la escena podremos camprobar su funcionamiento más fácilmente.
+Habitualmente trabajaremos en este panel para posicionar lo objetos.
+Justo debajo de la barra de menú tenemos una barra de iconos de herramientas para trabajar con la escena:
+- Hand Tool: Desplazamiento de la visualización de la escena
+- Move Tool: Cambia la posición de los objetos seleccionados
+- Rotate Tool: Rota los objetos seleccionados
+- Scale Tool: Cambia el tamaño de los objetos seleccionados en 1 o 3 ejes
+- Rect Tool: Cambia el tamaño de los objetos seleccionados en 2 ejes
+- Move, Rotate or Scale selected objects: Permite mover, rotar y escalar sin cambiar de herramienta
+- Editor Tool: Permite editar la estructura del Collider de los objetos seleccionados
+- ...
+
+Para movernos por la escena seleccionamos "Hand Tool".
+Con el ratón usamos click izquierdo y arrastrar para mover la escena en los ejes horizontal/x
+y vertical/y.
+Si estamos utilizando otra herramientas y necesitamos movernos, podemos pulsar la tecla AltGr
+y automáticamente se seleccionará esta herramienta temporalmente.
+
+Para cambiar la dirección de la vista de la escena teniendo como centro de rotación
+nuestra posición, mantenemos pulsada la tecla Alt, hacemos click y arrastramos.
+Es como mirar en otra dirección sin movernos.
+
+Para acercarnos/alejarnos en la dirección en la que estamos viendo la escena (zoom).
+Utilizamos la rueda del ratón.
+
+Los objetos que queden por detrás nuestro no se visualizarán.
+Con estos controles es relativamente fácil enfocar sobre la zona que nos interese.
+
+Para mover un objeto seleccionamos "Move Tool".
+Podemos seleccionar uno o varios objetos, añadiendolos a la selección con CTRL.
+Una vez seleccionado un objeto, le aparecen 3 flechas perpendiculares de colores:
+- verde: eje y : vertical : creciente hacia arriba
+- rojo : eje x : horizontal : creciente hacia la derecha
+- azul : eje z : profundidad : creciente cuando se aleja
+Si hacemos click y arranstramos en alguna de las cabezas de las flechas, moveremos el objeto
+sólo en la dirección de ese eje.
+Si hacemos click y arrastramos en alguno de los pequeños cuadrados del eje de
+coordenadas, nos moveremos sólo en el plano en el que se encuentra.
+
+Para rotar un objeto seleccionamos "Rotate Tool".
+Al seleccionar un objeto aparece una esfera con ecuadores perpendiculares de colores:
+- verde: rota sobre el eje y
+- rojo: rota sobre el eje x
+- azul: rota sobre el eje z
+
+Para cambiar el tamaño de un objeto seleccionamos "Scale Tool".
+Al seleccionar un objeto aparece unos segmentos perpendiculares entre sí, que finalizan en
+un pequeño cubo.
+Los colores coninciden con los mismos ejes que las herramientas anteriores.
+Si hacemos click y arrantramos en alguno de los cubos de los extremos de los segmentos, cambiremos
+el tamaño del objeto sólo en el eje seleccionado.
+Si lo hacemos en el cubo gris que se encuentra en el centro de corrdenadas, cambiaremos el
+tamaño del objeto completo (todos los ejes al mismo tiempo).
+Si queremos cambiar el tamaño de un objeto en dos ejes, esta no es la herramienta adecuada.
+
+Para cambiar el tamaño de un objeto de dos ejes simultáneamente seleccionamos "Rect  Tool".
+Cuando seleccionamos un objeto aparece un rectángulo con círculos en sus extremos.
+Este rectángulo se encuentra en el plano más perpendicular al punto de vista de la escena y
+cambia dinámicamente. El plano siempre es uno de los formados por los ejes fundamentales del objeto.
+Los ejes originales sólo afectan a la escena. Cada uno de los objetos creados tienen su propio
+sistema de referencia. Que inicialmente coinciden con los ejes de la escena, pero se pierden
+cuando lo rotamos. 
+El rectángulo muestra el en el que trabajaremos.
+Haciendo click y arrastrando en los círculos de los vértices podemos cambiar el tamaño del objeto
+en el plano seleccionado.
+Si hacemo click en el aro del centro del rectángulo podemos mover el objeto en el plano seleccionado.
+
+Con "Move, Rotate or Scale Tool" podemos hacer todo a la vez.
+El problema es que aparecen todos los controles dibujados simultáneamente y puede resultar confuso.
+
+Icono de ejes.
+En la parte superior derecha del panel de escena aparece un icono con los ejes de coordenadas
+de la escena. La parte positiva de cada eje aparece coloreada.
+Nos permite poner la vista de escena perpendicular a un eje y en una dirección, haciendo click
+sobre cada uno de los extremos.
+Si hacemos click en el centro de coordenadas podemos cambiar la vista entre ISO y perspectiva.
+Todos esto también se puede hacer desde el menú contextual que aparece al hacer click con el 
+botón derecho sobre el icono.
+
+Panel Game. Es una solapa al lado de Scene.
+Muestra la escena vista desde una cámara.
+Inicialmente es la cámara que se crea por defecto.
+Muchas veces estamos editando los elementos de la escena, pero al mismo tiempo necesitamos saber
+si quedan centrados en la cámara. Para solventarlo hay que saber que la distribución (layout) de
+los paneles en el IDE es totalmente configurable.
+Podemos arrastrar la solapa y colocarla al lado de Scene para ver las dos simultánemente.
+Es la vista que tendrá el usuario final y la que se activará una vez que pulsemos el botón de play
+y se compilen todos nuestros scripts.
+
+Panel Inspector.
+Habitualmente es el panel de la derecha.
+Muestra en todo momento los detalles del objeto seleccionado: material, scripts asociados,
+posición en escena.
+Permite editar sus parámetros numéricamente.
+
+Panel Project.
+Es la carpeta donde guardaremos los assets, scripts, modelos, animaciones, ...
+Conviente tenerla ordenada. Para ello podemos crear libremente una estructura de carpetas.
+Podemos arrastrar sus elementos directamente a los objetos de la escena para aplicarlos.
+
+Panel Console.
+Es una solapa al lado de Project.
+Aquí se muestran los mensajes de debug, mensajes de print (generados por los scripts), errores de
+compilación.

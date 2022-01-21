@@ -1,3 +1,6 @@
-RoJoGraph2
-RoJoSprite2
+RoJoGraph3
+RoJoSprite3
 RoJoST7789V2
+
+ESP32:
+  RoJoLittleFS32

@@ -1,0 +1,27 @@
+Tema: Descripción & instalación de Unity
+Fecha: 20220120
+Autor: Ramón Junquera
+
+Unity es un motor de videojuegos multiplataforma gratuito que incluye entorno de desarrollo.
+Trabaja tanto en 2D como 3D.
+Está bastante extendido y tiene una comunidad que mantiene multiples foros y documentación.
+
+No es una herramienta de modelado.
+No permite editar mallas ni hacer operaciones booleanas con objetos primitivos.
+Tiene una carta de objetos básicos que se pueden añadir a la escena, pero son muy limitados.
+Para modelado se deberían utilizar herramietnas externas (Blender, 3DS Max, Maya, ...).
+
+Permite la gestión de físicas, animaciones, sonidos, ...
+
+La programación se hace en base a Scripts en C#.
+Los Scripts pueden ser editados con cualquier editor de texto (notepad incluido). Pero si utilizamos
+algo más avanzado tendremos ayudas contextuales.
+Unity sugiere utilizar Microsoft Visual Studio como IDE de desarrollo.
+A fecha actual, aunque existe el Visual Studio 2021, Unity no lo soporta y se debe seguir utilizando
+el Visual Studio 2019.
+Visual Studio tiene una colección de librerías para Unity que deben ser instaladas.
+
+Podemos descargar la aplicación desde la web oficial: https://unity.com/download
+La aplicación princial es "Unity Hub" que simplemente nos permite tener organizadas las distintas
+versiones de Unity.
+Podemos tener varias versiones de Unity instaladas y desarrollar proyectos en cada una de ellas.

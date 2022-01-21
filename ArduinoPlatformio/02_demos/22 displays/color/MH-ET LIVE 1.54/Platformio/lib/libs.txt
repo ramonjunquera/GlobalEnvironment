@@ -1,3 +1,6 @@
-RoJoGraph2
-RoJoSprite2
+RoJoGraph3
+RoJoSprite3
 RoJoSSD1681
+
+ESP32:
+  RoJoLittleFS32
