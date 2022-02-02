@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20220107
+  Fecha: 20220202
   Tema: Librería para display OLED SPI 0.95" 96x64 SSD1331
   Material: breadboard, cables, display OLED SSD1331
   Ejemplos: ESP32, ESP8266, Mega, UNO, Nano, Raspberry Pi
@@ -29,17 +29,14 @@
   Sistema de doble buffer= memoria de vídeo *2=24Kb
 
   Nota 1:
-    El sistema de archivos (LittleFS/SD) debe contener los archivos de la
+    El sistema de archivos debe contener los archivos de la
     carpeta data para su correcto funcionamiento.
-    Para LittleFS se pueden transferir con la tarea:
-      PlatformIO: Upload File System image
   Nota 2:
     Teniendo en cuenta que el dispositivo Lolin32Lite no tiene pin de
-    5V, sólo podremos utilizar lectores SD de 3.3V
+    5V, no podemos utilizar lectores SD de 5V
   Nota 3:
     Con Lolin32 es obligatorio añadir al circuito una resistencia de 
-    10 Kohm entre el pin 2 y GND, para poder transferir datos (programa
-    o LittleFS).
+    10 Kohm entre el pin 2 y GND, para poder transferir datos.
   Nota 4:
     No todos los lectores SD son compatibles.
 
@@ -48,7 +45,7 @@
 */
 
 #include <Arduino.h>
-#include <RoJoSprite3.h> //Gestión de sprites color
+#include <RoJoSprite.h> //Gestión de sprites color
 #include <RoJoSSD1331.h> //Librería de gestión del display SSD1331
 
 #ifdef ESP32
@@ -243,7 +240,7 @@ void Test11() {
   //Creamos un sprite. Lo vamos pintando de distintos colores y lo mostramos
   //en pantalla, formando una matriz de 3x2
   display.clear(); //Limpiamos pantalla
-  RoJoSprite3 sprite; //Creamos el sprite
+  RoJoSprite sprite; //Creamos el sprite
   sprite.setSize(32,32); //Lo dimensionamos
   sprite.clear(sprite.getColor(255,0,0)); //Rojo
   display.drawSprite(&sprite);
@@ -265,7 +262,7 @@ void Test11() {
 //  RoJoSprite::loadSprite,loadBMP
 void Test12() {
   //Creamos el sprite
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   //Lo llenamos con una imagen de 32x32
   sprite.loadSprite(F("/heart.spr"));
   //Dibujamos 3 veces el sprite en la mitad superior
@@ -283,38 +280,21 @@ void Test12() {
 //Test de guardado
 //  RoJoSprite::save
 void Test13() {
-  //Limpiamos pantalla
-  display.clear();
-  //Creamos un sprite
-  RoJoSprite3 sprite1;
-  //Tendrá un tamaño de 3x3
-  sprite1.setSize(3,3);
-  //Lo pintamos de rojo
-  sprite1.clear(sprite1.getColor(255,0,0));
+  display.clear(); //Limpiamos pantalla
+  RoJoSprite sprite1; //Creamos un sprite
+  sprite1.setSize(3,3); //Tendrá un tamaño de 3x3
+  sprite1.clear(sprite1.getColor(255,0,0)); //Lo pintamos de rojo
   //Pintamos un cuadrado verde de 2x2 en la parte inferior derecha
   sprite1.block(1,1,2,2,sprite1.getColor(0,255,0));
-  //Lo guardamos en un archivo
-  sprite1.save("/test.spr");
+  sprite1.save("/test.spr"); //Lo guardamos en un archivo
 
-  //Creamos un nuevo sprite
-  RoJoSprite3 sprite2;
-  //Cargamos la imágen desde un archivo
-  sprite2.loadSprite("/test.spr");
-  //Lo redimensionamos para que se vea claro
-  sprite1.resize(&sprite2,50,50);
-  //Liberamos memoria del sprite2
-  sprite2.end();
-  //Mostramos el sprite
-  display.drawSprite(&sprite1);
-  //Liberamos memoria del sprite1
-  sprite1.end();
-  //Borramos el archivo
-  #ifdef ROJO_PIN_CS_SD //Si se utiliza SD...
-    SD.remove("/test.spr");
-  #else //Si utilizamos LittleFS...
-    LittleFS.remove("/test.spr");
-  #endif
-    
+  RoJoSprite sprite2; //Creamos un nuevo sprite
+  sprite2.loadSprite("/test.spr"); //Cargamos la imágen desde un archivo
+  sprite1.resize(&sprite2,50,50); //Lo redimensionamos para que se vea claro
+  sprite2.end(); //Liberamos memoria del sprite2
+  display.drawSprite(&sprite1); //Mostramos el sprite
+  sprite1.end(); //Liberamos memoria del sprite1
+  RoJoFS.remove("/test.spr"); //Borramos el archivo
   delay(1000);
 }
 
@@ -323,10 +303,10 @@ void Test13() {
 void Test14() {
   //Crearemos un sprite de texto y lo rotaremos
   display.clear();
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.print(F("/10x15d.fon"),F("123"),sprite.getColor(255,255,0)); //Texto en amarillo
   display.drawSprite(&sprite,30,0);
-  RoJoSprite3 spriteRotate;
+  RoJoSprite spriteRotate;
   spriteRotate.rotate(&sprite,90);
   display.drawSprite(&spriteRotate,60,16);
   spriteRotate.rotate(&sprite,180);
@@ -343,11 +323,11 @@ void Test14() {
 void Test15() {
   //Crearemos un sprite de texto y lo voltearemos
   display.clear();
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.print(F("/10x15d.fon"),F("123"),sprite.getColor(255,255,0)); //Texto en amarillo
   display.drawSprite(&sprite);
   sprite.replaceColor(sprite.getColor(255,255,0),sprite.getColor(155,155,0)); //Amarillo más ocuro
-  RoJoSprite3 spriteFlip;
+  RoJoSprite spriteFlip;
   spriteFlip.flipH(&sprite);
   display.drawSprite(&spriteFlip,33,0);
   spriteFlip.flipV(&sprite);
@@ -361,7 +341,7 @@ void Test15() {
 //  RoJoSprite: loadSprite,loadBMP
 void Test16() {
   //Creamos el sprite
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   //Utilizaremos sprites de tamaño 96x64, igual que las dimensiones del display
   sprite.loadBMP("/rose.bmp"); //Cargamos imagen desde una archivo .bmp
   display.drawSprite(&sprite);
@@ -384,11 +364,11 @@ void Test17() {
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite original
-  RoJoSprite3 spriteOri;
+  RoJoSprite spriteOri;
   //Lo llenamos con una imagen de 32x32
   spriteOri.loadBMP(F("/sun.bmp"));
   //Creamos el sprite redimensionado
-  RoJoSprite3 spriteZoom;
+  RoJoSprite spriteZoom;
   for(byte z=3;z<64;z++) {
     //Redimensionamos el sprite
     spriteZoom.resize(&spriteOri,z,z);
@@ -407,7 +387,7 @@ void Test17() {
 //  RoJoSprite::drawPixel
 void Test18() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos una matriz de puntos
   for(byte y=0;y<display.yMax();y+=5)
@@ -425,7 +405,7 @@ void Test18() {
 //  RoJoSprite:line
 void Test19() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos líneas verdes
   uint32_t color=display.getColor(0,255,0); //Verde
@@ -445,7 +425,7 @@ void Test19() {
 //  RoJoSprite::block,rect
 void Test20() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos un rectángulo relleno rojo
   sprite.block(10,10,30,20,sprite.getColor(255,0,0));
@@ -465,7 +445,7 @@ void Test20() {
 //  RoJoSprite::triangle,triangleFill
 void Test21() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(display.xMax(),display.yMax());
   //Dibujamos un triángulo relleno rojo
   sprite.triangleFill(20,0,50,40,0,20,sprite.getColor(255,0,0));
@@ -485,7 +465,7 @@ void Test21() {
 //  RoJoSprite::disk,circle,ellipse,ellipseFill
 void Test22() {
   //Creamos un sprite tan grande como el display
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(display.xMax(),display.yMax());
 
   uint32_t borderColor=display.getColor(255,255,255); //white
@@ -507,11 +487,11 @@ void Test22() {
 //  RoJoSprite::replaceColor,drawSprite
 void Test23() {
   //Creamos un sprite para el fondo
-  RoJoSprite3 spriteBack;
+  RoJoSprite spriteBack;
   //Cargamos una imágen tan grande como el display
   spriteBack.loadSprite("/mountain.spr");
   //Creamos un sprite de 25x25
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(25,25);
   //Lo pintamos de rojo
   sprite.clear(sprite.getColor(255,0,0));
@@ -541,7 +521,7 @@ void Test24() {
   //Limpiamos pantalla
   display.clear();
   //Creamos un sprite para dibujar el texto
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   //Definimos color de texto
   uint32_t color=display.getColor(0,255,0); //green
   //Escribimos un texto y lo mostramos
@@ -572,10 +552,10 @@ void Test25() {
   //Limpiamos display
   display.clear();
   //Creamos un sprite con una imágen del tamaño del display
-  RoJoSprite3 back;
+  RoJoSprite back;
   back.loadSprite("/mountain.spr");
   //Creamos un sprite para guardar un recorte del primero
-  RoJoSprite3 half;
+  RoJoSprite half;
   //Copiamos al nuevo sprite sólo el cuarto superior izquierdo
   half.copy(&back,0,0,back.xMax()/2,back.yMax()/2);
   //Mostramos el sprite recortado
@@ -601,18 +581,18 @@ void Test26() {
   //que sólo se envíen las diferencias.
 
   //Creamos el sprite con la imágen de fondo. Mismo tamaño que el display
-  RoJoSprite3 back;
+  RoJoSprite back;
   back.loadSprite("/mountain.spr");
   //Creamos sprite con el número
-  RoJoSprite3 num;
+  RoJoSprite num;
   //Color de texto: rojo. Fondo: negro. Borde: blanco
   num.print("/21x33d.fon","37",num.getColor(255,0,0),0,num.getColor(255,255,255));
 
   //Creamos sprite con memoria de vídeo de trabajo y copiamos la imágen de fondo
-  RoJoSprite3 workMem;
+  RoJoSprite workMem;
   workMem.copy(&back);
   //Creamos sprite con memoria de vídeo de display y copiamos la imágen de fondo
-  RoJoSprite3 displayMem;
+  RoJoSprite displayMem;
   displayMem.copy(&back);
   //Para que la memoria de vídeo del display coincida con la realidad, la
   //dibujamos en el display
@@ -648,7 +628,6 @@ void Test26() {
 }
 
 void setup() {
-  //Serial.begin(115200); //DEBUG
   display.begin(pinRES,pinDC,pinCS); //Inicializamos el display
 }
 

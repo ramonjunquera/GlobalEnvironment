@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20220120
+  Fecha: 20220202
   Tema: Librería para display ST7789V2 SPI de 135x240
   Objetivo: Demo de librería RoJoST7789V2
 
@@ -13,32 +13,12 @@
 
 RoJoST7789V2 display;
 
-//Pinout
-#ifdef ARDUINO_LOLIN32 //Para Lolin32
-  byte pinRES=2;
-  byte pinDC=22;
-  byte pinCS=5;
-  byte pinCLK=18;
-  byte pinMOSI=23;
-#elif defined(ARDUINO_M5Stick_C) //Para M5Stick-C
-  byte pinRES=18;
-  byte pinDC=23;
-  byte pinCS=5;
-  byte pinCLK=13;
-  byte pinMOSI=15;
-#elif defined(ESP8266) //Para ESP8266
-  byte pinRES=D0;
-  byte pinDC=D2;
-  byte pinCS=D3;
-  byte pinCLK=D5; //Su valor no se tendrá en cuenta
-  byte pinMOSI=D7; //Su valor no se tendrá en cuenta
-#elif defined(ARDUINO_ARCH_AVR) //Para placas Arduino
-  byte pinRES=3;
-  byte pinDC=5;
-  byte pinCS=4;
-  byte pinCLK=255; //Su valor no se tendrá en cuenta
-  byte pinMOSI=255; //Su valor no se tendrá en cuenta
-#endif
+//Pinout M5Stick-C+
+byte pinRES=18;
+byte pinDC=23;
+byte pinCS=5;
+byte pinCLK=13;
+byte pinMOSI=15;
 
 //Test de color
 //Ejemplo de funciones:
@@ -244,7 +224,7 @@ void test9() {
 //en pantalla, formando una matriz de 5x8
 void test10() {
   display.clear(); //Limpiamos pantalla
-  RoJoSprite3 sprite; //Creamos el sprite
+  RoJoSprite sprite; //Creamos el sprite
   sprite.setSize(27,30); //Lo dimensionamos
 
   //Creamos un array con los componentes de color (RGB) de cada una de las columnas
@@ -281,7 +261,7 @@ void test10() {
 void test11() {
   display.clear(); //Limpiamos pantalla
   //Creamos el sprite
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   //Dibujamos el sprite como una matriz de 4x7
   //En las 4 primeras filas el sprite se ha cargado desde un .spr
   //En las 3 últimas desde un .bmp
@@ -318,7 +298,7 @@ void test12() {
   //Definimos color de texto
   uint32_t color=display.getColor(0,255,0); //green
   //Creamos un sprite para dibujar el texto
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   //Escribimos un texto y lo mostramos
   sprite.print("/5x7d.fon","20191102",color);
   display.drawSprite(&sprite);
@@ -356,11 +336,11 @@ void test13() {
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite original
-  RoJoSprite3 spriteOri;
+  RoJoSprite spriteOri;
   //Lo llenamos con una imagen de 32x32
   spriteOri.loadSprite("/heart.spr");
   //Creamos el sprite redimensionado
-  RoJoSprite3 spriteZoom;
+  RoJoSprite spriteZoom;
   for(byte z=10;z<80;z++) {
     //Redimensionamos el sprite
     spriteZoom.resize(&spriteOri,z,z);
@@ -383,7 +363,7 @@ void test14() {
   //Limpiamos pantalla
   display.clear();
   //Creamos un sprite de 80x80
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(80,80);
   //Dibujamos líneas verdes
   uint32_t color=display.getColor(0,255,0); //Verde
@@ -406,7 +386,7 @@ void test14() {
 //    rect
 void test15() {
   //Creamos un sprite de 80x80
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(80,80);
   //Dibujamos un rectángulo relleno rojo
   sprite.block(10,10,40,30,sprite.getColor(255,0,0));
@@ -429,7 +409,7 @@ void test15() {
 //    triangleFill
 void test16() {
   //Creamos un sprite de 80x80
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(80,80);
   //Dibujamos un triángulo relleno rojo
   sprite.triangleFill(10,20,40,10,70,40,sprite.getColor(255,0,0));
@@ -454,7 +434,7 @@ void test16() {
 //    ellipseFill
 void test17() {
   //Creamos un sprite de 80x80
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(80,80);
   sprite.circle(20,20,19,sprite.getColor(255,0,0)); //Circunferencia
   sprite.disk(60,20,19,sprite.getColor(0,255,0)); //Círculo
@@ -474,7 +454,7 @@ void test17() {
 //    drawPixel
 void test18() {
   //Creamos un sprite de 80x80
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   sprite.setSize(80,80);
   //Dibujamos una matriz de puntos
   for(byte y=0;y<sprite.yMax();y+=5)
@@ -497,7 +477,7 @@ void test19() {
   //Limpiamos pantalla
   display.clear();
   //Creamos un sprite
-  RoJoSprite3 sprite1;
+  RoJoSprite sprite1;
   //Tendrá un tamaño de 3x3
   sprite1.setSize(3,3);
   //Lo pintamos de rojo
@@ -508,7 +488,7 @@ void test19() {
   sprite1.save("/test.spr");
 
   //Creamos un nuevo sprite
-  RoJoSprite3 sprite2;
+  RoJoSprite sprite2;
   //Cargamos la imágen desde un archivo
   sprite2.loadSprite("/test.spr");
   //Lo redimensionamos para que se vea claro
@@ -520,11 +500,7 @@ void test19() {
   //Liberamos memoria del sprite1
   sprite1.end();
   //Borramos el archivo
-  #ifdef ROJO_PIN_CS_SD //Si se utiliza SD...
-    SD.remove("/test.spr");
-  #else //Si utilizamos LittleFS...
-    LittleFS.remove("/test.spr");
-  #endif
+  RoJoFS.remove("/test.spr");
     
   delay(1000);
 }
@@ -538,10 +514,10 @@ void test19() {
 void test20() {
   display.clear();
   //Creamos sprite de fondo desde un archivo bmp
-  RoJoSprite3 back;
+  RoJoSprite back;
   back.loadBMP("/moon.bmp");
   //Creamos sprite que irá sobre el fondo
-  RoJoSprite3 over;
+  RoJoSprite over;
   over.setSize(25,25);
   over.clear(over.getColor(0,255,255)); //cyan
   over.block(10,10,24,24,over.getColor(0,255,0)); //Esquina inferior derecha en verde
@@ -568,10 +544,10 @@ void test20() {
 //    copy
 void test21() {
   display.clear();
-  RoJoSprite3 complete;
+  RoJoSprite complete;
   complete.loadBMP("/moon.bmp");
   display.drawSprite(&complete,5,0);
-  RoJoSprite3 quarter;
+  RoJoSprite quarter;
   for(int16_t y=0;y<2;y++)
     for(int16_t x=0;x<2;x++) {
       quarter.copy(&complete,x*35,y*35,x*35+34,y*35+34);
@@ -589,16 +565,16 @@ void test21() {
 void test22() {
   display.clear();
 
-  RoJoSprite3 back; //Imagen original
+  RoJoSprite back; //Imagen original
   back.loadBMP("/moon.bmp");
-  RoJoSprite3 videoMem; //Memoria de vídeo (de trabajo)
+  RoJoSprite videoMem; //Memoria de vídeo (de trabajo)
   videoMem.copy(&back);
-  RoJoSprite3 displayMem; //Memoria del display
+  RoJoSprite displayMem; //Memoria del display
   displayMem.copy(&videoMem);
   display.drawSprite(&videoMem,5,40);
   //Ya tenemos todas las memorias sincronizadas
 
-  RoJoSprite3 num; //Sprite en movimiento (un número)
+  RoJoSprite num; //Sprite en movimiento (un número)
   //Dibujamos el número en azul con fondo negro
   num.print("/21x33d.fon","52",num.getColor(0,0,255));
 
@@ -640,7 +616,7 @@ void test22() {
 //    loadBMP
 void test23() {
   //Creamos el sprite
-  RoJoSprite3 sprite;
+  RoJoSprite sprite;
   //Utilizaremos sprites de tamaño 135x240, igual que las dimensiones del display
   sprite.loadSprite("/canicas2.spr");
   display.drawSprite(&sprite);
@@ -654,7 +630,6 @@ void test23() {
 }
 
 void setup() {
-  //Serial.begin(115200); delay(4000); //Para DEBUG
   display.begin(pinRES,pinDC,pinCS,39999999,pinCLK,pinMOSI); //Inicialización
 }
 

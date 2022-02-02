@@ -8,7 +8,7 @@
 */
 #include <Arduino.h>
 #include <RoJoIL0373.h>
-#include <RoJoSprite3.h>
+#include <RoJoSprite.h>
 
 #ifdef ESP8266
   byte pinRES=D4;
@@ -55,7 +55,7 @@ void test02() {
   //El sprite de la capa roja lo desplazaremos 8 pixels en horizontal y
   //verical para que aparezca con la sombra de la otra capa
   display.clear(); //Nos aseguramos que la pantalla está vacía
-  RoJoSprite3 sprite(0); //Sprite de capa
+  RoJoSprite sprite(0); //Sprite de capa
   sprite.begin(); //Inicializamos sprite
   sprite.setSize(display.xMax(),display.yMax()); //Dimensionamos sprite con tamaño de display
   //Sprite blanco
@@ -79,7 +79,7 @@ void test03() {
   //Dibujaremos unas líneas, circulos y texto en ellos
   //Enviaremos primero una capa, después la otra y finalmente ambas a la vez.
 
-  RoJoSprite3 spriteW(0),spriteR(0); //Sprites para cada capa
+  RoJoSprite spriteW(0),spriteR(0); //Sprites para cada capa
   spriteW.begin(); spriteR.begin(); //Inicializamos sprites
   spriteW.setSize(display.xMax(),display.yMax()); //Dimensionamos sprite blanco como display
   spriteR.setSize(display.xMax(),display.yMax()); //Dimensionamos sprite rojo como display
@@ -113,7 +113,7 @@ void test03() {
 void test04() {
   Serial.println("test04. begin");
   //Cargaremos un bmp color en un sprite gris y lo enviaremos al display
-  RoJoSprite3 sprite(1); //Sprite de tonos de gris
+  RoJoSprite sprite(1); //Sprite de tonos de gris
   sprite.begin(); //Inicialización
   byte errorCode=sprite.loadBMP("/jordan.bmp"); //Cargamos un bmp color que se transforma a grises
   Serial.println("test04. errorCode="+String((int)errorCode));
@@ -128,7 +128,7 @@ void test04() {
 void test05() {
   Serial.println("test05. begin");
   display.drawBMP("/face.bmp"); //Mostramos una imágen de fondo
-  RoJoSprite3 sprite(0); //Monocromo
+  RoJoSprite sprite(0); //Monocromo
   sprite.begin(); //Inicialización
   sprite.setSize(16,24); //Suficiente para escribir un número dentro de un recuadro
   sprite.clear(0); //Fondo negro

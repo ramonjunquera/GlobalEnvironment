@@ -1,6 +1,7 @@
-RoJoGraph3
+RoJoGraph
 RoJoLCD5110
-RoJoSprite3
+RoJoSprite
+RoJoMultiFS
 
 ESP32:
   RoJoLittleFS32
