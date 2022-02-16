@@ -1,18 +1,18 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Simulación de display en un Label de Qt para la representación de sprites
- * Versión: 20210502
+ * Versión: 20220203
  * 
  * Características:
  *   Simula un display en un QLabel.
- *   La memoria de vídeo es un RoJoSprite2.
+ *   La memoria de vídeo es un RoJoSprite.
  *   Admite todas las profundidades de color
  */
 
 #ifndef RoJoSpriteQtLabel_h
 #define RoJoSpriteQtLabel_h
 
-#include <RoJoSprite2.h> //Gestión de sprites
+#include <RoJoSprite.h> //Gestión de sprites
 #include <QLabel>
 #include <QPixmap>
 #include <QPainter>
@@ -23,7 +23,7 @@ private:
   QLabel *_label=nullptr; //Puntero a etiqueta
   byte _zoom;
 public:
-  RoJoSprite2 s; //Puntero de sprite de memoria de video
+  RoJoSprite s; //Puntero de sprite de memoria de video
 
   //Inicialización
   //Devuelve true si todo es correcto

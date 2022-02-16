@@ -162,7 +162,7 @@ void MainWindow::test09() {
   RoJoSpriteQtLabel display; //Objeto display
   display.begin(ui->spriteLabel,135,240,2); //Init 135x240 16bits
 
-  RoJoSprite2 sprite; //Creamos el sprite de 16bits
+  RoJoSprite sprite; //Creamos el sprite de 16bits
   sprite.setSize(27,30); //Lo dimensionamos
 
   //Creamos un array con los componentes de color (RGB) de cada una de las columnas
@@ -195,7 +195,7 @@ void MainWindow::test10() {
   RoJoSpriteQtLabel display; //Objeto display
   display.begin(ui->spriteLabel,135,240,2); //Init 135x240 16bits
 
-  RoJoSprite2 sprite; //Creamos el sprite de 16bits
+  RoJoSprite sprite; //Creamos el sprite de 16bits
   //Dibujamos el sprite como una matriz de 4x7
   //En las 4 primeras filas el sprite se cargará desde un .spr
   //En las 3 últimas desde un .bmp
@@ -226,7 +226,7 @@ void MainWindow::test11() {
   display.begin(ui->spriteLabel,135,240,2,2); //Init 135x240 16bits zoom x2
 
   //Creamos un sprite para dibujar el texto
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   //Definimos color de texto
   uint32_t color=sprite.getColor(0,255,0); //green
   //Escribimos un texto y lo mostramos
@@ -265,11 +265,11 @@ void MainWindow::test12() {
   display.begin(ui->spriteLabel,135,240,2); //Init 135x240 16bits
 
   //Creamos el sprite original
-  RoJoSprite2 spriteOri;
+  RoJoSprite spriteOri;
   //Lo llenamos con una imagen de 32x32
   spriteOri.loadSprite("/heart.spr");
   //Creamos el sprite redimensionado
-  RoJoSprite2 spriteZoom;
+  RoJoSprite spriteZoom;
   for(byte z=10;z<80;z++) {
     //Redimensionamos el sprite
     spriteZoom.resize(&spriteOri,z,z);
@@ -288,10 +288,10 @@ void MainWindow::test13() {
   RoJoSpriteQtLabel display; //Objeto display
   display.begin(ui->spriteLabel,135,240,2,2); //Init 135x240 16bits zoom x2
 
-  RoJoSprite2 complete;
+  RoJoSprite complete;
   complete.loadBMP("/moon.bmp");
   display.s.drawSprite(&complete,5,0);
-  RoJoSprite2 quarter;
+  RoJoSprite quarter;
   for(int16_t y=0;y<2;y++)
     for(int16_t x=0;x<2;x++) {
       quarter.copy(&complete,x*35,y*35,x*35+34,y*35+34);

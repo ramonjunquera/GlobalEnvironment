@@ -1,4 +1,8 @@
-RoJoGraph2
+RoJoGraph
 RoJoILI9486
-RoJoSprite2
+RoJoMultiFS
+RoJoSprite
 RoJoXPT2046
+
+ESP32:
+  RoJoLittleFS32

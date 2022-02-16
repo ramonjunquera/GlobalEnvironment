@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210213
+  Fecha: 20220203
   Tema: Librería para display RPI_ILI9486 SPI 3.5" 480*320
   Objetivo: Demo de librería RoJoILI9486
   Material: breadboard, cables, display ILI9486, lector SD
@@ -26,16 +26,8 @@
   Memoria de vídeo= 320*480*2=300Kb
   Sistema de doble buffer= memoria de vídeo *2=600Kb
 
-  Nota 1:
-    El sistema de archivos (SPIFFS/SD) debe contener los archivos de la
-    carpeta data para su correcto funcionamiento.
-    Para SPIFFS se pueden transferir con la tarea:
-      PlatformIO: Upload File System image
-  Nota 2:
-    Configuración de Build de Geany para Raspberry Pi:
-      Compile: g++ -Wall -std=c++11 -c "%f" -pthread -I"lib"
-      Build: g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"lib"
-      Execute: sudo "./%e"
+  El sistema de archivos debe contener los archivos de la
+  carpeta data para su correcto funcionamiento.
  
   Resultado:
   Realizamos varios tests cíclicos
@@ -240,7 +232,7 @@ void Test10() {
   //Creamos un sprite. Lo vamos pintando de distintos colores y lo mostramos
   //en pantalla, formando una matriz de 3x3
   display.clear(); //Limpiamos pantalla
-  RoJoSprite2 sprite; //Creamos el sprite
+  RoJoSprite sprite; //Creamos el sprite
   sprite.setSize(32,32); //Lo dimensionamos
 
   //Creamos un array con los componentes de color (RGB) de cada una de las columnas
@@ -275,7 +267,7 @@ void Test10() {
 //  RoJoSprite::loadSprite
 void Test11() {
   //Creamos el sprite
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   //Lo llenamos con una imagen de 32x32
   sprite.loadSprite(F("/heart.spr"));
   //Dibujamos el sprite como una matriz de 10x15
@@ -296,7 +288,7 @@ void Test12() {
   //Definimos color de texto
   uint32_t color=display.getColor(0,255,0); //green
   //Creamos un sprite para dibujar el texto
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   //Escribimos un texto y lo mostramos
   sprite.print("/5x7d.fon","20190528",color);
   display.drawSprite(&sprite);
@@ -332,11 +324,11 @@ void Test13() {
   //Limpiamos pantalla
   display.clear();
   //Creamos el sprite original
-  RoJoSprite2 spriteOri;
+  RoJoSprite spriteOri;
   //Lo llenamos con una imagen de 32x32
   spriteOri.loadSprite(F("/heart.spr"));
   //Creamos el sprite redimensionado
-  RoJoSprite2 spriteZoom;
+  RoJoSprite spriteZoom;
   for(byte z=32;z<150;z+=5) {
     //Redimensionamos el sprite
     spriteZoom.resize(&spriteOri,z,z);
@@ -357,7 +349,7 @@ void Test14() {
   //Limpiamos pantalla
   display.clear();
   //Creamos un sprite de 200x200
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   sprite.setSize(200,200);
   //Dibujamos líneas verdes
   uint32_t color=display.getColor(0,255,0); //Verde
@@ -377,7 +369,7 @@ void Test14() {
 //  RoJoSprite::block,rect
 void Test15() {
   //Creamos un sprite de 200x200
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   sprite.setSize(200,200);
   //Dibujamos un rectángulo relleno rojo
   sprite.block(20,20,120,120,sprite.getColor(255,0,0));
@@ -397,7 +389,7 @@ void Test15() {
 //  RoJoSprite::triangle,triangleFill
 void Test16() {
   //Creamos un sprite de 200x200
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   sprite.setSize(200,200);
   //Dibujamos un triángulo relleno rojo
   sprite.triangleFill(80,0,100,120,0,60,sprite.getColor(255,0,0));
@@ -417,7 +409,7 @@ void Test16() {
 //  RoJoSprite::circle,disk
 void Test17() {
   //Creamos un sprite de 200x200
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   sprite.setSize(200,200);
   sprite.circle(50,50,45,sprite.getColor(255,0,0)); //Circunferencia
   sprite.disk(100,100,50,sprite.getColor(0,255,0)); //Círculo
@@ -434,7 +426,7 @@ void Test17() {
 //  RoJoSprite::drawPixel
 void Test18() {
   //Creamos un sprite de 200x200
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   sprite.setSize(200,200);
   //Dibujamos una matriz de puntos
   for(byte y=0;y<sprite.yMax();y+=10)
@@ -454,7 +446,7 @@ void Test19() {
   //Limpiamos pantalla
   display.clear();
   //Creamos un sprite
-  RoJoSprite2 sprite1;
+  RoJoSprite sprite1;
   //Tendrá un tamaño de 3x3
   sprite1.setSize(3,3);
   //Lo pintamos de rojo
@@ -465,7 +457,7 @@ void Test19() {
   sprite1.save("/test.spr");
 
   //Creamos un nuevo sprite
-  RoJoSprite2 sprite2;
+  RoJoSprite sprite2;
   //Cargamos la imágen desde un archivo
   sprite2.loadSprite("/test.spr");
   //Lo redimensionamos para que se vea claro
@@ -477,11 +469,7 @@ void Test19() {
   //Liberamos memoria del sprite1
   sprite1.end();
   //Borramos el archivo
-  #ifdef ROJO_PIN_CS_SD //Si se utiliza SD...
-    SD.remove("/test.spr");
-  #else //Si utilizamos SPIFFS...
-    SPIFFS.remove("/test.spr");
-  #endif
+  RoJoFS.remove("/test.spr");
     
   delay(1000);
 }
@@ -490,7 +478,7 @@ void Test19() {
 //  RoJoSprite::loadSprite,loadBMP
 void Test20() {
   //Creamos el sprite
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   //Utilizaremos sprites de tamaño 320x480, igual que las dimensiones del display
   sprite.loadSprite("/arbol.spr");
   display.drawSprite(&sprite);
@@ -507,11 +495,11 @@ void Test20() {
 //  RoJoSprite::replaceColor,drawSprite
 void Test21() {
   //Creamos un sprite para el fondo
-  RoJoSprite2 spriteBack;
+  RoJoSprite spriteBack;
   //Cargamos una imágen tan grande como el display
   spriteBack.loadSprite("/arbol.spr");
   //Creamos un sprite de 90x90
-  RoJoSprite2 sprite;
+  RoJoSprite sprite;
   sprite.setSize(90,90);
   //Lo pintamos de rojo
   sprite.clear(sprite.getColor(255,0,0));
@@ -540,10 +528,10 @@ void Test22() {
   //Limpiamos display
   display.clear();
   //Creamos un sprite con una imágen del tamaño del display
-  RoJoSprite2 back;
+  RoJoSprite back;
   back.loadSprite("/arbol.spr");
   //Creamos un sprite para guardar un recorte del primero
-  RoJoSprite2 half;
+  RoJoSprite half;
   //Copiamos al nuevo sprite sólo el cuarto superior izquierdo
   half.copy(&back,0,0,back.xMax()/2,back.yMax()/2);
   //Mostramos el sprite recortado
@@ -569,17 +557,17 @@ void Test23() {
   //que sólo se envíen las diferencias.
 
   //Creamos el sprite con la imágen de fondo. Mismo tamaño que el display
-  RoJoSprite2 back;
+  RoJoSprite back;
   back.loadSprite("/arbol.spr");
   //Creamos sprite con el número
-  RoJoSprite2 num;
+  RoJoSprite num;
   //Color de texto: rojo. Fondo: negro. Borde: blanco
   num.print("/21x33d.fon","37",num.getColor(255,0,0),0,num.getColor(255,255,255));
   //Creamos sprite con memoria de vídeo de trabajo y copiamos la imágen de fondo
-  RoJoSprite2 workMem;
+  RoJoSprite workMem;
   workMem.copy(&back);
   //Creamos sprite con memoria de vídeo de display y copiamos la imágen de fondo
-  RoJoSprite2 displayMem;
+  RoJoSprite displayMem;
   displayMem.copy(&back);
   //Para que la memoria de vídeo del display coincida con la realidad, la
   //dibujamos en el display

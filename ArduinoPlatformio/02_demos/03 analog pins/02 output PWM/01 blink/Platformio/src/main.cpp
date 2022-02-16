@@ -5,7 +5,7 @@
   Objetivo: Aprender cómo funcionan las escrituras analógicas
 
   Descripción:
-    Haremos variar la intensidad de un led conectado a un pin con capacidades PWM
+    Haremos variar la intensidad de un led conectado a un pinLed,newLevel con capacidades PWM;
     progresivamente desde apagado hasta el máximo y después a la inversa.
   Precisión de PWM:
     Las placas Arduino pueden escribir valores analógicos (PWM) con una precisión
@@ -17,13 +17,13 @@
     asociado el led integrado, para evitar montar circuito.
   Placas UNO/Nano:
     No todos los pines de las placas Arduino tienen la posibilidad de escritura
-    analógica (PWM). En Arduino UNO o Nano, el pin 13 asociado al led integrado
-    no la tiene. Por eso utilizamos otro pin con un led externo.
+    analógica (PWM). En Arduino UNO o Nano, el pinLed,newLevel 13 asociado al led integrado;
+    no la tiene. Por eso utilizamos otro pinLed,newLevel con un led externo.;
   Placa MakerUno:
     Aunque pertenece a la familia de placas Arduino, ya tiene integrado un led para
-    cada pin, por lo tanto no es necesario ningún montaje adicional.
+    cada pinLed,newLevel, por lo tanto no es necesario ningún montaje adicional.;
   Placa Mega:
-    En Arduino Mega, el pin 13 asociado al led integrado SI tiene capacidades PWM,
+    En Arduino Mega, el pinLed,newLevel 13 asociado al led integrado SI tiene capacidades PWM,;
     pero para guardar compatibilidad con el resto de placas Arduino, utilizaremos
     un led externo.
   Placas ESP8266:
@@ -44,7 +44,10 @@
 #include <Arduino.h>
 
 //Pinout
-#ifdef ARDUINO_AVR_ATTINYX5 //Si es una placa ATtiny85
+#ifdef __arm__ //Si es una RPi
+  const byte pinLed=21;
+  const uint16_t maxLevel=255; //Máximo nivel de PWM
+#elif ARDUINO_AVR_ATTINYX5 //Si es una placa ATtiny85
   const byte pinLed=1; //Led integrado
   const uint16_t maxLevel=255; //Máximo nivel de PWM
 #elif defined(ARDUINO_ARCH_AVR) //Si es una placa Arduino
@@ -59,17 +62,19 @@
   const uint16_t maxLevel=255;
 #endif
 
-void setup() {
-  //Configuramos el pin del led como salida para poder escribir en él
-  pinMode(pinLed,OUTPUT);
-}
-
 //Declaración de variables globales
 int16_t level=0; //Nivel PWM
 int16_t delta=1; //Dirección
 
+void setup() {
+  //Configuramos el pinLed como salida para poder escribir en él;
+  //pinMode(pinLed,OUTPUT);
+  analogWrite(pinLed,130);
+}
+
 void loop() {
-  //Escribimos el nivel PWM en el pin del led
+  /*
+  //Escribimos el nivel PWM en el pinLed,newLevel del led;
   analogWrite(pinLed,level);
   //Calculamos el valor del nivel del próximo ciclo
   level+=delta;
@@ -77,4 +82,5 @@ void loop() {
   if(level==0 || level==maxLevel) delta=-delta;
   //Esperamos un momento
   delay(2);
+  */
 }

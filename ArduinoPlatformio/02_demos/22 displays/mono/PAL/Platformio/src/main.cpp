@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210211
+  Fecha: 20220203
   Tema: Librería para vídeo compuesto PAL
   Objetivo: Demo de librería RoJoPAL
   Material: M5Stack Atom Lite
@@ -10,10 +10,10 @@
 */
 
 #include <Arduino.h>
-#include <RoJoSprite2.h> //Gestión de sprites
+#include <RoJoSprite.h> //Gestión de sprites
 #include <RoJoPAL.h> //Gestión de vídeo compuesto PAL
 
-RoJoSprite2 screen(1); //Sprite gris para pantalla
+RoJoSprite screen(1); //Sprite gris para pantalla
 
 //Carga un sprite del máximo tamaño permitido
 void test01() {
@@ -25,7 +25,7 @@ void test01() {
 
 //copy
 void test02() {
-  RoJoSprite2 spr(1); //Sprite gris
+  RoJoSprite spr(1); //Sprite gris
   spr.copy(&screen,200,0,250,80);
   screen.drawSprite(&spr,200,100);
   spr.end();
@@ -54,7 +54,7 @@ void test04() {
     }
   }
 
-  RoJoSprite2 spr(1); //Sprite gris
+  RoJoSprite spr(1); //Sprite gris
   spr.loadSprite("/heart.spr");
   //Dibujamos las 3 últimas líneas escribiendo desde sprite en memoria
   for(byte y=3;y<6;y++) {
@@ -107,7 +107,7 @@ void test08() {
 
 //drawSprite con color invisible
 void test09() {
-  RoJoSprite2 spr(1); //Sprite gris
+  RoJoSprite spr(1); //Sprite gris
   spr.loadSprite("/heart.spr");
   for(byte y=0;y<8;y++) {
     for(byte x=0;x<10;x++) {
@@ -123,7 +123,7 @@ void test10() {
   //Dibujamos texto directamente desde archivo de fuentes
   screen.printOver("/10x15.fon","Hola!",0,10,10);
   //Dibujamos texto desde sprite
-  RoJoSprite2 spr(1); //Sprite gris
+  RoJoSprite spr(1); //Sprite gris
 
   //Texto negro, fondo blanco
   spr.print("/10x15.fon","Adios!",0,spr.getColor(255,255,255));
@@ -141,7 +141,7 @@ void test10() {
 
 //resize
 void test11() {
-  RoJoSprite2 sprOriginal(1),sprResized(1); //Sprites grises
+  RoJoSprite sprOriginal(1),sprResized(1); //Sprites grises
   sprOriginal.loadSprite("/heart.spr");
   for(byte i=32;i<200;i++) {
     sprResized.resize(&sprOriginal,i,i);
@@ -155,7 +155,7 @@ void test11() {
 //rotate
 void test12() {
   screen.clear(screen.getColor(100,100,100));
-  RoJoSprite2 spr(1),sprRotate(1); //Sprites grises
+  RoJoSprite spr(1),sprRotate(1); //Sprites grises
   spr.print("/10x15.fon","Hola",spr.getColor(255,255,255));
   screen.drawSprite(&spr,20,10,0);
   sprRotate.rotate(&spr,90);

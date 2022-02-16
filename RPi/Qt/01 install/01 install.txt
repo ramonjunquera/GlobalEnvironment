@@ -1,6 +1,31 @@
-Tema: Instalación de Qt en Ubuntu  
-Fecha: 20210505
+Tema: Instalación de Qt5 en Linux
+Fecha: 20220214
+Autor: Ramón Junquera
 
+
+Para Raspberry Pi.
+No existe un paquete descargable desde la página oficial de Qt que esté compilado para ARM.
+Pero sí tenemos uno preparado para descargar desde los repositorios de Raspberry.
+
+Desde una sesión de Terminal ejecutamos:
+  sudo apt-get install qt5-default
+  sudo apt-get install qtcreator
+Para comprobar la versión instalada ejecutamos:
+  apt-cache show qt5-default
+En la información mostrada, localizamos la tercera línea.
+A fecha actual es:
+  Version: 5.11.3+dfsg1-1+rpi1+deb10u4
+También hemos instalado qtcreator. La versión la obtenemos ejecutando:
+  apt-cache show qtcreator
+A fecha actual, la segunda línea muestra:
+  Version: 4.8.2-1
+
+Ejecución:
+- Desde terminal con: qtcreator
+- Desde menú Programming/Qt Creator
+
+
+Para Ubuntu en un PC (x64).
 Descargar la última versión oficial completa de la página oficial:
   https://download.qt.io/official_releases/qt/
 Actualmente, la última es:

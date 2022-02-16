@@ -1,7 +1,4 @@
 /*
-  Pendiente:
-  - Guardar ejemplo actual de blink limpio
-
   Autor: Ramón Junquera
   Fecha: 20220116
   Tema: Gestión de pines digitales de salida

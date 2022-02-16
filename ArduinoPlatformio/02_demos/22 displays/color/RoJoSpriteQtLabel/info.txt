@@ -1,5 +1,5 @@
 Proyecto: Demo de uso de librería RoJoSpriteQtLabel
-Fecha: 20210503
+Fecha: 20220103
 
 Objetivo:
   Utilizar un objeto Label de Qt como si fuese un display, en el que 
@@ -20,8 +20,9 @@ Librerías:
 - Añadimos las siguientes librerías a la carpeta (sin subcarpetas):
   - Arduino.h
   - FS.h
-  - RoJoSprite2.cpp y .h
-  - RoJoGraph2.cpp y .h
+  - RoJoSprite.cpp y .h
+  - RoJoGraph.cpp y .h
+  - RoJoMultiFS.cpp y .h
   - RoJoSpriteQtLabel.h
 
 Almacenamiento de datos:

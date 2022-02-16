@@ -2,7 +2,8 @@ RPi
   Arduino.h
   FS.h
 Arduino
-  RoJoGraph2
-  RoJoSprite2
+  RoJoGraph
+  RoJoSprite
+  RoJoMultiFS
 Qt
   RoJoSpriteQtLabel.h

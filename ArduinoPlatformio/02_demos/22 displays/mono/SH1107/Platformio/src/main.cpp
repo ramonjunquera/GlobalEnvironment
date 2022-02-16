@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20220117
+  Fecha: 20220202
   Tema: Librería para display SH1107 SPI 64x128
   Objetivo: Demo de librería RoJoSH1107
 
@@ -24,7 +24,7 @@
 //Creamos objeto de gestión de display
 RoJoSH1107 display;
 //Creamos un sprite monocromo que utilizaremos como memoria de vídeo
-RoJoSprite3 v(0);
+RoJoSprite v(0);
 
 //Función drawPixel con color 1 = dibujar
 void test01() {
@@ -95,7 +95,7 @@ void test07() {
   //Limpiamos pantalla
   v.clear();
   //Creamos el sprite monocromo
-  RoJoSprite3 mySprite(0);
+  RoJoSprite mySprite(0);
   //Lo dimensionamos. Anchura=7. Altura=8 (una página)
   mySprite.setSize(7,8);
   //Lo dibujamos
@@ -135,7 +135,7 @@ void test08() {
 
   //Método 1. Cargamos leemos de un archivo a un nuevo sprite
   //Creamos el sprite monocromo
-  RoJoSprite3 mySprite(0);
+  RoJoSprite mySprite(0);
   //Lo leemos desde el archivo
   mySprite.loadSprite("/ball.spr");
   //Dibujamos el sprite en memoria de vídeo (en 0,0)
@@ -158,7 +158,7 @@ void test09() {
   //Seguiremos con el modo inverso activado (pixels en negro)
   display.negative(true);
   //Creamos un nuevo sprite monocromo
-  RoJoSprite3 ball(0);
+  RoJoSprite ball(0);
   //Leemos su contenido desde un archivo
   ball.loadSprite("/ball.spr"); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
@@ -204,7 +204,7 @@ void test10() {
   //Limpiamos la memoria de vídeo de trabajo
   v.clear();
   //Creamos el sprite de memoria de vídeos del display
-  RoJoSprite3 videoMem(0);
+  RoJoSprite videoMem(0);
   //Le damos el mismo tamaño que el display
   //Ya se crea limpio
   videoMem.setSize(display.xMax(),display.yMax());
@@ -214,7 +214,7 @@ void test10() {
 
   //Repetimos el ejemplo anterior de mover un sprite por pantalla
   //Creamos un nuevo sprite monocromo
-  RoJoSprite3 ball(0);
+  RoJoSprite ball(0);
   //Leemos su contenido desde un archivo
   ball.loadSprite("/ball.spr"); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
@@ -249,11 +249,11 @@ void test11() {
   //Seguiremos con el modo inverso activado (pixels en negro)
   display.negative(true);
   //Creamos un nuevo sprite monocromo para la imagen fija
-  RoJoSprite3 backSprite(0);
+  RoJoSprite backSprite(0);
   //Leemos su contenido desde un archivo
   backSprite.loadSprite("/mickey.spr");
   //Creamos un nuevo sprite monocromo para la imagen en movimiento
-  RoJoSprite3 ball(0);
+  RoJoSprite ball(0);
   //Leemos su contenido desde un archivo
   ball.loadSprite("/ball.spr"); //Su tamaño es x=30,y=30,pages=4
   //Coordenadas
@@ -294,15 +294,15 @@ void test12() {
   //Seguiremos con el modo inverso activado (pixels en negro)
   display.negative(true);
   //Creamos un nuevo sprite monocromo para la imagen fija
-  RoJoSprite3 backSprite(0);
+  RoJoSprite backSprite(0);
   //Leemos su contenido desde un archivo
   backSprite.loadSprite("/mickey.spr");
   //Creamos un nuevo sprite monocromo para la imagen en movimiento
-  RoJoSprite3 ball(0);
+  RoJoSprite ball(0);
   //Leemos su contenido desde un archivo
   ball.loadSprite("/ball.spr"); //Su tamaño es x=30,y=30,pages=4
   //Creamos un nuevo sprite monocromo para la máscara de la imagen en movimiento
-  RoJoSprite3 ballMask(0);
+  RoJoSprite ballMask(0);
   //Leemos su contenido desde un archivo
   ballMask.loadSprite("/ballmask.spr"); //Su tamaño es x=30,y=30,pages=4
   ballMask.negative();
@@ -345,7 +345,7 @@ void test13() {
   //Dibujamos un sprite desde un archivo
   v.drawSprite("/mickey.spr");
   //Creamos un nuevo sprite monocromo
-  RoJoSprite3 mySprite(0);
+  RoJoSprite mySprite(0);
   //Copiamos parte de la memoria de vídeo en el nuevo sprite
   mySprite.copy(&v,0,0,32,40);
   //Dibujamos el sprite varias veces
@@ -368,7 +368,7 @@ void test14() {
   //Dibujamos un bmp desde un archivo en la memoria de vídeo en 0,0
   v.drawBMP("/mickey.bmp");
   //Creamos un nuevo sprite monocromo
-  RoJoSprite3 mySprite(0);
+  RoJoSprite mySprite(0);
   //Copiamos parte de la memoria de vídeo en el nuevo sprite
   mySprite.copy(&v,20,16,15,24);
   //Guardamos el sprite en un archivo
@@ -376,7 +376,7 @@ void test14() {
   //Borramos el sprite utilizado
   mySprite.end();
   //Creamos un nuevo sprite monocromo
-  RoJoSprite3 mySprite2(0);
+  RoJoSprite mySprite2(0);
   //Leemos su contenido desde el archivo
   mySprite2.loadSprite("/mick2.spr");
   //Dibujamos el sprite varias veces en la memoria de vídeo
@@ -388,11 +388,7 @@ void test14() {
   //Borramos el sprite utilizado
   mySprite2.end();
   //Borramos el archivo
-  #ifdef ROJO_PIN_CS_SD //Si se utiliza SD...
-    SD.remove("/mick2.spr");
-  #else //Si utilizamos LittleFS...
-    LittleFS.remove("/mick2.spr");
-  #endif
+  RoJoFS.remove("/mick2.spr");
 
   delay(1000);
 }
@@ -402,11 +398,11 @@ void test15() {
   //Seguiremos con el modo inverso activado (pixels en negro)
   display.negative(true);
   //Creamos un nuevo sprite monocromo
-  RoJoSprite3 mySprite(0);
+  RoJoSprite mySprite(0);
   //Leemos su contenido desde un archivo
   mySprite.loadSprite("/mickey.spr");
   //Creamos el sprite monocromo utilizado para el redimensionado
-  RoJoSprite3 resizeSprite(0);
+  RoJoSprite resizeSprite(0);
   //Borramos el display
   display.clear();
   //Ampliaremos la imagen desde un 5% hasta un 100%
@@ -433,7 +429,7 @@ void test16() {
   display.negative(false);
   
   //Creamos el sprite monocromo que contendrá el texto
-  RoJoSprite3 textSprite(0);
+  RoJoSprite textSprite(0);
   //Escribimos el texto en el sprite
   textSprite.print("/5x7d.fon","20190829",1);
   //Dibujamos el sprite de texto en la memoria de vídeo
@@ -459,13 +455,13 @@ void test17() {
   v.clear();
   
   //Creamos el sprite monocromo que contendrá el texto
-  RoJoSprite3 textSprite(0);
+  RoJoSprite textSprite(0);
   //Escribimos el texto en el sprite
   textSprite.print("/10x15d.fon","123",1);
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite,15,0);
   //Creamos el sprite monocromo que contendrá el texto rotado
-  RoJoSprite3 textSpriteRotate(0);
+  RoJoSprite textSpriteRotate(0);
   //Rotamos el sprite de texto 90 grados
   textSpriteRotate.rotate(&textSprite,90);
   //Dibujamos el sprite de texto rotado en la memoria de vídeo
@@ -493,13 +489,13 @@ void test18() {
   v.clear();
   
   //Creamos el sprite monocromo que contendrá el texto
-  RoJoSprite3 textSprite(0);
+  RoJoSprite textSprite(0);
   //Escribimos el texto en el sprite
   textSprite.print("/10x15d.fon","123",1);
   //Dibujamos el sprite de texto en la memoria de vídeo
   v.drawSprite(&textSprite);
   //Creamos el sprite monocromo que contendrá el texto volteado
-  RoJoSprite3 textSpriteFlip(0);
+  RoJoSprite textSpriteFlip(0);
   //Volteamos el sprite en horizontal
   textSpriteFlip.flipH(&textSprite);
   //Dibujamos el sprite de texto volteado en horizontal en la memoria de vídeo
@@ -525,17 +521,17 @@ void test19() {
   //Lo mostraremos
 
   //Creamos el sprite monocromo para el texto
-  RoJoSprite3 textSprite(0);
+  RoJoSprite textSprite(0);
   //Escribimos el texto con una fuente pequeña
   textSprite.print("/5x7d.fon","1234",1);
   //Creamos el sprite monocromo para el texto rotado
-  RoJoSprite3 textSpriteRotate(0);
+  RoJoSprite textSpriteRotate(0);
   //Rotamos el texto
   textSpriteRotate.rotate(&textSprite,90);
   //Ya no necesitamos el sprite de texto
   textSprite.end();
   //Creamos el sprite del texto redimensionado
-  RoJoSprite3 textSpriteResize(0);
+  RoJoSprite textSpriteResize(0);
   //Redimensionamos el texto rotado al tamaño del display
   textSpriteResize.resize(&textSpriteRotate,display.xMax(),display.yMax());
   //Mostramos el sprite en el display
@@ -557,7 +553,7 @@ void test20() {
   v.printOver("/7x11.fon","Hello world!",1,0,16);
   v.printOver("/10x15.fon","Hello world!",1,0,32);
   //Para escribir con borde necesitamos crear un sprite
-  RoJoSprite3 textSprite(0);
+  RoJoSprite textSprite(0);
   //Texto negro, fondo negro, borde blanco
   textSprite.print("/10x15.fon","Hello",0,0,1);
   v.drawSprite(&textSprite,0,48);

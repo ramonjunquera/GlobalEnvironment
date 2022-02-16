@@ -1,4 +1,4 @@
 Arduino
   Arduino.h
-  LittleFS.h
+  SPIFFS.h
   SPI.h

@@ -1,6 +1,7 @@
-RoJoGraph3
+RoJoGraph
 RoJoSH1107
-RoJoSprite3
+RoJoSprite
+RoJoMultiFS
 
 ESP32:
   RoJoLittleFS32

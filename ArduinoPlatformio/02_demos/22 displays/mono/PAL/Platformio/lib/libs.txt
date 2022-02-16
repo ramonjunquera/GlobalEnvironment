@@ -1,3 +1,7 @@
-RoJoGraph2
+RoJoGraph
 RoJoPAL
-RoJoSprite2
+RoJoSprite
+RoJoMultiFS
+
+ESP32:
+  RoJoLittleFS32

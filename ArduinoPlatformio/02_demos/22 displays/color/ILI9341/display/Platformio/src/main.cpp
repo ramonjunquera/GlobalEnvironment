@@ -1,14 +1,6 @@
 /*
-  Pendiente:
-  - Probar con ESP8266
-    - Sólo falta probar FFat
-      Error. Encontrada la librería https://github.com/Adam5Wu/ESPVFATFS (FFat para ESP8266)
-      Necesita librería Misc.h & .cpp que a su vez necesita config.h (las 3 añadidas)
-      pero aun necesita más!!!!. Es viable?
-  - Probar con Arduino
-
   Autor: Ramón Junquera
-  Fecha: 20220126
+  Fecha: 20220203
   Tema: Librería para display ILI9341 SPI 240x320
   Objetivo: Demo de librería RoJoILI9341
   Material: breadboard, cables, display ILI9486, lector SD
@@ -34,15 +26,9 @@
   Memoria de vídeo= 320*480*2=300Kb
   Sistema de doble buffer= memoria de vídeo *2=600Kb
 
-  Nota 1:
-    El sistema de archivos debe contener los archivos de la
-    carpeta data para su correcto funcionamiento.
-  Nota 2:
-    Configuración de Build de Geany para Raspberry Pi:
-      Compile: g++ -Wall -std=c++11 -c "%f" -pthread -I"lib"
-      Build: g++ -Wall -std=c++11 -o "%e" "%f" -pthread -I"lib"
-      Execute: sudo "./%e"
- 
+  El sistema de archivos debe contener los archivos de la
+  carpeta data para su correcto funcionamiento.
+  
   Resultado:
     Realizamos varios tests cíclicos
 */
@@ -54,7 +40,7 @@
 //Definición de pines
 #ifdef ESP8266 //Si es un ESP8266...
   const byte pinDC_display=D2;
-  const byte pinRES_display=D8;
+  const byte pinRES_display=D1;
   const byte pinCS_display=D3;
   const byte pinBackLight_display=255; //No utilizado
 #elif defined(ARDUINO_M5STACK_FIRE) //Si es un M5Stack Fire...los pines son fijos

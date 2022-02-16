@@ -1,7 +1,8 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20211221
+ * Versión: 20220216
+ * Compatibilidad: Platformio & Qt
  * 
  * Funciones generales:
  *   bool ArduinoStart()
@@ -40,8 +41,9 @@
  *   ArduinoEnd()
  */
 
-#ifndef RoJoArduino_h
-#define RoJoArduino_h
+//#ifndef RoJoArduino_h
+//#define RoJoArduino_h
+#pragma once
 
 #include <iostream> //Para cout (Serial)
 #include <unistd.h> //Para geteuid() y usleep()
@@ -52,7 +54,7 @@
 #include <signal.h> //para signal
 #include <sys/time.h> //para itimerval
 #include <thread> //Para gestionar threads
-#include <string.h>  //Para memset
+#include <string.h> //Para memset
 #include <stdarg.h> //Para va_start
 using namespace std;
 
@@ -82,17 +84,17 @@ typedef enum {
 } arduinoOrder;
 
 //Definición de variables globales
-uint32_t *bcm2835_peripherals_base; //Dirección base de periféricos
-uint32_t bcm2835_peripherals_size; //Tamaño de memoria de periféricos
-uint32_t *bcm2835_peripherals = (uint32_t *)MAP_FAILED; //Puntero a registros de periféricos
-volatile uint32_t *bcm2835_gpio = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_pwm = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_clk = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_pads = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_spi0 = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_bsc0 = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_bsc1 = (uint32_t *)MAP_FAILED;
-volatile uint32_t *bcm2835_st	= (uint32_t *)MAP_FAILED;
+static uint32_t *bcm2835_peripherals_base; //Dirección base de periféricos
+static uint32_t bcm2835_peripherals_size; //Tamaño de memoria de periféricos
+static uint32_t *bcm2835_peripherals = static_cast<uint32_t*>(MAP_FAILED); //Puntero a registros de periféricos
+static volatile uint32_t *bcm2835_gpio = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_pwm = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_clk = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_pads = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_spi0 = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_bsc0 = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_bsc1 = static_cast<uint32_t*>(MAP_FAILED);
+static volatile uint32_t *bcm2835_st = static_cast<uint32_t*>(MAP_FAILED);
 
 //Clase para simulación de puerto serie
 class SerialClass {
@@ -161,7 +163,7 @@ bool ArduinoBegin() {
   //Abrimos el archivo ranges en binario y como sólo lectura
   fp = fopen("/proc/device-tree/soc/ranges","rb");
   //Si no se ha podido abrir,,,terminamos con error
-  if(fp==NULL) return false;
+  if(!fp) return false;
   //Hemos podido abrir el archivo
 
   //Posicionamos el cursor en el byte 4 (quinta posición)
@@ -171,7 +173,7 @@ bool ArduinoBegin() {
   fclose(fp); //Hemos podido leer el byte. Hemos terminado con el archivo. Lo cerramos
 
   //Identificamos el modelo y asignamos la dirección base
-  bcm2835_peripherals_base = (b>0)?(uint32_t *)0x3F000000:(uint32_t *)0xFE000000; 
+  bcm2835_peripherals_base = (b>0)?reinterpret_cast<uint32_t*>(0x3F000000):reinterpret_cast<uint32_t*>(0xFE000000);
   bcm2835_peripherals_size = 0x01000000; //El tamaño es constante
 
   //Para acceder a los registros de los periféricos podemos abrir la
@@ -196,7 +198,7 @@ bool ArduinoBegin() {
   //Hemos podido abrir la interface de acceso a memoria
 
   //Mapeamos los registros de los periféricos sobre bcm2835_peripherals
-  bcm2835_peripherals = (uint32_t *)mmap(NULL,bcm2835_peripherals_size,(PROT_READ | PROT_WRITE),MAP_SHARED,memfd,(uint32_t)bcm2835_peripherals_base);
+  bcm2835_peripherals = static_cast<uint32_t*>(mmap(nullptr,bcm2835_peripherals_size,(PROT_READ | PROT_WRITE),MAP_SHARED,memfd,reinterpret_cast<int32_t>(bcm2835_peripherals_base)));
   close(memfd); //Ya no necesitamos el acceso a memoria
   //Si no se ha podido mapear... terminamos con error
   if(bcm2835_peripherals == MAP_FAILED) return false;
@@ -223,7 +225,7 @@ void ArduinoEnd() {
     //Quitamos el mapeo
     munmap(&bcm2835_peripherals,bcm2835_peripherals_size);
     //Eliminamos la última referencia para que quede como señal
-    bcm2835_st = (uint32_t *)MAP_FAILED;
+    bcm2835_st = static_cast<uint32_t*>(MAP_FAILED);
   }
 }
 
@@ -259,7 +261,7 @@ uint64_t millis() {
 }
 
 //Devuelve el control después de transcurridos los microsegundos indicados.
-void delayMicroseconds(uint64_t us) {
+void delayMicroseconds(uint32_t us) {
   //Si no se ha inicializado el chip BCM2835...terminamos;
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
@@ -268,7 +270,7 @@ void delayMicroseconds(uint64_t us) {
 }
 
 //Devuelve el control después de transcurridos los milisegundos indicados.
-void delay(uint64_t ms) {
+void delay(uint32_t ms) {
   //Llamamos a la función delayMicroseconds pasando los milisegundos a
   //microsegundos
   delayMicroseconds(ms*1000);
@@ -297,9 +299,9 @@ void _pinMode(byte pin,byte mode) {
   //Calculamos el desplazamiento dentro del registro para 
   byte shift = (pin % 10) * 3;
   //Tomamos el valor actual del registro, borramos los 3 bits
-  //que corresponden a nuestro pin y en esa posici�n,
+  //que corresponden a nuestro pin y en esa posición,
   //escribimos el valor del modo
-  *pMode = (*pMode & ~(0b111 << shift)) | (mode << shift);
+  *pMode = (*pMode & static_cast<uint32_t>(~(0b111 << shift))) | static_cast<uint32_t>(mode << shift);
 }
 
 //Configura las resistencias de un pin.
@@ -520,7 +522,7 @@ struct interruptionsStruct {
 };
 
 //Creamos un objeto para mantener todas la interrupciones
-interruptionsStruct myInterruptions;
+static interruptionsStruct myInterruptions;
 
 //Función que lanza la función f(pin,status) y anota en running cuando termina.
 void InterruptionFunctionLauncher(bool *running,void (*f)(byte,byte),byte pin,byte status) {
@@ -684,7 +686,7 @@ struct pwmsStruct {
 };
 
 //Creamos un objeto para mantener la gestión de PWM
-pwmsStruct myPWMs;
+static pwmsStruct myPWMs;
 
 
 //Asigna una nueva frecuencia de PWM en Hz
@@ -700,7 +702,7 @@ void freqPWM(float freq) {
   //Además tenemos una resolución de 256 niveles de PWM así que tendremos que
   //dividirlo por 256 para calcular el periodo de un tick
   //period=1/freq*1000000/256;
-  myPWMs.period=3906.25/freq;
+  myPWMs.period=static_cast<uint16_t>(3906.25f/freq);
 }
 
 //Función para el bucle principal de ejecución
@@ -737,7 +739,7 @@ void pwmThreadLoop() {
         pinMode(pin,OUTPUT);
         //Si el valor es mayor que cero...creamos un nuevo nodo en el diccionario
         if(value) myPWMs.pwmDicc.emplace(pin,value);
-        //Si el valor en cero...simplemente apagamos el pin
+        //Si el valor es cero...simplemente apagamos el pin
         else digitalWrite(pin,LOW);
       }
       //Hemos terminado de procesar esta petición
@@ -761,7 +763,7 @@ void pwmThreadLoop() {
         //Dormiremos hasta el próximo tick
         delayMicroseconds(myPWMs.period);
       }
-	}
+    }
   }
   //No hay pines activos ni peticiones pendientes
   //El thread dejará de estar en marcha
@@ -777,7 +779,8 @@ void analogWrite(byte pin,byte value) {
 
   //Añadimos un nuevo nodo al final de la lista de peticiones
   //La petición será procesada en el propio thread al inicio de un ciclo
-  myPWMs.pwmRequests.push_back((pin<<8)|value);
+  //myPWMs.pwmRequests.push_back(static_cast<byte>(pin<<8)|value);
+  myPWMs.pwmRequests.push_back(static_cast<uint16_t>(pin<<8)+value);
   
   //Si el thread no está en marcha...
   if(!myPWMs.running) {
@@ -794,18 +797,20 @@ void analogWrite(byte pin,byte value) {
 
 //Inicializamos el chip BCM2835 para acceso a los pines, obtenemos el 
 //resultado, pero no lo comprobamos
-bool _arduinoBeginAnswer=ArduinoBegin();
+static bool _arduinoBeginAnswer=ArduinoBegin();
 
-//Referenciamos las funciones principales definidas en el programa principal
-extern void setup();
-extern void loop();
+#ifndef QT_GUI_LIB //Si no es una aplicación Qt...
+  //Referenciamos las funciones principales definidas en el programa principal
+  extern void setup();
+  extern void loop();
 
-//Simulamos la estructura de ejecución típica de Arduino
-int main(int argc, char **argv) {
-  setup();
-  while(true) {
-    loop();
+  //Simulamos la estructura de ejecución típica de Arduino
+  int main(int argc, char **argv) {
+    setup();
+    while(true) {
+      loop();
+    }
   }
-}
-
 #endif
+
+//#endif
