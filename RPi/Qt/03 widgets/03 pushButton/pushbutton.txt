@@ -1,4 +1,6 @@
-Objeto pushButton
+Tema: Objeto pushButton
+Fecha: 20220218
+Autor: Ramón Junquera
 
 Muestra un botón que puede ser pulsado
 
@@ -31,3 +33,9 @@ es setText().
 Por lo tanto, la línea para cambiar el texto a este label 
 será:
   ui->label_Hello->setText("Adiós");
+
+Nota
+Cuando borramos un widget que tiene asociado un slot, tenemos
+que borrar manualmente:
+- La referencia a la función en el .h de la ventana (mainwindow.h)
+- La función definida en el .cpp (mainwindow.cpp)

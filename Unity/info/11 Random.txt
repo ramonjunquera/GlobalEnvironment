@@ -1,0 +1,10 @@
+Tema: Clase Random
+Fecha: 20220228
+Autor: Ramón Junquera
+
+La clase Random nos permite obtener números pseudoaleatorios enteros.
+
+Ejemplo:
+  int a = Random.Range(0,10);
+Nos devolverá en a un valor aleatorio entre 0 y 10 (excluido) = [0,9].
+

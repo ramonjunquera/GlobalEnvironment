@@ -2,13 +2,13 @@
  * Ejemplo de signals/slots
  *
  * QT permite automatizar el traspaso de información entre componentes gráficos.
- * Cuando se genera un evento, puede lanzaun método en otro.
+ * Cuando se genera un evento, puede lanza un método en otro.
  * Los tipos deben coincidir.
  * Si el evento no tiene parámetros, sólo podrá llamar a métodos sin parámetros.
  * Si genera un parámetro bool, podrá llamar tamién a métodos con un parámetro bool.
  * Se pueden crear varios enlaces entre objetos. Incluso en cascada.
  *
- * Para gestionar los signals debemosestar en modo de diseño y pulsar el botón
+ * Para gestionar los signals debemos estar en modo de diseño y pulsar el botón
  * "Edit Signals/Slots F4". Es el segundo botón de la barra.
  * Para volver al modo normal de edición, pulsamos el botón "Edit Widgets F3".
  * Primer botón de la barra.

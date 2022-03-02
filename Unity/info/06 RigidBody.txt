@@ -1,0 +1,56 @@
+Tema: RigidBody
+Fecha: 20220221
+Autor: Ramón Junquera
+
+Es uno de los componentes que se pueden asignar a un GameObject.
+Permite aplicar físicas automáticas al GameObject.
+En vez de tener que programar el comportamiento del GameObject a las distintas interacciones que pueda
+tener (impactos, gravedad, rozamientos, ...), RigidBody los aplica automáticamente.
+
+Atención. Se debe seleccionar el RigidBody que corresponda a las dimensiones del proyecto:
+- RigidBody
+- RigidBody 2D
+
+Algunas de las propiedades de RigidBody son:
+- Mass. Masa. Se le asigna un valor manual a la masa del GameObject. La masa se utiliza en el cálculo del
+  efecto de la gravedad o de las interacciones (coches) con otros GameObjects.
+- Use Auto Mass. La masa se calcula automáticamente teniendo en cuenta el área (o colument) del objeto.
+  Podría variar si cambia su área o volumen.
+- Body Type. Indica cómo se deben realizar los cálculos de física:
+  - Dynamic. Unity se encarga de hacer todos los cálculos.
+  - Kinematic. Los cálculos se realizan por programación.
+  - Static. So se le aplican cálculos de interacciones físicas.
+- Material. Es el material con las características físicas. Estos objetos sólo tienen dos propiedades:
+  - Friction. Coeficiente de fricción
+  - Bounciness. Coeficiente de rebote. 0 = no rebota. 1 = rebota conservando totalmente la velocidad
+    inicial (pero invirtiendo el componente perpendicular a la tangente de impacto).
+
+Se recomienda tener ordenados y clasificados todos los objetos del proyecto.
+Por defecto tenemos creada la carpeta Assets y dentro de ella la carpeta Scenes.
+En su interior tenemos el archivo que define cada una de las escenas definidas en el proyecto.
+Para la creación de los materiales de física se recomienda crear una carpeta llamada PhysicMaterials
+en la que guardaremos sólo este tipo de objetos.
+Después nos resultará más fácil asignar objetos, componentes y propiedades a nuestros GameObjects.
+
+El cálculo de las físicas de un objeto es complejo y consume bastantes recursos.
+Deberíamos reducir al máximo el uso de este componente para no sobrecargar los cálculos y mantener
+el refresco de pantalla.
+
+Ejemplo.
+Definimos una escena con una pelota y un suelo.
+La pelota debe regirse por las leyes de la física (gravedad, caída, rebotes, ...), por lo tanto le
+aplicamos el componente de RigidBody.
+El suelo no se moverá de sitio. Es estático. Los impactos de otros GameObjects no le afectarán.
+Mantendrá su posición. Por lo tanto al suelo NO le aplicaremos el componente RigidBody.
+
+La diferencia de rendimiento la podemos ver en la ventana Game donde se representa la ejecución de la escena.
+En su parte superior derecha tenemos la opción Stats, que entre otros valores, nos mostrará los FPS
+reales.
+
+Contrains (restricciones).
+En un RigidBody podemos definir restricciones de giro o movimiento.
+Es muy útil para que los GamaObject no salgan disparados en cualquier dirección no permitida.
+Ejemplo de una pala del Pong: sólo se puede mover en vertical. Restringimos su desplazamiento horizontal (eje X) y su
+giro sobre el eje Z.
+
+

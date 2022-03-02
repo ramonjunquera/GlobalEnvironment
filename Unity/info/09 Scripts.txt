@@ -1,0 +1,25 @@
+Tema: Scripts
+Fecha: 20220228
+Autor: Ramón Junquera
+
+Es el código de programa que gestiona el juego.
+Se escribe en C#.
+Es conveniente crear una estructura de carpetas para guardar los Scripts. Nos facilitará su
+clasificación y búsqueda.
+
+Conviene utilziar Visual Studio 2019 para su edición, por las ayudas contextuales que contiene.
+Realmente no es Visual Studio el que finalmente compila. Sólo se utiliza como editor.
+Al salvar el código, Unity HUB detecta los cambios y recompila automáticamente.
+
+Es conveniente asignar el nombre correcto al Script desde el primer momento, puesto que no sólo
+afecta al nombre del Script, sino a la clase que se describe en su interior.
+
+Un Script se asocia a un objeto arrastrándolo sobre él. Queda disponible como un nuevo componente.
+
+Todos los Script vienen con dos métodos por defecto:
+- Start(). Se ejecutará una sóla vez cuando se cree el GameObject
+- Update(). Se ejecutará en cada frame.
+Si no vamos a utilizar alguno de los métodos por defecto, conviene borrarlo.
+
+Nota:
+Es conveniente evitar el uso de espacios en los nombres de los Scripts

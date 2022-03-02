@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Sensor de distancia VL53L1X
-  Fecha: 20210802
+  Fecha: 20220226
   Objetivo: Uso de varios sensores conectados al mismo bus I2C
   Descripción:
   - Utilizaremos varios sensores simultáneamente conectados al mismo bus I2C.
@@ -17,12 +17,14 @@
 #include <RoJoVL53L1X.h>
 
 //Declaración de constantes globales
-const byte idI2C[]={42,43}; //Identificadore I2C. No puede haber 2 iguales!!
+const byte idI2C[]={42,41}; //Identificadores I2C. No puede haber 2 iguales!!. Recomendable que el último sea el 0x29=41
 //Pin de reset para los distintos dispositivos
 #ifdef ESP32OLED16MB
   const byte pinReset[]={23,19}; //Pines de reset
 #elif defined(ARDUINO_AVR_UNO)
   const byte pinReset[]={A3,A2}; //Pines de reset
+#elif __arm__ //RPi
+  const byte pinReset[]={18,23}; //Pines de reset
 #else
   #error Dispositivo desconocido
 #endif

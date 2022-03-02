@@ -2,7 +2,7 @@
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 3. Emulación de
  *   librería Wire de Arduino
- * Versión: 20210426
+ * Versión: 20220224
  * 
  * Funciones I2C:
  *   void begin(byte i2cPort)
@@ -20,9 +20,9 @@
 #ifndef RoJoArduinoWire_h
 #define RoJoArduinoWire_h
 
-using namespace std;
-
 #include <Arduino.h>
+
+using namespace std;
 
 //Funciones I2C
 
@@ -52,21 +52,20 @@ class WireArduino {
 	//Declaración de variables y métodos privados
 	private:
 	
-	byte _i2cPort=-1; //Puerto I2C utilizado
-	byte _buffer[_bufferLen]; //Reservamos memoria para el buffer
-	byte _bufferPos=0; //Posición de escritura del buffer (llenado). Inicialmente 0
-	uint32_t cdiv; //Clock divider
+  uint32_t cdiv; //Clock divider
 	volatile uint32_t* dlen; //Puntero a registro BSC Master Data Length
 	volatile uint32_t* fifo; //Puntero a registro BSC Master Data FIFO 
 	volatile uint32_t* status; //Puntero a registro BSC Master Status
 	volatile uint32_t* control; //Puntero a registro BSC Master Control
-	byte *_readBuffer; //Array de buffer de lectura
+  byte *_readBuffer; //Array de buffer de lectura
+  byte _i2cPort=255; //Puerto I2C utilizado. Inicialmente ninguno
+  byte _buffer[_bufferLen]; //Reservamos memoria para el buffer
+  byte _bufferPos=0; //Posición de escritura del buffer (llenado). Inicialmente 0
 	byte _pendingToRead=0; //Número de caracteres pendientes de leer del buffer de lectura
 	byte _readBufferLen=0; //Tamaño del buffer de lectura
-	byte *_writeBuffer; //Array de buffer de escritura
 	
-	//Define el puerto I2C que se utilizará
-	void setPort(byte i2cPort) {
+  //Define el puerto I2C que se utilizará. 0 o 1. Por defecto el 1
+  void setPort(byte i2cPort=1) {
 		//Raspberry Pi tiene tres puertos I2C maestros.
 		//Estos son los pines y gpio utilizados para cada puerto y su uso:
 		
@@ -78,19 +77,16 @@ class WireArduino {
 		//     2    BSC2  --  --   --  --  reservado para la interfaz HDMI
 		
 		//Raspberry Pi 1 sólo tenía el puerto BSC0.
-		//La versión 2 y 3 utilizan el puerto BSC1 como estándar, pero
+    //Las versiones 2, 3 y 4 utilizan el puerto BSC1 como estándar, pero
 		//el BSC0 sigue funcionando perfectamente.
+
+    if(bcm2835_st == MAP_FAILED) return; //Si no se ha inicializado el chip BCM2835...terminamos;
+    if(i2cPort>1) return; //Si no es un puerto válido...terminamos
 		
-		//Si no se ha inicializado el I2C...terminamos;
-		if(_i2cPort<0) return;
-		//I2C está inicializado
-		
-		//Anotamos en la variable privada el puerto indicado
-		_i2cPort=i2cPort;
+    _i2cPort=i2cPort; //Guardamos el puerto en la variable privada
 		//Definimos los pines que vamos a utilizar de pendiendo del puerto
 		//y calculamos los punteros a los registros
-		//Si es puerto es el 1...
-		if(i2cPort) {
+    if(i2cPort) { //Si es puerto es el 1...
 			_pinMode(2,4); //SDA = GPIO 2 = pin 3
 			_pinMode(3,4); //SCL = GPIO 3 = pin 5
 			dlen = bcm2835_bsc1 + 2;
@@ -115,15 +111,11 @@ class WireArduino {
 	//Por defecto el 1 que es el más habitual
 	//Siempre se puede cambiar con setPort
 	void begin(byte i2cPort=1) {
-		//Si no se ha inicializado el chip BCM2835...terminamos;
-		if(bcm2835_st == MAP_FAILED) return;
-		//El chip BCM2835 se ha inicializado
+    if(bcm2835_st == MAP_FAILED) return; //Si no se ha inicializado el chip BCM2835...terminamos;
 		
-		//Simulamos ya se ha inicializado anteriormente
-		_i2cPort=1;
 		//Por defecto la velocidad de comunicación es de 100kbit/s
 		setClock(100000);
-		//Dijamos el puerto I2C indicado
+    //Dejamos el puerto I2C indicado
 		setPort(i2cPort);
 	}
 	
@@ -150,13 +142,13 @@ class WireArduino {
 		//  400kbit/s = 400.000
 		
 		//Si no se ha inicializado el I2C...terminamos;
-		if(_i2cPort<0) return;
+        if(_i2cPort==255) return;
 		//I2C está inicializado
 		
 		//Dependiendo del modo utilizado BCM0 o BCM1, calcularemos la
 		//dirección del registro en la que escribiremos el valor del
 		//divisor del reloj.
-		volatile uint32_t* paddr = (volatile uint32_t *)((_i2cPort?bcm2835_bsc1:bcm2835_bsc0)+5);
+        volatile uint32_t* paddr=static_cast<volatile uint32_t *>((_i2cPort?bcm2835_bsc1:bcm2835_bsc0)+5);
 		
 		//Calculamos el divisor del reloj para conseguir la frecuencia
 		//deseada.
@@ -169,14 +161,14 @@ class WireArduino {
 	//Abre la conexión I2C con un dispositivo
 	void beginTransmission(byte deviceId) {
 		//Si no se ha inicializado el I2C...terminamos;
-		if(_i2cPort<0) return;
+        if(_i2cPort==255) return;
 		//i2c está inicializado
 
 		_bufferPos=0; //Reseteamos el número de bytes que contiene el buffer
 
 		//Calculamos la dirección del registro que guarda el identificador
 		//del dispositivo, dependiendo del modo
-		volatile uint32_t* paddr = (volatile uint32_t *)((_i2cPort?bcm2835_bsc1:bcm2835_bsc0)+3);
+    volatile uint32_t* paddr=static_cast<volatile uint32_t *>((_i2cPort?bcm2835_bsc1:bcm2835_bsc0)+3);
 		//Guardamos el identificador del dispositivo
 		*paddr = deviceId;
 	}
@@ -184,7 +176,7 @@ class WireArduino {
 	//Enviamos el contenido del buffer acumulado desde el beginTransmision
 	//Devuelve 0 si no hubo errores
 	byte endTransmission() {
-		if(_i2cPort<0) return 1; //Si no se ha inicializado el I2C...terminamos con error;
+        if(_i2cPort==255) return 1; //Si no se ha inicializado el I2C...terminamos con error;
 		//i2c está inicializado
 
 		//Definición de variables
@@ -232,7 +224,7 @@ class WireArduino {
 		//...ajustamos la longitud para tomar sólo los que entren
 		if(_bufferPos+length>_bufferLen) length=_bufferLen-_bufferPos;
 	  if(length){ //Si hay algo que añadir...
-			memcpy((void*)&_buffer[_bufferPos],(void*)buffer,length); //Copiamos
+            memcpy(static_cast<void*>(&_buffer[_bufferPos]),static_cast<void*>(buffer),length); //Copiamos
 			_bufferPos+=length; //El buffer se ha llenado un poco más
 		} 
 		return length; //Devolvemos el número de bytes añadidos
@@ -252,7 +244,7 @@ class WireArduino {
 		//no será continuación de la primera.
 		
 		//Si no se ha inicializado el I2C...terminamos sin transmitir;
-		if(_i2cPort<0) return 0;
+    if(_i2cPort==255) return 0;
 		//I2C está inicializado
 		
 		//Definición de variables
@@ -309,7 +301,7 @@ class WireArduino {
 		//Si aun quedaba algo por leer...borramos el buffer de lectura
 		if(_pendingToRead) free(_readBuffer);
 		//Creamos un nuevo buffer de lectura tan grande como el solicitado
-		_readBuffer=(byte*)malloc(_readBufferLen);
+    _readBuffer=static_cast<byte*>(malloc(length));
 		if(!_readBuffer) return 0; //Si no hay memoria...terminamos
 		//Anotamos que el nuevo tamaño del buffer de lectura y el
 		//número de caracteres pendientes por leer tiene el mismo valor
@@ -326,9 +318,9 @@ class WireArduino {
 		
 		//Clear FIFO
 		//Informamos que queremos vaciar la cola FIFO.
-		//No tilizamos la nomenclatura *control!=0x20; porque sino da un
+    //No utilizamos la nomenclatura *control|=0x20; porque sino da un
 		//warning diciendo que la variable no se utiliza
-		*control = *control | 0x20;
+    *control = *control | 0x20;
 		//Clear Status
 		*status = 0x00000302;
 		//Guardamos el tamaño de bytes a recibir en el registro
@@ -341,7 +333,7 @@ class WireArduino {
 			while (*status & 0x00000020) {
 				//Leemos un nuevo byte de la cola FIFO
 				//Después disminuimos el índice del siguiente byte a recibir
-				_readBuffer[i++] = *fifo;
+        _readBuffer[i++]=static_cast<byte>(*fifo);
 				//Ya queda un byte menos por recibir
 				remaining--;
 			}
@@ -353,7 +345,7 @@ class WireArduino {
 		while (remaining && (*status & 0x00000020)) {
 			//Leemos un nuevo byte de la cola FIFO
 			//Después disminuimos el índice del siguiente byte a recibir
-			_readBuffer[i++] = *fifo;
+            _readBuffer[i++]=static_cast<byte>(*fifo);
 			//Ya queda un byte menos por recibir
 			remaining--;
 		}
@@ -371,7 +363,7 @@ class WireArduino {
 			//el esperado menos los que no se han recibido
 			//Anotamos este valor como datos pendientes de leer y
 			//tamaño total del buffer de lectura
-			_pendingToRead=_readBufferLen=length-remaining;
+            _pendingToRead=_readBufferLen=static_cast<byte>(length-remaining);
 		}
 		//Si se han recibido todos los datos solicitados sin errrores
 		//ya se ha anotado en un inicio que el tamaño del buffer de
@@ -408,7 +400,7 @@ class WireArduino {
 	//Finalizamos el uso del puerto I2C
 	void end() {
 		//Si no se ha inicializado el I2C...terminamos
-		if(_i2cPort<0) return;
+        if(_i2cPort==255) return;
 		//I2C está inicializado
 		
 		//Restauramos el modo INPUT a los pines utilizados por el puerto
@@ -421,13 +413,14 @@ class WireArduino {
 			_pinMode(1,0); //SCL = GPIO 1 = pin 28
 		}
 		//I2C queda sin configurar
-		_i2cPort=-1;
+        _i2cPort=255;
 		
 		if(_readBuffer) {
 			free(_readBuffer);
 			_readBufferLen=0;
 		}
 	}
+
 };
 
 //Creamos el objeto Wire

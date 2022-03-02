@@ -1,0 +1,52 @@
+Tema: Ejemplo de uso de connect
+Fecha: 20220301
+Autor: Ramón Junquera
+
+Hemos visto que un signal es un enlace directo entre dos objetos gráficos, que se
+realiza en la capa gráfica y sirve para descargar y agilizar el código.
+Realmente se conecta el evento de un objeto gráfico origen con otro objeto gráfico destino.
+
+Existe algo parecido que sirve para conectar un evento de un objeto origen (sea gráfico
+o no), con otro objeto destino. Se llama connect.
+
+La instrucción connect admite los siguientes parámetros:
+- Objeto origen
+- Evento de la clase original
+- Objeto destino
+
+La gran ventaja es que el objeto destino puede ser una función lambda.
+Las funciones lambda se definen en el mismo lugar en el que se llaman.
+
+Ejemplo 1:
+  connect(ui->pushButtonPlay,&QPushButton::clicked,[&](){
+    mMediaPlayer->play();
+  });
+El objeto origen es un objeto gráfico (ui) llamado pushButtonPlay.
+El evento es el clicked de la clase QPushButton (cuando reciba un click).
+El objeto destino es un la función lambda [&], que no tiene parámetros ()
+En su interior se llama al método play del objeto mMediaPlayer.
+
+Ejemplo 2:
+  connect(mMediaPlayer,&QMediaPlayer::positionChanged,[&](qint64 position) {
+    ui->progressBar->setValue(static_cast<int>(position));
+  });
+El objeto origen es mMediaPlayer, pero pertenece a la clase QMediaPlayer.
+El evento es positionChanged.
+Este evento genera un parámetro de tipo qint64 llamado position.
+Esto lo podemos saber si ponemos el cursor en el nombre del evento (positionChanged)
+y pulsamos F2 o hacemos click con el botón derecha y seleccionamos "Follow Symbol Under Cursor".
+Se mostrará la definición original con lso parámetros correctos.
+El objeto destino es una función lambda que tiene un parámetro del mismo tipo.
+Dentro de la función tomamos ese parámetro, lo convertimos a int y llamamos
+a un objeto gráfico (ui) de nombre progressBar, al método setValue, pasándolo
+como parámetro.
+
+Nota.
+- Si el contenido de dos funciones lambda es parcial o totalmente idéntico, podríamos
+  crear un método en la clase de la ventana principal y llamarlo desde dentro
+  de la función lambda.
+
+Ejemplo de demo.
+Es un simple PushButton checkable.
+Cuando cambia su estado, generando el evento toggled, se llama a una función lambda
+que escribe en el label un texto.

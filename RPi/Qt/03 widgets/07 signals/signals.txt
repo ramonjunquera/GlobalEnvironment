@@ -25,7 +25,7 @@ Desarrollo:
   el botón Step1 salta el evento clicked(), que gracias al primer signal,
   se relaciona con el método toggle de Step2, que lo hace cambiar de estado.
   Ninguno de estos métodos tiene parámetros.
-  Esiste un segundo signal. Cuando se cambia el estado de Step2, salta el
+  Existe un segundo signal. Cuando se cambia el estado de Step2, salta el
   evento toggled(bool), que llama al método setChecked(bool) de Step3, que
   le asigna el mismo estado a través del valor bool.
   Los signal se gestionan en la pantalla de diseño.

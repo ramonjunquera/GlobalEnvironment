@@ -1,0 +1,9 @@
+Tema: Clase Debug
+Fecha: 20220228
+Autor: Ramón Junquera
+
+La clase debug nos facilita la generación de textos de control para la identificación de errores en el
+flujo de ejecución.
+Ejemplo: Debug.Log("Hola");
+Los mensajes de Debug se muestran en la ventana de consola.
+Por defecto no queda a la vista, pero podemos forza su activación desde Window/General/Console.

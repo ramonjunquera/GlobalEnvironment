@@ -1,0 +1,21 @@
+Tema: GameObject
+Fecha: 20220228
+Autor: Ramón Junquera
+
+Es cualquier objeto que se incluya en una escena.
+Un GameObject tiene asociadas características que rigen su comportamiento llamadas componentes.
+Un componente es una colección de propiedades.
+Todos los GameObjects tienena al menos un componente llamado Transform:
+- Position: coordenadas espaciales de posición
+- Rotation: grados de rotación para cada uno de lo ejes
+- Scale: proporción de escala para cada eje
+
+Hay que tener en cuenta que Unity permite desarrollar proyectos en 2 y 3D.
+Realmente los proyectos 2D son en 3D, excepto que no se tiene en cuenta el eje Z.
+Los GameObjects para cada dimensión son distintos y deberían respetarse.
+
+Un sprite es un objeto visible en la escena que tiene libertad para moverse
+(reposicionarse), rotar o cambiar de escala.
+
+Nota:
+Es conveniente evitar el uso de espacios en los nombres de los GameObjects

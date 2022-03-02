@@ -49,7 +49,7 @@ controles, sólo podemos minimizar, maximizar, cerrar o cambiar de
 tamaño.
 
 Al compilar el proyecto, se crea una nueva carpeta a la misma altura que la
-del proyecto con el pregijo "build-".
+del proyecto con el prefijo "build-".
 En ella se guardan los archivos precompilados y el compilado final con el
 nombre del proyecto.
 No es necesario guardar esta carpeta porque puede ser regenerada de nuevo en

@@ -1,0 +1,33 @@
+Tema: Camera. Límites de escena
+Fecha: 20220221
+Autor: Ramón Junquera
+
+Es el GameObject que siempre aparece creado por defecto en una escena.
+En la sección Hierarchy aparecerán todos los GameObjects definidos para nuestra escena.
+Haciendo doble click sobre cada uno de ellos, se seleccionará y se hará zoom sobre él para que aparezca
+a pantalla completa.
+Cuando lo hacemos con la cámera, ésta se centra y muestra un rectángulo que indica los límites de visibles de la escena.
+Por defecto las proporciones son las misma que la ventana de Scene.
+Esto no tiene porqué coincidir con las proporciones de la ventana final de juego.
+Normalmente la ventana de juego tiene las mismas proporciones que el monitor en el que se representa.
+Actualmente los monitores mantienen las proporciones de 16:9.
+Es conveniente forzar las proporciones de la cámara a este valor.
+
+La propiedad Size de la cámara sólo indicará el número de unidades verticales de la vista.
+El tamaño horizontal vendrá calculado por sus proporciones.
+Las proporciones de la pantalla se fijan en la ventana Game.
+En su parte superior izquierda podemos definir más de una pantalla para hacernos una idea de cómo se vería.
+Por defecto utilizaremos el Display1.
+Justo a su derecha veremos el aspecto.
+Por defecto está seleccionado "Free Aspect".
+Lo cambiaremos a 16:9.
+El tamaño horizontal de los límites de la cámara se recalcula para adaptarse a las nuevas propiedades.
+Para comprobar que es cierto, podríamos asignar un tamaño vertical de 9 a la cámara.
+Veremos como desde el centro de la cámara hasta sus extremos superior e inferior tenemos 9 unidades y a los
+extremos izquierdo y derecho tenemos 16.
+
+
+
+
+
+

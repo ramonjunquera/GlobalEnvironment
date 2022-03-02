@@ -1,0 +1,18 @@
+Tema: Cambio de color al entorno de ejecución
+Fecha: 20220221
+Autor: Ramón Junquera
+
+Cuando pulsamos el botón de play, se ejecutará la escena dentro de la ventana Game.
+Mientras estamos en modo play, el entorno nos permite seguir modificando la escena.
+El problema es que al finalizar el modo play, todas las modificaciones realizadas se
+perderán.
+Por esta razón es muy importante se consciente en todo momento del modo en el que te
+encuentras.
+Cuando entramos en modo play, por defecto el fondo cambia a un tono un poco más gris
+oscuro que el normal. Practicamante indistinguible.
+Cambiaremos este color a otro que llame la atención.
+
+En Edit/Preferences.../Color/General/Playmode tint seleccionamos un color rojo puro
+que llame la atención y que nos dificulte cualquier modificación de los parámetros de
+la escena.
+

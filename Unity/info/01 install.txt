@@ -1,5 +1,5 @@
 Tema: Descripción & instalación de Unity
-Fecha: 20220120
+Fecha: 20220221
 Autor: Ramón Junquera
 
 Unity es un motor de videojuegos multiplataforma gratuito que incluye entorno de desarrollo.
@@ -22,6 +22,20 @@ el Visual Studio 2019.
 Visual Studio tiene una colección de librerías para Unity que deben ser instaladas.
 
 Podemos descargar la aplicación desde la web oficial: https://unity.com/download
-La aplicación princial es "Unity Hub" que simplemente nos permite tener organizadas las distintas
+La aplicación principal es "Unity Hub" que simplemente nos permite tener organizadas las distintas
 versiones de Unity.
 Podemos tener varias versiones de Unity instaladas y desarrollar proyectos en cada una de ellas.
+Las actualizaciones son frecuentes.
+
+Consejos:
+- No utilizar versiones de desarrollo o betas.
+- Utilizar vesrsiones con soporte de larga duración (LTS = Long Term Support)
+- No cambiar de versión durante el desarrollo de un proyecto.
+
+Problema. La instalación de Visual Studio no se ha realizado al mismo tiempo que Unity y aunque se
+llama cuando queremos editar scripts, no se reconocen los objetos de Unity (por ejemplo GameObjet).
+Causa. Aunque se ha indicado que nuestro editor por defecto es Visual Studio, Unity no lo reconoce
+a nivel de programación.
+Solución:
+- Visual Studio debería tener la extensión para trabajar con Unity
+- En Unity seleccionar Edit/Preferences.../External Tools/External Script Editor/Visual Studio

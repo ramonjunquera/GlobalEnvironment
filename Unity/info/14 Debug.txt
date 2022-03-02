@@ -1,0 +1,8 @@
+Tema: Debug
+Fecha: 20220228
+Autor: Ramón Junquera
+
+Se pueden utilizar todas las herramientas de debugging que ofrece Visual Studio.
+- Asignación de BreakPoints
+- F5 para continuar con la ejecución
+- ...

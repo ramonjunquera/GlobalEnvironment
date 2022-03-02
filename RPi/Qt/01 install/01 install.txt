@@ -1,5 +1,5 @@
 Tema: Instalación de Qt5 en Linux
-Fecha: 20220214
+Fecha: 20220301
 Autor: Ramón Junquera
 
 
@@ -20,9 +20,24 @@ También hemos instalado qtcreator. La versión la obtenemos ejecutando:
 A fecha actual, la segunda línea muestra:
   Version: 4.8.2-1
 
+Si tenemos intención de utilizar el módulo de multimedia, para crear aplicaciones
+que reproduzcan audios o videos, además hay que añadir las siguientes librerías:
+  sudo apt-get install qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5
+
 Ejecución:
 - Desde terminal con: qtcreator
 - Desde menú Programming/Qt Creator
+
+Nota importante!!!
+Para poder utilizar las distintas interfases del chip BCM2835 en Qt es obligatorio activarlas!
+Lo podemos hacer desde:
+- El terminal con: sudo raspi-config
+  Seleccionamos "3 Interface Options" y aquí activamos todas las que necesitemos.
+- Desde Menú/Preferences/Raspberry Pi Configuration/Interfaces
+Si no lo hacemos, los programas que desarrollemos con Qt pueden fallar.
+Ejemplo: aplicación que gestiona I2C falla al hacer una lectura (no escritura!).
+Con aplicaciones desarrolladas bajo el entorno Arduino de Platformio, no es obligatorio
+activar las interfases.
 
 
 Para Ubuntu en un PC (x64).

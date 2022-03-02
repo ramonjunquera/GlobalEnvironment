@@ -1,0 +1,42 @@
+Tema: InputManager
+Fecha: 20220228
+Autor: Ramón Junquera
+
+Habitualmente se requiere la lectura de los controles del usuario para poder interaccionar con los GameObjects
+definidos.
+Para no tener que depender de la infinidad de posibles controles de entrada (teclado, joystick, mandos inalámbricos, etc),
+tenemos el Input Manager.
+Aglutina la conectividad con los distindos dispositivos de entrada y haciendo transparente su acceso al programa
+principal.
+Encontraremos el Input Manager en Edit/Project Settings...
+Por defecto ya vienen configurados varios controles.
+Algunos incluso tienen el mismo nombre (Horizontal o Vertical). Esto es porque con estos nombres de referencia,
+permitirían entradas procedentes del teclado o de un joystick (por eso hay dos).
+
+Lo menor para no depender de las configuraciones existentes, es seleccionar el perfil que más se aproxime a
+nuestras necesidades y duplicarlo, asignando el nombre que nos interese (distinto a cualquiera de los existentes).
+
+Por ejemplo. Necesitamos el control vertical por teclado de dos jugadores.
+Al jugador 1 le asignaremos los controles W,S para subir y bajar.
+El jugador 2 utilizará las teclas verticales de cursor up,down.
+Seleccionamos el primer "Vertical" que encontramos que es el que corresponden con el teclado (y no con el joystick).
+Pulsamos con el botón derecho y seleccionamos "Duplicate Array Element".
+Se creará uno con el mismo nombre e idéntica configuración justo debajo.
+Sólo nos queda abrirlo y cambiar su nombre a VerticalJugador1 (por ejemplo).
+
+Para dar más flexibilidad a una configuración, tenemos los controles principales y los alternativos.
+Para evistar confusiones, es conveniente utilizar sólo los controles principales (Negative Button & Positive Button).
+Los controles alternativos (Alt Negative Button & Alt Positive Button) los dejaremos en blanco.
+
+Siguiendo el ejemplo anterior. Estas serían las configuraciones:
+- VerticalJugador1
+  - Negative Button = s
+  - Positive Button = w
+- VerticalJugador2
+  - Negative Button = s
+  - Positive Button = w
+
+Cómo utilizarlo desde programa?
+  float direccion = Input.GetAxisRaw("VerticalJugador1");
+El método GetAxisRaw indica sólo si la tecla está pulsada o no.
+El método GetAxis tiene en cuenta el tiempo de repetición de teclado. No es instantáneo.

@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Sensor de distancia VL53L1X
-  Fecha: 20210730
+  Fecha: 20220222
   Objetivo: Aprender el funcionamiento del sensor de distancia LIDAR.
   Notas:
   - Suponemos que utilizamos un sensor con el identificador I2C por defecto
@@ -22,7 +22,6 @@ void setup() {
 
   //Si no podemos inicializar el sensor con los pines por defecto...
   if (!sensor.begin()) {
-    //DEBUG. Error porque el sensor está en el identificador 0x
     Serial.println("Error inicializando el sensor"); //Informamos
     while(1); //Paramos
   }

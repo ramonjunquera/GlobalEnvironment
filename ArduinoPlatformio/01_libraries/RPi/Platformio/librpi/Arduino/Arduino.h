@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20220216
+ * Versión: 20220222
  * Compatibilidad: Platformio & Qt
  * 
  * Funciones generales:
@@ -41,9 +41,8 @@
  *   ArduinoEnd()
  */
 
-//#ifndef RoJoArduino_h
-//#define RoJoArduino_h
-#pragma once
+#ifndef RoJoArduino_h
+#define RoJoArduino_h
 
 #include <iostream> //Para cout (Serial)
 #include <unistd.h> //Para geteuid() y usleep()
@@ -115,6 +114,24 @@ class SerialClass {
   void println(int64_t v) {
     cout << v << endl;
   }
+  void println(uint32_t v) {
+    cout << v << endl;
+  }
+  void println(int32_t v) {
+    cout << v << endl;
+  }
+  void println(uint16_t v) {
+    cout << v << endl;
+  }
+  void println(int16_t v) {
+    cout << v << endl;
+  }
+  void println(byte v) {
+    cout << v << endl;
+  }
+  void println(int8_t v) {
+    cout << v << endl;
+  }
   void println(String v="") {
     cout << v << endl;
   }
@@ -126,34 +143,53 @@ class SerialClass {
   void print(int64_t v) {
     cout << v;
   }
+  void print(uint32_t v) {
+    cout << v;
+  }
+  void print(int32_t v) {
+    cout << v;
+  }
+  void print(uint16_t v) {
+    cout << v;
+  }
+  void print(int16_t v) {
+    cout << v;
+  }
+  void print(byte v) {
+    cout << v;
+  }
+  void print(int8_t v) {
+    cout << v;
+  }
   void print(String v) {
     cout << v;
   }
+
+  bool operator!() {
+    return false; //Siempre estará disponible el puerto serie
+  } 
 };
-//Creamos el objeto Serial
-SerialClass Serial;
+SerialClass Serial; //Creamos el objeto Serial
 
 //Inicialización de acceso los registros del chip BCM2835
 //Devuelve false ante cualquier cualquier error
 bool ArduinoBegin() {
   //Debemos averiguar la dirección base de la memoria de periféricos y su tamaño.
   //La teoría dice que esta información se encuentra en el archivo binario
-  // /proc/device-tree/soc/ranges
-  //A partir del byte 4 tenemos la dirección base y a continuación su
-  //tamaño. Ambos datos tienen una logitud de 4 bytes.
-  //Están escritos de mayor a menor peso, así que no podemos leerlos
-  //directamente a un uint32_t. Tenemos que invertir el orden de los
-  //bytes.
-  //Esto se cumple en las RPi 2 y 3, pero no en la 4.
-  //Ejemplo de contenido del archivo a partir de byte 4
-  //  3F 00 00 00 01 00 00 00
-  //Por lo tanto tenemos que la dirección base es 0x3F000000 con una longitud de 0x01000000
-  //En la RPi4 encontramos lo siguiente a partir del byte 4:
-  //  00 00 00 00 FE 00 00 00
-  //Aunque sabemos que la dirección base es 0xFE000000 con la misma longitud: 0x01000000
-  //Para simplificar utilizaremos el archivo sólo para diferenciar un modelo de otro.
-  //Concretamente con el byte 5: 3F para RPi3 y 00 para RPi4
-  //Después tomaremos las direcciones que correspondan sin mirar más.
+  //  /proc/device-tree/soc/ranges
+  //La estructura en una RPi 2 o 3 es:
+  //  desde  0 a  3 : no se tienen en cuenta
+  //  desde  4 a  7 : 3F 00 00 00 = dirección base
+  //  desde  8 a 11 : 01 00 00 00 = tamaño
+  //En cambio en una RPi4 se ha desplazado 4 bytes estos datos:
+  //  desde  0 a  3 : no se tienen en cuenta
+  //  desde  4 a  7 : 00 00 00 00 = valor fijo
+  //  desde  8 a 11 : FE 00 00 00 = dirección base
+  //  desde 12 a 15 : 01 80 00 00 = tamaño
+  //Como ya conocemos los valores de dirección base y tamaño, sólo nos queda saber
+  //distinguir el modelo de Raspberry.
+  //Para ello sólo nos fijaremos en el byte de la posición 4 (quinto)
+  //Si es 0 supondremos que es una RPi, sino será una 2 o 3.
 
   //Definición de variables
   FILE *fp; //Puntero de archivo (file pointer)
@@ -161,10 +197,8 @@ bool ArduinoBegin() {
   int memfd; //Identificador de interface de acceso a memoria (file descriptor)
 
   //Abrimos el archivo ranges en binario y como sólo lectura
-  fp = fopen("/proc/device-tree/soc/ranges","rb");
-  //Si no se ha podido abrir,,,terminamos con error
-  if(!fp) return false;
-  //Hemos podido abrir el archivo
+  fp=fopen("/proc/device-tree/soc/ranges","rb");
+  if(!fp) return false; //Si no se ha podido abrir,,,terminamos con error
 
   //Posicionamos el cursor en el byte 4 (quinta posición)
   fseek(fp,4,SEEK_SET);
@@ -172,9 +206,14 @@ bool ArduinoBegin() {
   if (fread(&b,1,1,fp) != 1) return false;
   fclose(fp); //Hemos podido leer el byte. Hemos terminado con el archivo. Lo cerramos
 
-  //Identificamos el modelo y asignamos la dirección base
-  bcm2835_peripherals_base = (b>0)?reinterpret_cast<uint32_t*>(0x3F000000):reinterpret_cast<uint32_t*>(0xFE000000);
-  bcm2835_peripherals_size = 0x01000000; //El tamaño es constante
+  //Identificamos el modelo y asignamos la dirección de la base y su tamaño
+  if(b>0) { //Si es una RPi3...
+    bcm2835_peripherals_base = reinterpret_cast<uint32_t*>(0x3F000000);
+    bcm2835_peripherals_size = 0x01000000;
+  } else { //Si es una RPi4...
+    bcm2835_peripherals_base = reinterpret_cast<uint32_t*>(0xFE000000);
+    bcm2835_peripherals_size = 0x01800000;
+  }
 
   //Para acceder a los registros de los periféricos podemos abrir la
   //interface /dev/gpiomem o /dev/mem
@@ -193,12 +232,11 @@ bool ArduinoBegin() {
   //Abrimos la interface de acceso a los registros de memoria y
   //tomamos su descriptor
   memfd = open("/dev/mem", O_RDWR | O_SYNC);
-  //Si el descriptor no es válido... terminamos con error
-  if(memfd<0) return false;
+  if(memfd<0) return false; //Si el descriptor no es válido... terminamos con error
   //Hemos podido abrir la interface de acceso a memoria
 
   //Mapeamos los registros de los periféricos sobre bcm2835_peripherals
-  bcm2835_peripherals = static_cast<uint32_t*>(mmap(nullptr,bcm2835_peripherals_size,(PROT_READ | PROT_WRITE),MAP_SHARED,memfd,reinterpret_cast<int32_t>(bcm2835_peripherals_base)));
+  bcm2835_peripherals = static_cast<uint32_t*>(mmap(nullptr,bcm2835_peripherals_size,PROT_READ | PROT_WRITE,MAP_SHARED,memfd,reinterpret_cast<int32_t>(bcm2835_peripherals_base)));
   close(memfd); //Ya no necesitamos el acceso a memoria
   //Si no se ha podido mapear... terminamos con error
   if(bcm2835_peripherals == MAP_FAILED) return false;
@@ -813,4 +851,4 @@ static bool _arduinoBeginAnswer=ArduinoBegin();
   }
 #endif
 
-//#endif
+#endif

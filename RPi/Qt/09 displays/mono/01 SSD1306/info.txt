@@ -1,0 +1,13 @@
+Tema: Demostración de gestión de display SSD1306
+Fecha: 20220218
+Autor: Ramón Junquera
+
+Descripción:
+La aplicación consta de un slider horizontal con límites 0 y 100, que al desplazarse
+hace una llamada a método en el que se muestra el valor numérico en un label.
+Al mismo tiempo muestra en el display externo una barra horizontal con el valor numérico
+encima, al igual que en la aplicación.
+
+Importante copiar la carpeta data a la ubicación de compilación.
+Una vez compilado, se puede ejecutar desde la línea de comandos, pero siempre con
+permisos de root, necesarios apra poder acceder a los pines.

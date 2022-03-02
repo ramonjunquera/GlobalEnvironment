@@ -1,6 +1,13 @@
 Tema: Identificación de los componentes del IDE
-Fecha: 20220120
+Fecha: 20220128
 Autor: Ramón Junquera
+
+La disposición de las ventanas de trabajo (layout) es configurable.
+Se cuede cambiar con el desplegable superior derecho (Layout).
+La configuración más cómoda para una pantalla de 16:9 es la de "2 by 3", porque permite ver al mismo tiempo la
+edición de escena (Scene) y la ventana de juego (Game).
+
+A continuación se describen las funcionalidades de algunas de ellas.
 
 Panel Hierarchy (vista de jerarquía).
 Normalmente es el panel superior izquierdo.
@@ -104,9 +111,9 @@ y se compilen todos nuestros scripts.
 
 Panel Inspector.
 Habitualmente es el panel de la derecha.
-Muestra en todo momento los detalles del objeto seleccionado: material, scripts asociados,
+Muestra el conjunto de componentes del GameObject seleccionado: material, scripts asociados,
 posición en escena.
-Permite editar sus parámetros numéricamente.
+Permite editar sus componentes numéricamente.
 
 Panel Project.
 Es la carpeta donde guardaremos los assets, scripts, modelos, animaciones, ...

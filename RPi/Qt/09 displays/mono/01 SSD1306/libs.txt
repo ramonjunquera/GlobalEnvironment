@@ -1,0 +1,14 @@
+Copiar el siguiente listado de librerías directamente en la carpeta de proyecto:
+
+Arduino.h
+FS.h
+Wire.h
+
+RoJoGraph.cpp
+RoJoGraph.h
+RoJoMultiFS.cpp
+RoJoMultiFS.h
+RoJoSprite.cpp
+RoJoSprite.h
+RoJoSSD1306.cpp
+RoJoSSD1306.h

@@ -1,0 +1,92 @@
+Tema: BoxCollider
+Fecha: 20220221
+Autor: Ramón Junquera
+
+Es un componente opcional de un GameObject.
+Crea el perímetro (en 2D) o volumen (3D) que se tendrá en cuenta para detectar colisiones con otros GameObjects.
+Un GameObject sin BoxCollider no tendrá interacciones (no chocará) con otros objetos.
+No tiene relación con el componente RigidBody que aplica físicas automáticas.
+Ambos componentes con complementarios.
+
+Dependiendo de las dimensiones (2D/3D) de nuestro proyecto, aplicaremos BoxCollider o BoxCollider 2D.
+
+Una de las propiedades de BoxCollider es "Edit Collider".
+Se muestra el límite del objeto de colisión en color verde y permite editarlo.
+Habitualmente el objeto de colisión se debería ajustar lo más precisamente posible al perímetro o volumen
+global del GameObject.
+Unity nos permite editarlo y que no sea exáctamente así.
+
+El componente BoxCollider también contiene la propiedad Material (Physic material) al igual que RigidBody.
+El material se definirá teniendo en cuenta estas prioridades:
+  1. BoxCollider
+  2. RigidBody
+  3. PhysicMaterial por defecto
+Si el material está definido en BoxCollider, no se tendrá en cuenta la definición de RigidBody.
+El material de físicas pro defecto se encuentra definido en Edit/Project Settings/Physics o Physics 2D.
+No conviene tocarlos.
+Si tenemos problemas con el comportamiento, es preferible cambiar el modo de juego que estos valores.
+Ejemplo: si la pelota no rebota porque llega muy lenta a la pared, simplemente aumenta su velocidad.
+
+Ejemplo 1.
+Tenemos una escena con un una pelota y un suelo.
+El suelo no se debe mover de posición. No le afectarán las físicas. No le aplicaremos el componente de RigidBody.
+La pelota debe caer por su propio peso. Debe tener físicas. Le aplicamos el RigidBody.
+para que se detecte colisión y la pelota no atraviese el suelo, tanto la pelota como el suelo deben tener
+BoxCollider.
+Si queremos que la pelota rebote sobre el suelo por tiempo infinito, tendremos que crear un PhysicMaterial
+con un Bounciness de 1 y aplicarlo a uno de los dos objetos (pelota o suelo).
+En este caso podemos pensar que es la pelota la que rebota, ya sea chocando contra el suelo o contra cualquier
+otro elemento (porque es de goma). Por lo tanto el PhysicMaterial sebería aplicarse a la pelota.
+
+Nota 1.
+Si llevamos a la práctica el ejemplo anterior, comprobaremos como efectivamente la pelota rebota para siempre.
+Pero aunque hemos puesto como coeficiente de rebote 1, la pelota cada vez bota más alto!!.
+Esto es debido al que el cálculo interno de las posiciones se realiza con valores de coma flotante de poca
+resolución (float). Normalmente no hace falta cálculos con más resolución.
+
+Nota 2.
+Los cálculos de colisiones no son continuos.
+Si un objeto que tiene en su trayectoria otro con el que debe impactar, se desplaza demasiado rápido, puede
+ser que no se detecte el impacto, debido a que los cálculos de posición anterior y posterior no se
+superponían con el otro objeto.
+
+Ejemplo 2.
+Igual que antes, tenemos una pelota y un suelo.
+Esta vez el suelo será afectado por la física. Debe ser estático. No se mueve. No se cae por la gravedad.
+Pero los golpes de la pelota le afectarán y harán cambiar su posición.
+
+La pelota debe tener físicas (RigidBody) y detectar colisiones (BoxCollider).
+Le aplicaremos un PhysicMaterial de rebote infinito (Bounciness=1) a su BoxCollider.
+El suelo será afectado por la física (RigidBody) pero no por la gravedad (no se caerá). Para ello cambiamos
+el parámetro "Gravity Scale" a 0.
+También debe detectar colisiones (BoxCollider).
+Cuando la pelota cae contra un suelo estático y debido al impacto, el suelo comienza a moverse (o rotar
+si el impacto no está centrado).
+El impacto influye mucho sobre el suelo debido a que ambos objetos tienen la misma masa.
+Para ser más realista, deberíamos aumentar la masa del suelo en varios órdenes al de la pelota (RigidBody/Mass).
+
+Varios BoxCollider.
+Podríamos aplicar al mismo GameObject más de un BoxCollider.
+Los editaríamos para que las zonas de afectación no se solapen.
+Podríamos aplicar distintos PhysicMaterial a cada BoxCollider.
+O si gestionamos las colisiones por programación, dependerá de saber con qué parte del objeto ha colisionado, tomaremos
+distintos comportamientos.
+Ejemplo. Sprite 2D representando al personaje con BoxCollider para la cabeza y otro para el cuerpo.
+Cuando colisiona con otro GameObject que le hace daño, le afectará a la cabeza o al cuerpo.
+
+BoxCollider con colisiones por programación.
+Podemos definir nosotros el comportamientos tras una colisión.
+Por ejemplo:
+- Una pelota que entra en una portería provoca el final de un punto de partida.
+- Una bala que impacta en un objeto debe provocar el daño y desaparecer.
+Para esto debemos hacer varias cosas...
+- Activar el check "Is Trigger" en el BoxCoolider del GameObject
+- Asociar un Script al GamaObject
+- Que el Script contenga el método: void OnTriggerEnter2D(Collider2D collision)
+Cuando se detecte una colisión, se llamará a este método, pasando como parámetro el GameObject contra el que ha chocado.
+Así podremos identificarlo y tomar las acciones adecuadas.
+Ejemplo: no es lo mismo que una pelota choque contra un borde del terreno de juego, que entre en una portería.
+El objeto lo podemos identificar por nombre con collision.gameObject.name.
+
+
+

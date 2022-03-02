@@ -1,0 +1,30 @@
+Tema: Descripción de PCA9685
+Fecha: 20220216
+Autor: Ramón Junquera
+
+PCA9685 es una placa para la gestión de PWM.
+Se controla a través del protocolo I2C.
+Es capaz de gestionar hasta 16 canales con una resolución de 12 bits (2^12=4096 niveles).
+Se puede ajustar la frecuencia desde 24Hz hasta 1526Hz.
+Es totalmente autónomo. No es como la familia TLC59xx que requiere una señal de reloj externa para regular la frecuencia.
+El reloj es interno.
+Permite una fuente de alimentación externa para los leds/motores con un voltaje entre 2.3V y 5.5V
+Permite encadenar hasta un máximo de 62 módulos PCA9685, obteniendo 64*16=1024 salidas PWM.
+El encadenamiento es simplemente conectar los varios módulos al mismo bus I2C.
+Para ello cada módulo debe tener una dirección distinta.
+Por defecto la dirección es 0x40, pero soldando los jumperse A0 al A5 sobre la placa podemos cambiar su id.
+Los jumpers corresponden a un sistema binario con los siguientes valores:
+
+  jumper valor
+  ------ -----
+    A0     1
+    A1     2
+    A2     4
+    A3     8
+    A4    16
+    A5    32
+
+Ejemplo. Soldando el jumper A2, la dirección I2C pasará a ser la 0x40+4=0x44
+
+En el caso de utilizar servomotores, es muy conveniente alimentar el módulo externamente porque consumen mucho más que los led.
+En este caso cada servomotor debe tomar la alimentación y control de los 3 pines de cada canal en el módulo.
