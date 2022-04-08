@@ -1,7 +1,6 @@
 Copiar el siguiente listado de librerías directamente en la carpeta de proyecto:
 
 Arduino.h
-FS.h
 Wire.h
 
 RoJoVL53L1X.cpp

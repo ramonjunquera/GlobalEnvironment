@@ -1,0 +1,75 @@
+Tema: Cómo arrancar ejecutar un script que no tiene interface gráfica al arrancar.
+Fecha: 20220324
+Autor: Ramón Junquera
+
+Pasos a seguir para crear un script que se ejecuta en el arranque. Incluso antes de abrir la
+sesión gráfica. Por lo tanto, no es un buen método para aplicar configuraciones de vídeo.
+
+Normalmente los scripts de arranque se guardan en la carpeta:
+  /etc/init.d
+
+Ejemplo de creación de un script que activa el uso de dos monitores
+con escritorio extendido.
+Lo llamaremos test-init.
+
+Lanzamos el editor para que cree el script:
+  sudo nano /etc/init.d/test-init
+En su interior copiamos el siguiente texto (sin la primera y última línea):
+------inicio del script------
+#! /bin/sh
+# /etc/init.d/test-init
+ 
+### BEGIN INIT INFO
+# Provides:          test-init
+# Required-Start:    $all
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Script de ejemplo para aranque automático
+# Description:       Creación de script que se ejecuta al arrancar
+### END INIT INFO
+ 
+ 
+# Dependiendo de los parámetros que se le pasen al programa se usa una opción u otra
+case "$1" in
+ start)
+   echo "Arrancando test-init"
+   # Aquí hay que poner el programa que quieras arrancar automáticamente
+   # Ejemplo:
+   # /usr/local/bin/NombreDelScript
+   ;;
+ stop)
+   echo "Deteniendo test-init"
+   # Si necesita acciones para finalizarlo, se escriben aquí
+   # Ejemplo: se deben cerrar todas las instancias en ejecución de un proceso...
+   # killall NombreDelScript
+   ;;
+ *)
+   echo "Modo de uso: /etc/init.d/test-init {start|stop}"
+   exit 1
+   ;;
+esac
+ 
+exit 0
+------fin del script------
+Guardamos con CTRL+O
+Salimos con CTRL+X
+Hacemos el script ejecutable con:
+  sudo chmod +x /etc/init.d/test-init
+Verificamos que funciona con:
+  sudo /etc/init.d/test-init start
+Activamos el arranque automático con:
+  sudo update-rc.d test-init defaults
+
+
+
+Cómo eliminar una entrada de la lista de script que se ejecutan al arrancar.
+Siguiendo el mismo ejemplo...
+Eliminamos la entrada de la lista:
+  sudo update-rc.d -f test-init remove
+Eliminamos el archivo del script:
+  sudo rm /etc/init.d/test-init
+
+
+
+

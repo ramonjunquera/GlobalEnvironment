@@ -1,0 +1,41 @@
+Montar una unidad virtual en memoria
+Fecha: 20210328
+Autor: Ramón Junquera
+
+Creamos una carpeta en el lugar donde montaremos la unidad:
+  mkdir /home/pi/ramdisk
+Creamos y montamos la unidad con 1Gb de memoria:
+  sudo mount -t tmpfs none /home/pi/ramdisk -o size=1024M
+
+Si además queremos que se monte automáticamente cuando inicie el sistema,
+modificaremos el archivo fstab:
+  Linux:
+    sudo nano /etc/fstab
+  Ubuntu:
+    sudo gedit /etc/fstab
+  Raspbian:
+    sudo mousepad /etc/fstab
+  Ubuntu Mate
+    sudo pluma /etc/fstab
+
+Nota: en Raspbian conectador por RDP no podemos utilizar mousepad porque no tenemos conectada un
+display real. En este caso particular, utilizar nano.
+
+Al final del archivo añadiremos la siguiente entrada:
+  tmpfs /home/pi/ramdisk tmpfs nodev,nosuid,size=1024M 0 0
+Salvamos y salimos
+
+A partir de ahora al arrancar se montará automáticamente el ramdisk.
+Si no queremos esperar al arranque podemos forzar el montado con:
+  mount -a
+
+Cuando es disco esté montado, veremos su icono en el escritorio, como cualquier otra unidad
+montada (memoria o discos USB).
+
+Podemos comprobar que efectivamente tenemos el disco montado con:
+  sudo df -h
+
+
+Notas:
+- En contenido de esta unidad se perderá cada vez qeu se apage la Raspberry.
+- El acceso de lectura/escritura será mucho más rápido que el de la SD.

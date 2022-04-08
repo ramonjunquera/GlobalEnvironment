@@ -1,5 +1,5 @@
 Tema: Preparación de una SD para instalar sistema operativo en Raspberry Pi
-Fecha: 20210110
+Fecha: 20220318
 
 Necesitaremos una SD de al menos 4Gb.
 
@@ -23,4 +23,7 @@ Nota:
 - La versión de escritorio de Ubuntu (y derivados como Mate, kUbuntu o lUbuntu), no está
   recomendada para RPi3 debido a que sólo tiene 1Gb de RAM. Esto es insuficiente y dedica
   demasiado tiempo a hacer swap con la SD. Demasiado lento.
+- La primera vez que arranca, no está actualizada. Le suelen faltar los drivers gráficos de
+  resoluciones atípicas, como las de los monitores ultrapanorámicos. La solución es utilziar
+  un monitor de proporciones normales y actualizar. Después de podrá conectar a cualquier monitor.
 

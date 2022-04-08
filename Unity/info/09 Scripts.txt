@@ -1,5 +1,5 @@
 Tema: Scripts
-Fecha: 20220228
+Fecha: 20220316
 Autor: Ramón Junquera
 
 Es el código de programa que gestiona el juego.
@@ -7,7 +7,7 @@ Se escribe en C#.
 Es conveniente crear una estructura de carpetas para guardar los Scripts. Nos facilitará su
 clasificación y búsqueda.
 
-Conviene utilziar Visual Studio 2019 para su edición, por las ayudas contextuales que contiene.
+Conviene utilizar Visual Studio 2019 para su edición, por las ayudas contextuales que contiene.
 Realmente no es Visual Studio el que finalmente compila. Sólo se utiliza como editor.
 Al salvar el código, Unity HUB detecta los cambios y recompila automáticamente.
 
@@ -23,3 +23,10 @@ Si no vamos a utilizar alguno de los métodos por defecto, conviene borrarlo.
 
 Nota:
 Es conveniente evitar el uso de espacios en los nombres de los Scripts
+
+Variables públicas
+- Las variables que etiquetemos como públicas serán accesibles tanto desde otros Scripts como desde el UI,
+  para lectura y escritura. Ej: public int a;
+- Podemos asignarles un valor por defecto, que será sobreescrito por el posible valor que se le asigne por UI.
+- Si queremos que la variable sea modificable desde el UI pero no desde otros Scripts la etiquetaremos como
+  [SerializeField]. Ej: [SerializeField] float jumpForce;

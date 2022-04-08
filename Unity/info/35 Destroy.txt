@@ -1,0 +1,8 @@
+Tema: Destroy
+Fecha: 20220324
+Autor: Ramón Junquera
+
+Es el comando inverso a Instantiate.
+Permite destruir un GameObject.
+Ejemplo: desde un script, destruye el GameObject aosciado al Script:
+  Destroy(gameObject);

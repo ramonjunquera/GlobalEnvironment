@@ -1,0 +1,54 @@
+Tema: CloseEvent
+Fecha: 20220329
+Autor: Ramón Junquera
+
+En Qt, el objeto que gestiona las ventanas es QMainWindow.
+Para nuestra aplicación habitualmente creamos una nueva clase llamada MainWindow heredada
+de QMainWindow, a la que añadimos los distintos componentes y la adaptamos a nuestras
+necesidades.
+
+La clase QMainWindow no incluye por defecto el evento de cerrar ventana.
+Si lo necesitamos, podemos incluirlo manualmente de la siguiente manera...
+
+En el archivo de cabecera, añadiremos en la sección protected: el método que gestionará
+el evento de cierre, de la siguiente manera:
+  protected:
+    void closeEvent(QCloseEvent *event) override; //Gestión del evento Close
+
+En el archivo .cpp debemos crear este método:
+  //Gestión de evento Close
+  void MainWindow::closeEvent(QCloseEvent *event) {
+    //Incluimos el código necesario que queremos ejecutar justo antes del cerrado de la ventana. Por ejemplo:
+    //if(vWidget!=nullptr) vWidget->close(); //Si existe el Widget de video...lo cerramos. El evento de cerrado se encarga de liberarlo
+    QMainWindow::closeEvent(event); //Se lanza el evento de cerrado
+  }
+
+La solución no es idéntica si nuestra ventana está basada en la clase QVideoWidget.
+En estos casos simplemente instanciamos un nuevo objeto, definimos sus propiedades y solicitamos que se muestre.
+No creamos una clase nueva heredade de QVideoWidget.
+Pero si queremos que también incluya el evento de cerrado, tendremos que hacerlo.
+La manera más sencilla es aprovechar el archivo de cabecera donde creamos la clase derivada de QMainWindow y antes de su
+definición, incluimos una nueva.
+  //QVideoWidget no es capaz de detectar cuando se cierra su ventana porque le falta el evento Close
+  //Crearemos una nueva clase llamada QVideoWidgetClose derivada de QVideoWidget con este evento
+  //También le incluiremos un Signal llamado closed que se llamará cuando se cierre la ventada
+  //Esto nos permitirá hacer un connect al Signal closed y definir acciones cuando ocurra
+  class QVideoWidgetClose:public QVideoWidget {
+    Q_OBJECT
+  protected:
+    //Gestión del evento Close
+    void closeEvent(QCloseEvent *event) override {
+      QVideoWidget::closeEvent(event); //Se lanza el evento de cerrado del objeto padre
+      closed(); //Generamos Signal closed
+    }
+  Q_SIGNALS:
+    void closed(QObject * = nullptr);
+  };
+Ahora desde el programa principal crearemos una nueva instancia de nuestra nueva clase:
+  QVideoWidgetClose *vWidget;
+  vWidget=new QVideoWidgetClose;
+A continuación definicmos qué ocurrirá cuando se detecte la señal de closed, con una función lambda:
+  connWidgetClose=connect(vWidget,&QVideoWidgetClose::closed,[&]() { //Cuando se cierre el Widget de video...
+    //Incluimos el código necesario. Por ejemplo:
+    //ui->pushButtonPlay->setChecked(false); //Soltamos el botón Play
+  });

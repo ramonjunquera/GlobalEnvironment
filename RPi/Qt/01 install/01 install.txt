@@ -1,7 +1,6 @@
 Tema: Instalación de Qt5 en Linux
-Fecha: 20220301
+Fecha: 20220318
 Autor: Ramón Junquera
-
 
 Para Raspberry Pi.
 No existe un paquete descargable desde la página oficial de Qt que esté compilado para ARM.
@@ -9,16 +8,14 @@ Pero sí tenemos uno preparado para descargar desde los repositorios de Raspberry
 
 Desde una sesión de Terminal ejecutamos:
   sudo apt-get install qt5-default
+    Nota. En las últimas versiones ya no está disponible. Se puede instalar su contenido
+    manualmente así:
+      sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
   sudo apt-get install qtcreator
-Para comprobar la versión instalada ejecutamos:
-  apt-cache show qt5-default
-En la información mostrada, localizamos la tercera línea.
-A fecha actual es:
-  Version: 5.11.3+dfsg1-1+rpi1+deb10u4
-También hemos instalado qtcreator. La versión la obtenemos ejecutando:
+Podemos comprobar la versión instalada de qtcreator con:
   apt-cache show qtcreator
-A fecha actual, la segunda línea muestra:
-  Version: 4.8.2-1
+A fecha actual es la:
+  Version: 4.14.1-1
 
 Si tenemos intención de utilizar el módulo de multimedia, para crear aplicaciones
 que reproduzcan audios o videos, además hay que añadir las siguientes librerías:

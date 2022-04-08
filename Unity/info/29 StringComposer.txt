@@ -1,0 +1,17 @@
+Tema: StringComposer
+Fecha: 20220316
+Autor: Ramón Junquera
+
+Aunque C# admite la creación de String como la suma de varios, no es la forma más óptima.
+Se debería utilizar el comando $.
+
+Ejemplo:
+  Antes:  string levelStr="Nivel"+levelVal.ToString();
+  Ahora:  string levelStr=$"Nivel{levelVal}";
+
+En la cadena, se sustituirá el contenido de {} por el valor indicado
+
+
+Notas sobre strings:
+- En concatenaciones de strings con valores numéricos, no es obligatorio añadir la función .toString() al final
+  de cada número para que todos los componentes de la concatenación sean de tipo string. Lo asume automáticamente.

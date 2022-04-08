@@ -1,0 +1,25 @@
+Tema: Cómo arrancar ejecutar un script que tiene interface gráfica al arrancar.
+Fecha: 20220324
+Autor: Ramón Junquera
+
+Crearemos un icono de escritorio en una carpeta especial...
+
+Necesitamos tener una carpeta llamada autostart por debajo de /home/pi/.config
+Si no existe, la creamos con:
+  mkdir /home/pi/.config/autostart
+Dentro crearemos un archivo de icono de escritorio. Lo editamos con nano:
+  nano /home/pi/.config/autostart/clock.desktop
+Dentro copiamos el siguiente texto:
+[Desktop Entry]
+Type=Application
+Name=Clock
+Exec=/home/pi/clock.sh
+
+Guardamos con CTRL+O
+Salimos con CTRL+X
+
+El icono de escritorio ejecuta la aplicación /home/pi/clock.sh
+
+Todos los iconos de escritorio que se encuentren en la carpeta autostart serán ejecutados una vez que
+se haya completado totalmente el arranque del sistema. Incluido el entorno gráfico.
+

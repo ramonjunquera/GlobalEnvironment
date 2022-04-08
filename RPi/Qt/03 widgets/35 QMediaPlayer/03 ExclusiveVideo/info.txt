@@ -1,0 +1,41 @@
+Tema: Reproducción de video en ventana exclusiva
+Fecha: 20220308
+Autor: Ramón Junquera
+
+En ejemplos anteriores hemos visto cómo podemos insertar el Widget de video en un
+Layout vacío de una aplicación, para que se integre con el resto de objetos
+gráficos.
+Esto no siempre es necesario.
+Simplificaremos el ejemplo al máximo y mostraremos el Widget de video en su propia
+ventana.
+
+El Widget reproducirá una lista compuesta por 2 videos en modo loop.
+
+Comenzamos creando en QtCreator un proyecto de "Qt Widgets Application".
+El proyecto lo podemos basar en la clase gráfica que queramos (QDialog, QWidget, QMainWindow)
+porque finalmente no utilizaremos la ventana creada por defecto.
+Para este ejemplo hemos seleccionado QDialog como BaseClass.
+
+Editamos el archivo .pro y añadimos a la línea Qt las librerías de reproducción multimedia.
+  QT       += core gui multimedia multimediawidgets
+
+Para este ejemplo sólo utilizaremos el archivo main.cpp.
+Así que eliminamos los archivos de la ventana dialog: dialog.cpp, dialog.h & dialog.ui
+
+Abrimos main.cpp y lo editamos.
+
+Eliminamos las referencias de dialog:
+- El include #include "dialog.h"
+- La creación de la instancia de Dialog: Dialog w;
+- La llamada el método Show: w.show();
+
+Añadimos los includes
+#include <QDir> //Para obtener la carpeta del ejecutable
+#include <QMediaPlayer> //Reproductor multimedia
+#include <QVideoWidget> //Widget que muestra el video
+#include <QDesktopWidget> //Para obtener el tamaño de pantalla
+#include <QMediaPlaylist> //Para listas de reproducción
+
+Ya tenemos la aplicación limpia.
+Después de la inicialización de la aplicación (QApplication a(argc, argv), añadimos el código
+que ya está comentado.

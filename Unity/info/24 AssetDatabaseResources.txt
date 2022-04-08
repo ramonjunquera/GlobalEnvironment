@@ -1,0 +1,33 @@
+Tema: AssestDatabase vs Resources
+Fecha: 20220308
+Autor: Ramón Junquera
+
+La colección de GameObjects que Unity nos ofrece a la hora de editar, no está disponible en entorno
+productivo (cuando compilamos y convertimos el juego en un ejecutable), para poder ser gestionado desde
+código.
+Por ejemplo, la manera de obtener la referencia de un Prefab en el entorno de desarrollo no puede ser utilizada
+en producción. Porque la base de datos de Assests no está disponible.
+La solución a este problema es crear una carpeta de recursor (Resources) en la que guardaremos una copia
+de todos los GameObjects que queramos tener a nuestra disposición en producción.
+El mayor inconveniente es acordarse de hacer la copia al finalizar el desarrollo.
+
+Cómo podemos automatizar la obtención de un objeto en desarrollo y producción?
+A través de condicionales en las directivas del compilador.
+Este es un ejemplo:
+    GameObject pfGrass;
+#if DEBUG //Si estamos en el editor...
+    pfGrass = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Grass.prefab");
+#else //Si estamos en productivo...
+    pfGrass = Resources.Load<GameObject>("Prefabs/Grass");
+#endif
+
+Dónde está la carpeta Resources?
+Incialmente no está. Debe ser creada manualmente bajo la carpeta Assests.
+
+Cómo hago una copia de los Assests a Resources?
+Seleccionado carpetas completas y arrastrando a Resources con el CTRL.
+Es importante que la estructura de Resources sea la misma que bajo Assests
+
+Dónde debo obtener los objetos de los Prefabs?
+Al principio. O en la función Start o en la Awake. Lo haremos una sóla vez. Leeremos los objetos del disco
+y los cargaremos en memoria para poder instanciarlos sin perder más tiempo.

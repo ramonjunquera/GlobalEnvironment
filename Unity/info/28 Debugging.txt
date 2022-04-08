@@ -1,0 +1,18 @@
+Tema: Debugging
+Fecha: 20220312
+Autor: Ramón Junquera
+
+Visual Studio ofrece todas sus capacidades de debugging en los Scripts de Unity.
+
+Para que un breakpoint thenga efecto, no sólo es suficiente con insertarlo.
+Desde Visual Studio es necesario ejecutarlo!. Pulsando el botón de play que ahora tiene el texto "Asociar a Unity".
+El código comienza su ejecución porque vemos como se activan los botones de pause y stop.
+En ese momento regresamos a Unity y ejecutamos.
+Al llegar al breakpoint se recupera automáticamente el VisualStudio.
+
+Los controles son los típicos:
+  F5 para continuar la ejecución hasta el siguiente breakpoint
+  F10 ejecución paso a paso, pero sin entrar en la depuración de los procedimientos (lo habitual)
+  F11 ejecución paso a paso entrando en la depuración de cada función llamada
+
+En cualquier momento de la depuración podemos situar el puntero sobre un objeto o variable y se mostrará su valor.

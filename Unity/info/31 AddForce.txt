@@ -1,0 +1,15 @@
+Tema: Addforce
+Fecha: 20220321
+Autor: Ramón Junquera
+
+Asignación de una fuerza puntual a un RigidBody
+  rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+Explicación:
+- rb es una variable en la que previamente hemos guardado el RigidBody del GameObject sobre el que aplicaremos la fuerza
+- AddForce Método que añade una fuerza al RigidBody. Tiene dos parámetros
+  - fuerza Es un vector
+  - modo Es el tipo de fuerza que se hace. Tenemos varios tipos:
+    - ForceMode2D.Force Añade una fuerza
+    - ForceMode2D.Impulse Añade un impulso/golpe/fuerza instantánea (para un sólo frame)
+- new Vector2(0, jumpForce) Se crea un vector vertical con módulo jumpForce
+- ForceMode2D.Impulse Indicamos el tipo de fuerza aplicada

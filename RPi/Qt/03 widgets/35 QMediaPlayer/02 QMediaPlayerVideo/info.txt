@@ -1,0 +1,55 @@
+Tema: Ejemplo de clase QMediaPlayer con video
+Fecha: 20220305
+Autor: Ramón Junquera
+
+Tomaremos como base el ejemplo de QMediaPlayerAudio.
+
+En el archivo de proyecto (QMediaPlayerTest.pro) añadiremos el módulo multimediawidgets
+a la ínea de QT. Quedando así:
+  QT       += core gui multimedia multimediawidgets
+
+En el archivo de cabecera (mainwindow.h), añadimos una nueva librería:
+  #include <QVideoWidget>
+En el mismo archivo, en la sección privada, añadimos un nuevo puntero a un
+objeto QVideoWidget de nombre mVideoWidget:
+  QVideoWidget *mVideoWidget;
+En el cpp (mainwindow.cpp). En el constructor, creamos una instancia en ese puntero:
+  mVideoWidget=new QVideoWidget;
+A continuación indicamos al reproductor (QMediaPlayer) que debe generar el video decodificado
+a través del Widget que hemos credo (QVideoWidget):
+  mMediaPlayer->setVideoOutput(mVideoWidget);
+
+Ahora sólo nos queda indicarle al entorno gráfico (ui) que debe mostrar un nuevo Widget.
+El problema es que el los Widets de tipo VideoWidget, no aparecen por defecto en el listado
+de objetos gráficos.
+Por lo tanto, lo tendremos que añadir por código.
+
+Para hacer más sencilla esta inserción, prepararemos adecuadamente la parte gráfica.
+Pasamos al editor gráfico (mainwindow.ui).
+Tenemos del ejercicio anterior un centralWidget en formato de Layout vertical.
+Que contiene un Layout vertical, que a su vez contiene todos los controles de reproducción.
+Lo ideal es que el video reproducido se muestre en la parte superior de la ventana y los
+controles queden abajo.
+Para ello, crearemos un nuevo Layout vertical vacío que situaremos en la parte superior.
+Arrantramos un nuevo Layout vertical que inicial mente quedará debajo del existente.
+En la representación gráfica lo movemos a la parte superior.
+Para poder reconocerlo desde el código, le daremos un nombre. En este caso es vL1.
+
+Regresamos al código de mainwindow.cpp y continuamos dende lo habíamos dejado.
+Incluiremos el Widget de video en el Layout vertical vacío que acabamos de crear:
+  ui->vL1->addWidget(mVideoWidget);
+
+La ventaja de añadir el Widget de video de esta manera es que se respetarán todos los
+objetos y reglas de redimensionamiento.
+
+El resto de código queda igual, porque no cambiamos la funcionalidad de los botones.
+
+Nota:
+He detectado problemas para reproducir videos comprimidos con H.264 (cualquier versión) y
+con H.265-12bits.
+Los formatos que sí funcionan son:
+- H.265-Normal (Ok)
+- H.265-10bits (El proceso de descompresión es más pesado y puede dar saltos)
+
+
+

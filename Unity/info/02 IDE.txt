@@ -1,5 +1,5 @@
 Tema: Identificación de los componentes del IDE
-Fecha: 20220128
+Fecha: 20220307
 Autor: Ramón Junquera
 
 La disposición de las ventanas de trabajo (layout) es configurable.
@@ -22,6 +22,8 @@ Se muestran los objetos de la escena.
 Inicialmente sólo tenemos una cámara.
 Si añadimos algún otro objeto a la escena podremos camprobar su funcionamiento más fácilmente.
 Habitualmente trabajaremos en este panel para posicionar lo objetos.
+El botón 2D permite cambiar el modo de edición entre 2D y 3D.
+
 Justo debajo de la barra de menú tenemos una barra de iconos de herramientas para trabajar con la escena:
 - Hand Tool: Desplazamiento de la visualización de la escena
 - Move Tool: Cambia la posición de los objetos seleccionados
@@ -33,14 +35,13 @@ Justo debajo de la barra de menú tenemos una barra de iconos de herramientas pa
 - ...
 
 Para movernos por la escena seleccionamos "Hand Tool".
-Con el ratón usamos click izquierdo y arrastrar para mover la escena en los ejes horizontal/x
-y vertical/y.
-Si estamos utilizando otra herramientas y necesitamos movernos, podemos pulsar la tecla AltGr
-y automáticamente se seleccionará esta herramienta temporalmente.
 
-Para cambiar la dirección de la vista de la escena teniendo como centro de rotación
-nuestra posición, mantenemos pulsada la tecla Alt, hacemos click y arrastramos.
-Es como mirar en otra dirección sin movernos.
+Con el ratón usamos click derecho y arrastrar para mover la dirección en la que miramos.
+
+Click con el botón central y arrastar, nos deplaza en la dirección del arrastre.
+
+Alt + botón izquierdo nos permite rotar la escena entera tomando como centro el objeto
+seleccionado.
 
 Para acercarnos/alejarnos en la dirección en la que estamos viendo la escena (zoom).
 Utilizamos la rueda del ratón.

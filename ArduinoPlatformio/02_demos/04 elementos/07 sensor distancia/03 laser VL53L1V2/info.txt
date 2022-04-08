@@ -1,5 +1,5 @@
 Tema: Sensor de distancia por láser (LIDAR) VL53L1X
-Fecha: 20210730
+Fecha: 20220326
 Autor: Ramón Junquera
 
 Características:
@@ -47,3 +47,12 @@ Pinout:
 Funcionamiento:
   Como cualquier otro sistema de medida, se calcula la distancia teniendo en cuenta el tiempo que tarda un pulso
   desde que se emite hasta que se recibe su eco.
+
+Nota importante!
+Si se utiliza un circuito con varios sensores, es importante tener en cuenta que no deberíamos configurarlos para que tomen
+medidas continuamente de manera automática.
+Todos los sensores son iguales.
+La señal que produce un sensor puede llegar a otro y éste la confundirá como señal propia.
+Ni siquiera es conveniente activer el muestreo automatico cuando no tienen visión directa. Los rebotes también afectan.
+En estos casos se debe desconectar el muestreo automático (sensor.stopContinuous();) y sólo tomaremos muestras únicas
+(sensor.readSingle()).

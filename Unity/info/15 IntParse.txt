@@ -1,0 +1,7 @@
+Tema: IntParse
+Fecha: 20220228
+Autor: Ramón Junquera
+
+Convertir un String en un Int:
+  string s = "13";
+  int a = Int.Parse(s);

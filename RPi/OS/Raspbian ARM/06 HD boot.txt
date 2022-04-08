@@ -1,0 +1,142 @@
+Cómo arrancar Raspberry Pi desde un disco duro USB (o pen drive).
+
+Raspberry Pi sólo es capaz de arrancar desde una micro SD insertada en el lector de la placa.
+Lo que sí podemos hacer es indicar que como particiónes de sistema y swap, utilice las que
+se encuentran en un disco duro USB o pen drive.
+Lo que haremos será crear una microSD limpia y despues copiar la partición de sistema, íntegra
+al disco duro.
+Por lo tanto, el disco duro (o pen drive) deberá tener al menos el tamaño de la microSD.
+
+Aunque no tenemos limitaciones para crear particiones en un disco duro, optaremos por la
+configuración más simple: una partición de swap y otra para el sistema.
+Esto ocupará el total del disco duro.
+
+Seguiremos estos pasos:
+1. Instalar un sistema operativo limpio en la SD
+2. Conectar el disco duro
+3. Preparar particiones y formatearlas en el disco duro
+4. Copiar el sistema operativo de la SD al disco duro
+5. Modificar el arranque para use el disco duro
+
+1. Instalar un sistema operativo limpio en la SD
+La instalación de un sistema operativo desde cero está explicada en la documentación de RPi.
+Una vez completada, no actualizaremos nada. Lo haremos cuando hayamos terminado el proceso.
+Así la actualización se hará sobre el disco duro.
+
+2. Conectar el disco duro
+Conectamos el disco duro externo a un puerto USB.
+Raspberry Pi no tiene suficiente energía como para alimentar por sí sólo un disco duro externo.
+Necesitamos uno con alimentación propia. Si no puede ser, también podemos utilizar un hub usb
+con alimentación.
+
+3. Preparar particiones y formatearlas en el disco duro
+Primero identificaremos los dispositivos de la microSD y del disco duro.
+  Escribimos: sudo fdisk -l
+  Se mostrarán en pantalla todas las particiones de todos los dispositivos de almacenamiento.
+  Incluida la memoria RAM.
+  Teniendo en cuenta el tamaño, podemos identificar la microSD como /dev/mmcblk0 y el
+  disco duro como /dev/sda.
+Eliminamos todas las particiones existentes en el disco duro
+  Gestionamos las particiones del disco duro escribiendo: sudo fdisk /dev/sda
+  El comando p muestra todas las particiones actuales.
+  El comando d las elimina de una en una.
+  Debemos eliminar todas
+Creación de nuevas particiones
+  Crearemos 2 particiones en el disco duro:
+    1 : swap
+    2 : sistema
+  Creamos la partición de swap
+    Utilizamos el comando n para crear una nueva partición
+    Será una partición primaria (p)
+    Le asignaremos el número 1
+    Aceptaremos el sector de inicio propuesto.
+    Como sector de fin seleccionaremos +2G
+    Teniendo en cuenta que Raspberry Pi sólo tiene 1Gb de RAM, una partición de 2Gb es
+    más que suficiente
+  Creamos la partición de sistema
+    Utilizamos el comando n para crear una nueva partición
+    Será una partición primaria (p)
+    Le asignaremos el número 2
+    Aceptaremos el sector de inicio propuesto.
+    Aceptaremos el sector de fin propuesto
+Comprobación y escritura
+  Con el comando p comprobaremos que efectívamente hemos creado bien las 2 particiones.
+  Usamos el comando w para escribir los cambios en el disco duro.
+  Esto nos hace salir de fdisk y nos devuelve a la línea de comandos.
+  Si aparece un mensaje indicando que el kernel aun mantiene la distribución de particiones
+    antigua y que debemos reiniciar para que tome la nueva, le hacemos caso. Reiniciamos.
+    Podemos hacerlo directamente desde la línea de comandos con: sudo reboot
+    Tras el arranque, abrimos de nuevo una sesión de terminal y continuamos.
+Formateamos las particiones
+  Formateamos la partición de swap con: sudo mkswap /dev/sda1
+  La partición de sistema no la formateamos, porque la copiaremos íntegramente de la SD
+
+4. Copiar partición de sistema desde microSD a disco duro
+Primero necesitamos identificar el nombre del volumen de sistema de la microSD.
+Para ello mostramos en pantalla el contenido del archivo cmdline.txt escribiendo:
+  cat /boot/cmdline.txt
+Podremos localizar el texto "root=". Tomaremos nota de lo que esté escrito a continuación.
+En mi caso es "/dev/mmcblk0p7". Mi volumen de sistema es mmcblk0p7.
+En el resto del ejemplo se utilizará esta referencia. Si no es el caso, deberá ser sustituida
+donde corresponda.
+Copiamos el volumen de sistema de la microSD al disco duro con:
+  sudo dd if=/dev/mmcblk0p7 of=/dev/sda1 bs=32M conv=noerror,sync
+Dependiendo del tamaño de la partición, de la velocidad de lectura de la microSD y de la
+velocidad de escritura del disco duro puede tardar unos minutos.
+Comprobamos si hay errores en la partición copiada con: sudo e2fsck -f /dev/sda2
+Si se detectan errores se indica y se pregunta si se quieren corregir. Si es el caso,
+aceptaremos cualquier corrección.
+Ampliamos el volumen copiado para que ocupe el total de la partición definida con:
+  sudo resize2fs /dev/sda2
+
+5. Modificar el arranque para use el disco duro
+Para poder restaurar la configuración de la microSD en cualquier momento, haremos una copia de
+seguridad de la configuración actual con:
+  sudo cp /boot/cmdline.txt /boot/cmdline.old
+Editamos el archivo cmdline.txt con:
+  sudo nano /boot/cmdline.txt
+Como antes, localizamos el texto "root=" y sustituimos el volumen original (/dev/mmcblk0p7)
+por el creado en el disco duro (/dev/sda2).
+Para guardar la modificaciones pulsamos CTRL+O. Nos preguntará si lo guarda en el mismo archivo.
+Aceptamos pulsando enter.
+Para salir pulsamos CTRL+X
+Cambiaremos la configuración de montaje de los volúmenes. Esto se encuentra en el volumen de
+sistema del disco duro. Ahora mismo no tenemos acceso porque no está montada. Lo hacemos con:
+  sudo mount /dev/sda2 /mnt
+Editamos el archivo de configuración de montajes automáticos con:
+  sudo nano /mnt/etc/fstab
+Encontraremos de nuevo la referencia al volumen actual de sistema (/dev/mmcblk0p7) y debemos 
+reemplazarlo por el nuevo (/dev/sda2).
+Además añadiremos una nueva línea para que se tengan en cuenta la nueva partición de swap:
+  /dev/sda1       none         swap        sw          0         0
+Guardamos (CTRL+O) y salimos (CTRL+X).
+Finalmente nos aseguramos que no quede nada en los bufers de escritura con: sync
+Y reiniciamos con: sudo reboot
+
+
+Crear una partición de trabajo
+Si queremos crear más particiones, como una partición de trabajo adicional, debemos tener en
+cuenta aparte de crearla, también se debe formatear antes de usarla.
+En este caso podríamos crear la siguiente configuración:
+  1 : swap
+  2 : sistema
+  3 : trabajo
+Debemos decidir qué tamaño le damos a la partición de sistema.
+Al menos la misma que tiene en la microSD.
+La partición de trabajo ocupará el resto del disco duro.
+Formateamos la partición de trabajo (puede tardar unos segundos) con: sudo mkfs.ext4 /dev/sda3
+Para montar la partición de trabajo se debe crear una carpeta.
+Por ejemplo en /home/pi con: sudo mkdir /home/pi/wrk
+Editamos el archivo de configuración de montajes automáticos con:
+  sudo nano /mnt/etc/fstab
+Añadiremos una nuevas línea para que se monte al inicio:
+  /dev/sda3       /home/pi/wrk ext4        defaults    0         0
+Nos aseguramos que no quede nada en los bufers de escritura con: sync
+Y reiniciamos con: sudo reboot
+
+
+
+
+
+
+

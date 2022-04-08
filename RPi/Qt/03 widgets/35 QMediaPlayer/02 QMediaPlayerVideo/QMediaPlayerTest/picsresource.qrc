@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/pics">
+        <file>pics/6794456_audio_multimedia_music_sound_speaker_icon.png</file>
+        <file>pics/6794458_media_multimedia_music_play_player_icon.png</file>
+        <file>pics/6794465_audio_media_multimedia_music_pause_icon.png</file>
+        <file>pics/6794469_document_file_folder_multimedia_music_icon.png</file>
+        <file>pics/6794470_audio_media_multimedia_music_mute_icon.png</file>
+        <file>pics/6794471_media_multimedia_music_player_stop_icon.png</file>
+    </qresource>
+</RCC>

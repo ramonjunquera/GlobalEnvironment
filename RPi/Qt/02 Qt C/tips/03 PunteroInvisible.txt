@@ -1,0 +1,10 @@
+Tema: PunteroInvisible
+Fecha: 20220329
+Autor: Ramón Junquera
+
+Cuando utilizamos el objeto QVideoWidget a pantalla completa, es probable que no nos interese que el puntero
+del ratón quede visible sobre la reproducción de video.
+Para evitarlo se puede hacer lo mismo que haríamos con cualquier otra ventana desde el editor gráfico:
+seleccionar un icono de ratón vacío cuando el puntero pase sobre la ventana.
+Con QVideoWidget no tenemos editor gráfico, lo hacemos por código así:
+  vWidget->setCursor(Qt::BlankCursor); //Ocultamos el puntero del ratón cuando pase sobre el Widget

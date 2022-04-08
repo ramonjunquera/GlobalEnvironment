@@ -1,0 +1,90 @@
+Tema: Ejemplo de clase QMediaPlayer con audio
+Fecha: 20220305
+Autor: Ramón Junquera
+
+La clase QMediaPlayer permite la lectura, decodificación y reproducción de multimedia.
+En el ejemplo actual se utilizará para construir un reproductor de audio.
+
+Creamos un proyecto nuevo.
+Eliminamos los menús y la barra de estado.
+
+Antes de continuar, crearemos un archivo de recursos donde guardaremos las imágenes
+que utilizaremos para los botones. Así no dependeremos de archivos externos.
+  Desde el menú de edición de código.
+  Arriba a la izquierda tenemos el árbol de archivos del proyecto.
+  Hacemos click con el botón derecho en el primero de ellos (nombre del proyecto).
+  Seleccionamos Add New../Qt/Qt Resource File
+  Creamos el prefix pics
+  Cargamos todas las imágenes de la carpeta pics
+Ya podemos regresar a la edición de la ventana
+
+Añadimos un botón.
+Lo nombramos como pushButtonOpenFile.
+Le asignamos el icono 6794467_audio_headphone_headset_multimedia_music_icon.png del
+archivo de recursos.
+Eliminamos cualquier otro texto. Sólo debe quedar el icono.
+Le damos el tamaño original de 48x48 al icono en QAbstractButton/iconSize
+Ajustamos su tamaño.
+Creamos duplicados de este botón para el resto con sus correspondientes iconos.
+Añadimos una QProgressBar.
+Añadimos un último botón, más pequeño, para el mute, de tipo Toggle.
+Le asignaremos iconos distintos dependiendo del estado:
+  Active Off: altavoz encendido
+  Active On: altavoz apagado
+Añadimos una QSlider horizontal para el volumen.
+Por defecto tiene unos límites de [0,99]. Los dejaremos así.
+Le asignaremos un valor inicial de 50, para que suene a medio volumen.
+Agrupamos los botones.
+  Seleccionamos los 4 botones superiores en un layout horizontal
+  Seleccionamos el botón de mute y la barra de volumen en otro layout horizontal
+  Seleccionamos los dos layout anteriores y la barra de progreso en un layout vertical.
+  Seleccionamos el layout general (centralWidget) como vertical.
+  Posicionamos y ajustamos tamaño en la ventana.
+
+Abrimos el archivo .pro.
+La sección QT será:
+  QT       += core gui
+Muestra los módulos que contiene la aplicación.
+Debemos añadir el módulo multimedia para poder gestionar audio. Quedando así:
+  QT       += core gui multimedia
+
+En la cabecera de la ventana principal (mainwindow.h) añadimos la nueva librería:
+  #include <QMediaPlayer> 
+En el mismo archivo, creamos en la sección privada de la clase un puntero a un
+objeto de tipo QMediaPlayer:
+  QMediaPlayer *mMediaPlayer;
+
+En el constructor de mainwindow.cpp, creamos una nueva instancia de QMediaPlayer
+y la asignamos al puntero:
+  mMediaPlayer=new QMediaPlayer(this);
+
+Para esta aplicación, en vez de utilizar slots, usaremos conexión de señales
+(connect signal).
+En el constructor de la ventana principal crearemos una conexión para cado de los
+eventos que queremos controlar, que son:
+- Cuando cambie la duración del audio, se cambia el valor máximo de la barra de progreso
+- Cuando cambie la posición de reproducción del audio, se cambia el valor de la barra de progreso
+- Cuando se haga click en el botón Play, comienza la reproducción
+- Cuando se haga click en el botón Pause, se detiene la reproducción
+- Cuando se haga click en el botón Stop, se para la reproducción
+- Cuando cambie el estado del botón Mute, se activa/desactiva el audio
+- Cuando cambie el valor del Slider, se ajustará el volumen
+- Cuando se pulse el botón Open...
+  - Se pedirá la selección de un archivo
+  - Se detendrá la reproducción actual
+  - Se asignará el archivo al objeto de audio
+  - Se ajustará el volumen al valor actual del Slider
+  - Comenzará la reproducción de audio
+
+Para todos los connect que hacemos, utilizamos una función anónima (lambda) que definimos
+en ese mismo lugar.
+Recordamos:
+- Los parámetros de connect son:
+  - Objeto origen
+  - Evento de la clase
+  - Objeto destino
+- Una función lambda debe indicar siempre los parámetros de entrada
+
+
+
+

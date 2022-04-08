@@ -1,0 +1,15 @@
+Tema: QRandomGenerator
+Fecha: 20220329
+Autor: Ramón Junquera
+
+Generación de números aleatorios en Qt.
+
+Asignación de semilla.
+Una de las maneras más eficientes y cómodas es tomar el número de milisegundos transcurridos desde el
+inicio del dia:
+  QRandomGenerator(static_cast<uint>(QTime::currentTime().msecsSinceStartOfDay()));
+Será necesario incluir la librería QTime para poder utilizar sus funciones:
+  #include <QTime>
+
+Números aleatorios enteros entre [0,2]:
+  sensorId=QRandomGenerator::global()->bounded(3);

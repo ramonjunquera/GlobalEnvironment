@@ -1,0 +1,4 @@
+Arduino
+  Arduino.h
+  SPIFFS.h
+  SPI.h

@@ -69,5 +69,5 @@ La próxima vez que se abra el proyecto ya no preguntará nada sobre importación.
 Esta actualización crea en la carpeta de proyecto una copia del antiguo archivo .user
 con una extensión de 8 dígitos hexadecimales.
 Este archivo puede ser eliminado sin problema.
-Es conveniente eliminemos el archivo .user de los fuentes, para que no intente generar la
+Es conveniente que eliminemos el archivo .user de los fuentes, para que no intente generar la
 carpeta "build-" en la ubicación original.

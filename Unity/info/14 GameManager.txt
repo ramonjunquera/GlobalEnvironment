@@ -1,0 +1,9 @@
+Tema: GameManager
+Fecha: 20220228
+Autor: Ramón Junquera
+
+Es un GameObject que no se visualiza.
+Sirve para gestionar las variables globales del juego (inicialización actualización y finalización de partida, puntuaciones, ...).
+Para ello se crea un GameObject vacío y se le asigna el nombre de GameManager.
+También creamos un Script llamado GamaManager que asignamos al GameObject GameManager.
+Este script tendrá un icono distinto al resto de Scripts.

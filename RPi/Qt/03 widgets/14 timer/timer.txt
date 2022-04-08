@@ -1,4 +1,6 @@
-timer
+Tema: QTimer
+Fecha: 20220329
+Autor: Ramón Junquera
 
 Novedades:
 - Uso del objeto QTimer
@@ -68,3 +70,10 @@ Desarrollo:
   Después definimos el tiempo que debe transcurrir en el timer para que produzca el evento de
   timeout:
     myTimer->start(1000);
+
+
+SingleShot
+Un Timer SigleShot es programar la ejecución de una función para dentro de un tiempo determinado.
+Será necesario que la función esté configurada con SLOT, como en un Timer normal.
+Ejemplo. Llamaremos a la función fTimerCheckSensors dentro de 300ms:
+  QTimer::singleShot(300,this,SLOT(fTimerCheckSensors()));

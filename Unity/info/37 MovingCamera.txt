@@ -1,0 +1,36 @@
+Tema: Moving Camera
+Fecha: 20220324
+Autor: Ramón Junquera
+
+Podemos mover la cámara como cualquier otro GameObject, a través de su transform.position.
+En el método Update haremos los cálculos y asignaciones necesarios.
+
+Es importante recordar que en proyectos 2D, la cámara se encuentra por delante del plano
+en el que se desarrolla el juego.
+Concretamente tiene la coordenada z=-10
+Si le asignamos coordenada 0, no veremos ninguno de los elementos del juego, porque estarán
+demasiado cerca.
+Ejemplo. En el Script que controla la cámara:
+  transform.position = new Vector3(transform.position.x, player.position.y, transform.position.z);
+Suponiendo que tengamos definida una variable de tipo Transform de nombre player con el 
+GameObject del jugador, el código nos permitiría mantener la cámara en la misma posición que
+se encuentra ahora, excepto para el eje y, que tomará la posición del jugador.
+
+Suavizado del movimiento de la cámara.
+Si fijamos la cámara a la posición del jugador, los movimientos bruscos se transmitirán a la
+cámara directamente.
+Para evitarlo intentaremos suavizarlos. Lo haremos con una función adicional de la clase Vector3.
+Ejemplo. Suavizado de la cámara teniendo en cuenta la posición vertival del jugador (como en el
+caso anterior):
+  (variable global de clase) Vector3 cameraVelocity = new Vector3.zero;
+  Vector3 currentPosition = transform.position;
+  Vector3 targetPosition = new Vector3(transform.position.x, player.position.y, transform.position.z);
+  transform.position = Vector3.SmoothDump(currentPosition, targetPosition, ref cameraVelocity, 1);
+Estas líneas primero calculan los parámetros de la función SmoothDump para llamarla más fácilmente.
+Estos son los parámetros:
+  1. Vector3 con la posición incial
+  2. Vector3 con la posición final
+  3. Vector3 en el que indica la velocidad del desplazamiento. Se recalculará y se volverá a dejar en
+     la misma variable. Por eso no se debería destruir el contenido de esta variable tras su uso.
+  4. float de tiempo en segundos que tarda en hacer el desplazamiento
+  

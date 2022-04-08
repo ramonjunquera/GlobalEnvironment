@@ -1,5 +1,5 @@
 Tema: InputManager
-Fecha: 20220228
+Fecha: 20220321
 Autor: Ramón Junquera
 
 Habitualmente se requiere la lectura de los controles del usuario para poder interaccionar con los GameObjects
@@ -40,3 +40,17 @@ Cómo utilizarlo desde programa?
   float direccion = Input.GetAxisRaw("VerticalJugador1");
 El método GetAxisRaw indica sólo si la tecla está pulsada o no.
 El método GetAxis tiene en cuenta el tiempo de repetición de teclado. No es instantáneo.
+
+Lectura directa.
+Además de poder utilizar las facilidades del InputManager para desligar de la aplicación la gestión de los controles de
+entrada, también podemos hacer lecturas directas del teclado con Input.
+Ejemplo:
+  Input.GetKey(KeyCode.Space)
+Será true si en este momento se está pulsando la tecla espacio.
+Esta consulta directa no requiere ninguna configuración del Input Manager.
+
+Nota:
+- GetKey indica si la tecla está pulsada en este momento
+- GetKeyDown indica la primer pulsación de esa tecla. No se mantiene en el tiempo si la tecla no tiene repetición.
+
+
