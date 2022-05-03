@@ -23,7 +23,7 @@ M5Stack Watch         ARDUINO_M5Stick_Watch         ESP32   ARDUINO_ARCH_ESP32
 M5Stack Atom Matrix   ARDUINO_M5Stick_Atom_Matrix   ESP32   ARDUINO_ARCH_ESP32
 M5Stack Atom Echo     ARDUINO_M5Stick_Atom_Echo     ESP32   ARDUINO_ARCH_ESP32
 M5Stack Atom Lite     ARDUINO_M5Stick_Atom_Lite     ESP32   ARDUINO_ARCH_ESP32
-M5Stack Stamp C3      IDF_ESP32C3                           ESPIDF
+M5Stack Stamp C3      ARDUINO_M5StampC3             ESP32   ARDUINO_ARCH_ESP32
 
 RaspberryPi           __arm__
 

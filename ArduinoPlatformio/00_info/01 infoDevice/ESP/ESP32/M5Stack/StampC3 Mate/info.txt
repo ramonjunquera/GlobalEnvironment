@@ -1,5 +1,5 @@
 Tema: Descripción de placa M5Stack M5Stamp C3 Mate
-Fecha: 20220116
+Fecha: 20220427
 Autor: Ramón Junquera
 
 Incluye el procesador ESP32-C3 de Espressif.
@@ -13,26 +13,12 @@ Tiene un consumo medio de 500mA.
 El driver USB es el CH9102.
 URL de la página oficial: https://docs.m5stack.com/en/core/stamp_c3
 
-A fecha actual sólo existe compatibilidad con el framework de Arduino desde el IDE de Arduino y con los paquetes
-que están en desarrollo (beta). No hay paquetes estables.
-
 Para cargar los programas es necesario puentear el pin 9 con GND manualmente.
-
-Variable de entorno IDF_PATH
-Puesto que los programas desarrollados en framework IDF utilizan los archivos CMakeList.txt
-que a su vez utilizan por defecto la variable de entorno IDF_PATH para localizar las
-librerías, es muy conveniente definirla.
-Para no afectar a más usuarios se puede definir dentro del usuario de trabajo.
-Habitualmente el path es: C:/Users/%username%/.platformio/packages/framework-espidf
-
-En Platformio el archivo de inicio ya no es main.cpp sino main.c.
-No tiene mayor importancia poque es compatible con el resto de dispositivos y configuraciones.
-
 
 Botón:
   pin 3
 
-NeoPixel:
+NeoPixel WS2812:
   pin 2
 
   

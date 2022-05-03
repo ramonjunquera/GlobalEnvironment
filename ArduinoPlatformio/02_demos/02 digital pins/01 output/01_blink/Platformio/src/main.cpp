@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20220116
+  Fecha: 20220427
   Tema: Gestión de pines digitales de salida
   Descripción:
     Hacemos parpadear el led integrado
@@ -18,8 +18,8 @@
   const byte pinLed=1;
 #elif defined(ARDUINO_LOLIN32LITE) //Si es un Wemos LOLIN32 LITE
   const byte pinLed=22;
-#elif defined(IDF_ESP32C3) //Si es un ESP32C3
-  byte pinLed=10;
+#elif defined(ARDUINO_M5StampC3) //Si es un ESP32C3
+  const byte pinLed=10;
 #else //Para cualquier otro dispositivo
   const byte pinLed=LED_BUILTIN;
 #endif

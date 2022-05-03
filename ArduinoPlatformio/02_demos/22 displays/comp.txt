@@ -12,4 +12,5 @@ LCD1602A    NO     16 x   2    BUS
 LCD5110     NO     84 x  48    SPI
 SH1107      NO    128 x  64    SPI    M5Stack Watch
 SSD1306     NO    128 x  64    I2C    ESP32+OLED
+SSD1306     NO    128 x  32    I2C
 HT16K33     NO                 I2C    LED 4 dígitos 15 segmentos

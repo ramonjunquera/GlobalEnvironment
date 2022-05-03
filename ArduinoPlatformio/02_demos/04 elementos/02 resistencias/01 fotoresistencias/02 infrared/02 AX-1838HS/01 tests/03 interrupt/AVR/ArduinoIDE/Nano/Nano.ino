@@ -23,7 +23,7 @@
   
   En la práctica...
   Descubrimos que cuando se enciende led, el sensor AX-1838HS hace un cambio de estado digital.
-  En el ejercicio anterior no lo destactábamos porque tomábamos muestras cada varias décimas de segundo.
+  En el ejercicio anterior no lo detectábamos porque tomábamos muestras cada varias décimas de segundo.
   Ahora estamos comprobando el estado a la velocidad del reloj interno (16 millones de veces por segundo).
 
   Cada vez que detecta un aumento de intensidad IR, cambia a nivel bajo por un instante.

@@ -11,7 +11,7 @@
   El circuito utilizado es muy parecido al anterior, excepto que en vez de conectar el sensor a A0
   lo hacemos al pin 2.
 
-  El cálculo del valor digital de uns señal analógica es sencillo. Se divide el rango total de valores en dos
+  El cálculo del valor digital de una señal analógica es sencillo. Se divide el rango total de valores en dos
   secciones iguales.
   En nuestro caso cada sección contendría 512 valores y los límites serían:
   
@@ -21,8 +21,8 @@
   1 = HIGH      | 512                    | 1023
   ---------------------------------------------------------------
 
-  Es cierto que los valores próximo a 512 se podrían poner en duda, o podrían fluctuar de un estado a otro
-  fácilmente. Pero teniendo en cuenta los valores analógicos observados, sabemos que no se derá esta situación.
+  Es cierto que los valores próximos a 512 se podrían poner en duda, o podrían fluctuar de un estado a otro
+  fácilmente. Pero teniendo en cuenta los valores analógicos observados, sabemos que no se dará esta situación.
 
   En la práctica vemos que el valor digital casi siempre se mantiene en estado HIGH.
   Pero en cambio, podemos ver cómo se enciende el led de actividad del sensor.

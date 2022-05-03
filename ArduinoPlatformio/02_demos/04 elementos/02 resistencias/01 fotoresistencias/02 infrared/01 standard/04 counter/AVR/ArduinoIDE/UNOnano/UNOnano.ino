@@ -11,7 +11,7 @@
   que pasan personas, haremos un sistema para contar cuántas personas hay dentro (a un lado de la puerta).
   Debemos tener en cuenta que las personas pueden atravesar la puerta en cualquiera de las dos direcciones.
 
-  Para no estar contínuamente atentos al estado de los pines nos sprovechamos de:
+  Para no estar continuamente atentos al estado de los pines nos aprovechamos de:
   - Que sólo tenemos dos receptores
   - Que Arduino UNO/Nano es capaz de gestionar 2 interrupciones por cambio de estado de un pin
   - Que los pines a los que estás conectados los receptores son los que gestionan las interrupciones
@@ -20,7 +20,7 @@
   y lo enviaremos por el puerto serie.
   
   Resultado:
-  Podemos comprobar en el motitor serie como se muestra el recuento de veces que se ha pasado en un sentido u otro
+  Podemos comprobar en el monitor serie como se muestra el recuento de veces que se ha pasado en un sentido u otro
 */
 
 #include <Arduino.h>

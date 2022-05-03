@@ -1,0 +1,48 @@
+Tema: Sensor laser
+Fecha: 20220413
+Autor: Ramón Junquera
+
+Descripción
+Realmente no es un sensor de distancia, puesto que lo único que puede dectectar es si algún objeto opaco corta la recepción
+de un emisor laser en visión directa.
+El conjunto conta de dos elementos: un emisor y un receptor.
+
+Emisor KY-008
+Uno de los emisores laser más comunes es el Keyes KY-008.
+Emite un laser visible de color rojo en forma de punto.
+El laser está dentro de un cabezal de bronce que facilita la disipación de calor.
+Hay que tener cuidado de no apuntar directamente a los ojos para evitar quemaduras en la retina.
+Tiene un alcance de unos 2m. A partir de esta distancia se difumina demasiado para ser detectado.
+Tiene 3 pines de conexión etiquetados como:
+  S : signal
+  + : VCC
+  - : GND
+El uso correcto es conectar la alimentación y utilizar el pin de señal para controlar la emisión.
+Con señal HIGH se emite y con LOW se apaga.
+Si no tenemos la necesidad de controlar la señal, podemos ahorrar un pin si conectamos la alimentación a los pines de señal y tierra.
+Características:
+- Voltaje: 3.3v-5V
+- Potencia: 5 mW
+- Corriente: 40 mA
+- Longitud de onda: 650 nm
+- Profundidad: 8 mm
+- Peso: 3 g
+
+Receptor KY-008
+Es la pareja del emisor KY-008.
+Consta de una pequeña placa con los pines y un receptor laser que se conecta a ella.
+El receptor no está modulado, así que podría estar afectado por la iluminación ambiental.
+Se recomienda su uso en condiciones de poca luz.
+El plástico transparente que recubre el receptor reparte el haz recibido de tal manera que incluso la recepción por la parte trasera
+es capaz de activarlo.
+Es importante la conexión del receptor a la placa, puesto que tiene polaridad. El receptor debe mirar hacia los pines.
+Aunque el fabricante indica que trabaja con 5V, es preferible utilizar 3.3V.
+Con 5V la aproximación del haz es detectado sin problema, pero una incidencia directa provoca que no se reconozca.
+Pinout: GND, OUT, VCC.
+El pin OUT se mantendrá en HIGH mientras no detecte el haz laser.
+La placa incluye un led integrado con la misma respuesta que el pin OUT.
+La respuesta ante el haz laser es instantánea.
+
+
+
+

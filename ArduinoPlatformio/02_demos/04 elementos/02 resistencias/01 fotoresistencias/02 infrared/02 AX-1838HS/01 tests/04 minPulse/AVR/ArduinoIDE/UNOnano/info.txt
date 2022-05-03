@@ -17,7 +17,7 @@ la breadboard.
 
 El Arduino Nano gestionará la recepción.
 Basado en interrupciones, cuando detecte una señal, cambiará el estado del led integrado (13). Así
-distinguiremos viauslmente que se ha recibido algo.
+distinguiremos visualmente que se ha recibido algo.
 
 El Arduino UNO gestionará el envío.
 Cuando se detecte una pulsación del interruptor, se encenderá el led durante un tiempo determinado,

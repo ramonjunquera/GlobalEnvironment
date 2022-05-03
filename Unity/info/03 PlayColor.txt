@@ -1,5 +1,5 @@
 Tema: Cambio de color al entorno de ejecución
-Fecha: 20220221
+Fecha: 20220414
 Autor: Ramón Junquera
 
 Cuando pulsamos el botón de play, se ejecutará la escena dentro de la ventana Game.
@@ -12,7 +12,7 @@ Cuando entramos en modo play, por defecto el fondo cambia a un tono un poco más
 oscuro que el normal. Practicamante indistinguible.
 Cambiaremos este color a otro que llame la atención.
 
-En Edit/Preferences.../Color/General/Playmode tint seleccionamos un color rojo puro
+En Edit/Preferences.../Colors/General/Playmode tint seleccionamos un color rojo puro
 que llame la atención y que nos dificulte cualquier modificación de los parámetros de
 la escena.
 
