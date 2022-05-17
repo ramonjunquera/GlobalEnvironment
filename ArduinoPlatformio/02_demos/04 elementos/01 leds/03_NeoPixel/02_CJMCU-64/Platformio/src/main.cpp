@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210825
+  Fecha: 20220517
   Tema: matriz CJMCU-64 (NeoPixel)
   Objetivo: Demo de gestión de leds NeoPixel
 
@@ -19,9 +19,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2CJMCU64.h> //Gestión de leds NeoPixel
+#include <RoJoNeoPixelCJMCU64.h> //Gestión de leds NeoPixel
 
-RoJoNeoPixel2CJMCU64 leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixelCJMCU64 leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
   Serial.begin(115200); //DEBUG
@@ -117,7 +117,7 @@ void test3() {
 
 //Carga y dibujo de archivos bmp y spr
 void test4() {
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.loadBMP("/heart.bmp");
   leds.drawSprite(&spr);
   leds.show();
@@ -135,7 +135,7 @@ void test4() {
 
 //Glitter
 void test5() {
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.setSize(8,8);
   uint32_t maxTime=millis()+10000; //Definimos duración (6s)
   while(millis()<maxTime) {
@@ -159,7 +159,7 @@ void test5() {
 
 //Texto scroll
 void test6() {
-  RoJoSprite2 spr(3); //Sprite color real
+  RoJoSprite spr(3); //Sprite color real
   spr.print("/5x7.fon","Hola mundo!",0x006400); //En verde
   int16_t xMax=-(int16_t)spr.xMax();
   for(int16_t x=8;x>xMax;x--) {
@@ -174,7 +174,7 @@ void test6() {
 //Dimming
 void test7() {
   leds.clear();
-  RoJoSprite2 blankSpr(3); //Sprite negro
+  RoJoSprite blankSpr(3); //Sprite negro
   blankSpr.setSize(5,8); //Mismo tamaño que una letra
   uint32_t colors[7]={ //Tabla de colores
     blankSpr.getColor(99,0,0), //Rojo
@@ -185,8 +185,8 @@ void test7() {
     blankSpr.getColor(0,99,99), //Cyan
     blankSpr.getColor(99,99,99) //Blanco
   };
-  RoJoSprite2 number(3); //Sprite con el número
-  RoJoSprite2 res(3); //Sprite con el resultado
+  RoJoSprite number(3); //Sprite con el número
+  RoJoSprite res(3); //Sprite con el resultado
   for(byte i=1;i<=7;i++) { //Contamos del 1 al 7...
     number.print("/5x7.fon",String(i),colors[i-1]); //Dibujamos el número en el sprite
     for(byte level=0;level<255;level++) { //Recorremos todos los niveles...
@@ -212,7 +212,7 @@ void test7() {
 //Fading
 void test8() {
   leds.clear();
-  RoJoSprite2 spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
+  RoJoSprite spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
   uint32_t colors[7]={ //Tabla de colores
     spr1.getColor(99,0,0), //Rojo
     spr1.getColor(0,99,0), //Verde
@@ -244,7 +244,7 @@ void test8() {
 
 //Fire
 void test9() {
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.setSize(8,8);
   //Creamos la paleta de colores de fuego
   uint32_t fireColor[256];

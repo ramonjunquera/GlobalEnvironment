@@ -1,0 +1,51 @@
+Objetivo: Definición de protocolo y parámetros óptimos
+Fecha: 20220506
+Autor: Ramón Junquera
+
+Definición del protocolo de comunicación:
+- Cada bit se enviará como un pulso HIGH
+- Un bit 0 durará 1*pulseTicks ticks
+- Un bit 1 durará 2*pulseTicks ticks
+- Entre los pulsos de información (HIGH) se insertan pulsos de separación LOW
+- Un pulso de separación de bits durará 1*pulseTicks ticks LOW
+- Un pulso de separación de bytes durará 2*pulseTicks ticks LOW
+- Un pulso de fin de envío durará al menos 3*pulseTicks ticks LOW
+
+El objetivo es encontrar la combinación de valores que reduzcan al mínimo el tiempo de transmisión sin errores.
+Dependiendo del clk_div utilizado tendermos un error.
+Confeccionamos una tabla en base a pruebas.
+Puesto que el error puede tener signo positivo o negativo, pulseTicks debe ser siempre más del doble del error.
+La columna pulseTicks=error*2+1
+La columna timeTick será la duración de un tick en us. timeTick=clk_div/80
+La columna timePulse será la duración de un pulso en us. timePulse=pulseTicks*timeTick
+La columna maxPulse calcula la duración de un pulso máximo en us. Suma de la duración de estado HIGH y LOW.
+Un pulso HIGH de 1 dura 2 ticks. Un pulso LOW de separación de byte dura 1 ticks. Total 3 ticks.
+Tomaremos 3 ticks como duración máxima de un item de pulso. maxPulse=3*timePulse
+La columna maxByte es la duración máxima en us del envío e 1 byte (8 bits).
+Puesto que cada bit se envía en un item de pulso, maxByte=8*maxPulse
+
+clk_div error pulseTicks timeTick timePulse maxPulse maxByte
+------- ----- ---------- -------- --------- -------- -------
+     40     8         17   0.5       8.5     25.5      204
+     45     4          9   0.5625    5.0625  15.1875   121.5
+     50     3          7   0.625     4.375   13.125    105
+     60     3          7   0.75      5.25    15.75     126
+     80     3          7   1         7       21        168
+    120     2          5   1.5       7.5     22.5      180
+    140     2          5   1.75      8.75    26.25     210
+    150     2          5   1.875     9.375   28.125    225
+    155     2          5   1.9375    9.6875  29.0625   232.5
+    160     1          3   2         6       18        144
+    255     1          3   3.1875    9.5625  28.6875   229.5
+
+Conclusión
+Los mejores valores son para
+
+clk_div maxByte
+------- --------
+     45   121.5
+     50   105
+     60   126
+    160   144
+
+De todas ellas la menos arriesgada es la última.

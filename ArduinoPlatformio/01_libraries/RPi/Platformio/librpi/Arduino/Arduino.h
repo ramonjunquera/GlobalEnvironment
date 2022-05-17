@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20220222
+ * Versión: 20220511
  * Compatibilidad: Platformio & Qt
  * 
  * Funciones generales:
@@ -129,6 +129,9 @@ class SerialClass {
   void println(byte v) {
     cout << v << endl;
   }
+  void println(char v) {
+    cout << v << endl;
+  }
   void println(int8_t v) {
     cout << v << endl;
   }
@@ -156,6 +159,9 @@ class SerialClass {
     cout << v;
   }
   void print(byte v) {
+    cout << v;
+  }
+  void print(char v) {
     cout << v;
   }
   void print(int8_t v) {

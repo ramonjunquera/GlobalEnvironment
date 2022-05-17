@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210826
+  Fecha: 20220517
   Tema: matriz M32x8 (NeoPixel)
   Objetivo: Demo de gestión de leds NeoPixel
 
@@ -9,9 +9,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2M32x8.h> //Gestión de leds NeoPixel
+#include <RoJoNeoPixelM32x8.h> //Gestión de leds NeoPixel
 
-RoJoNeoPixel2M32x8 leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixelM32x8 leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
   Serial.begin(115200); //DEBUG
@@ -131,7 +131,7 @@ void test4() {
 //Carga y dibujo de archivos bmp y spr
 void test5() {
   leds.clear();
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.loadSprite("/house.spr");
   leds.drawSprite(&spr);
   leds.show();
@@ -149,7 +149,7 @@ void test5() {
 
 //Texto scroll
 void test6() {
-  RoJoSprite2 spr(3); //Sprite color real
+  RoJoSprite spr(3); //Sprite color real
   spr.print("/5x7.fon","Hola mundo!",0x005500); //En verde
   int16_t xMax=-(int16_t)spr.xMax();
   for(int16_t x=32;x>xMax;x--) {
@@ -176,11 +176,11 @@ void test7() {
   String texts[7]={ //Tabla de textos
     "uno","dos","tres","cuatro","cinco","seis","siete"
   };
-  RoJoSprite2 blankSpr(3); //Sprite negro
+  RoJoSprite blankSpr(3); //Sprite negro
   blankSpr.setSize(32,8); //Mismo tamaño que pantalla
-  RoJoSprite2 text(3); //Sprite con el texto
+  RoJoSprite text(3); //Sprite con el texto
   text.setSize(32,8); //Mismo tamaño que pantalla
-  RoJoSprite2 res(3); //Sprite con el resultado
+  RoJoSprite res(3); //Sprite con el resultado
   for(byte i=0;i<7;i++) {
     text.clear();
     text.printOver("/5x7.fon",texts[i],colors[i]);
@@ -219,7 +219,7 @@ void test8() {
   String texts[7]={ //Tabla de textos
     "uno","dos","tres","cuatro","cinco","seis","siete"
   };
-  RoJoSprite2 spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
+  RoJoSprite spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
   spr1.setSize(32,8); //Mismo tamaño que el display
   spr2.setSize(32,8); //Mismo tamaño que el display
   spr2.printOver("/5x7.fon",texts[0],colors[0]); //Creamos el primer texto en el sprite 2
@@ -245,7 +245,7 @@ void test8() {
 
 //Fire
 void test9() {
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.setSize(32,8);
   //Creamos la paleta de colores de fuego
   uint32_t fireColor[256];

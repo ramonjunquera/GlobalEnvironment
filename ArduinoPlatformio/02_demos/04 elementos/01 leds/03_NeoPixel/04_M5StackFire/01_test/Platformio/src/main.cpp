@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210825
+  Fecha: 20220517
   Tema: M5Stack Fire. Leds NeoPixel
   Objetivo: Demo de gestión de leds
   Material: M5Stack Fire
@@ -10,9 +10,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2.h> //Gestión de leds NeoPixel
+#include <RoJoNeoPixel.h> //Gestión de leds NeoPixel
 
-RoJoNeoPixel2 leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
 
 //Sucesión ascendente
 void test1() {

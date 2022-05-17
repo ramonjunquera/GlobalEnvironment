@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210826
+  Fecha: 20220517
   Tema: matriz M16x16 (NeoPixel)
   Objetivo: Demo de gestión de leds NeoPixel
 
@@ -9,9 +9,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2M16x16.h> //Gestión de leds NeoPixel
+#include <RoJoNeoPixelM16x16.h> //Gestión de leds NeoPixel
 
-RoJoNeoPixel2M16x16 leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixelM16x16 leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
   Serial.begin(115200); //DEBUG
@@ -132,7 +132,7 @@ void test4() {
 //Carga y dibujo de archivos bmp y spr
 void test5() {
   leds.clear();
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.loadSprite("/house.spr");
   leds.drawSprite(&spr);
   leds.show();
@@ -150,7 +150,7 @@ void test5() {
 
 //Texto scroll
 void test6() {
-  RoJoSprite2 spr(3); //Sprite color real
+  RoJoSprite spr(3); //Sprite color real
   spr.print("/10x15.fon","Hola mundo!",0x004400); //En verde
   int16_t xMax=-(int16_t)spr.xMax();
   for(int16_t x=16;x>xMax;x--) {
@@ -174,11 +174,11 @@ void test7() {
     0x005555, //Cyan
     0x555555 //Blanco
   };
-  RoJoSprite2 blankSpr(3); //Sprite negro
+  RoJoSprite blankSpr(3); //Sprite negro
   blankSpr.setSize(16,16); //Mismo tamaño que el display
-  RoJoSprite2 number(3); //Sprite con el número
+  RoJoSprite number(3); //Sprite con el número
   number.setSize(16,16); //Mismo tamaño que el display
-  RoJoSprite2 res(3); //Sprite con el resultado
+  RoJoSprite res(3); //Sprite con el resultado
   for(byte i=1;i<=7;i++) { //Contamos del 1 al 7...
     number.clear();
     number.printOver("/10x15.fon",String(i),colors[i-1],3); //Dibujamos el número en el sprite
@@ -205,7 +205,7 @@ void test7() {
 //Fading
 void test8() {
   leds.clear();
-  RoJoSprite2 spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
+  RoJoSprite spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
   spr1.setSize(16,16); //Mismo tamaño que el display
   spr2.setSize(16,16); //Mismo tamaño que el display
   uint32_t colors[7]={ //Tabla de colores
@@ -240,7 +240,7 @@ void test8() {
 
 //Fire
 void test9() {
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.setSize(16,16);
   //Creamos la paleta de colores de fuego
   uint32_t fireColor[256];

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210825
+  Fecha: 20220516
   Tema: M5Stack Atom Matrix leds
   Objetivo: Demo de gestión de leds
   Material: M5Stack
@@ -10,9 +10,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2AtomMatrix.h> //Gestión de leds NeoPixel de M5Stack Atom Matrix
+#include <RoJoNeoPixelAtomMatrix.h> //Gestión de leds NeoPixel de M5Stack Atom Matrix
 
-RoJoNeoPixel2AtomMatrix leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixelAtomMatrix leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
   Serial.begin(115200);
@@ -61,7 +61,7 @@ void test1() {
 
 //Texto scroll
 void test2() {
-  RoJoSprite2 spr(3); //Color real
+  RoJoSprite spr(3); //Color real
   spr.print("/5x5f.fon","HOLA MUNDO!",spr.getColor(0,255,0));
   for(int16_t x=5;x>-spr.xMax();x--) {
     leds.clear();
@@ -74,7 +74,7 @@ void test2() {
 
 //Dimming
 void test3() {
-  RoJoSprite2 blankSpr(3); //Sprite negro
+  RoJoSprite blankSpr(3); //Sprite negro
   blankSpr.setSize(5,8); //Mismo tamaño que una letra
   uint32_t colors[7]={ //Tabla de colores
     blankSpr.getColor(255,0,0), //Rojo
@@ -85,8 +85,8 @@ void test3() {
     blankSpr.getColor(0,255,255), //Cyan
     blankSpr.getColor(255,255,255) //Blanco
   };
-  RoJoSprite2 number(3); //Sprite con el número
-  RoJoSprite2 res(3); //Sprite con el resultado
+  RoJoSprite number(3); //Sprite con el número
+  RoJoSprite res(3); //Sprite con el resultado
 
   for(byte i=1;i<=7;i++) { //Contamos del 1 al 7...
     number.print("/5x5f.fon",String((int)i),colors[i-1]); //Dibujamos el número en el sprite
@@ -111,7 +111,7 @@ void test3() {
 
 //Fading
 void test4() {
-  RoJoSprite2 spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
+  RoJoSprite spr1(3),spr2(3),res(3); //Definimos los sprites para hacer el fade
   uint32_t colors[7]={ //Tabla de colores
     spr1.getColor(255,0,0), //Rojo
     spr1.getColor(0,255,0), //Verde
@@ -168,7 +168,7 @@ void test5() {
 
 //Carga y dibujo de archivos bmp
 void test6() {
-  RoJoSprite2 spr(3);
+  RoJoSprite spr(3);
   spr.loadBMP("/heart.bmp");
   leds.drawSprite(&spr);
   leds.show();

@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210825
+  Fecha: 20220517
   Tema: M5Stack Fire. Leds NeoPixel
   Objetivo: VU meter
   Material: M5Stack Fire
@@ -11,9 +11,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2.h> //Gestión de leds NeoPixel
+#include <RoJoNeoPixel.h> //Gestión de leds NeoPixel
 
-RoJoNeoPixel2 leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
 const byte pinMicro=34; //Pin del micrófono
 const uint16_t maxSamples=1000; //Número de muestras
 uint16_t micValue[maxSamples]; //Array con las muestras del micro

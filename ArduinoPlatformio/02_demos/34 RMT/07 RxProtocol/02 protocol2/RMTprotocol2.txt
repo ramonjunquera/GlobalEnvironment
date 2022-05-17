@@ -1,0 +1,51 @@
+Objetivo: Definición de protocolo de comunicación con paridad y parámetros óptimos
+Fecha: 20220509
+Autor: Ramón Junquera
+
+Definición del protocolo de comunicación:
+- La información se agrupa en paquetes de bytes (8 bits).
+- La transmisión de 1 byte incluye una verificación de paridad para descartar los paquetes corruptos
+- Un paquete de 1 byte + verificación de paridad consta de 5 items de pulso
+- Los 4 primeros paquetes de pulso contienen la información del byte a transmitir
+- El último item de pulso contiene la información de paridad
+- Los bits se codifican por parejas. 2 por items de pulso, comenzando siempre por un pulso HIGH.
+- El valor del bit se codifica en la duración del pulso con las siguientes fórmulas:
+  - Un bit 0 en el primer pulso se enviará con una duración de minPulseTicksTx0 ticks
+  - Un bit 0 en el segundo pulso se enviará con una duración de minPulseTicksTx1 ticks
+  - Un bit 1 en el primer pulso se enviará con una duración de minPulseTicksTx0+1 ticks
+  - Un bit 1 en el segundo pulso se enviará con una duración de minPulseTicksTx1+1 ticks
+- La paridad será siempre par. La suma de los bits 1 + el bit de paridad será PAR
+- El pulso HIGH (el primero) codifica la paridad en la duración del pulso con las siguientes fórmulas:
+  - Un bit de paridad 0 se enviará con una duración de minPulseTicksTx0+2 ticks
+  - Un bit de paridad 1 se enviará con una duración de minPulseTicksTx0+3 ticks
+- El pulso LOW (el segundo) siempre tiene una duración de minPulseTicksTx1 ticks
+- En la recepción decodificaremos los valores enviados con las siguentes fórmulas:
+  - Si el pulso es el primero del item, valor0=duration0-minPulseTicksRx0
+  - Si el pulso es el segundo del item, valor1=duration1-minPulseTicksRx1
+- En la recepción, si el valor0 (valor decodificado de duration0) es mayor que 1 se identificará como
+  item de paridad y fin de items de paquete de byte.
+- En la recepción, si duration1 es cero, indica final de transmisión
+
+Parámetros
+- clk_div=160
+- minPulseTicksTx0=2
+- minPulseTicksTx1=2
+- minPulseTicksRx0=3
+- minPulseTicksRx1=1
+
+Cálculo de tiempo de envío
+Tendremos en cuenta los datos de transmisión.
+El item de pulso más largo duraría (minPulseTicksTx0+1)+(minPulseTicksTx1+1)=(2+1)+(2+1)=3+3=6 ticks
+Los 4 items de pulso con información durarían 4*6=24 ticks
+El item de paridad más largo sería de (minPulseTicksTx0+3)+minPulseTicksTx1=(2+3)+2=5+2=7 ticks
+En total serían 24+7=31 ticks
+
+timeTick = clk_div/80 us
+maxByte = 31*timeTick us
+
+clk_div timeTick maxByte
+------- -------- -------
+   160    0.5    15.5
+   255    3.1875 98.8125
+
+Cuanto mayor sea el clk_div, menos probabilidad de error

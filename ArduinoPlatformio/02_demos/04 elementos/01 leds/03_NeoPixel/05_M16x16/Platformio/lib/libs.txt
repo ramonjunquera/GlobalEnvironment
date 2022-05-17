@@ -1,4 +1,5 @@
-RoJoGraph2
-RoJoNeoPixel2
-RoJoNeoPixel2M16x16
-RoJoSprite2
+RoJoGraph
+RoJoMultiFS
+RoJoNeoPixel
+RoJoNeoPixelM16x16
+RoJoSprite

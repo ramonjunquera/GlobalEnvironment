@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20210525
+  Fecha: 20220517
   Tema: M5Stack Atom Lite led
   Objetivo: Demo de gestión de led
   Material: M5Stack Atom Lite o M5Stack Atom Echo
@@ -10,9 +10,9 @@
 */
 
 #include <Arduino.h>
-#include <RoJoNeoPixel2.h> //Gestión de leds NeoPixel
+#include <RoJoNeoPixel.h> //Gestión de leds NeoPixel
 
-RoJoNeoPixel2 leds; //Objeto de gestión de leds NeoPixel
+RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
   leds.begin(1,27); //Inicialización de led NeoPixel en M5Stack Atom Lite en pin 27
