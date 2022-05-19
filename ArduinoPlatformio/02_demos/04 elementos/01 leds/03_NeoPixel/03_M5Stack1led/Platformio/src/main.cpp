@@ -1,9 +1,9 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20220517
-  Tema: M5Stack Atom Lite led
+  Fecha: 20220518
+  Tema: Gestión de led NeoPixel para modelos M5Stack con un sólo led
   Objetivo: Demo de gestión de led
-  Material: M5Stack Atom Lite o M5Stack Atom Echo
+  Material: M5Stack Atom Lite, M5Stack Atom Echo o M5Stack Stamp C3
 
   Descripción:
     Ejemplo de uso de librería RoJoNeoPixel genérica
@@ -12,10 +12,16 @@
 #include <Arduino.h>
 #include <RoJoNeoPixel.h> //Gestión de leds NeoPixel
 
+#ifdef ARDUINO_M5StampC3 //Para M5Stack Stamp C3
+  const byte pinLed=2;
+#elif defined(ESP32) //Para M5Stack Atom Lite & Atom Echo
+  const byte pinLed=27;
+#endif
+
 RoJoNeoPixel leds; //Objeto de gestión de leds NeoPixel
 
 void setup() {
-  leds.begin(1,27); //Inicialización de led NeoPixel en M5Stack Atom Lite en pin 27
+  leds.begin(1,pinLed); //Inicialización de led NeoPixel
 }
 
 //Colores planos
