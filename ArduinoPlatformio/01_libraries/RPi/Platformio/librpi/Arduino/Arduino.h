@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20220511
+ * Versión: 20220519
  * Compatibilidad: Platformio & Qt
  * 
  * Funciones generales:
@@ -94,6 +94,7 @@ static volatile uint32_t *bcm2835_spi0 = static_cast<uint32_t*>(MAP_FAILED);
 static volatile uint32_t *bcm2835_bsc0 = static_cast<uint32_t*>(MAP_FAILED);
 static volatile uint32_t *bcm2835_bsc1 = static_cast<uint32_t*>(MAP_FAILED);
 static volatile uint32_t *bcm2835_st = static_cast<uint32_t*>(MAP_FAILED);
+bool isRPi4=false;
 
 //Clase para simulación de puerto serie
 class SerialClass {
@@ -195,7 +196,7 @@ bool ArduinoBegin() {
   //Como ya conocemos los valores de dirección base y tamaño, sólo nos queda saber
   //distinguir el modelo de Raspberry.
   //Para ello sólo nos fijaremos en el byte de la posición 4 (quinto)
-  //Si es 0 supondremos que es una RPi, sino será una 2 o 3.
+  //Si es 0 supondremos que es una RPi4, sino será una 2 o 3.
 
   //Definición de variables
   FILE *fp; //Puntero de archivo (file pointer)
@@ -219,6 +220,7 @@ bool ArduinoBegin() {
   } else { //Si es una RPi4...
     bcm2835_peripherals_base = reinterpret_cast<uint32_t*>(0xFE000000);
     bcm2835_peripherals_size = 0x01800000;
+    isRPi4=true;
   }
 
   //Para acceder a los registros de los periféricos podemos abrir la
@@ -354,41 +356,60 @@ void _pinMode(byte pin,byte mode) {
 // 1 - resistencias pull-down
 // 2 - resistencias pull-up
 void _pinResType(byte pin,byte resType) {
-  //Para cambiar el estado de las resistencias debemos seguir los
-  //siguientes pasos...
-  //Escribimos el tipo de resistencia en el registro bcm2835_gpio+37
-  //Activamos los bits correspondiente a los pines a los que afectar�
-  //en los relojes de resistencias.
-  //Le damos tiempo (10 microsegundos)
-  //Desactivamos todos los bits de los relojes de resistencias
+  //El método para cambiar el estado de las resistencias internas varía
+  //dependiendio de la versión de la Raspberry
+  if(isRPi4) {
+    uint32_t pullshift=(pin & 0x0F) << 1;
+    uint32_t pull;
 
-  //Cuando se activa un bit de alguno de los registros de reloj de
-  //resistencias, internamente se lee el registro bcm2835_gpio+37 y se
-  //aplica.
-  //Por eso debemos esperar un momento. Para asegurarnos que ha tenido
-  //tiempo de reaccionar.
-  //Después volvemos a desactivar la máscara del reloj de resistencias.
+    switch (resType) {
+      case 0: pull = 0; break; // no pull up/down
+      case 1: pull = 2; break; // pull down
+      case 2: pull = 1; break; // pull up
+    }
 
-  //Raspberry Pi tiene 64 pines.
-  //Para poder controlarlos todos necesitamos al menos un bit por pin.
-  //Como un registro tiene 32 bits, necesitaremos dos registros.
-  //Los dos registros de reloj de resistencias son:
-  //  bcm2835_gpio+38 y bcm2835_gpio+39.
-  //El primero controla los 32 primeros pines y el segundo el resto.
+    volatile uint32_t *pResType = bcm2835_gpio+57+(pin>>4); //Puntero a registro
+    uint32_t pullbits = *pResType; //Leemos resultado
+    pullbits &= ~(3 << pullshift);
+    pullbits |= (pull << pullshift);
+    *pResType = pullbits; //Guardamos resultado
+  } else { //Es una RPi2 o RPi3...
+    //Para cambiar el estado de las resistencias debemos seguir los
+    //siguientes pasos...
+    //Escribimos el tipo de resistencia en el registro bcm2835_gpio+37
+    //Activamos los bits correspondiente a los pines a los que afectará
+    //en los relojes de resistencias.
+    //Le damos tiempo (10 microsegundos)
+    //Desactivamos todos los bits de los relojes de resistencias
 
-  //Puntero a registro de tipo de resistencias
-  volatile uint32_t *pResType = bcm2835_gpio+37;
-  //Puntero a registro de reloj de resistencias
-  //Calculamos el reloj que le corresponde
-  volatile uint32_t *pResClk = bcm2835_gpio + 38 + pin/32;
-  //Anotamos el tipo de resistencia a aplicar
-  *pResType = resType;
-  //Aplicamos la m�scara al reloj con el desplazamiento correcto
-  *pResClk = 1 << (pin % 32);
-  //Esperamos 10 microsegundos
-  delayMicroseconds(10);
-  //Limpiamos el reloj de resistencias
-  *pResClk = 0;
+    //Cuando se activa un bit de alguno de los registros de reloj de
+    //resistencias, internamente se lee el registro bcm2835_gpio+37 y se
+    //aplica.
+    //Por eso debemos esperar un momento. Para asegurarnos que ha tenido
+    //tiempo de reaccionar.
+    //Después volvemos a desactivar la máscara del reloj de resistencias.
+
+    //Raspberry Pi tiene 64 pines.
+    //Para poder controlarlos todos necesitamos al menos un bit por pin.
+    //Como un registro tiene 32 bits, necesitaremos dos registros.
+    //Los dos registros de reloj de resistencias son:
+    //  bcm2835_gpio+38 y bcm2835_gpio+39.
+    //El primero controla los 32 primeros pines y el segundo el resto.
+
+    //Puntero a registro de tipo de resistencias
+    volatile uint32_t *pResType = bcm2835_gpio+37;
+    //Puntero a registro de reloj de resistencias
+    //Calculamos el reloj que le corresponde
+    volatile uint32_t *pResClk = bcm2835_gpio + 38 + pin/32;
+    //Anotamos el tipo de resistencia a aplicar
+    *pResType = resType;
+    //Aplicamos la máscara al reloj con el desplazamiento correcto
+    *pResClk = 1 << (pin & 31);
+    //Esperamos 10 microsegundos
+    delayMicroseconds(10);
+    //Limpiamos el reloj de resistencias
+    *pResClk = 0;
+  }
 }
 
 //Configura el modo de un pin
