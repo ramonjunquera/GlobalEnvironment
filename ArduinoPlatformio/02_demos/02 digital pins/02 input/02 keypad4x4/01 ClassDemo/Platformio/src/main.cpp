@@ -1,7 +1,7 @@
 /*
   Tema: Teclado de membrana de 4x4
   Objetivo: Demo de librería
-  Fecha: 20220511
+  Fecha: 20220521
   Autor: Ramón Junquera
 
   Descripción:
@@ -14,9 +14,6 @@
      
   Resultado:
     Vemos en el monitor del puerto serie los caracteres de las pulsaciones
-
-  Notas:
-  - A fecha actual, no funciona para RPi4 debido a un error en la asignación de resistencias PULL-UP a pines.
 */
 
 #include <Arduino.h>

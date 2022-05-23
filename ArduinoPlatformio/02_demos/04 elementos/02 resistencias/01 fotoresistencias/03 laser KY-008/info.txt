@@ -37,7 +37,7 @@ El fototransistor no está modulado. Eso quiere decir que acepta todo tipo de lu
 Todo el espectro de luz visible, parte del espectro ultravioleta y bastante del infrarrojo.
 Por lo tanto recogerá todas las interferencia de la luz ambiental.
 Por eso se recomienda intentar reducir la luz ambiental.
-Si no se puede, es una buena idea recobrir el fototransistor con un tubo opaco que apunte hacia el emisor.
+Si no se puede, es una buena idea recubrir el fototransistor con un tubo opaco que apunte hacia el emisor.
 El plástico transparente que recubre el fototransistor reparte el haz recibido de tal manera que incluso la recepción por la parte trasera
 es capaz de activarlo.
 Es importante la conexión del receptor a la placa, puesto que tiene polaridad. El fototransistor debe mirar hacia los pines.
