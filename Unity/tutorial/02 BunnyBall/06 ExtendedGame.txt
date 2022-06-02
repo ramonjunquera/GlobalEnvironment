@@ -1,0 +1,179 @@
+Tema: Unity BunnyBall
+Objetivo: Creación de varios niveles
+Fecha: 20220601
+Autor: Ramón Junquera
+
+Objetivo
+Crear varios niveles
+
+Cómo?
+Las plataformas correspondientes a cada nivel deben ser adyacentes a las existentes para que la
+bola del jugador pueda pasar.
+No desarrollaremos un sistema de generación aleatoria de ubicación de plataformas adyacentes.
+Simplemente definiremos un array de vectores en los que guardaremos las distintas posiciones.
+Sus valores serán fijos.
+Tendremos que hacer algo con la rutina de colisión con la llave, porque ahora, al alcanzar la
+llave, finaliza el juego. Ahora queremos que simplemente pasemos a la siguiente fase.
+Cambiar de fase significa:
+- Volver a la posición inicial
+- Dibujar la nueva plataforma
+- Si se trata de la llave del último nivel, entonces finalizamos el juego como ganadores.
+
+Distribución de los niveles
+    +---+---+---+
+    | 10| 9 | 8 |
++---+---+---+---+---+
+| 12| 11|   | 7 | 6 |
++---+---+   +---+---+
+| 13|           | 5 |
++---+   +---+---+---+
+        | 2 | 3 | 4 |
+        +---+---+---+
+        | 1 |
+      +-+---+-+
+      |       |
+      |       |
+      |       |
+      +-+---+-+
+
+Valores de posición de suelo de niveles
+Sabiendo que el nivel 1 tiene de coordenadas 0,0,4 y que la separación entre cuadros es de 3,
+deducimos el resto:
+ 1 : 0,0,4
+ 2 : 0,0,7
+ 3 : 3,0,7
+ 4 : 6,0,7
+ 5 : 6,0,10
+ 6 : 6,0,13
+ 7 : 3,0,13
+ 8 : 3,0,16
+ 9 : 0,0,16
+10 : -3,0,16
+11 : -3,0,13
+12 : -6,0,13
+13 : -6,0,10
+
+Array de posiciones de suelo de niveles
+Codificamos los valores anteriores en un array de Vector3 como variable de clase privada en
+GameManager:
+  Vector3[] grassPositions = { //Posiciones del suelo en los distintos niveles
+    new Vector3(0,0,4), //Level 1
+    new Vector3(0,0,7), //Level 2
+    new Vector3(3,0,7), //Level 3
+    new Vector3(6,0,7), //Level 4
+    new Vector3(6,0,10), //Level 5
+    new Vector3(6,0,13), //Level 6
+    new Vector3(3,0,13), //Level 7
+    new Vector3(3,0,16), //Level 8
+    new Vector3(0,0,16), //Level 9
+    new Vector3(-3,0,16), //Level 10
+    new Vector3(-3,0,13), //Level 11
+    new Vector3(-6,0,13), //Level 12
+    new Vector3(-6,0,10) //Level 13
+  };
+
+Identificador de nivel
+Necesitaremos saber el nivel en el que estamos, para:
+- Decidir si el juego ha terminado al recoger una llave
+- Dibujar el nuevo suelo del nivel
+El identidicador será un simple int a nivel de clase GameManager.
+  int level = 0;
+Comenzamos desde 0 porque cada vez que solicite dibujar un nuevo nivel, se incrementará level.
+
+NextLevel
+Crearemos un nuevo método en GameManager que se encargue de dibujar el siguiente nivel y aumentar
+la variable level.
+El método será llamado tanto el inicio del juego desde GameManager para que dibuje el primer nivel
+como desde el script Key cuando se consiga una llave. Por lo tanto el método tendrá que ser público.
+  public void NextLevel() {
+    if (level == 13) GameOver(); //Si ya es el último nivel...terminamos
+    else { //No es el último nivel...
+      GameObject newGrassPath = Instantiate(grassPath);
+      newGrassPath.transform.position = grassPositions[level++];
+      newGrassPath.name = $"Level {level}"; //Para diferenciarlos
+      player.GetComponent<Rigidbody>().velocity = Vector3.zero; //Sin velocidad lineal
+      player.GetComponent<Rigidbody>().angularVelocity = Vector3.zero; //Sin velocidad angular
+      player.transform.position = new Vector3(0, 2, 0); //Otra vez al inicio
+    }
+  }
+Diferenciamos si es el último nivel.
+Creamos una nueva instancia del prefav de GrassPath.
+Le ponemos un nombre propio para que no quede con el (Clone).
+Lo ubicamos en la posición que lo corresponde al nivel.
+Aumentamos el contador de niveles.
+Eliminamos la velocidad lineal y angular del jugador.
+Reposicionamos el jugadopr en al principio.
+
+Rutina de recoger llave
+Hay que modificar la rutina de colisión con la llave, para que no finalice el juego al recoger
+la primera llave.
+En el script Key, método OnTriggerEnter, sustituimos la llamada a GameOver por llamar a NextLevel.
+
+Modificando el inicio
+Por último, cuando el juego comienza, el primer nivel se dibuja manualmente en GameManager.Star().
+Debería dibujarse de manera automática mediante el método NextLevel.
+Reescribimos y simplificamos el método Start:
+  private void Start() {
+    NextLevel();
+  }
+
+Reposicionando la cámara
+Si probamos el juego, vemos que funciona correctamente, pero hay un detalle que molesta.
+Cuando se consigue una llave, el jugador vuelve a la posición de salida, pero el punto de vista
+de la cámara no.
+Concretamente a partir del nivel 2, cuando el jugador vuelve al punto de inicio, la cámara no se
+mueve y lo enfoca justo desde el angulo contrario al original.
+La cámara de Cinemachine es un sistema inteligante que se encarga de posicionar una cámara normal
+en base a un algoritmo.
+Tanto la posición de la cámara normal como la de la cámara de Cinemachine viene calculada por el
+algoritmo. Cualquier intento de cambio es sobreescrito instantáneamente.
+El algoritmo tiene en cuenta el objeto que debe mantener centrado y las restricciones de altura
+y distancias.
+Cómo podemos mover la cámara si no nos permiten cambiar su posición?
+La manera más sencilla es desactivar la cámara de Cinemachine, cambiar la posición del objeto que
+enfoca, cambiar la posición de la cámara y finalmente volver a activarla.
+El reposicionamiento del jugador al comenzar cada nivel lo gestionamos en el mátodo NextLevel del
+script GameManager. Concretamente en su última línea.
+Puesto que tenemos que interactuar con la cámara de Cinemachine, crearemos una nueva variable
+pública de clase:
+  public GameObject camCM;
+A continuación asignaremos el GameObject "CM FreeLock 1" al script asignado a GameManager, en la
+variable "Cam CM".
+Modificamos el métod NextLevel quedando así:
+  public void NextLevel() {
+    if (level == 13) GameOver(); //Si ya es el último nivel...terminamos
+    else { //No es el último nivel...
+      GameObject newGrassPath = Instantiate(grassPath);
+      newGrassPath.transform.position = grassPositions[level++];
+      newGrassPath.name = $"Level {level}"; //Para diferenciarlos
+      player.GetComponent<Rigidbody>().velocity = Vector3.zero; //Sin velocidad lineal
+      player.GetComponent<Rigidbody>().angularVelocity = Vector3.zero; //Sin velocidad angular
+      camCM.SetActive(false); //Desactivamos la cámara inteligente
+      player.transform.position = new Vector3(0, 2, 0); //Movemos el jugador al inicio
+      camCM.transform.position = new Vector3(0, 3, -10); //Movemos la cámara al inicio
+      camCM.SetActive(true); //Activamos la cámara inteligente
+    }
+  }
+Así queda resuelto el problema del reposicionamiento de la cámara en el inicio de cada nivel.
+
+Eliminando explosiones
+Cuando ejecutamos el juego podemos ver como los GameObject de las plataformas de los niveles se
+crean a nivel de raíz en la jerarquía. Esto es correcto.
+También vemos que el objeto correspondiente a la explosión de la llave cuando se recoge queda
+en raíz para siempre, porque nunca lo destruimos.
+Creamos la instancia del prefab de la explosión en el script de Key. En el método OnTriggerEnter.
+Para no dejar objetos innecesarios tomaremos nota del objeto instanciado, recogiéndolo en una
+variable de tipo GameObject.
+Después solicitaremos su destrucción pasado un tiempo razonable (lo que tarde en terminar la
+animación de la explosión). Con 2 segundos es más que suficiente.
+El método OnTriggerEnter quedará así:
+  private void OnTriggerEnter(Collider other) {
+    if (other.CompareTag("Player")) {
+      GameObject shockWave=Instantiate(shockwavePrefab, transform.position, Quaternion.identity);
+      Destroy(gameObject, 0.1f); //Destruimos la llave
+      Destroy(shockWave, 2); //Destruimos la explosión tras 2 segundos
+      gameManager.NextLevel();
+    }
+  }
+Ahora al recoger una llave, se crea un clon del prefab de la explosión (ShockWave) en raíz de la
+jerarquía, pero tras dos segundos se desaparece automáticamente.

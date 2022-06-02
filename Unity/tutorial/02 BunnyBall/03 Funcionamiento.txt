@@ -1,0 +1,159 @@
+Tema: Unity BunnyBall
+Objetivo: Funcionamiento de la aplicación básica
+Fecha: 20220530
+Autor: Ramón Junquera
+
+Analizaremos los elementos que contiene el juego por defecto y cómo funcionan.
+Según se vayan comprobando los detalles, se pueden modificar y el resultado se mostrará
+al instante.
+
+Jugador
+En la ventana Hierarchy encontramos un GameObject llamado Player.
+Corresponde a la bola que mueve el jugador.
+Puesto que el color del nombre está en azul, ya sospechamos que se trata de un Prefab.
+Si lo seleccionamos vemos su contenido en la ventana Inspector (Spere Mesh Filter).
+La malla es una esfera. La bola en la que está metido el conejito.
+El material que se le ha aplicado a la esfera es "PlaterBall".
+Que si hacemos doble click sobre el nombre, nos lleva a la sección Assets/Materials
+seleccionando ese material.
+Su tipo de renderizado no es ni opaco ni transparente. Es Fade, que oculta parcialmente
+el contenido de la esfera.
+La opacidad se indica en el color del material.
+Además de los tres canales básicos (RGB), tenemos el canal de transparencia.
+Por defecto tenemos una transparencia de 139.
+Cuando mayor sea el valor, más opaco será.
+Continuando con las caracteristicas de Player...
+En la sección Lighting vemos que es capaz de producir sombras y recibir sombras proyectadas
+de otros objetos.
+Tienen un Collider en forma de esfera que es el que detecta la colisión con el suelo (u otros
+objetos que podamos añadir).
+Tiene un RigidBody para que le afecten las físicas. No tiene restriciones de movimiento.
+hemos dejado para el final el hecho de tener un script asociado.
+El script se llama "Player" y tiene 3 variables públicas editables:
+- Rb de tipo RigidBody, con el componente del RigidBody del propio objeto.
+- Camera Transform de tipo Transform, con los detalles espaciales de la cámara
+- Game Manager de tipo Game Manager, con el GameObject "GameManager"
+Según la jerarquía, el objeto Player tiene "hijos". Otros objetos de juegan de él y que se moverán
+y girarán con él:
+- Body : cuerpo del conejito
+- polySurface1 : es un objeto compuesto que sólo tiene un elemento: Crown, que corresponde con la
+  corona que tiene sobre la cabeza.
+El cuerpo tiene como malla "Body" y como textura "BodyColor", y es capaz de arrojar sombras.
+polySurface1 no tiene características remarcables. Sólo sirve para contener a Crown.
+Crown tiene como mall "Crown" y como textura "BodyColor" igual que el cuerpo. También arroja
+sombras.
+
+Script de Player
+Vemos que los script se guardan en Assets/Scripts (lo habitual).
+Dentro encontramos el script Player.
+La clase comienza con la declaración de las variables públicas.
+Sólo utiliza el método Update.
+Se toman del InputManager los valores de las pulsaciones horizontal y vertical, guardadas en los
+perfiles "Horizontar" & "Vertical".
+Toma las direcciones hacia las que apunta la cámara que serán sobre las que tendrán efecto las
+pulsaciones en los distintos ejes,
+Anula el valor del eje y porque sólo nos moveremos en horizontal y la diracciones de la cámara
+podrían tener un componente vertical.
+Se normalizn los vectores de dirección para que tengan módulo 1.
+Se calcula el vector final de dirección como suma de dos vector. La pulsación vertical tendrá efecto
+en el movimiento de la cámara (forward) y el la pulsación horizontal sobre el giro
+derecha/izquierda.
+Recordar que desde InputManager obtenemos sólo valores -1, 0 y 1.
+Finalmente se aplica el vector calculado como fuerza que se añade al objeto actual (Player).
+A la fuerza se le multiplica por una constante (5).
+
+GameManager
+Como es habitual, es un GameObject vacío, creado con la única excusa de asociarle un script que
+controle los parámetros globales del juego.
+Efectívamente, tiene asociado el script GameManager y vemos que tiene tres parámetros públicos:
+- Game Over: booleano : desactivado
+- Winner UI : Tiene asociado el GameObject WinnerCanvas
+- Player : Tiene asociado el GameObject Player
+
+Script GameMnager
+Está preparado para poder finalizar el juego, pero no está activo.
+En el método Update debería ir la rutina que detecta la finalización del juego para después
+llamará a GameOver(), pero está vacío.
+El método GameOver se encarga de desativar el GameObject del jugador y destruirlo.
+Activa el canvas de ganador y por último se desactiva él mismo.
+
+WinnerCavas
+Por defecto está desactivado.
+Sólo contiene un panel y en su interior un rectánculo con un texto: "Winner".
+Está preparado para mostrarse al finalizar el juego a través del método GameOver del script
+GameManager.
+
+DeathBox
+Es una GameObjet encargado de destectar cuándo el jugador se ha caido de la plataforma.
+Tiene forma de caja muy plana y grande para que siempre que caiga impacte con él.
+Lo más importante es que tiene un BoxCollider asociado para detectar estas colisiones.
+Como lo que nos interesa es la detección y no que se apliquen las físicas del impacto, se ha
+marcado la casilla "Is Trigger".
+También tiene asociado el script DeathBox que gestionará la colisión.
+
+Script DesathBox
+No tiene variables públicas.
+Sólo contiene el método de detección de colisiones (OnTriggerEnter).
+Se comprueba que el objeto que ha impactado es el del jugador.
+Si lo es, directametne se carga de nuevo la escena. Se resetea el juego y comienza de nuevo.
+  SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+Grass
+Es un prefab.
+Tiene la textura de la hierba. Acepta proyección de sombras.
+Tiene un BoxCollider para detección de colisiones con el jugador.
+No tiene RigidBody porque no nos interesa que esté afectado por la física. Siempre debería
+mantenerse en la misma posición.
+No tiene scripts asociados.
+
+Main Camera
+Es la cámara principal por la que veremos el juegos en la ventana Game.
+El sonido que escuchamos tendrá en cuenta la posición de la cámara gracias al componente Audio
+Listener.
+Tiene asociado el componente CinemachineBrain para que gestione su posición a través del objeto
+"CM FreeeLook1".
+
+CM FreeLook1
+Objeto de gestión de cámaras del parquete de Cinemachine.
+La cámara siempre tendrá centrado y seguirá a Player.
+Este objeto hace que la cámara se mueva alrededor de Player en una posible trajectoria circular.
+Raalmente hay definidas 3 anillos de trayectoria a distintas alturas.
+
+Prefabs
+En la escena importada vemos que existe una carpeta llamada Prefabs.
+Aquí podemois encontrar lops prefabs de Player y Grass que se están utilizando.
+Además tenemos otros: Key, Fence y Showckwave.
+
+Prefab Key
+Con forma de llave.
+Es capaz de arrojar y recibir sombras.
+Tiene dos scripts asociados:
+- Simple Rotate : Tiene un sólo parámetro público en forma de vector
+- Key : Tiene 2 variables públicas:
+  - Shockwave Prefab : tiene asociado el prefab de Shockwave
+  - Game Manager : curuiosamente no tiene asociación
+
+Script SimpleRotate
+Tiene una variable pública llamada speed en forma de vector.
+Sólo tiene un método Update.
+Se encarga de rotar el GameObject asociado a la velocidad indicada en cada uno de los ejes.
+Hace uso de Time.deltaTime para que la rotación no dependa del los Frames Per Second.
+
+Script Key
+Tiene dos variables públicas que sólo puede ser asignadas a través de interface gráfico gracias al
+comando [SerializeField].
+Vemos que el método Start se encarga de localizar el objeto GameMananer y asignarlo a la variable
+gameManager. Esta es la razón por la que no se ve asignada desde el prefab.
+También encontramos el método OnTriggerEnter para la gestión de colisiones.
+Si se detecta que el objeto que ha impactado es el jugador se activa el flag de juego finalizado
+en GameManager,
+Se instancia un nuevo objeto de explosión basado en el prefab que nos han pasado en la variable
+pública shockwaewPrefab y finalmente se destruye el objeto tratado (deberías ser Key).
+
+Prefab Fence
+Simplemente es un objeto con forma de valla que no tiene script asociados.
+
+Prefab Shockwave
+Es un objeto de sistema de partículas. Concretametne tiene forma de esfera que crece en tamaño.
+Tiene una diración de 2 segundos. Se utiliza como explosión cuando se detecta una colisiójn entre
+el jugador y la llave.

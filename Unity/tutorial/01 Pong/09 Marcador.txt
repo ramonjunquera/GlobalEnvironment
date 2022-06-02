@@ -1,0 +1,167 @@
+Tema: Unity Pong
+Objetivo: Marcador
+Fecha: 20220525
+Autor: Ramón Junquera
+
+Creando el panel de puntuaciones
+El objetivo es crear un panel con el número de goles que ha metido cada uno de los jugadores.
+Esta información no es un GameObject. No interfiere ni iteracciona con los objetos del juego.
+Es un objeto de tipo Canvas.
+Un Canvas puede mostrar distintos controles de tipo UI: textos, desplegables, botones, etc.
+Comenzaremos creando en la ventana Hierarchy un nuevo item: UI/Canvas, al que llamaremos ScoreBoard.
+Si hacemos doble click sobre ScoreBoard, se mostrará completamente en la ventana Scene.
+Vemos que tiene un tamaño exageramente mayor que el tamaño de la pantalla que muestra los elementos
+del juego. Pero cuando se ejecute el juego, el Canvas ocupará toda la pantalla.
+
+Añadiendo los marcadores
+Hacemos click con el botón derecho sobre el item ScoreBoard de la ventana Hierarchy y seleccionamos
+UI/Text.
+Se crea un nuevo objeto. Su texto por defecto es "New Text" de color negro, en el centro del canvas.
+Cambiaremos algunos detalles desde la ventana Inspector para que se vea mejor.
+  Text: 0
+  Color: verde
+  Font Size: 50
+  Width : 40
+  Height: 60
+  Pos X: -100
+  Pos Y: 80
+  Paragraph/Alignement: center/center
+Hemos creado el marcador del jugador 1. Lo seleccionamos y lo duplicamos con CTRL+D.
+le asignamos el nombre Counter2.
+Cambiamos algunas propiedades:
+  Pos X: 100
+Nota. Si el texto es más grande que el cuadro que lo contiene, desaparecerá. Para evitarlo debemos
+cambiar las propiedades de "Horizontal Overflow" & "Vertical Overflow" a Overflow.
+
+Almacenando las puntuaciones
+Necesitaremos guardar las puntuaciones de cada jugador.
+Esto lo debemos hacer en el script GameManager.
+Crearemos dos variables privadas en la clase:
+  int score1=0, score2=0;
+En C# cuando se inicializa una variable, automáticamente se le asigna el valor por defecto.
+En números enteros es 0.
+De todas maneras, no todos los compiladores y versiones de C lo hacen. Por eso es una buena
+costumbre inicializar con el valor que nos interesa, sobre todo cuando lo tendremos en cuenta.
+Nota. Para simplificar se ha utilizado dos números enteros, pero la manera correcta sería un
+array de 2 posiciones de Int.
+
+Incrementando marcadores
+Regresamos al método Goal.
+Debemos incrementar el marcador del jugador que nos indiquen.
+Lo hacemos con la siguiente condicional:
+  if (playerId == 1) score1++;
+  else score2++;
+
+Identificando Text en UI
+Para poder actualizar los marcadores, necesitamos identificarlos.
+En este caso se trata de dos objetos de tipo Text hijos de un Canvas.
+Declararemos dos variables de clase de tipo Text en el script GameManager:
+  Text counter1, counter2;
+Un script no reconoce por defecto los elementos de UI. Para que lo haga necesitamos incluir una
+nueva librería:
+  using UnityEngine.UI;
+La identificación de los objetos Texxt sólo la haremos vez en la inicialización de juego.
+La incluiremos en el método Start del script GameManager.
+Comenzaremos identificando el canvas de nombre ScoreBoard con:
+  GameObject canvas = GameObject.Find("ScoreBoard");
+Sabemos que ScoreBoard tiene dos objetos Text hijos, que son los que necesitamos.
+Lo que podemos hacer es solicitar todo el conjunto de objetos hijos de ScoreBoard.
+Que filtre por objetos de tipo Text.
+Después necesitaremos filtrarlos por nombre, que es lo único que los diferencia.
+Para este último paso utilizaremos las facilidades que nos ofrece la librería Linq de Microsoft
+para la selección y filtrado de objetos. Así que añadimos la referencia de la librería:
+  using System.Linq;
+Ahora ya podemos obtener la referencia de cada objeto Text:
+  counter1 = canvas.GetComponentsInChildren<Text>().First(go => go.name == "Counter1");
+  counter2 = canvas.GetComponentsInChildren<Text>().First(go => go.name == "Counter2");
+
+Mostrando resultados
+Continuamos con el método Goal añadiendo las siguientes líneas:
+  counter1.text = score1.ToString();
+  counter2.text = score2.ToString();
+
+Comprobando si ha ganado alguien
+Cuando un jugador alcance cierta puntuación lo daremos por ganador. El juego finalizará y se
+volverá a reiniciar.
+Lo primero que necesitamos saber es valor que debe alcanzar una puntuación para finalizar el juego.
+Esto es un "número mágico" que lo definiremos como variable pública de la clase:
+  public int scoreMax=3;
+Ahora compararemos si la puntuación de alguno de los jugadores alcanza este valor:
+  if(score1==scoreMax || score2==scoreMax) {
+
+Reiniciando el juego
+Al llegar al valor de fin de juego debemos reiniciar la escena para que todo vuelva a empezar.
+Esto lo hacemos con la siguiente línea:
+  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+El objeto SceneManager se gestiona en una librería que no está incluida por defecto.
+Así que la añadiremos:
+  using UnityEngine.SceneManagement;
+
+Nueva partida
+Si no hay un ganador, necesitamos comenzar con una nueva partida.
+Lo único que debemos hacer es reposicionar la pelota en su posición inicial y decidir una nueva dirección.
+Esto ya es algo que hacemos. Concretamente en el mátodo Start del script BallController.
+Para poder ejecutarlo ejutar esta rutina desde otro script, tendremos que crear en BallController un
+método público que reposicione la pelota y la lance en una dirección aleatoria.
+Después desde Start, simplemente lo llamaremos.
+Entonces podremos llamarlo también desde GameManager.
+Vamos paso a paso.
+
+Restructuración de BallController
+Creamos el método LaunchBall:
+  public void LaunchBall() {
+    gameObject.transform.position = Vector3.zero;
+    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(speed * (Random.Range(0, 2) * 2 - 1), speed * (Random.Range(0, 2) * 2 - 1));
+  }
+Simplemente posicionamos la pelota en las coordenadas 0,0.
+El vector Vector3.zero tiene las coordenadas 0,0,0.
+Aunque estamos trabajando en 2D, realmente todas las coordenadas de Unity son en 3D. Por eso podemos
+aplicar un Vector3 sobre la posición de un objeto 2D.
+La siguiente línea es la misma que teníamos definida en Start.
+En el método Star sustituimos la línea completa por la llamada a LaunchBall.
+El script BallController queda así:
+using UnityEngine;
+public class BallController : MonoBehaviour {
+  public int speed = 6;
+  public void LaunchBall() {
+    gameObject.transform.position = Vector3.zero;
+    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(speed * (Random.Range(0, 2) * 2 - 1), speed * (Random.Range(0, 2) * 2 - 1));
+  }
+  void Start() {
+    LaunchBall();
+  }
+}
+
+Finalizando Goal
+Ahora que tenemos publicado el método LauchBall en BallController, sólo tenemos que llamarlo al final de Goal:
+  GameObject.Find("Ball").GetComponent<BallController>().LaunchBall();
+Localizamos el GameObject Ball. Después obtenemos la clase BallController definida en el script.
+Por último llamamos a su método público LaunchBall.
+
+Resultado final del script de GameManager:
+using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.SceneManagement;
+public class GameManager : MonoBehaviour
+{
+  int score1=0, score2=0;
+  Text counter1, counter2;
+  public int scoreMax=3;
+  private void Start() {
+    GameObject canvas = GameObject.Find("ScoreBoard");
+    counter1 = canvas.GetComponentsInChildren<Text>().First(go => go.name == "Counter1");
+    counter2 = canvas.GetComponentsInChildren<Text>().First(go => go.name == "Counter2");
+  }
+  public void Goal(int playerId) {
+    Debug.Log($"Jugador {playerId} ha marcado gol");
+    if (playerId == 1) score1++;
+    else score2++;
+    counter1.text = score1.ToString();
+    counter2.text = score2.ToString();
+    if(score1==scoreMax || score2==scoreMax) {
+      SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    GameObject.Find("Ball").GetComponent<BallController>().LaunchBall();
+  }
+}

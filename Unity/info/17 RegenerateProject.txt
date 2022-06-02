@@ -1,0 +1,13 @@
+Tema: RegenerateProject
+Fecha: 20220302
+Autor: Ramón Junquera
+
+Nos podemos encontrar con que Visual Studio no reconoce los objetos de Unity para un proyecto, aunque
+todo esté perfectamente configurado.
+Esto ocurre:
+- Cuando se carga un proyecto copiado por primera vez
+- Cuando se carga un proyecto creado con una versión distinta a la actual
+- ...
+
+La solución es cerrar el Visual Studio y regenerar el proyecto con:
+  Edit/Preferences/External Tools/Regenerate project files

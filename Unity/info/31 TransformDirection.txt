@@ -1,0 +1,17 @@
+Tema: TransformDirection
+Fecha: 20220602
+Autor: Ramón Junquera
+
+Ejemplo de disparo. Asignar a un objeto proyectil una velocidad en la dirección en la que apunta un objeto arma.
+  rb.velocity = transform.TransformDirection(Vector3.forward);
+Explicación:
+- Suponemos que tenemos el RigidBody del GameObject que se utiliza como proyectil en la variable rb
+- rb.velocity : Asignamos el resultado a la velocidad del RigidBody del GameObject del proyectil
+- transform : Directamente referenciamos la propiedad transform del GameObject actual (el arma)
+- transform.TransformDirection : Es posible que el arma tenga alguna rotación o forme parte de una estructura de
+  otros objetos que provoquen rotación. Para convertir la rotación local a absoluta (Space.World) utilizamos
+  el método transform.TransformDirection. Devolverá un vector con el mismo módulo que el del parámetro, pero con
+  coordenadas absolutas.
+- Vector3.forward : Parámetro de TransformDirection. Es el vector unitario vertical (eje Z) del objeto procesado.
+  En este caso el arma. Que suponemos que dispara hacia arriba. Sería lo mismo que Vector3(0,0,1)
+

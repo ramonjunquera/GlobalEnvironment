@@ -1,0 +1,25 @@
+Tema: Canvas
+Fecha: 20220525
+Autor: Ramón Junquera
+
+Aunque el objeto Canvas sigue perteneciendo a la familia de los GameObject su comportamiento es distinto.
+Está agrupado dentro de la categoría de User Interface (UI).
+Un Canvas es un panel (inicialmente invisible) que se muestra por encima de todos los GameObjects.
+No tiene físicas y no interacciona con ellos.
+Sirve para mostrar información sobreimpresa en la pantalla de juego.
+Cuando se crea, suele tener un gran tamaño.
+El tamaño del Canvas tampoco influye en su visualización. Siempre se muestra ocupando toda la pantalla.
+En un Canvas se pueden incluir otros objetos de UI como textos o incluso controles (botones, barras de scroll,
+imágenes, combo box, sliders, etc).
+Todos los objetos que contiene un Canvas aparecerán como hijos dependientes y por lo tanto, serán arrastrados con él.
+
+Para poder acceder a los objetos de un Canvas (objetos UI) desde código, es imprescindible incluir su librería 
+en la cabecera del Script, con: using UnityEngine.UI
+
+Acceso a elementos de un Canvas
+El canvas es una GameObject.
+Podemos identificarlo con un simple: GameObject canvas = GameObject.Find("NombreDelCanvas");
+Identificamos los elementos hijos filtrando con la librería Linq
+Ejemplo:
+using System.Linq;
+Text counter1 = canvas.GetComponentsInChildren<Text>().First(go => go.name == "Counter1");

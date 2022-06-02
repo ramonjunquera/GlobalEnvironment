@@ -1,0 +1,32 @@
+Tema: Unity Pong
+Objetivo: Dirección aleatoria
+Fecha: 20220524
+Autor: Ramón Junquera
+
+Posibles direcciones iniciales
+La pelota siempre se desplazará en diagonal.
+La velocidad inicial de la pelota tendrá la dirección de alguna de las 2 diagonales en
+cualquiera de sus dos sentidos.
+Para ello decidiremos si la pelota sale hacia arriba o hacia abajo, y si sale hacia la
+derecha o hacia la izquierda.
+Estas dos decisiones las tomaremos haciendo unso de números aleatorios.
+
+Número aleatorios
+Puesto que necesitamos una decisitón aleatoria binaria, utilizaremos el siguiente comando:
+  Random.Range(0, 2)
+Que nos devuelve números enteros entre 0 (incluido) y 2 (excluido).
+Realmente nos devuelve sólo o 0 o 1.
+Pero lo que nosotros queremos es que el valor devuelto sea -1 o 1 para aplicarlo al eje de
+la velocidad inicial.
+Para ello multiplicaremos el resultado por 2. Obtenido como valores 0 o 2.
+Después le restaremos 1 y los valores serán -1 y 1, como queremos. La línea final será:
+  Random.Range(0, 2)*2-1
+
+Velocidad como número mágico
+La velocidad que tendrá la pelota será constante y la consideraremos un número mágico.
+Por lo tanto, la declararemos como pública en el script BallController como:
+  public int speed = 6;
+
+Dirección inicial aleatoria
+En el método Start sustituimos la línea inicial por:
+  gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(speed * (Random.Range(0, 2) * 2 - 1), speed * (Random.Range(0, 2) * 2 - 1));

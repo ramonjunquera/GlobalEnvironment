@@ -1,0 +1,82 @@
+Tema: Unity BunnyBall
+Objetivo: Creación de un nivel
+Fecha: 20220601
+Autor: Ramón Junquera
+
+Objetivo
+El juego actual está completo, tiene una única fase y sin demasiada dificultad.
+El objetivo es que el juego tenga distintas fases y su dificultad se vaya incrementando.
+Crearemos una base de hierba de forma cuadrada. No tan grande como la inicial.
+Este suelo será adyancente al suelo inicial para que se pueda pasar.
+La llave de final de fase se encontrará en él.
+En cada fase, se añadirá un nuevo suelo haciendo cada vez el camino más largo.
+La llave siempre se encontrará en el último suelo añadido.
+Al superar un número determinado de fases, el juego finalizará.
+Si en cualquier fase nos caemos de la plataforma, volveremos a comenzar desde la primera fase.
+
+Simplificando el prefab
+Pretendemos crear un nuevo prefab que incluya suelo y llave.
+Sabemos del ejercicio anterior que el prefab key no tiene asignado ningún componente Collider.
+Para no tener que añadirlo manualmente a cada instancia que creemos, lo añadiremos al prefab de
+key.
+Doble click sobre el prefab de key para editarlo.
+Añadimos el componente de SphereCollider.
+Marcamos el flag "Is Trigger".
+Reducimos su radio a 0.1.
+
+Definiendo el nuevo suelo
+Si miramos las dimensiones de suelo inicial vemos que tiene una escala de 5x5.
+El nuevo suelo tendrá que ser más pequeño.
+Comenzamos eliminando el GameObject Key, porque lo generaremos por programa.
+Crearemos un prefab con forma de suelo cuadrado de 3x3, a la misma altura que el suelo actual y
+que ya contenga la llave encima.
+Vamos a la sección de los prefabs: Project/Assets/Prefabs
+Creamos un duplicado de suelo actual: seleccionamos Grass y pulsamos CRTL+D.
+Se crea el prefab "Grass 1". Le cambiaremos el nombre para identificarlo mejor a GrassPath.
+Si hacemos doble click sobre GrassPath pasamos a editar sólo este prefab.
+Le cambiamos la escala a 3,1,3.
+Añadimos el prefab Key arrastándolo.
+La centramos y la elevamos un poco sobre el suelo si la dejamos en la posición: 0,1.3,0
+Ahora el nuevo prefab de GrassPath está dimensionado y ya incluye la llave con collider.
+
+Juego de un sólo nivel
+Haremos que el juego tengo un sólo nivel, pero que esté preparado para extenderlo.
+Cuando el juego comienza sólo tenemos el suelo inicial. Tenemos que crear una nueva instancia del
+prefab Grasspath adjunto al suelo actual, que ya contendrá la llave de fin de juego.
+Lo primero que haremos en GameManager es crear una variable privada de clase de tipo GameObject
+que contendrá una instancia del prefab GrassParh:
+  GameObject grassPath; //Prefab de GrassPath
+La primera vez que se incie este script seberíamos asignarle la valor del prefab. O lo que es
+lo mismo. Deberíamos localizar la ubicación en la que se guarda el prefab de GrassPath, leer
+su contenido y guardarlo en memoria en el lugar al que apunta esta esta variable. Así cuando lo
+vayamos a utilizar para crear instancias del prefab, no tendremos que volver a leer de disco.
+Esto lo haremos dentro del método Awake, que se ejecuta antes de Start.
+Awake es el método adecuado para la inicialización de valores de clase.
+Añadimos el método así:
+  private void Awake() {
+    grassPath = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GrassPath.prefab");
+  }
+Al comando AssetDatabase necesita cargar la librería UnityEngine añadiendo la siguiente línea:
+  using UnityEngine;
+Ya tenemos todo preparado para instanciar el prefab de GrassPah.
+Puesto que sólo tenemos un nivel, lo haremos directamente en el método Start. Quedando así:
+  private void Start() {
+    GameObject newGrassPath = Instantiate(grassPath);
+    newGrassPath.transform.position = new Vector3(0, 0, 4f);
+  }
+Instanciamos el prefab GrassPah. No indicamos ningún objeto padre. Así que se creará en raíz con
+el nombre GrassPath(Clone).
+A continuación lo movemos a su posición final. Lo dejaremos detrás del suelo inicial para que sea
+visible desde el punto de cámara inicial.
+El 4 viene porque la posición de los suelos viene dada por su centro.
+Por lo tanto dos suelos adyacentes deben estar a una distancia igual a la mitad de sus lados
+  5/2+3/2=2.5+1.5=4
+
+Prueba
+Si ejecutamos el juego, comprobaremos que funciona correctamente.
+
+
+
+
+
+

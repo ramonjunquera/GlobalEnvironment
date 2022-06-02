@@ -1,0 +1,13 @@
+Tema: Raycast
+Fecha: 20220602
+Autor: Ramón Junquera
+
+Raycast es una función que permite lanzar un rayo en linea recta desde un punto, en una dirección,
+con cierto alcance y da como respuesta si ha impactado con el collider de algún objeto.
+
+Los usos prácticos son variados:
+- Lanzo un raycast desde el avatar del jugador hacia abajo para saber a qué distancia estoy del suelo.
+- Lanzo un raycast de la trayectoria de una bala para conocer el punto de impacto, obtener la normal del
+  polígono en el que impact y calcular la trayectoria de rebote.
+- Lanzo un raycast desde la posición de la cámara hacia el punto en el que se ha hecho click con el
+  ratón para saber si esa trayectoria tocará a algún objeto.

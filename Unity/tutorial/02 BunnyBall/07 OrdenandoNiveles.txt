@@ -1,0 +1,35 @@
+Tema: Unity BunnyBall
+Objetivo: Creación ordenada de niveles
+Fecha: 20220601
+Autor: Ramón Junquera
+
+Objetivo
+Actualmente creamos las plataformas de los niveles en raíz de la jerarquía del juego.
+Lo intetaremos dejar un poco más ordenado.
+Crearemos un GameObject vacío llamado Levels y crearemos las plataformas por debajo de él.
+Aprovecharemos para crear en su interior los objetos temporales de las explosiones.
+
+Creando Levels
+Creamos un GameObject vacío en raíz de la jerarquí con nombre Levels
+
+Creando plataformas
+La creación de plataformas se realiza en el script de GameManager.
+Necesitaremos crear una nueva variable pública para guardar el gameObject Levels y así poder
+indicar el objeto padre a la hora de instanciar.
+Añadimos en la cabecera de la clase la referencia:
+  public GameObject levelsFolder;
+A continuación asignaremos el GameObject Levels a GameManager, a su script, en la variable
+"Levels Folder".
+En el método NextLevel creamos la instancia.
+Modificamos su línea para que se creen bajo el objeto Levels:
+  GameObject newGrassPath = Instantiate(grassPath,levelsFolder.transform);
+
+Creando explosiones
+Tenemos que hacer algo parecido para instancias las explosiones en bajo Levels.
+Esto se hace en esl script Key.
+También necesitaremos acceso al objeto Levels, pero esta vez no lo declararemos como variable
+pública. Aprovecharemos que ya tenemos referenciado el GameObject GameManager, y el script de
+GameManager tiene una variable pública con el GameObject Levels llam ada levelsFolder.
+Simpremente utilizaremos su referencia.
+Modificamos la línea que instancia explosiones así:
+  GameObject shockWave=Instantiate(shockwavePrefab, transform.position, Quaternion.identity,gameManager.levelsFolder.transform);

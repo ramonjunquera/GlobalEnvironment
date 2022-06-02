@@ -1,0 +1,16 @@
+Tema: deltaTime
+Fecha: 20220602
+Autor: Ramón Junquera
+
+No es conveniente desarrollar un juego que dependa sólamente de la tase de refresco de la máquina.
+Por eso se deben evitar los cálculos absolutos dentro del método Update().
+
+Para facilitar la programación, se crea el método deltaTime, que nos devuelve el tiempo que se ha tardado en renderizar el último frame.
+Se consume como Time.deltaTime
+
+Hasta ahora para mover un objeto utilizábamos expresiones como esta que no tenían en cuenta la velocidad de renderizado:
+  gameObject.transform.Translate(new Vector2(2, 3));
+Si queremos que la velocidad se mantenga contante son independencia del hardware utilizamos:
+  gameObject.transform.Translate(new Vector2(2, 3) * Time.deltaTime);
+
+Nota. Suponemos que la tasa de refresco se mantiene estable en el tiempo.

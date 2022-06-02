@@ -1,0 +1,117 @@
+Tema: Unity Pong
+Objetivo: Pads
+Fecha: 20220524
+Autor: Ramón Junquera
+
+Creando las palas
+Crearemos las palas de cada jugador. Una vez más serán sprites 2D cuadrados.
+Los llamaremos Pad1 (el izquierdo) y Pad2 (el derecho).
+Estas serán sus características:
+
+       Position  Scale
+Nombre   X  Y    X   Y
+------  -- --   --- --
+Pad1    -7  0   0.5  3
+Pad2     7  0   0.5  3
+
+Aplicando componentes
+Las palas necesitarán detectar colisiones contra la pelota así que tendremos que añadir el componente
+de BoxCollider2D.
+Para mover las palas, utilizaremos algunas características del componente RigidBody2D, como la
+asignación de una velocidad vertical con cada pulsación de las teclas correspondientes.
+También añadimos este componente.
+Cuando una pala colisione con un borde, se detendrá.
+Seleccionamos en la ventana Hierarchy los 2 Pads y añadimos BoxCollider2D & RigidBody2D.
+
+Palas sin gravedad
+Si ahora ejecutamos el juego, vemos que ambas palas caen por gravedad hasta el borde inferior.
+Necesitamos anular su gravedad.
+Seleccionando ambos Pads, editamos el componente RigidBody2D/Gravity Scale de 1 a 0.
+
+Restricción de giro
+Si ejecutamos ahora veremos que las palas ya no caen, pero en cuanto la pelota golpea una pala, se desplaza
+en horizontal y comienzan a girar tanto la pala como la pelota.
+Debemos añadir algunas restricciones para que esto no ocurra.
+Seleccionamos los dos Pads, en Inspector/RigidBody2d/Constrains: Freeze Position X & Freeze Rotation Z.
+Las palas ya no se desplazarán en horizontal ni rotarán.
+Para la pelota, seleccionamos Ball y en Inspector/RigidBody2d/Constrains: Freeze Rotation Z.
+La pelota ya no girará.
+
+Gestión de pulsaciones
+La detección de pulsaciones de las palas la gestionaremos en un script que controle las palas.
+Crearemos un nuevo script llamado PadController.
+Comprobaremos el teclado cada vez que de dibuje un nuevo frame.
+La rutina estará dentro del método Update.
+
+InputManager
+Para detectar las las pulsaciones utilizaremos el módulo del InputManager.
+Este módulo se encarga de la comunicación con cualquier dispositivo de control, incluido un teclado.
+Desde el programa principal llamaremos a InputManager.
+Si en futuro cambiamos la configuración de los controles, no tendremos necesidad de modificar el
+código del programa principal.
+Encontraremos el InputManager en: Edit/Project Settings.../Input manager/Axes
+Aquí tenemos etiquetadas todos los tipos de entrada de datos.
+La ventaja es que podemos crear nuevas configuraciones.
+Lo más sencilo es copiar alguna similar y adaptarla.
+Duplicaremos dos veces la configuración "Vertical".
+Hacemos click con el botón derecho sobre el item "Vertical" y seleccionamos "Duplicate Array Element".
+Ahora tenemos dos "Vertical" idénticos.
+Seleccionamos uno de ellos y cambiamos su nombre a "VerticalPad1".
+Será el controlador de la pala del jugador 1 (izquierda).
+Los valores más importantes son "Negative Button" y "Positive Button", que son las teclas que se
+comprobarán. Los configuraremos con las teclas s & w.
+Borraremos las alternativas "Alt Negative Button" & "Alt Positive Button" para evitar confusiones.
+Repetiremos la duplicación de la entrada "Vertical". La renombramos a "VerticalPad2".
+Borramos las alternativas.
+Los valores principales ya tienen las teclas que nos interesan down & up.
+
+Detectando pulsaciones
+Ya podemos regresar al método Update del script PadController.
+El primer problema es que utilizaremos el mismo script para el control de ambas palas.
+Así que tendremos que identificar de qué pala se trata para leer el perfil que corresponda en el
+InputManager.
+En la siguiente linea:
+  float vel = (gameObject.name == "Pad1") ? Input.GetAxisRaw("VerticalPad1") : Input.GetAxisRaw("VerticalPad2");
+Coprobamos el nombre del GameObject actual.
+Si se trata del Pad1, leeremos la configuración "VerticalPad1" del InputManager y guadaremos su resultado
+en una variable de tipo float llamada vel.
+Si el GameObject actual no fuese Pad1, se leería la configuración "VerticalPad2".
+En estos momentos el contenido de la variable vel sería:
+  -1 si se está pulsando la tecla hacia abajo
+   0 si no se está pulsando ninguna tecla
+   1 si se está pulsando la tecla hacia arriba
+A continuación aplicaremos este valor como velocidad al RigidBody2D de la pala que corresponda con:
+  gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, vel);
+Guardaremos el script. Pasamos a Unity y asignamos este script a los dos Pads.
+
+Ajustando velocidad
+Si ejecutamos el juego, vemos que efectivamente las palas se mueven con las teclas definidas.
+Pero la velocidad es muy lenta. Porque sólo alcanza un máximo de un cuadro por segundo.
+Necesitamos multiplicar este valor por una constante, que inicialmente no sabemos cual es.
+Probamos con 3. Añadiremos una nuva línea. El método Update quedaría:
+  float vel = (gameObject.name == "Pad1") ? Input.GetAxisRaw("VerticalPad1") : Input.GetAxisRaw("VerticalPad2");
+  vel *= 3;
+  gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, vel);
+Guardamos y ejecutamos.
+Ahora se mueve con más soltura.
+
+Números mágicos
+El valor arbitrario que hemos aplicado para aumentar la velocidad de desplacamiento de las palas se considera
+un número mágico.
+Los número mágicos son aquellos valores obtenidos a bese de pruebas que hacen que el juego se comporte de
+manera adecuada.
+Es una buena costumbre NO escribir estos valores directamente en el código, por si en el futuro necesitamos
+reajustarlos para equilibrar el comportamiento del juego.
+Para evitarlo los declararemos como variables públicas de la clase de gestión. Así podremos verlos y
+modificarlos en las propiedades del script.
+Cambiamos la estructura de la clase de la siguiente manera:
+  public float verticalSpeed = 3;
+  void Start() {
+  }
+  void Update() {
+    float vel = (gameObject.name == "Pad1") ? Input.GetAxisRaw("VerticalPad1") : Input.GetAxisRaw("VerticalPad2");
+    vel *= verticalSpeed;
+    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, vel);
+  }
+
+

@@ -1,9 +1,0 @@
-Tema: FixedUpdate
-Fecha: 20220316
-Autor: Ramón Junquera
-
-El método void Update() se ejecuta en cada frame.
-En el Update() JAMAS aplicaremos físicas, porque la frecuencia de ejecución depende de la potencia de la máquina
-que esté ejecutando la aplicación.
-Para no depender de ello, podemos utilizar el método void FixedUpdate(), que se ejecuta con una frecuencia de 50Hz
-(50 veces por segundo).

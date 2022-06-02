@@ -1,0 +1,29 @@
+Tema: Unity Pong
+Objetivo: Configuración del entorno
+Fecha: 20220523
+Autor: Ramón Junquera
+
+Disposición de ventanas.
+La configuración de disposición de ventanas se puede cambiar.
+En la parte superior derecha tenemos un desplegable con varias opciones preconfiguradas.
+Yo suelo utilizar la "2 by 3" porque me permite ver al mismo tiempo la ventana Scene para interactuar con los
+objetos y la ventana Game para ver el resultado.
+
+Proporciones
+Las proporciones por defecto de la ventana Game son libres.
+La mayoría de las pantallas actuales son de 16:9.
+Para cambiarlo, en la ventana Game, en el segundo desplegable, seleccionamos la opción "16:9 Aspect".
+Automáticamente se adaptan, tanto la ventana de Game como el recuadro que representa la zona de visión en la ventana Scene.
+
+Play color
+Cambiamos el color del fondo mientras estamos en modo PLay para ser conscientes que cualquier cambio
+en este modo, no será tenido en cuenta.
+En Edit/Preferences.../Colors/General/Playmode tint seleccionamos un color rojo puro
+
+Scripts folder
+Para organizar mejor nuestro proyecto, crearemos una carpeta llamada Scripts dentro de Assets, al mismo nivel que Scenes, en
+la que guadaremos el código.
+Podemos hacerlo de varias maneras:
+- En la ventana Project, hacemos click con el botón derecho sobre la carpeta Assets y seleccionamos Create/Folder.
+- En la ventana Project, al lado de la carpeta Scenes, click con el botón derecho, Create/Folder.
+Le asignamos el nombre Scripts.

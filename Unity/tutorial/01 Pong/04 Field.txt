@@ -1,0 +1,75 @@
+Tema: Unity Pong
+Objetivo: Dibujando el campo
+Fecha: 20220523
+Autor: Ramón Junquera
+
+Objetivo
+Dibujaremos los límites del campo aplicando los componentes necesarios.
+
+Creando bordes
+Ya no necesitaremos el GameObject Floor. Lo eliminaremos.
+Crearemos una rectángulo para cada uno de los bordes: superior, inferior, derecho e izquierdo.
+Estas serán sus características:
+        Position Scale
+Nombre     X  Y   X  Y
+--------- -- --  -- --
+WallDown   0 -5  18  1
+WallUp     0  5  18  1
+WallRight  9  0   1  9
+WalLeft   -9  0   1  9
+Nota: Una vez creado un GameObject, podemos duplicarlo pulsando CTRL+D
+
+Aplicando componentes
+Al igual que el suelo de antes, no necesitaremos que los bordes sean afectados por las físicas
+pero sí deben detectar colisiones.
+Seleccionamos los 4 bordes en la ventana Hierarchy y añadimos el componente "Box Collider 2D".
+
+Eliminando la gravedad
+Si ejecutamos el juego, vemos que la pelota sigue siendo atraida por la gravedad y rebota
+indefinidamente con el borde inferior.
+En el juego no hay gravedad. Debemos eliminarla de las físicas de la pelota.
+Seleccionamos la pelota, y localizamos el componente "RigidBody2D" en la ventana Inspector.
+Cambiamos el valor de "Gravity Scale" de 1 a 0.
+
+Velocidad inicial
+Ahora la pelota ya no cae porque no tiene gravedad.
+Para comprobar que funciona correctamente necesitamos que tenga una velocidad inicial.
+La velocidad inicial no es una de las características que podamos modificar desde el interface
+del componente. Debemos hacerlo a través de un script.
+
+Creando el primer script
+En la ventana Project hacemos click con el botón derecho en la carpeta Scripts y seleccionamos:
+Create/C# Script.
+Le llamaremos BallController.
+Es importante que el nombre que le aplicamos sea correcto porque lo utiliza para crear las clases
+que contiene. Si nos confundimos, no será suficiente con renombrarlo. Deberíamos borrarlo y crearlo
+de nuevo.
+Si hacemos doble click sobre el script, se abrirá Visual Studio como editor.
+Comprobamos que carga algunas librerías y define una clase derivada con dos métodos.
+El método Start se ejecuta sólo una vez cuando se crea el GameObject.
+El método Update se ejecuta antes de la composición de cada fotograma.
+Por lo tanto, la velocidad incial la aplicaremos en el método Start.
+El método Start contendrá la siguiente línea:
+  gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(3,4);
+gameObject hace referencia a la instancia del propio GameObject.
+De la cual obtenemos el componente "RigidBody2D".
+Al que asignamos un nuevo valor para su velocidad.
+El valor siempre es un vector. En este caso 2D.
+Datemos unas coordenadas al vector velocidad.
+(3,4) significa que la pelota comenzará en la dirección diagonal de arriba a la derecha.
+Guardamos el script.
+
+Asignando y probando
+Regresamos a Unity.
+Automáticamente se detecta una modificación en el script de BallController y se recompila.
+Para el script afecte al GameObject Ball debemos asignarlo.
+La manera más sencilla es arrastrarlo desde la ventana Project al objeto Ball de la ventana Hierarchy.
+Lo podemos verificar seleccionando Ball y comprobando que al final de la ventana Inspector se hace
+referencia al script BallController.
+Si ahora ejecutamos el juego comprobaremos que efectívamente tiene una velocidad inicial en la dirección
+prevista, pero tras unos pocos rebotes pierde la velocidad de uno de los ejes.
+Esto ocurre porque el material que hemos aplicado a Ball tiene "fricción".
+Regresaremos a la edición del material: Project/Assets/Physicmaterial/Rubber
+Cambiaremos el campo Friction de 0.4 a 0
+Ahora no perderá velocidad en cada rebote.
+Ejecutamos de nuevo y vemos que la pelota rebota contra los bordes indefinidamente.

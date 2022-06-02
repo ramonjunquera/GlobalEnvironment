@@ -1,0 +1,32 @@
+Tema: Traslate
+Fecha: 20220602
+Autor: Ramón Junquera
+
+Position
+Para posicionar un objeto en unas coordenadas utilizamos el vector Position dependiente de Transform.
+Ejemplo:
+  gameObject.transform.position = new Vector2(4, 5);
+
+Traslate
+Entendemos por mover un objeto a cambiar su posición actual a una nueva.
+El vector de la posición actual a la nueva lo podríamos llamar vector desplazamiento (o delta).
+Por ejemplo, queremos mover un objeto 2 unidades en el eje X y 3 unidades en el eje Y, desde la posición
+en la que se encuentra ahora. Podríamos utilizar el siguiente desarrollo:
+  float x = gameObject.transform.position.x;
+    float y = gameObject.transform.position.y;
+    gameObject.transform.position = new Vector2(x + 2, y + 3);
+El vector Translate nos facilita estas funciones porque no tenemos que preocuparnos por la obtención de la
+posición obsoluta del objeto para después aplicarle el vector de desplazamiento. Simplemente aplicamos el
+vector de desplazamiento. Ejemplo:
+  gameObject.transform.Translate(new Vector2(2, 3));
+
+Referencias
+En los ejemplo enteriores estamos suponiendo que tanto las coordenadas de posición como las del vector
+de desplazamiento son absolutas. Se tiene en cuenta el sistema de cartesiano de coordenadas del mundo Unity.
+La expresión:
+  gameObject.transform.Translate(new Vector2(2, 3));
+Es equivalente a:
+  gameObject.transform.Translate(new Vector2(2, 3), Space.World);
+Pero hay otro tipo de referencia: Space.Self
+En este caso se tomaría como referencia los ejes del propio objeto.
+Si el objeto tiene algún giro, sus ejes no coincidirán con los del mundo.

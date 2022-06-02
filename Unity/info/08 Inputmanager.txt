@@ -1,5 +1,5 @@
 Tema: InputManager
-Fecha: 20220321
+Fecha: 202206021
 Autor: Ramón Junquera
 
 Habitualmente se requiere la lectura de los controles del usuario para poder interaccionar con los GameObjects
@@ -51,6 +51,8 @@ Esta consulta directa no requiere ninguna configuración del Input Manager.
 
 Nota:
 - GetKey indica si la tecla está pulsada en este momento
-- GetKeyDown indica la primer pulsación de esa tecla. No se mantiene en el tiempo si la tecla no tiene repetición.
+- GetKeyDown es true si se ha pulsado la tecla desde la última lectura. No se mantiene en el tiempo.
+- GetKeyUp es true si se ha soltado la tecla desde la última lectura.
+- Lo correcto es que el identificador de tecla venga dado KeyCode.* pero también admite algunos strings como "up" o "space".
 
 

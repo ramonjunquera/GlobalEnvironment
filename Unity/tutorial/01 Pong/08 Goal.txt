@@ -1,0 +1,89 @@
+Tema: Unity Pong
+Objetivo: Controlador de gol
+Fecha: 20220525
+Autor: Ramón Junquera
+
+Objeto GameManager
+Para cada uno de los elementos del juego creamos su correspondiente controlador en forma de script
+que se encarga de gestionar su comportamiento.
+Pero hay ocasiones en las que el comportamiento general del juego no pertenece a ningún elemento
+concreto (reinicio de partida, calificaciones, etc).
+Este es nuestro caso, en el que queremos que alguien gestione qué ocurre cuando se mete un gol.
+Normalmente el objeto que gestiona el comportamietno del juego es una simple excusa para poder
+asignarle un script que lo haga.
+Crearemos un GameObject llamado GameManager.
+Click con el botón derecho en la ventana Hierarchy y seleccionamos "Create Empty", porque ni siquiera
+necesitamos que sea visible.
+Le asignamos el nombre GameManager.
+A continuación crearemos un script con el mismo nombre (GameManager) y lo asignaremos al GameObject
+GameManager.
+Como esto es habitual, el script GameManager incluso tiene un icono distinto al resto.
+
+Métodos de GameManager
+En este caso no utilizaremos los métodos por defecto de Start & Update y los borraremos.
+Crearemos un nuevo método público para que pueda ser llamado desde otros scripts.
+Lo llamaremos Goal.
+Tendrá como parámetro el identificador del jugador que ha marcado el gol (1 o 2).
+Su función será gestionar lo que ocurre después de que alguien meta un gol.
+Inicialmente no haremos nada y sólo contendrá una línea que informará de que ha sido llamado.
+Quedará así:
+  public void Goal(int playerId) {
+    Debug.Log($"Jugador {playerId} ha marcado gol");
+  }
+
+GoalController
+Un gol se produce cuando le pelota consigue impactar con alguno de los bordes laterales.
+Cuando se "mete un gol" no se pretende que la pelota rebote, sino que se contabilice.
+Crearemos un nuevo script llamado GoalController y lo asignaremos a los dos bordes laterales.
+En los BoxCollider2D de los bordes laterales (WallRight & WallLeft) marcaremos el check "Is Trigger".
+Con esto desactivamos las consecuencias automáticas de la detección de colisiones.
+La pelota atravesará los bordes.
+Por otra parte, podemos llamar a una función determinada cuando esto ocurra para decidir nosotros
+qué hacer en estos casos.
+El nombre del método no se puede elegir. Será el método que controle las colisiones marcadas como Trigger:
+  void OnTriggerEnter2D(Collider2D collision) {}
+Puesto que el objeto que estamos procesando podría tener colisiones de varios, lo correcto sería que la
+primera línea sea:
+  if (collision.name == "Ball") {}
+Pero en nuestro caso, sabemos que no tendremos colisión con ningún otro objeto que no sea la pelota.
+Por eso, no haremos la comparación y directamente escribiremos el código que gestiona el gol
+Atención. Si hubiésemos solapado los bordes entre sí (un borde horizontal con uno vertical), tendríamos
+la obligación de añadir la condicional, que se ejecutaría en cada fotograma porque siempre existiría una
+colisión. No vale la pena. Es preferible tener cuidado de no solaparlos.
+
+Identificación de GameObjects
+Tras detectar una colisión, prinicipalmente llamaremos a la función Goal que hemos definido en el script
+GameManager. Así que lo primero que debemos hacer es identificar el GameObject GameManager que tiene
+asignado el script con el método.
+Crearemos una variable (privada) llamada gameManager y en el método Star le asignaremos el valor que
+corresponda:
+  gameManager = GameObject.Find("GameManager");
+Nota. No utilizaremos el método Update. Lo borraremos.
+
+Quién marca?
+Al llamar a OnTriggerEnter2D sabemos que alguien ha metido un gol, pero no sabemos quién.
+Es lo siguiente que debemos averiguar. Lo hacemos con la siguiente línea:
+  int playerWinId = gameObject.name == "WallLeft" ? 2 : 1;
+Si el objeto que ha recibido la colisión es el borde izquierdo (WallLeft) es porque el jugador 2 ha metido
+gol. En cualquier otro caso, habrá sido el jugador 1.
+Guardamos el identificador del jugador que ha metido el gol en la variable playerWinId de tipo Int.
+Ahora que sabemos qué jugador se tiene que quedar con el punto del juego, llamaremos al método Goal de
+GameManager.
+Para probarlo, sólo nos falta mostrar la ventana Console.
+Lo conseguimos desde Windows/General/Console.
+Arrastando desde la solapa del nombre podemos encajarla donde queramos.
+El script GoalController queda así:
+  public class GoalController : MonoBehaviour {
+    GameObject gameManager;
+    void Start() {
+      gameManager = GameObject.Find("GameManager");
+    }
+    void OnTriggerEnter2D(Collider2D collision) {
+      int playerWinId = gameObject.name == "WallLeft" ? 2 : 1;
+      gameManager.GetComponent<GameManager>().Goal(playerWinId);
+    }
+  }
+
+Probando
+Ahora si ejecutamos el juego, veremos que cuando se mete un gol, aparece en Console el mensaje de quien lo
+ha marcado.

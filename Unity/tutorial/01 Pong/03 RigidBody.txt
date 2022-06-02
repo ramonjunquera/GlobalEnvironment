@@ -1,0 +1,98 @@
+Tema: Unity Pong
+Objetivo: Probando físicas
+Fecha: 20220523
+Autor: Ramón Junquera
+
+Objetivo
+Comenzaremos creando lo que será la pelota final (un cuadrado) y un suelo (un rectángulo).
+Aplicaremos físicas para que la pelota caiga hasta el suelo y rebote en él de manera infinita.
+
+Creando la pelota
+La pelota la representaremos con un cuadrado.
+Crearemos un simple Sprite cuadrado.
+En la ventana Hierarchy, hacemos click con el botón derecho sobre SampleScene y seleccionamos
+GameObject/2D Object/Sprites/Square
+Se creará un sprite cuadrado en el centro de coordenadas, de un tamaño de 1x1.
+
+Renombrando
+Para poder identificarlo mejor, le cambiaremos su nombre de Square a Ball, en la parte superior
+de la ventana Inspector.
+
+Aplicando física
+Para que se apliquen automáticamente las leyes de la física, debemos añadir a la pelota el componente
+de RigidBody 2D.
+Una vez seleccionada la pelota en la ventana Scene, nos iremos a la ventana Inspector y pulsaremos el
+botón "Add Component". Seleccionamos "RigidBody 2D".
+
+Probando la física
+Si ahora pulsamos el botón Play comprobaremos que la pelota cae el vacío atraida por la gravedad.
+
+Creando el suelo
+Como suelo usaremos un rectángulo horizontal.
+Igual que antes, crearemos un nuevo sprite cuadrado al que llamaremos Floor.
+El suelo debería estar por debajo de la pelota así que lo bajaremos.
+Podemos hacerlo arrastrando con el ratón o escribiendo directamente los valores exactos en la ventana
+Inspector. En este caso Y=-3
+Para alargarlo en horizontal, cambiaremos la escala X=5.
+
+Añadiendo colisiones
+Si ahora pulsamos el Play comprobaremos que la pelota comienza a caer (como antes), el bloque del
+suelo no cae porque no tiene el componente RigidBody y no se le aplican físicas, pero cuando la
+pelota llega al suelo, simplemente lo atraviesa.
+Esto ocurre porque nos falta un elemento para que detecte colisiones.
+Debemos añadir a ambos GameObject el componente Collider.
+Seleccionamos simultáneamente los GameObject Ball & Floor en la ventana Hierarchy y pulsamos el botón
+"Add Component" de la ventana Inspector. Seleccionamos "Box Collider 2D".
+Este componente crea un objeto de detección de colisiones en forma de caja, que coincide con los límites
+del GameObject.
+Podemos ver y editar los límites de Collider. En la ventana Inspector, en la sección del componente
+"Box Collider 2D", pulsamos el botón de "Edit Collider".
+Aparecerá en la ventana Scene la forma del Collider en verde.
+Incluso podemos ajustar sus límites y tamaños a la forma del sprite manualmente.
+
+Probando la física
+Ahora, al pulsar Play, la pelota cae hasta el suelo, con el que impacta, quedándose sobre él.
+
+Creando el material "goma".
+Para que la pelota rebote, necesitaremos que "esté hecha" de un material que rebote.
+Crearemos un nuevo material para físicas.
+Al igual que con los scripts, crearemos una carpeta llamada PhysicMaterials colgando de Assets.
+Click con el botón derecho sobre PhysicMaterials y seleccionamos: Create/2D/Physics Material 2D.
+AL material lo llamaremos Rubber.
+En las características del material que vemos en la ventana Inspector, cambiamos el valor de Bounciness de 0 a 1.
+Esto es el coeficiente de rebote.
+
+Aplicando el material
+Teniendo en cuenta que el orden en el que se toma un PhysicMaterial es:
+  1. BoxCollider
+  2. RigidBody
+  3. PhysicMaterial por defecto
+Aplicaremos este material al BoxCollider de la pelota.
+Seleccionamos en la ventana Hierarchy el GameObject Ball.
+En la ventana Inspector, localizamos la sección Box Collider 2D y dentro Material.
+Desplegamos y seleccionamos Rubber.
+Si probamos ahora (modo Play) veremos que la pelota rebota continuamente sobre el suelo.
+
+Más allá de la física.
+Si nos fijamos bien, cada rebote llega más alto que el rebote anterior.
+En cada interacción ganamos energía.
+Esto es debido al cálculo realizado con valores de tipo float, que no son exactos.
+No tiene mayor importancia.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

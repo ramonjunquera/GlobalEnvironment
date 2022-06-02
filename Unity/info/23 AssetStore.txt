@@ -1,0 +1,10 @@
+Tema: AssetStore
+Fecha: 20220307
+Autor: Ramón Junquera
+
+AssetStore es un lugar en el que el usuario final puede subir sus creaciones para compartirlas.
+Hay tanto gratuitas como de pago.
+Podemos abrirla a través del menú: Windows/Asset Store
+Para poder interactuar, nos tenemos que dar de alta con el usuario de Unity.
+
+

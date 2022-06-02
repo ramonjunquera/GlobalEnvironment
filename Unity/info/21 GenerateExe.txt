@@ -1,9 +1,0 @@
-Tema: GenerateExe
-Fecha: 20220302
-Autor: Ramón Junquera
-
-Se puede generar una versión ejecutable del juego para distintas plataformas a través de:
-  File/Build Settings..
-
-Es importante que se incluya un botón de escape que permita terminar el juego.
-Sino, sólo podremos cerrarlo a la fuerza, deteniendo el proceso de la aplicación.

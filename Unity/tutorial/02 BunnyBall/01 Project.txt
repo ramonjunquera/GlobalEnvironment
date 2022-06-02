@@ -1,0 +1,14 @@
+Tema: Unity BunnyBall
+Objetivo: Configuración de proyecto
+Fecha: 20220526
+Autor: Ramón Junquera
+
+El objetivo del proyecto es la introducción en la programación 3D.
+Utilizaremos recursos públicos y gratuitos para facilitar el desarrollo.
+
+Comenzamos creando un nuevo proyecto de tipo "3D Core" llamado BunnyBall.
+
+Configuramos la visualización en modo "2 by 3".
+Fijamos en la ventana Ganme el aspecto a 16:9.
+
+

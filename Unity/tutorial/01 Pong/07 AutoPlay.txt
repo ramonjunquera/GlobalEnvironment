@@ -1,0 +1,55 @@
+Tema: Unity Pong
+Objetivo: Juego automático
+Fecha: 20220524
+Autor: Ramón Junquera
+
+Juego automático
+Ahora tenemos controles manuales para cada una de las palas.
+El juego necesita dos jugadores.
+Podríamos inventar alguna manera para que las palas se controlen solas. Así podríamos definir una de las
+palas con juego automático y que juego sea sólo para un jugador.
+Incluso si activamos el auto juego para ambas palas se podría quedar en modo demo.
+
+Cómo?
+La manera más sencilla es teniendo en cuenta la posición de la pelota respecto a la pala.
+Si la pelota está por encima de la pala, subiremos. Si está por debajo, bajaremos.
+Tomaremos el centro de la pala y de la pelota para tomar las medidas.
+
+Trigger configurable
+Para poder activar/desactivar fácilmente el módo de juego automático, lo pondremos como variable
+pública en el script PadController:
+  public bool autoPlay = false;
+
+Indentificación de Ball
+Si el modo de auto juego está activado, necesitaremos comparar las cotas de la pala y de la pelota.
+La pala será el objeto que ha llamado al script, pero nos faltará la referencia la GameObject Ball.
+Lo que haremos será identificarlo en la inicialización y guardarlo en una variable para utilizarlo
+en futuras llamadas.
+Crearemos una variable de clase (no pública) llamada ball:
+  GameObject ball;
+Y dentro del método Start identificaresmos a Ball y lo guardaremos:
+  ball = GameObject.Find("Ball");
+
+Implementación
+Haremos algunas modificaciones en el método Update, que quedará así:
+void Update() {
+  float vel=verticalSpeed;
+    if(autoPlay) {
+      vel*=(gameObject.transform.position.y > ball.transform.position.y)? -1 : 1;
+    } else {
+      vel*=(gameObject.name == "Pad1") ? Input.GetAxisRaw("VerticalPad1") : Input.GetAxisRaw("VerticalPad2");
+    }
+    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, vel);
+  }
+Como antes, la velocidad final la guardaremos en la variable vel, pero esta vez la inicializaremos con
+el número mágico por defecto.
+Dependiendo de si el juego es automático, calcularemos la velocidad dedistinta manera.
+En auto juego, multiplicaremos la velocidad por 1 o -1, dependiendo de si la pelota está por encima
+de la pala o no. Puesto que la velocidad nunca es cero, la pala nunca estará quieta, excepto cuando
+se encuentre pegada a un borde que le impida moverse más.
+Si no tenemos activo el auto juego, utilizaremso el método de antes.
+En cualquiera de los casos, aplicamos el resultado al RigidBody2D de la pala.
+
+Prueba
+Podemos activar el modo de auto juego del jugador 2 (derecho) y comprobar como efectívamente es capaz
+de controlar la pala teniendo en cuenta la posición de la pelota.

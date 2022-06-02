@@ -1,6 +1,0 @@
-Tema: Beautifier
-Fecha: 20220302
-Autor: Ramón Junquera
-
-Dentro de Visual Studio, siempre podemos solicitar el reformateo automático del código con la sigueinte conbinación de teclas:
-  CTRL+K CTRL+D

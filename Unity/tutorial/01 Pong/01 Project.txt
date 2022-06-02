@@ -1,0 +1,14 @@
+Tema: Unity Pong
+Objetivo: Configuración de proyecto
+Fecha: 20220414
+Autor: Ramón Junquera
+
+Para este proyecto utilizaremos la última versión disponible de Unity HUB LTS (Long Term Service): 2021.3.0f1
+Mientras dura un proyecto no es conveniente actualizar la versión, para evitar incompatibilidades.
+
+El objetivo del proyecto es aprender a utilizar las herramientas de Unity progresivamente y de forma práctica.
+Concretamente intentaremos reproducir el comportamiento del juego Pong.
+
+Tras la instalación de Utiliy HUB creamos un nuevo proyecto de tipo "2D Core".
+
+

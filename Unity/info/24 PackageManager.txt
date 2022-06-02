@@ -1,0 +1,13 @@
+Tema: Package Manager
+Fecha: 20220320
+Autor: Ramón Junquera
+
+Algunos de los ejemplos expuestos en el Asset Store, necesitan de unos paquetes de recursor específicos
+para que funcionen correctamente. Es el caso del ejemplo Bunny Ball que necesita el paquete Cinemachine.
+
+Para instalarlo, vamos a Windows/Package Manager. Seleccionamos arriba a la izquierda: Packages: Unity Registry
+Buscamos Cinemachine, lo seleccionamos y lo instalamos.
+Debemos salir y volver a entrar en el proyecto para poder ver los cambios.
+
+
+

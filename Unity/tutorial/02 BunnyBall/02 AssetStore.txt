@@ -1,0 +1,71 @@
+Tema: Unity BunnyBall
+Objetivo: Asset Store
+Fecha: 20220526
+Autor: Ramón Junquera
+
+Identificación en Unity
+Puesto que descargaremos recursos de Internet, es conveniente asegurarno que estamos
+identificados en Unity antes de comenzar.
+Desde el Unity Editor, seleccionamos Edit/Sign in... e introducimos nuestras credenciales
+de Unity.
+
+Repositorio de recursos
+No siempre tenemos que crear los recursos que utilziaremos en el juego desde cero.
+En esta ocasión los descargaremos del Asset Store. Un repositorio en el que se ofrece una
+amplia gama de recursos, publicados por desarrolladores particulares.
+Tenemos tanto recursos de pago como gratuitos.
+Podemos acceder al Asset Store a través del menú: Windows/Asset Store.
+Desde la versión 2020.1 ya no está integrado dentro de la propia herramienta de Unity.
+Se accede a través de un simple navegador.
+De todas maneras, esta opción de menú nos abre la URL en el navegador, pulsando el
+botón "Search online".
+
+Descarga de paquete
+En la parte superior de la página encontramos un campo para hacer búsquedas. Escribimos
+"bunny ball". Sólo aparece un paquete.
+Si hacemos click sobre él nois mostrará más información.
+Comprobamos que es un asset gratuito.
+Debemos pulsar el botón "Ass to My Assets".
+A continuación nos pide identificarnos en Unity.
+El botón cambia de texto a "Open in Unity". Lo pulsamos.
+Un mensaje nos pide permiso para que el navegador pueda abrir el Unity Editor.
+Marcamos la opción para que lo permita siempre y no nos lo vuelva a pedir y pulsamos el botón
+"Abrir Unity Editor".
+Automáticamente regresa el editor de Unity.
+Si no nos habíamos identificado en Unity, nos pedirá ahora que lo hagamos.
+Se nos abre la ventana "Package Manager" con todas los paquetes que hayamos comprado en el
+Assest Store.
+Seleccionamos "Bunny Ball Assest" y pulsamos el botón Download.
+Tras unos instantes finaliza la descarga.
+Ahora debemos pulsar el botón Import.
+Nos aparece un mensaje de alerta indicando que se sobreescribirá la configuración de nuestro
+proyecto. Lo aceptamos pulsando el botón Import.
+Aparece la ventana "Import Unity Package" con todo el contenido del paquete de Bunny Ball.
+Por defecto todos los elementos están marcados para su importación.
+Lo dejaremos así.
+Pulsamos el botón Import.
+De compilan todos sus scripts y se importan los elementos.
+Vemos que en la ventana Project, la carpeta Assests contiene el nuevo material.
+
+Cinemachine
+El paquete de recursos de Bunny Ball utiliza otro paquete adicional para facilitar la gestión de
+las cámaras llamado Cinemachine.
+Aprovechando que aun tenemos abierta la ventana de "Package Manager", en la parte superior izquierda
+seleccionamos Packages: Unity Registry.
+Uno de los paquete se llama Cinemachine.
+Lo seleccionamos y pulsamos el botón Install.
+Tarda un minuto en descargar e instalar.
+Ya podemos cerrar la ventana "Package Manager".
+
+Probando
+Si vamos a Project/Assets/Scenes veremos que tenemos 2.
+SampleScene que es la escena vacía que aparece pro defecto cuando creas un proyecto y Game, que es la
+escena que se ha cargado junto con el paquete de recursos de Bunny Ball.
+Hacemos doble click sobre Game y veremos cómo es la escena del juego.
+Si ahora ejecutamos el juego podemos probarlo.
+La escena contiene un suelo de hierba y tierra, sobre el que cae una bola semitransparente con un
+conejo cuadrado en su interior.
+La bola responde a las pulsaciones de las teclas de cursor y tiene inercia.
+La cámara va siguiendo a la bola en todo momento.
+Si la bola sale del área del suelo se cae hasta un punto en el que se reinicia la escena y vuelve a
+empezar.

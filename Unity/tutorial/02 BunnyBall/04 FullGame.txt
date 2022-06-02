@@ -1,0 +1,57 @@
+Tema: Unity BunnyBall
+Objetivo: Desarrollo de juego con todos los componentes
+Fecha: 20220601
+Autor: Ramón Junquera
+
+Completaremos el juego utilizando los elemtos que falta:
+- Objetivo del juevo: llave
+- Al obtener la llave, explota, desaparece, se muestra el texto de ganador y finaliza el juego.
+
+Incluyendo la llave
+La llave es un Prefab.
+Arrastramos el objeto desde Project/Assets/Prefabs/Key a la escena.
+Puesto que la llave rota sobre varios ejes, la elevaremos un poco sobre la hierba.
+Si la hierba tiene una altura de Y=1, es suficiente con que llevemos la llave hasta Y=1.3.
+Puesto que el jugador cae en el centro del suelo, deberíamos poner la llave en una de sus esquinas
+para que no se recoja inmediatamente al caer.
+Si ejecutamos ahora el juego, vemos que al tocar la llave simplemente la atravesamos.
+
+Colisión con la llave
+Si le echamos un vistazo al script asociado con Key vemos que tiene definido el método
+OnTriggerEnter. Está preparado para gestionar colisiones, pero al GameObject Key le falta un
+componente de Collider para que se llame al método.
+Añadimos un SphereCollider.
+Por defecto la esfera engloba totalmente la malla del objeto.
+No hace falta que sea tan grande. Podemos reducir su radio a 0.1.
+Marcaremos el flag "Is Trigger".
+Si ejecutamos ahora, se detecta la colisión, explota, destruye la llave, pero el juego no
+finaliza.
+
+Finalizando el juego
+El script de Key, el método OnTriggerEnter activa la variable booleana pública de GameManager
+gameOver a true. Después activa el objeto de la explosión y finaliza destruyendo la llave.
+Si miramos el script GameManager vemos que tiene definido el método privado GameOver que finaliza
+correctamente el juego, pero no lo llama nadie.
+El método Update está vacío y preparado para hacerlo.
+Así que solventaremos el problema incluyendo en Update una comparación de la variable gameOver.
+Si está activa, llamamos a GameOver.
+  if (gameOver) GameOver();
+Si ejecutamos el juego, cuando recogemos la llave, explota, desaparece, se muestra la pantalla
+de ganador y finaliza el juego.
+
+Optimizando
+No es una buena idea utilizar el método Update para que compruebe continuamente las condiciones
+necesarias para que el juego finalice. Consumimos recursos innecesarios.
+Es más sencillo utilizar la gestión del objeto que puede provocar la finalización del juego para
+que llama a GameOver si cumple las condiciones.
+Vamos paso a paso.
+Si queremos llamar al método GameOver de GameManager desde otro script, necesitamos que sea público.
+Lo cambiamos:
+  public void GameOver() {
+Vamos al script Key. Método OnTriggerEnter.
+Eliminamos la primera línea que asigna valor a gameOver de GameManager.
+Después de la última acción (destruir el objeto actual), añadiremos la llamada a GameOver:
+  gameManager.GameOver();
+Regresamos al script GameManager.
+Ya no necesitamos ni el método Update ni la variable de clase gameOver. Los borramos.
+El juego funciona igual, pero consume menos recursos.

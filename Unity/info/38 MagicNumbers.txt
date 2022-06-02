@@ -1,0 +1,12 @@
+Tema: Números mágicos
+Fecha: 20220526
+Autor: Ramón Junquera
+
+Se considera un número mágico aquella constante que permite que el juego mantenga un
+equilibrio de jugabilidad, velocidad, dificultad, sencillez, ...
+Habitualmente estos valores son obtenidos en base a la práctica.
+No les atribuimos un significado especial porque no deberíamos cambiar sus valores.
+De todas maneras, para evitarproblemas futuros, es muy conveniente que estos valores
+se almacenen en variables públicas en cada script y con un nombre descriptivo.
+Así, según se vaya desarrollando el juego, podremos ajustarlos fácilmente sin tener
+que hacer modificaciones en el código.

@@ -1,0 +1,17 @@
+Tema: Tipos de colliders
+Fecha: 20220602
+Autor: Ramón Junquera
+
+Los colliders por defecto permiten cubrir todas las formas simples.
+Las mallas son sencillas: cubos, prismas, cilindros, esferas, cápsulas (cilindro acabado en dos
+semiesferas), etc...
+
+Cuando tenemos un objeto con malla compleja debemos decidir qué tipo de collider aplicamos.
+Si no necesitamos detectar con precisión el punto de impacto, quizás nos sirva un collider con
+malla sencilla.
+Si no es así, tendremos que pasar al collider de tipo Mesh (MeshCollider).
+Este collider toma como malla, la misma que tiene el objeto.
+Si el objeto no tiene una malla excesivamente compleja, no afectará al rendimiento del juego.
+Aun así, tenemos una opción intermedia.
+El MeshCollider tiene el flag "Convex". Si lo activamos, recontruye la malla del collider, evitando
+todas las zonas cóncavas y simplificando la malla.

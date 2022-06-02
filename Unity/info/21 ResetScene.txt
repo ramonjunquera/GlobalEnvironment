@@ -1,0 +1,11 @@
+Tema: ResetScene
+Fecha: 20220302
+Autor: Ramón Junquera
+
+En cualquier punto del juego podemos resetear la escena (volver a comenzar desde el principio) con
+el siguiente comando:
+  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+Imprescindible incluir librerías adicionales en la cabecera del Script con:
+  using UnityEngine.SceneManagement;
+
+Se reiniciará todo excepto el tiempo de ejecución de la aplicación que seguirá corriendo.
