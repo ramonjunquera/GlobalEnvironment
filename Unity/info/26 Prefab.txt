@@ -12,7 +12,7 @@ Para convertir un GameObject en Prefab, sólo tenemos que arrastrarlo a la carpe
 que inicialmente no existe y tendremos que crear manualmente.
 Para crear una instancia de un Prefab, sólo tenemos que arrastarlo de la carpeta Prefabs a la escena.
 
-En la sección de jerarquía (Hierarchy) de se mostrarán los nombres de las instancias de Prefabs en
+En la sección de jerarquía (Hierarchy) se mostrarán los nombres de las instancias de Prefabs en
 azul, para distinguirlos de los objetos originales.
 
 Si modificamos las características de una instancia y finalmente las queremos conservar en el Prefab,

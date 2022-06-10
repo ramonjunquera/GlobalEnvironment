@@ -1,0 +1,100 @@
+Tema: Unity BunnyBall
+Objetivo: RestartButton
+Fecha: 20220608
+Autor: Ramón Junquera
+
+Objetivo
+Cuando conseguimos recoger la última de las llaves, se muestra un canvas con el texto "Winner"
+del cual no podemos salir.
+Añadiremos un botón que nos permita reiniciar el juego de nuevo.
+
+Viendo los cambios
+Por defecto el Canvas está desactivado. Sólo se activa cuando se consigue recoger la última
+llave. Esto es un problema, porque ahora queremos añadir un botón, pero no vemos el Canvas.
+Así que lo activaremos para poder ver qué hacemos y dónde lo colocamos.
+Seleccionamos el Hierarchy el objeto WinnerCanvas. En Inspector, activamos el flag que está
+al lado del nombre.
+Tendremos que acordarnos de desactivarlo una vez que comprobemos que funciona correctamente.
+
+Dónde?
+Vemos que dento del canvas hay creado un Panel que es el que contiene el Texto.
+El botón lo incluiremos dentro del Panel; como el texto.
+Click con el botón derecho en Hierarchy/Game/WinnerCanvas/Panel y seleccionamos UI/Button.
+
+Ajustando el botón
+El botón se crea en el centro del Canvas.
+Lo moveremos a la esquina inferior derecha.
+Para cambiar el texto de su interior debemos movernos al objeto Text que contiene.
+Cambiaremos el texto a: restart.
+Cambiaremos el nombre de Button a ButtonRestart
+Ajustaremos la anchura del botón para que muestre poco más que el texto.
+
+Funcionalidad
+Como siempre, la funcionalidad se definirá en un script.
+Creamos uno nuevo llamado WinnerCanvas Controller y lo asociaremos con el objeto WinnerCanvas.
+Utilizaremos el script para la funcionalidad de todos los objetos que tenemos en el Canvas,
+que en este caso sólo es el botón.
+No necesitaremos los métodos por defecto (Start & Update). Los borraremos.
+Crearemos un método para que gestione la pulsación del botón.
+Lo llamaremos ButtonRestartClick().
+Es obligatorio que el método sea público para poder ser llamado desde el exterior de la
+propia clase.
+En su interior nos limitaremos a poner un mensaje de debug, sólo para comprobar que funciona.
+Quedando así:
+  public void ButtonRestartClick() {
+    Debug.Log("Pulsado!");
+  }
+
+Asociando eventos
+En la ventana Hierarchy, seleccionamos el objeto ButtonRestart.
+En la ventana Inspector localizamos la sección "On Click()", que está vacía.
+Pulsamos el botón + para añadir una nueva llamada.
+En la nueva entrada, hacemos click sobre el campo negro que está bajo "Runtime Only".
+Nos aparecerán todos nuestros assests y objetos de la escena.
+No llamaremos directamente al script, sino al objeto que tiene asociado el script, el Canvas.
+Seleccionamos "Scene" y utilizamos la búsqueda para localizar el GameObject WinnerCanvas.
+En el campo que tenemos a la derecha de "Runtime Only" seleccionamos
+  WinnerCanvasController/ButtonRestartClick()
+
+Probando
+Si ahora ejecutamos el juego vemos que aparece desde el principio el Canvas (porque lo hemos
+dejado activo) y al pulsar el botón restart se muestra el mensaje en la ventana "Console".
+
+Analizando soluciones
+Ahora sólo nos queda sustituir la línea de prueba del método que gestiona el click por la
+funcionalidad definitiva.
+Lo que queremos es que el juego se reinicie.
+Esto ya lo tenemos programado cuando se detecta una colisión en el GameObject DeathBox.
+Si no queremos duplicar código podríamos:
+- Crear en el script DeathBox un nuevo método que sólo se encargue de resetear la escena.
+  Este método debe ser público para poder ser llamado desde fuera de la clase
+- Modificar el método OnTriguerEnter para que después de la comparación con el objeto
+  colisionado llame al método de reseteo de escena.
+- Crear una variable pública que para que contenga el GameObject DeathBox.
+- Asociar el GameObject DeathBox con esa variable.
+- Sustituir en el método ButtonRestartClick la línea de debug por una llamada al método
+  de reseteo de escena de DeathBox
+También podemos ser prácticos y pensar que el reseteo de escena es una simple línea y que no
+tiene mayor importancia duplicarla en dos posiciones del código.
+Así que simplemente sustituimos la línea de debug por la misma línea de reseteo de escena
+que utilizábamos en el script de DeathBox, quedando:
+  public void ButtonRestartClick() {
+    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+  }
+Para que SceneManager pueda ser reconocido se debe incluir su librería:
+  using UnityEngine.SceneManagement;
+
+Probando
+Lo probamos
+
+Desactivando el Canvas
+Ahora que hemos terminado y comprobado que funciona, desactivamos el Canvas que vuelva a la
+normalidad.
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+Tema: Laser RYS1230
+Fecha: 20220609
+Autor: Ramón Junquera
+
+Descripción
+Se trata de un emisor laser de carcasa cilíndrica: 12mm de diámetro x 35mm de altura.
+La diferencia con los emisores más básicos es que posee una cabeza giratoria que permite enfocar el punto para ajustarlo
+a la distancia.
+
+Alimentación: De 3 a 5 V
+Consumo máximo: 40mA
+Longitud de onda: 650nm (rojo)
+
+

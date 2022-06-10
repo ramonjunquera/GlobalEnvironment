@@ -1,7 +1,7 @@
 /*
   Tema: Librería RMT
   Objetivo: Receptor de pulso simple sin RMT
-  Fecha: 20220504
+  Fecha: 20220609
   Autor: Ramón Junquera
 
   Descripción:
@@ -16,7 +16,11 @@
 
 #include <Arduino.h>
 
-const byte pinLed=32;
+#ifdef ARDUINO_AVR_UNO
+  const byte pinLed=2;
+#elif defined(ESP32)
+  const byte pinLed=32;
+#endif
 bool lastStatus=true; //Suponemos que inicialmente no hay luz
 
 void setup() {
@@ -27,6 +31,6 @@ void setup() {
 void loop() {
   if(digitalRead(pinLed)!=lastStatus) { //Si cambia de estado
     lastStatus=!lastStatus; //Cambiamos el estado anterior
-    Serial.printf("%u : %u\n",millis(),lastStatus); //Mostramos la hora en ms y el estado actual
+    Serial.println(String(millis())+" : "+String(lastStatus));
   }
 }
