@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20220503
+  Fecha: 20220808
   Tema: Librería para display OLED I2C 0.96" 128x64 SSD1306
   Objetivo: Demo de librería RoJoSSD1306
 

@@ -46,7 +46,7 @@ prefab Grasspath adjunto al suelo actual, que ya contendrá la llave de fin de j
 Lo primero que haremos en GameManager es crear una variable privada de clase de tipo GameObject
 que contendrá una instancia del prefab GrassParh:
   GameObject grassPath; //Prefab de GrassPath
-La primera vez que se incie este script seberíamos asignarle la valor del prefab. O lo que es
+La primera vez que se inicie este script deberíamos asignarle la valor del prefab. O lo que es
 lo mismo. Deberíamos localizar la ubicación en la que se guarda el prefab de GrassPath, leer
 su contenido y guardarlo en memoria en el lugar al que apunta esta esta variable. Así cuando lo
 vayamos a utilizar para crear instancias del prefab, no tendremos que volver a leer de disco.
@@ -56,8 +56,8 @@ Añadimos el método así:
   private void Awake() {
     grassPath = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GrassPath.prefab");
   }
-Al comando AssetDatabase necesita cargar la librería UnityEngine añadiendo la siguiente línea:
-  using UnityEngine;
+Al comando AssetDatabase necesita cargar la librería UnityEditor añadiendo la siguiente línea:
+  using UnityEditor
 Ya tenemos todo preparado para instanciar el prefab de GrassPah.
 Puesto que sólo tenemos un nivel, lo haremos directamente en el método Start. Quedando así:
   private void Start() {

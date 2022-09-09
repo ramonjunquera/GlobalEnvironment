@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20220519
+ * Versión: 20220704
  * Compatibilidad: Platformio & Qt
  * 
  * Funciones generales:
@@ -487,8 +487,7 @@ byte digitalRead(byte pin) {
 }
 
 //Lee el estado de todos los pines digitales
-uint32_t digitalRead()
-{
+uint32_t digitalRead() {
   //Es suficiente con leer un registro. No tenemos más de 32 pines
   //Esta instrucción no pertenece al estandar de Arduino
 
@@ -762,7 +761,7 @@ void freqPWM(float freq) {
 
   //Debemos calcular el periodo em microsegundos
   //El periodo es el inverso de la frecuencia
-  //Puesto que nos dan la frecuencia en Hz el perido lo obtenemos en segundos
+  //Puesto que nos dan la frecuencia en Hz el periodo lo obtenemos en segundos
   //Debemos multiplicar por 1E6 para pasarlo a microsegundos
   //Además tenemos una resolución de 256 niveles de PWM así que tendremos que
   //dividirlo por 256 para calcular el periodo de un tick

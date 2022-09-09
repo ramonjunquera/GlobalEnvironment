@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20190704
+  Fecha: 20220808
   Tema: Librería RoJoFileDictionary
   Objetivo: Demostración de uso
   Material: cualquier placa, lector SD (opcional)
@@ -13,40 +13,29 @@
 //Objeto de gestión de diccionario
 RoJoFileDictionary myDicc;
 
-void list()
-{
-  //Muestra en pantalla el contenido del diccionario
-  
+//Muestra en pantalla el contenido del diccionario
+void list() {
   RoJoFileDictionaryItem item;
   Serial.println("list "+String(myDicc.count())+ " items:");
-  for(uint16_t i=0;i<myDicc.count();i++)
-  {
+  for(uint16_t i=0;i<myDicc.count();i++) {
     item=myDicc.item(i);
     Serial.println("#"+String(i)+" = '"+ item.key + "' : '" + item.value + "'");
   }
 }
 
-void setup()
-{
-  //Activamos la comunicación serie
+void setup() {
   Serial.begin(115200);
   delay(3000);
-  //Inicializamos el diccionario
-  myDicc.begin("/mydicc.txt");
-  //Comenzamos vaciando cualquier información contenida
-  myDicc.clear();
-  //Mostramos el contenido (debería estar vacío)
-  list();
-  //Añadimos un registro dando los valores
-  myDicc.add("primero","el uno");
-  //Añadimos otro registro dando el item
-  RoJoFileDictionaryItem item;
+  myDicc.begin("/mydicc.txt"); //Inicializamos el diccionario
+  myDicc.clear(); //Comenzamos vaciando cualquier información contenida
+  list(); //Mostramos el contenido (debería estar vacío)
+  myDicc.add("primero","el uno"); //Añadimos un registro dando los valores
+  RoJoFileDictionaryItem item; //Añadimos otro registro dando el item
   item.key="segundo";
   item.value="el dos";
   myDicc.add(item);
   Serial.println("Añadidos dos registros");
-  //Mostramos el contenido
-  list();
+  list(); //Mostramos el contenido
   //Valor del índice 0
   Serial.println("Valor del índice 0 = '" + myDicc.value(0) + "'");
   //Clave del índice 1
@@ -55,8 +44,7 @@ void setup()
   myDicc.add("primero","el nuevo uno");
   Serial.println("Añadido registro con clave existente");
   //El valor se habrá actualizado
-  //Mostramos el contenido
-  list();
+  list(); //Mostramos el contenido
   //Preguntamos si contiene una clave existente
   Serial.print("Existe la clave 'segundo'? ");
   if(myDicc.containsKey("segundo")) Serial.println("SI");
@@ -83,7 +71,6 @@ void setup()
   list();
 }
 
-void loop()
-{
+void loop() {
   //Nada especial que hacer aquí
 }
