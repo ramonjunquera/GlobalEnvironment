@@ -1,9 +1,25 @@
 Tema: FixedUpdate
-Fecha: 20220316
+Fecha: 20220914
 Autor: Ramón Junquera
 
+Update
 El método void Update() se ejecuta en cada frame.
-En el Update() JAMAS aplicaremos físicas, porque la frecuencia de ejecución depende de la potencia de la máquina
-que esté ejecutando la aplicación.
-Para no depender de ello, podemos utilizar el método void FixedUpdate(), que se ejecuta con una frecuencia de 50Hz
-(50 veces por segundo).
+Cada frame se ejecuta a la máxima velocidad que permite el hardware.
+Por lo tanto, la velocidad de refresco no es constante. Depende de la complejidad de cálculo y generación de cada
+fotograma.
+Esto lo podemos comprobar si incluimos en la función Update de cualquier scipt la siguiente línea:
+  Debug.Log(Time.deltaTime);
+Se mostrará en cada fotograma el tiempo de cálculo en segundos.
+Podemos comprobar que siempre es distinto.
+
+FixedUpdate
+El método void FixedUpdate() se ejecuta periódicamente con una frecuencia de 50Hz con independencia del número
+de frames-per-second del juego.
+Si incluimos el mismo comando que antes:
+  Debug.Log(Time.deltaTime);
+Comprobamos que el tiempo (periodo) siempre es de 0.02s.
+La frecuencia es el inverso del periodo. frecuencia=1/periodo=1/0.02=50 Hz
+
+Uso
+Las físicas del juego no deberían depender del hardware en el que se ejecuta, por lo tanto, siempre se incluirán
+en FixedUpdated y no en Updated.

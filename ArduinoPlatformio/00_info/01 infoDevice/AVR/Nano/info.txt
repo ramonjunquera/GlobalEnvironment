@@ -3,10 +3,10 @@ Tema: Descripción de placa
 Objetivo: Descripción de placa Arduino Nano
 Descripción:
 
-Arduino Nano es una versión mejorada de Aruino UNO.
+Arduino Nano es una versión mejorada de Arduino UNO.
 Conserva la mayoría de sus características.
 
-Las principales diferencias son:
+Las principales diferencias respecto a Arduino UNO son:
 - Formato. Tamaño mucho más reducido. Se puede pinchar en una breadboard.
 - Se incluyen dos nuevos pines para las entradas analógicas (A6 y A7)
 - Se reduce el consumo. De 45mA de UNO a 15mA en Nano

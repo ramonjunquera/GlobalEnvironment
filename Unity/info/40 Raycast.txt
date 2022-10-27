@@ -1,9 +1,9 @@
 Tema: Raycast
-Fecha: 20220602
+Fecha: 20220914
 Autor: Ramón Junquera
 
-Raycast es una función que permite lanzar un rayo en linea recta desde un punto, en una dirección,
-con cierto alcance y da como respuesta si ha impactado con el collider de algún objeto.
+Raycast es una función que dado un punto y un vector dirección, calcula los detalles de impacto con
+el primer collider: nombre del objeto, distancia, punto de impacto, normal al impacto, etc.
 
 Los usos prácticos son variados:
 - Lanzo un raycast desde el avatar del jugador hacia abajo para saber a qué distancia estoy del suelo.
@@ -11,3 +11,27 @@ Los usos prácticos son variados:
   polígono en el que impact y calcular la trayectoria de rebote.
 - Lanzo un raycast desde la posición de la cámara hacia el punto en el que se ha hecho click con el
   ratón para saber si esa trayectoria tocará a algún objeto.
+
+Ejemplo de llamada 2D:
+  Transform raycastOrigin = gameObject.transform.Find("RaycastOrigin");
+  RaycastHit2D hit = Physics2D.Raycast(raycastOrigin.position, Vector2.down);
+Creamos la variable raycastOrigin de tipo Transform. Guardará los detalles de posición, escala y rotación
+(la típica estructura de Transform).
+Localizamos un objeto hijo del actual (gameObject) de nombre "RaycastOrigin" y asignamos su Tansform a
+la variable.
+Creamos una nueva variable de tipo RaycastHit2D, con nombre hit.
+La función Raycast se encuentra dentro de la librería Physics2D.
+El primer parámetro son las coordenadas de origen. En este caso raycastOrigin es la posición del objeto
+RaycastOrigin.
+El segundo parámetro es la dirección del rayo: hacia abajo.
+
+Ejemplo de comprobación:
+Siempre verificaremos si la trayectoria ha impactado con algún collider:
+  if(hit.collider == null) Debug.Log("vacío");
+  else Debug.Log(hit.transform.name);
+Si nos interesa la distancia de a la que ha impactado:
+  if(hit.collider == null) Debug.Log(100);
+  else Debug.Log(hit.distance);
+O simplificando:
+  float height = hit.collider != null ? hit.distance : 100;
+  Debug.Log(height);

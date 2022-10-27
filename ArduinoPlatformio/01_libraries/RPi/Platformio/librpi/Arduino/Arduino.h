@@ -1,7 +1,7 @@
 /*
  * Autor: Ramón Junquera
  * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20220704
+ * Versión: 20221027
  * Compatibilidad: Platformio & Qt
  * 
  * Funciones generales:
@@ -312,7 +312,11 @@ void delayMicroseconds(uint32_t us) {
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
 
-  usleep(us); //Esperamos el número de microsegundos indicado
+  //Nota.
+  //Habitualmente sería suficiente con una llamada a usleep().
+  //Pero las interrupciones (si las utilizamos) interfieren en esta función.
+  //Por eso es aconsejable algo más estándar
+  this_thread::sleep_for(chrono::microseconds(us));
 }
 
 //Devuelve el control después de transcurridos los milisegundos indicados.

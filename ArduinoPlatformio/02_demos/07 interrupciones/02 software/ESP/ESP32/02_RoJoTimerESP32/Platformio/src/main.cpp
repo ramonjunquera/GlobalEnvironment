@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Gestión de interrupciones en ESP32
-  Fecha: 20201117
+  Fecha: 20221026
   Objetivo: Demostración de clase de gestión del timers de ESP32
   Material: placa ESP32
   Descripción:
@@ -19,18 +19,21 @@
 
 //Definición de variables globales
 RoJoTimerESP32 myTimer(0); //Creamos un objeto que gestionará el timer 0
+#ifdef ARDUINO_LOLIN32
+  byte pinLed=5;
+#else
+  byte pinLed=LED_BUILTIN;
+#endif
 
 //Función a la que llamará el timer
 void myInterruptFunction() {
   //Simplemente cambia el estado del led integrado
-  digitalWrite(LED_BUILTIN,!digitalRead(LED_BUILTIN));
+  digitalWrite(pinLed,!digitalRead(pinLed));
 }
 
 void setup() {
-  //Inicialización del puerto serie
-  Serial.begin(115200); delay(4000);
-  //Configuramos el pin del led integrado como salida
-  pinMode(LED_BUILTIN,OUTPUT);
+  Serial.begin(115200); delay(4000); //Inicialización del puerto serie
+  pinMode(pinLed,OUTPUT); //Configuramos el pin del led integrado como salida
   //Lanzamos el timer con un periodo de un segundo y con la función de llamada
   myTimer.attach(1,myInterruptFunction);
   Serial.println("Timer. Periodo: 1 s. Indefinido");
