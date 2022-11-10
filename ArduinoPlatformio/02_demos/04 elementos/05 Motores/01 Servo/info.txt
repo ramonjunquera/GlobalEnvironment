@@ -1,4 +1,6 @@
-Servomotores
+Tema: Servomotores
+Fecha: 20221104
+Autor: Ramón Junquera
 
 Se llama servomotor al conjunto de motor+potenciómetro.
 Es un motor cuyo eje también mueve un potenciómetro que le indica la posición del eje.
@@ -27,11 +29,24 @@ Un servomotor estándar tiene un par de 5Kg/cm. Es decir, es capaz de mover 5Kg a
 Con este valor podríamos calcular que si queremos mover un peso 5cm, el máximo será de 1Kg.
 
 Servomotor Tower Pro SG90 9g
-Uno de los modelos de microservos pequeños más comunes es el modelo Tower Pro SG90 9g.
-El rango de giro es de 180º.
-Debido a su bajo consumo, podemos alimentarlo directamente desde la placa.
-Trabaja en el rango de 3.0 a 7.2V
-Tiene un par de giro (torque) de 1.8Kg/cm a 4.8V.
-Su velocidad de giro es de 60 grados en una décima de segundo a 4.8V.
+Rango angular: 180º
+Material de engranajes: plástico
+Rango de voltaje: de 3.0 a 7.2V
+Par de giro (torque): de 1.8Kg/cm a 4.8V.
+Velocidad angular:
+  353 grados/segundo a 4.8V.
+  462 grados/segundo a 6V.
+Notas:
+- Debido a su bajo consumo, podemos alimentarlo directamente desde la placa
+
+Servomotor MG996R
+Rango angular: 180º
+Material de engranajes: metal/plástico
+Rango de voltaje: de 4.8 a 7.2V
+Par de giro (torque): de 12Kg/cm a 6V.
+Velocidad angular: 600 grados/segundo a 4.8V.
+Notas:
+- Consume demasiado para conectar directamente a placa. Si se hace se quemará el regulador de tensión.
+  Se debe conectar siempre a una fuente de alimentación externa.
 
 Los servomotores vienen con unos accesorios para poder sujetar objetos llamados cuernos (horns).

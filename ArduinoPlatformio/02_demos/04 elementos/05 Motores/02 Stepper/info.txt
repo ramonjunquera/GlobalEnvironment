@@ -1,0 +1,103 @@
+Tema: Descripción de características de motores paso a paso
+Fecha: 20221109
+Autor: Ramón Junquera
+
+Motor paso a paso o stepper motor.
+
+Tiempo de paso.
+El rotor no salta instantáneamente hasta el electroimán que lo atrae.
+Necesita un tiempo mínimo que depende de la fuerza de atracción, del número de electroimanes que estén activos
+y de la distancia que debe recorrer para alcanzarlos.
+
+Alimentación.
+Los motores consumen mucha energía.
+Una placa es capz de alimentar un único motor.
+Si necesitamos más, tendremos que alimentarnos de manera externa.
+
+Topes y limitaciones.
+El no estar ligado el rotor a nada, si alcanzamos un punto límite del que no podemos pasar, simplemente hará fuerza
+pero nunca se rompera.
+En motores con desplazamiento lineal con topes, podemos usar una secuencia de inicialización desplazandonos un recorrido
+mayor que el real para asegurarnos que hemos llegado al principio y allí resetear el contador de pasos a 0.
+
+Tipos de secuencias:
+Tenemos varias maneras de mover el rotor de un motor paso a paso.
+Suponemos que tenemos 4 electroimanes por vuelta: E1, E2, E3 y E4.
+Dispuestos en los puntos cardinales:
+
+    E1
+
+E4      E2
+
+    E3
+
+- MaxPrecission
+  Es la que más control proporciona.
+  El paso de un electroimán a otro se hace progresivamente.
+  Paso 1: Comenzamos con el electroimán inicial activado
+  Paso 2: Activamos ambos electroimanes
+  Paso 3: Desactivamos el electroimán inicial y dejamos sólo el final
+  La secuencia completa para una vuelta es:
+  1 : E1
+  2 : E1+E2
+  3 : E2
+  4 : E2+E3
+  5 : E3
+  6 : E3+E4
+  7 : E4
+  8 : E4+E1
+- MaxTorque
+  Es la que más torque ofrece. Siempre se mantienen activados 2 electroimanes.
+  La secuencia completa para una vuelta es:
+  1 : E1+E2
+  2 : E2+E3
+  3 : E3+E4
+  4 : E4+E1
+  Vemos que sólo necesitamos 4 pasos. Pero el recorrido de paso a paso será la mitad que en el caso anterior.
+  El tiempo necesario para cada paso será aproximadamente el doble que antes.
+- MinPower
+  Es el que menos torque ofrece y menos consumo tiene.
+  Sólo se mantienen activo un electroimán en cada paso.
+  La secuencia completa para una vuelta es:
+  1 : E1
+  2 : E2
+  3 : E3
+  4 : E4
+  Es posible que necesite un poco más de tiempo de paso que el caso anterior, simplemente porque sólo hay un
+  electroimán para atraer el polo del rotor y no dos.
+
+Modelo 28BYJ-48
+  Tipo: reluctancia variable
+  Polos del rotor: 1
+  Alimentación: entre 5 y 12V.
+  Consumo: 55mA
+  Fases: 4.
+  Torque: 0.34Kg/cm
+  Pasos: 2048 pasos/vuelta o 4096 medios pasos/vuelta
+  Notas:
+  - Es el típico que se utiliza en proyectos con Arduino.
+  - Se acompaña de un adaptador (ULN2003) que facilita la conexión y permite ver las fases activas.
+  - Tiene un pin para cada uno de los 4 electroimanes y un quinto pin para la alimentación.
+  - Tiene un rotor de giro libre que puede dar vueltas completas.
+
+Modelo TinyMiniA
+  Tipo: reluctancia variable
+  Polos del rotor: 1
+  Alimentación: entre 3 y 6V.
+  Peso: 3g
+  Recorrido lineal: 9mm
+  Fases: 2.
+  Notas:
+  - No dispone de adaptador
+  - No tiene cable específico de alimentación
+  - Sólo tiene dos fases (dos electroimánes)
+  - Tiene 4 conectores. 2 por electroimán. A+ y A- para uno y B+ y B- para el otro.
+  - Podemos cambiar la polaridad de la alimentación del electroimán para que atraiga el rotor en dirección
+    contraria.
+  - Incluye una caja de cambio planetaria que reduce el ángulo de rotación y lo pasa a un tornillo sin fin
+    para conseguir un movimiento lineal.
+
+Modelo Ultra
+
+
+
