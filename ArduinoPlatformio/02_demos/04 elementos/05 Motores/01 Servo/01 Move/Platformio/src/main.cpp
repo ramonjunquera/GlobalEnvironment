@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Servomotores
-  Fecha: 20221104
+  Fecha: 20221110
   Objetivo: Demo de clase RoJoServo.h con un sólo servo
 
   Descripción:
@@ -20,7 +20,8 @@ RoJoServo servo;
 
 //Dejar marcado sólo el servo utilizado
 //#define SG90
-#define MG996R
+#define MG90S
+//#define MG996R
 
 //Pinout
 #ifdef ARDUINO_ARCH_AVR
@@ -42,9 +43,18 @@ RoJoServo servo;
     const uint16_t us0=700;
     const uint16_t us180=2500;
   #endif
+#elif defined(MG90S)
+  #ifdef ARDUINO_ARCH_AVR
+    const uint16_t us0=200;
+    const uint16_t us180=2150;
+  #else
+    const uint16_t us0=400;
+    const uint16_t us180=2400;
+  #endif
 #elif defined(MG996R)
   const uint16_t us0=450;
   const uint16_t us180=2400;
+
 #endif
 
 void setup() {

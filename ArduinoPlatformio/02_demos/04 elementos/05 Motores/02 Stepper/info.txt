@@ -97,7 +97,6 @@ Modelo TinyMiniA
   - Incluye una caja de cambio planetaria que reduce el ángulo de rotación y lo pasa a un tornillo sin fin
     para conseguir un movimiento lineal.
 
-Modelo Ultra
 
 
 
