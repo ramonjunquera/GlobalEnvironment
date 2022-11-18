@@ -1,5 +1,5 @@
 Tema: Descripción de placa LILYGO TTGO_T18 (v 1, 2 y 3)
-Fecha: 20211221
+Fecha: 20221118
 Autor: Ramón Junquera
 
 Identificación de versión
@@ -9,7 +9,6 @@ Existen varias versiones de este modelo
 - Versión 3.0 Entre los botones boot & EN el texto es "T18_3.0 20190410"
 
 General
-En Platformio no hay un perfil de dispositivo específico. Utilizaremos el genérico para ESP-WROOM-32
 No se puede conectar a una breadboard, debido a la caja de batería que tiene en su parte inferior.
 Tiene dos hileras de 20 pines cada una.
 http://www.lilygo.cn/prod_view.aspx?TypeId=50033&Id=1170&FId=t3:50033:3
@@ -96,5 +95,7 @@ TOUCH3/WSPI_CSO/ADC2_3/GPIO15 -|15              SD2|-
                                ---------------------
 
 Inconvenientes:
-- El conector de USB es muy delicado. Con muy pooca fuerza comienza a despegarse de la placa.
+- El conector de USB es muy delicado. Con muy poca fuerza comienza a despegarse de la placa.
 - Las soldaduras de la caja de batería son muy delicadas. No se deberían tocar sus soldaduras.
+- Es bastante frágil ante golpes.
+- Tiene facilidad para oxidarse si hay humedad en el ambiente.

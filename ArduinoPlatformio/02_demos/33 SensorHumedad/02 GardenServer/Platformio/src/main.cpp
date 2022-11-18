@@ -1,6 +1,6 @@
 /*
   Tema: Servidor de jardín
-  Fecha: 20220510
+  Fecha: 20221118
   Autor: Ramón Junquera
 
   Descripción:
@@ -9,6 +9,15 @@
   También es capaz de medir la carga de la batería y avisar cuando esté baja.
   La mayor parte de los parámetros también pueden ser configurados por Telegram.
   Permite actualizaciones OTA.
+
+  Dispositivo:
+  - Para facilitar el desarrollo, se da de alta como dispositivo lolin32
+  - El disposivo wemosbat funciona correctamente pero es bastante frágil. Se rompe con facilidad antes un
+    golpe o forzado del conector. También tiene facilidad a oxidarse ante cualquier humedad. Para este
+    proyecto se imprescindible una impermeabilización muy buena.
+
+  Debug:
+  - Se han dejado algunos mensajes informativos para debug cuando se tiene acceso al puerto serie.
 */
 
 #include <Arduino.h>
@@ -26,7 +35,7 @@ const byte pinHumidityADC=32;
 const byte pinGND=25; //Pin GND del sensor de humedad
 const byte pinVCC=33; //Pin VCC del sensor de humedad
 const char *hostname="ESP32Garden";
-const char *passwordOTA="xxx";
+const char *passwordOTA="Garden5";
 
 //Definición de variables globales
 RoJoTelegramBot bot; //Objeto de gestión del bot
@@ -35,6 +44,7 @@ RoJoFileDictionary config; //Diccionario con parámetros de configuración
 
 //Enviar el mensaje actual a todos los suscriptores
 void broadcast(String text) {
+  Serial.println("Envío de mensaje general: "+text);
   for(uint16_t i=0;i<subscribers.count();i++) { //Recorremos todos los suscriptores...
     bot.sendMessage(subscribers.key(i),text); //...y le enviamos el mensaje
   }
@@ -86,7 +96,6 @@ uint16_t getHumidityPercent(byte pin) {
   const uint16_t fullWet=896; //Valor ADC para humedad máxima
   const uint16_t fullDry=2742; //Valor ADC para todo seco
   uint16_t analog=getADC(pin);
-  Serial.println("getHumidityPercert:analog="+String(analog)); //RoJoDEBUG
   //Calculamos el % de humedad
   analog=100-100*(analog-fullWet)/(fullDry-fullWet);
   if(analog>200) analog=0;
@@ -99,6 +108,7 @@ void handleNewMessages() {
   TelegramMessage msg; //Creamos estructura de mensaje
   bot.getNextMessage(&msg); //Obtenemos el siguiente mensaje
   while(msg.text.length()) { //Mientras haya un mensaje...
+    Serial.println("Mensaje recibido: "+msg.text);
     if(subscribers.count()==0) { //Si no hay suscriptores...
       if(msg.text=="/start") { //Si se trata del comando /start...
         String message = "RoJo Telegram Garden\n";
@@ -141,7 +151,7 @@ void handleNewMessages() {
           //Informamos al usuario
           bot.sendMessage(msg.chat_id,"Suscripción borrada");
         } else if(msg.text=="/list") { //Solicitan la lista de suscriptores
-          bot.sendMessage(msg.chat_id,"Suscriptores:"+list());
+          bot.sendMessage(msg.chat_id,"Suscriptores: "+list());
         } else if(msg.text.startsWith("/setperiod ")) { //Solicitan nuevo periodo
           String period=String(msg.text.substring(11).toInt()); //Extraemos el valor del periodo
           config.add("period",period); //Guardamos el nuevo periodo
@@ -192,12 +202,15 @@ void handleNewMessages() {
     //Leemos el siguiente
     bot.getNextMessage(&msg);
   }
+  Serial.println("Procesados todos los mensajes");
 }
 
 //Intenta conectar a punto wifi
 bool connectWifi() {
+  Serial.print("Conectando wifi");
   byte wifiTry=3; //Máximo de veces que intentaremos la conexión
   do {
+    Serial.print("\nIntento "+String(4-(int)wifiTry)+".");
     WiFi.mode(WIFI_STA); //Fijamos el modo de conexión a un punto de acceso
     WiFi.disconnect(); //Forzamos a su desconexión (por si estaba conectado anteriormente)
     delay(100); //Esperamos un momento a que desconecte
@@ -206,8 +219,12 @@ bool connectWifi() {
     //Ampliaremos este tiempo por precaución hasta 15s
     byte wifiCheck=150; //Comprobaremos si estamos conectados 150 veces (150 veces * 100ms/vez = 15000ms = 15s)
     //Mientras no hayamos conseguido conexión y no hayamos consumido todos los intentos...seguimos intentándolo
-    while ((WiFi.status() != WL_CONNECTED) && ((wifiCheck--)>0)) delay(100);
+    while ((WiFi.status() != WL_CONNECTED) && ((wifiCheck--)>0)) {
+      Serial.print(".");
+      delay(100);
+    } 
     //Hemos terminado el número de comprobaciones o hemos conectado
+    Serial.println((WiFi.status()==WL_CONNECTED)?"Ok":"KO");
   } while(WiFi.status() != WL_CONNECTED && (wifiTry--)>0);
   return WiFi.status() == WL_CONNECTED;
 }
@@ -217,6 +234,7 @@ void setup() {
   //Inicializamos el diccionario de configuración
   config.begin("/config.txt");
   if(!config.containsKey("batAlarm")) { //Si nunca se ha configurado...
+    Serial.println("Inicializando diccionario por primera vez");
     config.add("batAlarm","75"); //Añadimos valor por defecto de alarma por batería baja
     config.add("humAlarm","0"); //Añadimos valor por defecto de alarma por humedad baja
     config.add("period","5"); //Añadimos valor por defecto de periodo de siesta en segundos
@@ -296,6 +314,7 @@ void setup() {
   }
   //Desactivamos Wifi
   WiFi.disconnect(true,true); //Desconectamos WiFi, desactivamos WiFi, eliminamos punto de acceso
+  Serial.println("Desactivando wifi y preparando hibernación");
   
   //Nos preparamos para volver a dormir
   //Recuperamos el periodo de siesta y lo convertimos a microsegundos
