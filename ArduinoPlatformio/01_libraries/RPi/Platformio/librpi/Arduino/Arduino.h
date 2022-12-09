@@ -1,44 +1,54 @@
 /*
- * Autor: Ramón Junquera
- * Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
- * Versión: 20221102
- * Compatibilidad: Platformio & Qt
- * 
- * Funciones generales:
- *   bool ArduinoStart()
- *   void ArduinoEnd()
- *   uint64_t micros()
- *   uint64_t millis()
- *   void delayMicroseconds(uint64_t us)
- *   void delay(uint64_t ms)
- *   void pinMode(byte pin,arduinoPinMode mode)
- *   byte digitalRead(byte pin)
- *   uint32_t digitalRead()
- *   void digitalWrite(byte pin,byte value)
- *   void shiftOut(byte pinData,byte pinClock,arduinoOrder bitOrder,byte value)
- *   string F(string s)
- *   yield()
- * Interrupciones:
- *   void attachInterrupt(byte pin,void (*f)(byte,byte),arduinoEdgeType mode)
- *   void detachInterrupt(byte pin)
- * PWM:
- *   void analogWrite(bite pin,byte value)
- *   void freqPWM(float freq)
- * Puerto Serie:
- *   void begin(uint32_t baud)
- *   void println(int v);
- *   void println(String s);
- *   void print(int v);
- *   void print(String s);
- * 
- * Nota:
- * La librería automáticamente inicializa la gestión a los pines con la
- * instrucción ArduinoBegin() al final.
- * Devuelve el resultado en la variable _arduinoBeginAnswer sin
- * comprobarlo.
- * 
- * En teoría, Un programa siempre debería finalizar con la instrucción:
- *   ArduinoEnd()
+  Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
+  Versión: 20221129
+  Autor: Ramón Junquera
+
+  Funciones generales:
+    bool ArduinoStart()
+    void ArduinoEnd()
+    uint64_t micros()
+    uint64_t millis()
+    void delayMicroseconds(uint64_t us)
+    void delay(uint64_t ms)
+    void pinMode(byte pin,arduinoPinMode mode)
+    byte digitalRead(byte pin)
+    uint32_t digitalRead()
+    void digitalWrite(byte pin,byte value)
+    void shiftOut(byte pinData,byte pinClock,arduinoOrder bitOrder,byte value)
+    string F(string s)
+    yield()
+  Interrupciones:
+    void attachInterrupt(byte pin,void (*f)(byte,byte),arduinoEdgeType mode)
+    void detachInterrupt(byte pin)
+  PWM:
+    void analogWrite(bite pin,byte value)
+    void freqPWM(float freq)
+  Puerto Serie:
+    void begin(uint32_t baud)
+    void println(int v);
+    void println(String s);
+    void print(int v);
+    void print(String s);
+ 
+  Notas:
+  - La librería automáticamente inicializa la gestión a los pines con la
+    instrucción ArduinoBegin().
+  - Al final vevuelve el resultado en la variable _arduinoBeginAnswer sin
+    comprobarlo.
+  - En teoría, Un programa siempre debería finalizar con la instrucción:
+    ArduinoEnd()
+  - En la configuración de Platformio (platformio.ini) se debe ser:
+      ;Dispositivo: Raspberry Pi 3b y 4b
+      [env:raspberrypi_3b]
+      platform = linux_arm
+      board = raspberrypi_3b
+      build_flags = 
+        -pthread ;Multitarea
+        -std=c++17
+      lib_extra_dirs = librpi ;carpeta con librerías adicionales para RPi
+  - En la versión actual de C++ se define en el namespace el tipo byte.
+    Para evitar confusiones con nuestra definición de byte, siempre hacemos
+    referencia como ::byte para no coinfundirlo con std::byte
  */
 
 #ifndef RoJoArduino_h
@@ -53,7 +63,7 @@
 #include <signal.h> //para signal
 #include <sys/time.h> //para itimerval
 #include <thread> //Para gestionar threads
-#include <string.h> //Para memset
+#include <string> //Para memset
 #include <stdarg.h> //Para va_start
 using namespace std;
 
@@ -127,7 +137,7 @@ class SerialClass {
   void println(int16_t v) {
     cout << v << endl;
   }
-  void println(byte v) {
+  void println(::byte v) {
     cout << v << endl;
   }
   void println(char v) {
@@ -159,7 +169,7 @@ class SerialClass {
   void print(int16_t v) {
     cout << v;
   }
-  void print(byte v) {
+  void print(::byte v) {
     cout << v;
   }
   void print(char v) {
@@ -170,6 +180,10 @@ class SerialClass {
   }
   void print(String v="") {
     cout << v;
+  }
+
+  void write(::byte v) {
+    print(v);
   }
 
   bool operator!() {
@@ -200,7 +214,7 @@ bool ArduinoBegin() {
 
   //Definición de variables
   FILE *fp; //Puntero de archivo (file pointer)
-  byte b; //Buffer
+  ::byte b; //Buffer
   int memfd; //Identificador de interface de acceso a memoria (file descriptor)
 
   //Abrimos el archivo ranges en binario y como sólo lectura
@@ -330,7 +344,7 @@ void delay(uint32_t ms) {
 //Los valores para mode son:
 //  0 = INPUT
 //  1 = OUTPUT
-void _pinMode(byte pin,byte mode) {
+void _pinMode(::byte pin,::byte mode) {
   //El grupo de registros de pines (bcm2836_gpio) comienza con el modo
   //de cada pin.
   //Se necesitan 3 bits para guardar el modo de un pin.
@@ -347,7 +361,7 @@ void _pinMode(byte pin,byte mode) {
   //Calculamos el registro que gestiona nuestro pin
   pMode = bcm2835_gpio + pin/10;
   //Calculamos el desplazamiento dentro del registro para 
-  byte shift = (pin % 10) * 3;
+  ::byte shift = (pin % 10) * 3;
   //Tomamos el valor actual del registro, borramos los 3 bits
   //que corresponden a nuestro pin y en esa posición,
   //escribimos el valor del modo
@@ -359,7 +373,7 @@ void _pinMode(byte pin,byte mode) {
 // 0 - sin resitencias
 // 1 - resistencias pull-down
 // 2 - resistencias pull-up
-void _pinResType(byte pin,byte resType) {
+void _pinResType(::byte pin,::byte resType) {
   //El método para cambiar el estado de las resistencias internas varía
   //dependiendio de la versión de la Raspberry
   if(isRPi4) {
@@ -417,7 +431,7 @@ void _pinResType(byte pin,byte resType) {
 }
 
 //Configura el modo de un pin
-void pinMode(byte pin,arduinoPinMode mode) {
+void pinMode(::byte pin,arduinoPinMode mode) {
   //Si no se ha inicializado el chip BCM2835...terminamos
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
@@ -453,7 +467,7 @@ void pinMode(byte pin,arduinoPinMode mode) {
 //Los valores de value son:
 //  LOW = 0
 //  HIGH = 1
-void digitalWrite(byte pin,byte value) {
+void digitalWrite(::byte pin,::byte value) {
   //Los registros para asignar el estado a un pin digital dependen del
   //estado.
   //Si queremos asignar un estado LOW, comenzaremos en bcm2835_gpio+10
@@ -473,7 +487,7 @@ void digitalWrite(byte pin,byte value) {
 }
 
 //Lee el estado de un pin digital
-byte digitalRead(byte pin) {
+::byte digitalRead(::byte pin) {
   //Los estados de los pines digitales se son representados por bits
   //en un par de registros consecutivos a partir de la dirección
   //  bcm2835_gpio+13
@@ -505,7 +519,7 @@ uint32_t digitalRead() {
   return *paddr;
 }
 
-void shiftOut(byte pinData,byte pinClock,arduinoOrder bitOrder,byte value) {
+void shiftOut(::byte pinData,::byte pinClock,arduinoOrder bitOrder,::byte value) {
   //Si no se ha inicializado el chip BCM2835...terminamos;
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
@@ -572,7 +586,7 @@ struct interruptionStruct {
   //Puntero a función de interrupción.
   //Siempre tiene dos parámetros: el pin y el estado
   //El estado es 0 o 1
-  void (*f)(byte,byte); 
+  void (*f)(::byte,::byte); 
   //La función se está ejecutando?. Por defecto no.
   bool running=false; 
 };
@@ -582,7 +596,7 @@ struct interruptionsStruct {
   //Diccionario de interrupciones
   //La key es el pin
   //El dato es la estructura de interrupción
-  unordered_map<byte,interruptionStruct> interruptionDicc;
+  unordered_map<::byte,interruptionStruct> interruptionDicc;
   //Máscara de interrupciones RISING
   uint32_t edgeRisingMask=0; //Inicialmente ningún pin con interrupción
   //Máscara de interrupciones FALLING
@@ -593,7 +607,7 @@ struct interruptionsStruct {
 static interruptionsStruct myInterruptions;
 
 //Función que lanza la función f(pin,status) y anota en running cuando termina.
-void InterruptionFunctionLauncher(bool *running,void (*f)(byte,byte),byte pin,byte status) {
+void InterruptionFunctionLauncher(bool *running,void (*f)(::byte,::byte),::byte pin,::byte status) {
   //Debe ser llamada como thread.
   //Es obligatorio para poder controlar cuándo finaliza la función
 
@@ -664,7 +678,7 @@ void InterruptionThreadLoop() {
 }
 
 //Elimina los eventos de un pin
-void detachInterrupt(byte pin) {
+void detachInterrupt(::byte pin) {
   //Calculamos la máscara
   uint32_t mask=(1<<pin);
   //Si ya existe un evento para este pin...
@@ -685,7 +699,7 @@ void detachInterrupt(byte pin) {
 //de un pin mediante una interrupción
 //El segundo parámetro espera una función que no devuelve nada y que
 //tiene dos parámetros: el pin y su estado actual
-void attachInterrupt(byte pin,void (*f)(byte,byte),arduinoEdgeType mode) {
+void attachInterrupt(::byte pin,void (*f)(::byte,::byte),arduinoEdgeType mode) {
   //Si no se ha inicializado el chip BCM2835...terminamos
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado
@@ -737,7 +751,7 @@ struct pwmsStruct {
   //Diccionario de los pines y valores PWM
   //La key es el pin
   //El dato es el valor PWM asignado al pin
-  unordered_map<byte,byte> pwmDicc;
+  unordered_map<::byte,::byte> pwmDicc;
   //Tiempo en microsegundos entre ticks (periodo)
   //Está relacionado con la frecuencia de PWM
   //Puesto que estamos utilizando un utin16_t para mantener el periodo entre
@@ -787,8 +801,8 @@ void pwmThreadLoop() {
       //Obtenemos la referencia al primer nodo con un iterator  
       list<uint16_t>::iterator itr = myPWMs.pwmRequests.begin();
       //Desglosamos su contenido
-      byte pin=(*itr)>>8;
-      byte value=(*itr)&0xFF;
+      ::byte pin=(*itr)>>8;
+      ::byte value=(*itr)&0xFF;
       //Si ya existe el pin en el diccionario...
       if(myPWMs.pwmDicc.count(pin)) {
         //Si la petición tiene valor...simplemente lo actualizamos
@@ -822,7 +836,7 @@ void pwmThreadLoop() {
       //Esperamos un periodo hasta el siguiente tick
       delayMicroseconds(myPWMs.period);
       //Haremos un ciclo completo (excepto el primer tick)
-      for(byte tick=1;tick>0;tick++) {
+      for(::byte tick=1;tick>0;tick++) {
 	    //Recorremos todos los nodos del diccionario con un iterator
         for(auto &itr : myPWMs.pwmDicc)
           //Si el tick actual coincide con el valor PWM del pin...
@@ -840,7 +854,7 @@ void pwmThreadLoop() {
 
 //Define la función a la que se debe llamar para hacer cualquier cambio
 //de estado PWM a un pin
-void analogWrite(byte pin,byte value) {
+void analogWrite(::byte pin,::byte value) {
   //Si no se ha inicializado el chip BCM2835...terminamos
   if(bcm2835_st == MAP_FAILED) return;
   //El chip BCM2835 se ha inicializado

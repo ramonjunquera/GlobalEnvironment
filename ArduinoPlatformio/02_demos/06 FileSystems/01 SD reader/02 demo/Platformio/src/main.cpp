@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema: Lector SD
-  Versión: 20220127
+  Versión: 20221208
   Objetivo: Aprender a utilizar escribir y leer en tarjetas SD
   Material: breadboard, cables, lector SD, ESP8266/Arduino UNO/Arduino Nano/Arduino Mega, resistencia de 10 Kohmios
 
@@ -65,6 +65,12 @@
 
 #include <Arduino.h>
 #include <SD.h> //Gestión de lector SD
+
+#ifdef ARDUINO_M5STACK_FIRE
+  const byte pinSD=4;
+#else
+  const byte pinSD=SS;
+#endif
 
 //Muestra el contenido de una carpeta
 void _printDirectory(File *dir,byte depth) {
@@ -276,7 +282,7 @@ void setup() {
   delay(3000);
 
   //Si no se puede montar el sistema de archivos... 
-  if (!SD.begin(SS)) {
+  if (!SD.begin(pinSD)) {
     Serial.println("\nError al montar sistema de archivos");
     return; //Terminamos función setup() y pasamos a loop()
   }

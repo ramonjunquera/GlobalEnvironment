@@ -1,0 +1,32 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++ compilar archivo activo",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-std=c++17",
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}/${fileBasename}",
+                "-o",
+                "${workspaceFolder}/${fileBasenameNoExtension}",
+                //Incluimos todas las carpetas de librerías que utilizamos
+                "--include-directory=${workspaceFolder}/lib/MyClass",
+                "--include-directory=${workspaceFolder}/lib/MyClass1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Tarea generada por el depurador."
+        }
+    ],
+    "version": "2.0.0"
+}

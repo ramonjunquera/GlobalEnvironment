@@ -1,0 +1,18 @@
+Tema: Instalación de las "Guest Additions" de Oracle VirtualBox
+Fecha: 20221128
+
+Si instalamos "Raspberry Pi Desktop" en una máquina virsual utilizando "Oracle VirtualBox", llegará
+un momento en el que necesitaremos utilziar el CD con las "Guest Additions" para que nos de alguna
+facilidad como el redimensionamiento automático  de pantalla.
+
+- Abrimos una sesión de terminal
+- Actualizamos el sistema operativo:
+  sudo update
+  sudo upgrade
+  sudo autoremove
+- Metemos el CD virtual desde Dispositivos/Insertar imagen de CD de las "Guest Additions"...
+- Cambiamos el directorio del CD:
+  cd /media/cdrom0
+- Ejecutamos el instalador con permisos de root:
+  sudo sh ./VBoxLinuxAdditions.run
+- Una vez terminada la instalación es imprescindible reiniciar

@@ -1,0 +1,7 @@
+Existe una vesión de Raspbian para PC llamada "Raspberry Pi Desktop".
+La última versión puede descargarse desde:
+  https://www.raspberrypi.com/software/raspberry-pi-desktop/
+
+Notas:
+- "Raspberry Pi Desktop" está basado en Debian de 32 bits. Puesto que Visual Studio Code sólo admite versiones de 64 bits
+  NO se podrá utilizar Visual Studio Code en "Raspberry Pi Desktop".

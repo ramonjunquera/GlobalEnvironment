@@ -1,0 +1,16 @@
+Tema: ﻿Instalación de Microsoft Visual Code
+Fecha: 20221128
+
+Raspbian x86 (Raspberry Pi Desktop)
+Nota: La versión x86 de Raspìan es de 32 bits, pero Visual Code sólo existe en 64 bits, por lo tanto es incompatible.
+
+Ubuntu
+- Como un paquete snap que se actualizará solo:
+  sudo snap install --classic code
+
+Raspbian ARM
+Nota: Necesita un mínimo de 2Gb para poder funciionar con normalidad. No funciona en RPi3
+- Actualizamos las fuentes con:
+  sudo apt update
+- Instalamos la aplicación:
+  sudo apt install code
