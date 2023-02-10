@@ -1,0 +1,48 @@
+Autor: Ramón Junquera
+Fecha: 20221223
+
+Archivos de inicio
+
+Por defecto nos encontramos que el sistema local de archivos de
+MicroPython contiene una entrada: boot.py
+
+boot.py es el archivo que se ejecuta siempre que el MicroPython
+se pone en marcha.
+Habitualmente contiene las siguientes líneas:
+
+# ESP32
+# This file is executed on every boot (including wake-boot from deepsleep)
+#import esp
+#esp.osdebug(None)
+#import webrepl
+#webrepl.start()
+
+#ESP8266
+# This file is executed on every boot (including wake-boot from deepsleep)
+#import esp
+#esp.osdebug(None)
+import uos, machine
+#uos.dupterm(None, 1) # disable REPL on UART(0)
+import gc
+#import webrepl
+#webrepl.start()
+gc.collect()
+
+Comprobamos que la mayoría de líneas están comentadas
+Sólo en el caso de ESP8266 hace algo:
+- Importa los módulos de uos y machine para poder gestionar el microcontrolador
+- Activa el sistema de gestión de memoria (gc)
+- Hace una limpieza de la memoria
+Pero en las líneas comentadas podríamos:
+- Importar el  móduto esp que permite hacer debug
+- Activar el debug
+- Importar el módulo de acceso remoto por web
+- Activar la posibilidad de poder conectarnos a la línea de comandos
+  a través de un navegador web (webrepl)
+
+Este archivo es editable y podemos añadir nuestro propio código.
+Este código se ejecutará cada vez que se arranque MicroPython
+Como ejemplo, añadiremos al final del archivo boot.py la línea:
+  print("\n\nbuenos dias")
+Guardamos, reiniciamos y vemos que aparece nuestro texto justo antes que el
+mensaje de presentación de la versión de MicroPython

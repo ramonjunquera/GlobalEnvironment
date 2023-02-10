@@ -1,0 +1,61 @@
+Autor: Ramón Junquera
+Fecha: 20221225
+
+Servicio web reply (webrepl)
+
+Nos servirá para poder acceder al MicroPython del dispositivo de manera remota
+a través de wifi.
+Comenzamos editando el archivo boot.py.
+Descomentamos las líneas:
+  import webrepl
+  webrepl.start()
+Con esto importamos el módulo webrepl y a continuación inicializamos el
+servicio.
+Guardamos y reinicializamos el dispositivo.
+Antes del mensaje de presentación de la versión nos aparece un error porque
+hemos llamado al módulo webrepl pero no lo hemos inicializado correctamente.
+Nos sugiere que lo hagamos con la siguiente línea de comandos:
+  import webrepl_setup
+Cuando la ejecutamos en la consola nos pregunta si queremos activar el
+servicio de webrepl en cada inicio de MicroPython. Respondemos que sí con
+la letra E (Enabled).
+A continuación nos pide una contraseña con una longitud entre 4 y 9 caracteres.
+Para este ejemplo utilizaremos: 1234
+Nos pide introducirla de nuevo por seguridad.
+Con esto termina la inicialización del servicio.
+Si reiniciamos el dispositivo veremos que ya no da errores.
+Incluso aparece el mensaje de que se ha iniciado el servicio webrepl y nos
+da una dirección: ws://192.168.4.1:8266
+Esta IP es la típica que representa el dispositivo cuando se crea un punto
+de acceso wifi, porque así ha ocurrido.
+Ya que todos los dispositivos con MicroPython tienen capacidades wifi, se crea
+por defecto un punto de acceso wifi con el nombre MicroPython-513b02, donde el
+último código corresponde con el parte de la dirección MAC.
+La contraseña para conectarse es: micropythoN
+Otro detalle es que ha aparecido un nuevo archivo llamado webrepl_cfg.py
+Si lo abrimos veremos que sólo contiene una línea con la contraseña que hemos
+indicado.
+
+A partir de ahora no necesitaremos que el dispositivo esté conectado físicamente
+a nuestro IDE.
+Alimentamos el dispositivo y dejamos que arranque.
+Nos conectamos al punto wifi que genera el dispositivo con la contraseña por
+defecto (micropythoN).
+En Thonny seleccionamos Ejecutar/Configurar interprete...
+Dejamos el primer campo con el MicroPython que tengamos seleccionado.
+En el campo de "Puerto o WebREPL" seleccionamos "< WebREPL >"
+La URL del servicio será: ws://192.168.4.1:8266/
+Y la contraseña, la que indicamos en la configuración. En nuestro caso 1234
+Pulsamos el botón Ok.
+Intentará conectarse al dispositivo.
+Si lo consigue, muestra el mensaje "WebREPL connected" en la sección consola.
+Poco después, permite escribir comandos de consola y muestra los archivos que
+contiene el dispositivo.
+Ya podemos trabajar en remoto.
+
+Para desactivar el servicio de webrepl y dejarlo como al principio, se suficiente
+con borrar el archivo webrepl_cfg.py y volver a comentar las dos líneas del
+archivo boot.py
+
+La conexión remota también funciona si utilizamos la interface de conexión como cliente
+a un punto de acceso remoto.

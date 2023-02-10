@@ -1,8 +1,9 @@
-Autor: Ramón Junquera
 Tema: Descripción de placa
 Objetivo: Descripción de placa ESP-01
-Descripción:
+Fecha: 20230116
+Autor: Ramón Junquera
 
+Descripción:
 Es la placa más simple de la familia ESP8266.
 No incluye un adaptador USB para conexión directa con el ordenador.
 Ni siquiera tiene una disposición de pines adecuada para poder pincharlo en una breadboard.
@@ -35,7 +36,7 @@ GPIOs:
   URXD  3
 
   Nota:
-    Si se utilizan los pines RX & TX no se podrá utilzia el puerto serie para comunicar con el PC.
+    Si se utilizan los pines RX & TX no se podrá utilizar el puerto serie para comunicar con el PC.
 
 Memoria.
   Existen varios ESP-01 con distintas memorias que se distinguen por el color:
@@ -81,7 +82,7 @@ Entradas analógicas.
   por lo tanto, NO tiene ninguna entrada analógica.
 
 Alimentación.
-  La placa sólamente funciona con 3.3V, incluidos los pines de datos.
+  El rango de voltaje es de 2.5 a 3.6V.
   Si lo alimentamos con 5V corremos el riesgo de quemarlo.
   Si tenemos 5V y necesitamos reducirlos a 3.3 podemos utilizar un divisor de tensión que consta de 2 resistencias
   conectadas una en serie y otra en paralelo con resistencias una el doble que la otra. 
@@ -89,9 +90,11 @@ Alimentación.
   En último extremo, podríamos alimentarla con 3.3V y dejar los pines de datos a 5V. Funciona perfectamente.
 
 Potencia.
+  Su consumo máximo lo realiza al arrancar y pouede alcanzar los 200mA (según el fabricante).
+  Su consumo medio es de 80mA
   Una placa Arduino UNO proporciona 50mA por el pin de 3.3V.
-  Esta intensidad es insuficiente en la mayoría de los casos para el momento del arranque del ESP-01.
-  El resultado es probablemente tendremos que reiniciarlo varias veces hasta que arranque correctamente.
+  Esta intensidad es insuficiente para un ESP-01.
+  El resultado es que probablemente tendremos que reiniciarlo varias veces hasta que arranque correctamente.
   Para evitar esto, tendríamos que conectarlo a una fuente de alimentacón externa que le pueda proporcionar más intensidad.
   Podemos hacerlo con un adaptador de tensión de breadboard.
   Son pequeñas placas que se adaptan a las breadboards, proporcionando un voltaje seleccionable (5 o 3.3V) y que admiten

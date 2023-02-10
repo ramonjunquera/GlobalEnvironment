@@ -1,0 +1,6 @@
+Autor: Ramón Junquera
+Fecha: 20221221
+
+Aunque en Python se hace distinción entre los métodos que comienzan por _ y por __
+en MicroPython no.
+En ambos casos, el método o variables será accesible desde el exterior de la clase.

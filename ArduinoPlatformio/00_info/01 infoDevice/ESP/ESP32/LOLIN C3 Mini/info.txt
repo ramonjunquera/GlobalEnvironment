@@ -1,0 +1,66 @@
+Tema: Descripción de LOLIN C3 Mini
+Fecha: 20230207
+Autor: Ramón Junquera
+
+Formato: El mismo que D1 Mini. Coinciden los pines de puerto serie (RX & TX), GND, 5V (VBUS), 3V3.
+Los hats podrían servir. 
+Número de pides digitales: 12
+
+Antena: Cerámica
+
+Conector: tipo USB-C
+
+Procesador: ESP C3FH4de Espressif
+Número de núcleos: 1
+Arquitectura: RISC-V de 32 bits
+Frecuencia de reloj: 160MHz
+
+Conectividad: WiFi (2.4GHz) y Bluetooth 5 (LE).
+
+URL oficial: https://www.wemos.cc/en/latest/c3/c3_mini.html?spm=a2g0o.detail.1000023.1.1b48665fQGFExY
+
+Memoria:
+  Interna: 400Kb
+  Flash: 4Mb
+
+Led integrado:
+- Tipo: NeoPixel
+- Pin: 7
+
+Pulsador integrado:
+- Pin:9
+
+SPI:
+- CS/SS = 5;
+- SCK = 2;
+- MOSI = 4;
+- MISO = 3;
+
+I2C:
+- SDA = 8;
+- SCL = 9;
+Nota: SCL está asociado al pin 9, que también tiene asociado el pulsador integrado y además no tiene
+pin físico. Por lo tanto, nunca utilizaremos el pin por defecto de SCL en este dispositivo.
+
+Carga de programas:
+Dependiendo del programa que tenga cargado, puede ser necesario resetear y arrancar manteniendo pulsado
+el botón asociado al pin 9.
+
+  Pinout
+  ------
+                   ---------------
+               EN -|             |- GPIO21/TX
+        A3/GPIO03 -|             |- GPIO20/RX
+        A2/GPIO02 -|             |- GPIO10
+        A1/GPIO01 -|             |- GPIO8/SDA
+        A0/GPIO00 -|             |- GPIO07/RGB_LED/CS
+    A4/GPIO04/SCK -|             |- GPIO06/MOSI
+   A5/GPIO05/MISO -|             |- GND
+              3V3 -|             |- VBUS(5V)
+                   |O RST       O|
+                   ---------------
+Versiones:
+- V1.0.0 : Antena metálica. Led estándar integrado en placa.
+- V2.1.0 : Optimización de circuito. Mejor rendimiento. RGB led integrado. Antena cerámica.
+
+Nota: Todas las versiones tienen las mismas funcionalidades

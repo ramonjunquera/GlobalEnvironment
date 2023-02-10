@@ -1,0 +1,11 @@
+Autor: Ramón Junquera
+Fecha: 20221228
+
+Gestión de archivos
+El sistema de archivos de la memoria interna del dispositivo está formateado con FAT, siempre
+que se disponga de más de 1Mb de espacio.
+Esto permite crear estructuras de directorios.
+
+Desde el propio IDE de Thonny se puede gestionar directorios y transferir archivos entre el
+PC y el dispositivo.
+Esto es muy útil para transferir módulos.

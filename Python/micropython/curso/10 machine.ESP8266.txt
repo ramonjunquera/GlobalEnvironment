@@ -1,0 +1,51 @@
+Autor: Ramón Junquera
+Fecha: 20221229
+
+Funciones para gestión de la placa (ESP8266)
+
+El módulo que nos permite gestionar la placa es machime
+
+La función help nos da un listado de todas los objetos que contiene un módulo: clases, funciones,
+y variables)
+Ejemplo:
+  help(machine)
+
+Función freq
+Muestra la frecuencia de la CPU
+  print(machine.freq())
+La función también permite fijar la frecuencia de la CPU
+El ESP12-E puede funcionar a dos velocidades: 80 MHz y 160 MHz
+Por defecto la velocidad es de 80 MHz
+Con el siguiente comando fijaremos la frecuencia a 160 MHz
+El microprocesador consume más energía a 160 MHz.
+Ejemplo:
+  machine.freq(160000000)
+
+Función unique_id
+Muestra el identificador único para esta placa
+Ejemplo:
+  print(machine.unique_id())
+
+Función idle
+Pasa a modo reposo. Consumo medio de unos 12 mA
+Cualquier interrupción le hará salir de esto modo y volver a la normalidad
+Ejemplo:
+  machine.idle()
+
+Función sleep
+Pasa a modo de bajo consumo. Unos 950 microA
+Desactiva todos los servicios excepto wifi
+Sale de este modo por interrupciones hardware, reset o llamadas wifi
+Ejemplo:
+  machine.sleep()
+
+Función deepsleep
+Entra en modo de muy bajo consumo
+Sólo sale ante interrupciones hardware y reset
+Ejemplo:
+  machine.deepsleep()
+
+Función reset
+Resetea la placa
+Ejemplo:
+  machine.reset()

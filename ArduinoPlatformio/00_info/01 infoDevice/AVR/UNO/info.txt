@@ -35,7 +35,7 @@ Pines de protocolo SPI
    12 MISO
    11 MOSI
    13 SCK
-   10 SS
+   10 SS/CS
 
 Pines de protocolo I2C
   Pin Descripción

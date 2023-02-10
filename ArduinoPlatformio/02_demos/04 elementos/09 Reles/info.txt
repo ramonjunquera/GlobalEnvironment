@@ -1,0 +1,11 @@
+Tema: Relé Hat for Wemos D1 mini
+Fecha: 20230106
+Autor: Ramón Junquera
+
+Es un relé que viene montado en una placa con la misma disposición de pines que un Wemos D1 Mini.
+Si el procesador tiene los pines como hembra en su parte superior, podemos acoplarle este hat directamente.
+
+Los únicos pines que utiliza son:
+- 5V : alimentación
+- GND : tierra
+- D1: señal

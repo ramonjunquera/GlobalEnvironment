@@ -1,0 +1,114 @@
+Autor: Ramón Junquera
+Fecha: 20230103
+
+Instalación y configuración de MicroPython
+
+Qué es?
+Es la portabilidad del intérprete Python a microcontroladores.
+Es esta serie de ejemplo nos centraremos en la familia ESP.
+Sólo se indicarán las diferencias con Python standard.
+La mayoría de ejemplos de Python puede reproducirse sin ningún cambio en MicroPython
+
+Instalando Python
+Primero necesitamos tener instalado Python en el PC que utilizaremos para descargar y transferir el
+archivo binario a la memoria flash del microcontrolador.
+Utilizaremos la última versión de Python disponible.
+La descargamos y la instalamos.
+Indicamos que queremos que se añada el ejecutable de Python al path.
+
+Actualizando módulos
+Abrimos una línea de comandos y escribimos:
+  pip install esptool
+Con esto añadimos el módulo esptool a los módulos disponibles.
+Una vez descargada e instalada sólo tendremos que escribir en la línea de comandos:
+  esptool.py
+Con esto quedará activada.
+Como no le hemos puesto parámetros, nos mostrará la descdripción del programa.
+
+Descargando los binarios.
+Los binarios para todos los microcontroladores disponibles se pueden encontar en:
+  https://micropython.org/download/
+Por ejemplo para ESP32 se encuentran en:
+  https://micropython.org/download/esp32/
+Desde aquí se puede descargar la última versión del archivo binario y las instrucciones
+
+Flashing
+  ESP32
+    Suponemos que tenemos el binario (esp32-20220618-v1.19.1.bin).
+    Debemos conocer el puerto al que está conectado el ESP32. Lo podemos avegüar con Platformio.
+    Por ejemplo el COM11.
+    Abrimos una línea de comandos y escribimos:
+      esptool.py --chip esp32 --port com16 erase_flash
+    Con esto borramos totalmente la memoria del dispositivo
+    En la misma carpeta que contiene el binario, escribimos:
+      esptool.py --chip esp32 --port com16 --baud 460800 write_flash -z 0x1000 esp32-20220618-v1.19.1.bin
+    Con esto guardamos el contenido del archivo binario en la memoria del dispositivo, a partir de la
+    posición 0x10000.
+    Esto se hace así por que en la posición 0x0000 se guarda el bootloader y en 0x8000 la tabla de particiones.
+    Esperamos a aque se complete la transferencia y ya tendremos disponible MicroPython
+  M5 Stack Atom Matrix / M5 Stack Atom Lite / M5 Stack Atom Echo
+    El procedimiento es similar, pero el archivo es específico (M5STACK_ATOM-20220618-v1.19.1.bin)
+    Para limpiar:
+      esptool.py --chip esp32 --port com16 erase_flash
+    Para transferir utilizaremos una velocidad de 115200, en vez de los 460800 sugeridos en las instrucciones de la web
+    porque si no, nos da un error:
+      esptool.py --chip esp32 --port com16 --baud 115200 write_flash -z 0x1000 M5STACK_ATOM-20220618-v1.19.1.bin
+  ESP8266
+    El procedimiento es similar.
+    Hay que tener en cuenta que ESP12-E o Wemos Mini D1 tienen 4Mb de espacio para archivos.
+    En estos casos se debe seleccionar la opción de "ESP8266 with 2MiB+ flash".
+    Una vez descargado el bin e identificado el puerto, borramos la memoria:
+      esptool.py --port com4 erase_flash
+    En la misma carpeta que contiene el binario, escribimos:
+      esptool.py --port com4 --baud 460800 write_flash --flash_size=detect 0 esp8266-20220618-v1.19.1.bin
+
+Uso
+Utilizaremos el IDE Thonny, que lo podemos descargar de:
+  https://thonny.org/
+No tiene dificultad la descarga y la instalación.
+Abrimos la aplicación.
+Comprobamos que el path hacia Python es correcto, escribiendo en la sección consola:
+  print("Hola")
+Debería responder con un Hola
+Pero esta ejecución se ha realizado contra el intérprete de Python local (del PC).
+Conectamos el ESP32 el PC.
+Cambiamos la configuración del intérprete con: Ejecutar/Configurar intérprete.../
+Y en vez de "Local Python 3", seleccionamos "MicroPython (ESP32)".
+El campo "Puerto o WebRPL" lo dejamos en "< Intenta detectar el puerto automáticamente >"
+Aceptamos
+Vemos en la consola que aparece el mensaje de presentación de MicroPython.
+Repetimos la línea de ejemplo anterior y comprobamos que funciona.
+
+Prueba
+Suponemos que tenemos un ESP32 de modelo LOLIN32, que tiene un led asociado al pin 5.
+En la solapa "<sin nombre>" escribimos:
+
+from machine import Pin
+from time import sleep
+led=Pin(5,Pin.OUT)
+while True:
+    led.value(not led.value())
+    sleep(1.0)
+
+Pulsamos el botón de guardar.
+Lo guardamos el el dispositivo MicroPython (en el ESP32).
+Le ponemos el nombre blink.py
+Si activamos Visualización/Archivos aparece un panel a la izquierda con los archivos tanto locales
+como los contenidos en el dispositivo.
+Así comprobamos que el archivo se ha guardado correctamente.
+Pulsamos el botón Play para ejecutarlo y comprobamos que funciona porque el led integrado
+parpadea cada segundo.
+
+Detalles del dispositivo
+Podemos conocer la mayoría de los detalles del dispositivo con la siguiente línea:
+  import port_diag
+Uno de los valores más importantes es la memoria del dispositivo
+
+
+
+
+
+
+
+
+

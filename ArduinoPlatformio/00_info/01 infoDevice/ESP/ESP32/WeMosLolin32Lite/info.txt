@@ -1,5 +1,5 @@
 Autor: Ramón Junquera
-Fecha: 20211019
+Fecha: 20220108
 Tema: Descripción de placa
 Objetivo: Descripción de placa WeMos Lolin Lite / WeMos Lolin D32
 
@@ -63,7 +63,6 @@ LED integrado.
       HIGH = apagado
       LOW = encendido
     Este led no permite PWM. Es digital (encendido o apagado)
-    Atención. La constante LED_BUILTIN tiene es valor 5, no el 22. Está mal!!!
 
 Botones.
   Tiene integrado un sólo botón de reset.

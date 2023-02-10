@@ -1,5 +1,5 @@
-Tema: Descripción de WeMos D1 Mini & WeMos D1 Mini Pro
-Fecha: 20211202
+Tema: Descripción de WeMos D1 Mini
+Fecha: 20230106
 Autor: Ramón Junquera
 
 Pertenece a la familia ESP8266.
@@ -72,10 +72,11 @@ Permite digitalizar la tensión de entrada con una resolución de 10 bits.
 Rango [0,1023].
 No aplicar tensiones superiores a 3.3V!
 
-Excepto por el número de leds integrados y el formato, es idéntica a WeMos D1 R2
-
-WeMos D1 Mini Pro
-Es idéntico a WeMos D1 Mini excepto por:
-- Tiene 16Mb en vez de 4.
-- La antena en vez de ser metálica es de cerámica.
-- El amperaje del pin de 3.3V es mucho mayor.
+Existen varias versiones de este dispositivo, pero nunca varían sus funcionalidades:
+- WeMos D1 Mini Lite : Monta el procesador sobre la placa. Antena metálica
+- WeMos D1 Mini Lite USB-C : Con conector USB-C
+- WeMos D1 Mini v1.0.0 : Procesador integrado. Antena metálica.
+- WeMos D1 Mini v3.0.0 : Antena cerámica
+- WeMos D1 Mini Pro 4Mb: Antena es cerámica. El amperaje del pin de 3.3V es mucho mayor
+- WeMos D1 Mini Pro 16Mb: 16Mb en vez de 4Mb. Antena cerámica. El amperaje del pin de 3.3V es mucho mayor
+- Wemos D1 Mini v4.0.0 : Circuito optimizado. Conector USB-C en vez de MicroUSB. Conector específico para I2C

@@ -1,0 +1,31 @@
+Fecha: 20230102
+Autor: Ramón Junquera
+Tema: Filamentos de diodo LED
+
+Se trata de unas magueras de goma que en su interior tienen una colección de microleds.
+Se venden en distintos tamaños, voltajes y colores.
+Es normal que algunos elementos lleguen estropeados (un 20%).
+Como en cualquier led, es importante mantener la polaridad.
+En estos dispositivo se distingue el extremo positivo porque tiene una pequeña perforación.
+
+Yo he probado los filamentos de 130mm de 3V en varios colores.
+Es muy importante no superar el voltaje indicado. En este caso 3V.
+Si lo estamos alimentando con un voltaje superior, deberíamos incluir una resistencia para reducirlo
+y evitar que se queme.
+Esta es la tabla con los valores de resistencias más importantes, teniendo en cuenta su consumo,
+siempre que lo alimentemos con 3.3V.
+
+Resistencia (ohmios) Voltaje (V) Comentario
+-------------------- ----------- ----------
+             10000.0 2.36        Se ilumina
+                10.0 2.66        Correcto
+                 7.6 2.70        Correcto
+                 1.0 2.99        Peligro
+
+Comprobamos que a partir de los 2.36V, el filamento se ilumina ligeramente.
+Con una resistencia de 1 ohmio, conseguimos un voltaje de 2.99V, que aunque está por debajo del
+máximo permitido, una ligera sobrecarga hará que lo superemos y lo pongamos en peligro.
+Con resistencias de 10 o 7.6 ohmios reducimos el voltaje hasta 2.66V o 2.70V, que también iluminan
+muy bien el filamento y admiten margen para sobrecargas sin peligro.
+
+Como cualquier led, admite PWM para controlar su intensidad.

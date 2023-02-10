@@ -1,4 +1,6 @@
-Descripción de WeMos D1 R2
+Tema: Descripción de WeMos D1 R2
+Fecha: 20230106
+Autor: Ramón Junquera
 
 Pertenece a la familia ESP8266.
 Incluye un conector microUSB para comunicación y alimentación.

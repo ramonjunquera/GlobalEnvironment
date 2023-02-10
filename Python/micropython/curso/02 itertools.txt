@@ -1,0 +1,18 @@
+Autor: Ramón Junquera
+Fecha: 20221221
+
+itertools
+Este módulo no existe en MicroPython. Sólo en Python.
+itertools que incluye ciertas facilidades para trabajar
+con objetos iterables
+Afortunadamente podemos descargar el archivo itertools.py,
+transferirlo al sistema de archivos del ESP8266/ESP32 e importarlo
+en nuestos desarrollos.
+Todas las librerías adicionales para micropython se pueden
+encontrar en:
+  https://github.com/micropython/micropython-lib
+El archivo itertools.py se encuentra en:
+  https://github.com/micropython/micropython-lib/tree/master/python-stdlib/itertools
+Esta implementación de itertools para micropython no es completa
+faltan bastantes métodos.
+

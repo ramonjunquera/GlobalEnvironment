@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20221209
+  Fecha: 20230207
   Tema: Librería RoJoMultiFS
   Objetivo: Tests
 
@@ -163,6 +163,12 @@ void setup() {
   //Demo de eliminación normal y forzada de un directorio
   removeDir("/mydir"); //No se puede borrar un directorio que no esté vacío
   removeDir("/mydir",true); //Borramos el directorio forzando su vaciado
+  listDir("/");
+  
+  //Demo de creación de directorios a varios niveles de profundidad
+  createDir("/dir1/dir2");
+  listDir("/");
+  removeDir("/dir1",true);
   listDir("/");
 
   RoJoFS.end();

@@ -1,0 +1,28 @@
+Autor: Ramón Junquera
+Fecha: 20221228
+
+Desarrollo de módulos propios
+Un módulo es un simple archivo .py guardado en el sistema de archivos del dispositivo.
+Habitualmente tiene una colección de funciones y/o clases que llamaremos desde un programa.
+Antes de la ejecución de un programa que utiliza módulos, es imprescindible transferir
+los archivos de los módulos al dispositivo.
+
+Supongamos que tenemos un módulo llamado MiModulo.py que contiene dentro la definición de
+una función llamada miFunción.
+Desde el programa principal se puede importar el módulo completo con:
+  importante es MiModulo
+Para después llamar a la función de la siguiente manera:
+  MiModulo.miFuncion()
+También podríamos importar sólo esa función:
+  from MiModulo import miFuncion
+Y después llamarla directamente sin hacer referencia al módulo:
+  miFuncion()
+
+La importación de un módulo implica su ejecución inmediata de todo el código que no
+sea definición de estructuras (funciones o clases)
+
+El archivo del módulo se puede encontrar en:
+- La misma carpeta en la que se ejecuta el programa. Recordemos que cuando se ejecuta un programa desde
+  el IDE se ejecuta en la carpeta raíz
+- La carpeta lib. Podemos guardar todos los módulos comunes en esta librería y llamarlos desde cualquier
+  sitio.

@@ -1,0 +1,5 @@
+Autor: Ramón Junquera
+Fecha: 20221221
+
+En Python se utiliza el módulo re para la gestión de expresiones regulares.
+En MicroPython el módulo se llama ere, que es una implementación parcial.

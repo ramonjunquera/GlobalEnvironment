@@ -1,0 +1,17 @@
+Autor: Ramón Junquera
+Fecha: 20221220
+
+Instalación y configuración de Python
+Visitamos la página oficial de Python:
+  https://www.python.org/downloads/
+Y descargamos la última versión disponible.
+Al instalar, seleccionamos la opción de añadir el ejecutable al path de búsqueda.
+
+IDE
+Como IDE podemos utilizar:
+  Visual Code:
+    Al abrir el primer archivo .py detectará el lenguaje y sugerirá instalar el plugin adecuado, que
+    nos proporcionará ayuda contextual.
+  Thonny:
+    Es una excelente opción si queremos saltar del intérprete local a uno remoto (de un dispositivo
+    con MicroPython). La desventaja es que NO tiene ayuda contextual.
