@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Fecha: 20230207
+  Fecha: 20230215
   Tema: Librería RoJoMultiFS
   Objetivo: Tests
 
@@ -25,17 +25,16 @@
 #include <Arduino.h>
 #include <RoJoMultiFS.h>
 
-
 //Muestra el contenido de una carpeta (función privada)
 void _listDir(String path) {
   RoJoDir dir=RoJoFS.openDir(path);
   while(dir.next()) {
     String newPath=path+((path=="/")?"":"/")+dir.fileName();
-    Serial.print(newPath);
+    Serial.print(newPath+" "+RoJoDir::fileTimeString(dir.fileTime())+" ");
     if(dir.isDirectory()) { 
-      Serial.println(" <DIR>");
+      Serial.println("<DIR>");
       _listDir(newPath);
-    } else Serial.println(" ("+String(dir.fileSize())+")");
+    } else Serial.println("("+String(dir.fileSize())+")");
   }
 }
 

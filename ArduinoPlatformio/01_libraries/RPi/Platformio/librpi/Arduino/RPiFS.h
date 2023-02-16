@@ -1,6 +1,6 @@
 /*
   Autor: Ramón Junquera
-  Versión: 20221209
+  Versión: 20230216
   Descripción:
     Gestión de sistema de archivos de RPi.
 	Se toma la carpeta data como raíz.
@@ -23,6 +23,8 @@ typedef enum {
 class File {
   private:
 	  FILE *_f;
+		String _fileName; //Path
+		time_t (*_callBackTimeStamp)()=NULL;
 
   public:
 		//Constructor
@@ -31,7 +33,10 @@ class File {
 		}
 		
 		//Constructor para apertura de archivo
-		File(string filename,string options) {
+		//cb es la función de callback para fijar la fecha del archivo al hacer close
+		File(string filename,string options,time_t (*cb)()=NULL) {
+			_fileName=filename;
+			_callBackTimeStamp=cb;
 			_f=fopen(filename.c_str(),options.c_str());
 		}
 
@@ -66,6 +71,14 @@ class File {
 			//Aunque el archivo se haya cerrado correctamente, el puntero
 			//sigue apuntando a la misma dirección. La borramos
 			_f=nullptr;
+			if(_callBackTimeStamp) { //Si tenemos definida función de callback para timestamp...
+			  //En RPi el timesptamp se fija una vez que se ha cerrado el archivo
+				//Obtenemos la fecha en formato time_t y ajustamos
+				uint64_t t1=(_callBackTimeStamp()+12009080074)*1000000000;
+				//El puntero de t será del tipo file_time_type. Después tomamos su valor
+				filesystem::file_time_type t2=*((filesystem::file_time_type *) &t1);
+			  filesystem::last_write_time(_fileName,t2);
+			}
 		}
 		
 		//Escribe un número de bytes de un buffer
@@ -102,7 +115,15 @@ class File {
 		//Definimos el offset de lectura de un archivo
 		void seek(uint32_t len) {
 			//Siempre contamos desde el principio
-				fseek(_f,static_cast<int32_t>(len),SEEK_SET);
+			fseek(_f,static_cast<int32_t>(len),SEEK_SET);
+		}
+
+    //Devuelve la fecha de última escritura del archivo
+		time_t getLastWrite() {
+			filesystem::file_time_type t1=filesystem::last_write_time(_fileName);
+			//Es necesario convertir filesystem::file_time_type a time_t
+			std::chrono::_V2::system_clock::time_point t2=std::chrono::time_point_cast<std::chrono::system_clock::duration>(t1-filesystem::file_time_type::clock::now()+std::chrono::system_clock::now());
+			return std::chrono::system_clock::to_time_t(t2);
 		}
 };
 
@@ -111,6 +132,11 @@ class Dir {
     filesystem::directory_iterator _it;
     String _path;
 		bool _firstTime=true;
+		String _2digits(int v) { //Pasa int a String con 2 dígitos
+			String res=String(v);
+			if(res.length()<2) res="0"+res;
+			return res;
+		}
   public:
     Dir(String path="") {
 			_path=_rootDir+path;
@@ -131,6 +157,12 @@ class Dir {
 		}
 		uint32_t fileSize() {
 			return _it->file_size();
+		}
+		time_t fileCreationTime() {
+			filesystem::file_time_type t1=_it->last_write_time();
+			//Es necesario convertir filesystem::file_time_type a time_t
+			std::chrono::_V2::system_clock::time_point t2=std::chrono::time_point_cast<std::chrono::system_clock::duration>(t1-filesystem::file_time_type::clock::now()+std::chrono::system_clock::now());
+			return std::chrono::system_clock::to_time_t(t2);
 		}
 		bool isDirectory() {
 			return _it->is_directory();
@@ -154,9 +186,10 @@ class RPiFSclass {
 		}
 	
 		//Abre un archivo
-		File open(string filename,string options="r") {
+		//cb es la función de callback para fijar la fecha del archivo al hacer close
+		File open(string filename,string options="r",time_t (*cb)()=NULL) {
 			//Creamos el objeto File abriendo el archivo y lo devolvemos
-			return File(_rootDir+filename,options);
+			return File(_rootDir+filename,options,cb);
 		}
 	
 		//Elimina un archivo

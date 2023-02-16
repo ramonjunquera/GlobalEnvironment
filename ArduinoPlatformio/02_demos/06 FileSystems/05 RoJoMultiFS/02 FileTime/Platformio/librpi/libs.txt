@@ -1,0 +1,6 @@
+Arduino
+  Arduino.h
+  FFat.h
+  FS.h
+  LittleFS.h
+  RPiFS.h

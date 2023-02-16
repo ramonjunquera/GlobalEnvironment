@@ -1,6 +1,6 @@
 /*
   Descripción: Gestión chip BCM2835 de Raspberry Pi 2, 3 y 4 con comandos de Arduino
-  Versión: 20221129
+  Versión: 20230214
   Autor: Ramón Junquera
 
   Funciones generales:
@@ -76,7 +76,8 @@ using namespace std;
 
 //Macros
 #define String(a) to_string(a)
-#define substring(a) substr(a)
+#define substring(a,b) substr(a,b)
+#define lastIndexOf(a) find_last_of(a)
 
 //Definición de tipos de datos
 typedef uint8_t byte;
