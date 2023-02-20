@@ -1,7 +1,7 @@
 /*
   Autor: Ramón Junquera
   Tema:Demo librería RoJoEspFtpServer
-  Fecha: 20230220
+  Fecha: 20230210
   Objetivo: Servidor FTP en red local
   Material adicional: placa ESP
   Descripción:
@@ -23,15 +23,15 @@
 //Configuración de tipo de conexión
 //- comentado: se conectará a un punto de acceso wifi existente
 //- descomentado: creará su propio punto de acceso wifi
-//#define ACCESSPOINT
+#define ACCESSPOINT
 
 //Credenciales de acceso al servidor FTP
 const String ftpUser="esp";
 const String ftpPassword="esp";
 
 //Definición de credenciales de SSID
-const char* ssidName="ESP-FTPserver";
-const char* ssidPassword="1234";
+const char* ssidName = "FTP-Server";
+const char* ssidPassword = "12345679";
 
 RoJoFtpServer ftpServer; //Objeto de gestión del servidor FTP
 
